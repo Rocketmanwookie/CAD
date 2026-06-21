@@ -1,0 +1,25 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+This project follows Semantic Versioning once public APIs stabilize. During `0.y.z`, APIs, XML schemas, and generated output formats may change.
+
+## [0.1.0-dev] - 2026-06-21
+
+### Added
+
+- Initial repository seed.
+- FreeCAD external workbench bootstrap files: `Init.py` and `InitGui.py`.
+- Draft controls-project data model.
+- Draft `CEProject` XML schema.
+- Conveyor demo XML instance.
+- Mapping stubs for PLCopen XML, AutomationML/CAEX, and OPC UA NodeSet2.
+- License strategy section.
+- Version-control and configuration-management policy.
+- Project-name brainstorm document.
+
+### Known limitations
+
+- Workbench commands are architecture stubs, not production FreeCAD tools yet.
+- XML mappings are illustrative and not full certified exports.
+- Safety validation is structural only; it does not certify PL, SIL, or category compliance.
