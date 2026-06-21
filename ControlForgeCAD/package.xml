@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package format="1">
+  <name>ControlForgeCAD</name>
+  <description>FreeCAD controls engineering workbench seed.</description>
+  <version>0.1.0-dev</version>
+  <date>2026-06-21</date>
+  <maintainer>Elliott Grant</maintainer>
+  <license file="LICENSE">MIT</license>
+  <content>
+    <workbench>
+      <classname>ControlsEngineeringWorkbench</classname>
+      <subdirectory>.</subdirectory>
+    </workbench>
+  </content>
+</package>
