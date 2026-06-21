@@ -1,0 +1,12 @@
+[project]
+name = "controlforgecad"
+version = "0.1.0.dev0"
+description = "FreeCAD controls engineering workbench seed"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Elliott Grant" }]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
