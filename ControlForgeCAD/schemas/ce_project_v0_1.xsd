@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="https://whrsdaparty.github.io/ceproject/0.1"
+           xmlns="https://whrsdaparty.github.io/ceproject/0.1"
+           elementFormDefault="qualified">
+
+  <xs:element name="CEProject">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Metadata" type="MetadataType"/>
+        <xs:element name="Devices" type="DevicesType" minOccurs="0"/>
+        <xs:element name="Signals" type="SignalsType" minOccurs="0"/>
+        <xs:element name="Connections" type="ConnectionsType" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="schemaVersion" type="xs:string" use="required"/>
+      <xs:attribute name="projectId" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="MetadataType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Revision" type="xs:string" minOccurs="0"/>
+      <xs:element name="Author" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="DevicesType">
+    <xs:sequence>
+      <xs:element name="Device" type="DeviceType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="DeviceType">
+    <xs:attribute name="tag" type="xs:string" use="required"/>
+    <xs:attribute name="category" type="xs:string" use="required"/>
+    <xs:attribute name="description" type="xs:string"/>
+    <xs:attribute name="manufacturer" type="xs:string"/>
+    <xs:attribute name="partNumber" type="xs:string"/>
+    <xs:attribute name="panel" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="SignalsType">
+    <xs:sequence>
+      <xs:element name="Signal" type="SignalType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SignalType">
+    <xs:attribute name="signalId" type="xs:string" use="required"/>
+    <xs:attribute name="tag" type="xs:string" use="required"/>
+    <xs:attribute name="type" type="xs:string" use="required"/>
+    <xs:attribute name="description" type="xs:string"/>
+    <xs:attribute name="plcAddress" type="xs:string"/>
+    <xs:attribute name="terminal" type="xs:string"/>
+    <xs:attribute name="safetyRelated" type="xs:boolean" default="false"/>
+  </xs:complexType>
+
+  <xs:complexType name="ConnectionsType">
+    <xs:sequence>
+      <xs:element name="Connection" type="ConnectionType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ConnectionType">
+    <xs:attribute name="wireId" type="xs:string" use="required"/>
+    <xs:attribute name="from" type="xs:string" use="required"/>
+    <xs:attribute name="to" type="xs:string" use="required"/>
+    <xs:attribute name="potential" type="xs:string"/>
+    <xs:attribute name="gauge" type="xs:string"/>
+    <xs:attribute name="color" type="xs:string"/>
+  </xs:complexType>
+
+</xs:schema>
