@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0201">
+  <types>
+    <pous>
+      <pou name="MainRoutine" pouType="program">
+        <interface/>
+        <body>
+          <LD>
+            <!-- CEProject Signal records map into ladder contacts and coils here. -->
+          </LD>
+        </body>
+      </pou>
+    </pous>
+  </types>
+</project>
