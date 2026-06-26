@@ -22,6 +22,8 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - Tests for intake validation, BOM row collection, and document validation helpers.
 - Starter stakeholder contact, source-record, and intake question/response models.
 - Validation warning for verified or approved intake facts that lack source records.
+- Pure-Python missing-data matrix rows for required intake facts, including response/source coverage, verification, approval, severity, findings, and next actions.
+- CE project object parsing shared by validation and missing-data matrix generation, including enclosure rating response/status fields.
 
 ### Known limitations
 

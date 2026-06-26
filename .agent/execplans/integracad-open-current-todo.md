@@ -44,6 +44,7 @@ This ExecPlan is a living implementation plan for continuing the existing `Whrsd
   - `validate_project.py` checks duplicate tags, missing description/part number for tagged objects, missing intake facts, and verified/approved intake facts without source records.
 - Existing model code:
   - `controls_wb/model/panel.py` defines a FreeCAD FeaturePython control panel/backplate placeholder.
+  - `controls_wb/missing_data.py` defines pure-Python missing-data matrix rows and CE project object intake parsing.
 - Existing TODO items:
   - The master TODO is `ControlForgeCAD/TODO.md`.
   - It calls for identity cleanup toward IntegraCAB Open, but the repository still intentionally lives under `ControlForgeCAD/`.
@@ -97,6 +98,9 @@ Continue the existing FreeCAD controls-engineering workbench toward the next wor
 - [x] Add source-record traceability validation for verified or approved intake facts.
 - [x] Add tests for open intake questions, source-backed verified facts, missing source warnings, serialized project payloads, and document validation source parsing.
 - [x] Update README, TODO, and changelog for the source/question model behavior.
+- [x] Implement Phase 1 missing-data matrix.
+- [x] Add tests for complete, missing response, missing source, needs verification, needs approval, and CE project object matrix generation.
+- [x] Update README, TODO, changelog, and this ExecPlan for the missing-data matrix milestone.
 
 ## Surprises & Discoveries
 
@@ -112,7 +116,9 @@ Continue the existing FreeCAD controls-engineering workbench toward the next wor
 - Implement business logic as pure Python under `controls_wb/` and keep `InitGui.py` thin.
 - Treat Phase 1 intake/validation as the next TODO-backed milestone before PLC/I/O expansion.
 - Update `TODO.md` checkboxes only for behavior that is present in code now. Broader roadmap items remain open even when a seed exists.
-- Treat the starter contact/source/question-response model as sufficient to close those Phase 1 model checkboxes, while keeping templates, missing-data matrix, and full CEProject XML schema work open.
+- Treat the starter contact/source/question-response model as sufficient to close those Phase 1 model checkboxes, while keeping templates and full CEProject XML schema work open.
+- Keep the missing-data matrix as a pure-Python helper instead of a FreeCAD command for this milestone.
+- Defer CSV export for the missing-data matrix until the project has a clearer export convention.
 
 ## Validation Commands
 
@@ -127,6 +133,14 @@ python3 -m compileall controls_wb tests
 ```
 
 Commands run for the contact/source/question-response milestone:
+
+```bash
+cd ControlForgeCAD
+python3 -m pytest
+python3 -m compileall controls_wb tests
+```
+
+Commands run for the missing-data matrix milestone:
 
 ```bash
 cd ControlForgeCAD
@@ -151,6 +165,14 @@ python3 -m compileall controls_wb tests
 - `CE_Project` now stores contacts, source records, and intake questions as JSON string-list properties, plus simple response value fields for nominal voltage, phase count, PLC platform, and sensor count.
 - `CE_ValidateProject` now parses those JSON string-list properties and warns when verified or approved required fields have no source record.
 - `python3 -m pytest` passed: 10 tests. The environment still prints `Failed to create stream fd: Operation not permitted` before pytest output, but tests complete successfully.
+- `python3 -m compileall controls_wb tests` passed. The same stream-fd warning appears before compile output.
+- Added `controls_wb/missing_data.py` with `MissingDataRow`, `missing_data_matrix()`, and shared CE project object-to-intake parsing.
+- Matrix rows report `item_id`, `category`, `question_id`, `fact_id`, label, required flag, value, response/source coverage, verification/approval booleans, status, severity, finding, and next action.
+- Matrix statuses currently include `complete`, `missing_response`, `missing_source`, `needs_verification`, and `needs_approval`.
+- `CE_Project` now exposes `EnclosureRating` and `EnclosureRatingStatus` properties so object-based intake parsing covers the starter panel-layout requirement.
+- `CE_ValidateProject` now reuses the missing-data module's CE project object parser, preserving current validation behavior while avoiding duplicate parsing code.
+- CSV export was not added; it is recorded as the next missing-data matrix follow-up in `TODO.md`.
+- `python3 -m pytest` passed: 16 tests. The environment still prints `Failed to create stream fd: Operation not permitted` before pytest output, but tests complete successfully.
 - `python3 -m compileall controls_wb tests` passed. The same stream-fd warning appears before compile output.
 
 ## Final Notes

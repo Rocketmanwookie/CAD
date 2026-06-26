@@ -25,7 +25,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 ## 2. Core workbench responsibilities
 
 - [ ] Structured project intake.
-- [ ] Missing-data tracking.
+- [x] Missing-data tracking.
 - [ ] Role-based request templates.
 - [ ] CEProject XML source-of-truth model.
 - [ ] Validation of missing, contradictory, assumed, estimated, and unapproved values.
@@ -65,12 +65,13 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Build project intake schema section.
 - [x] Add contacts/stakeholder model.
 - [x] Add question/response model.
-- [ ] Add missing-data matrix.
+- [x] Add missing-data matrix.
 - [x] Add field status model: `Unknown`, `Requested`, `Received`, `Assumed`, `Estimated`, `Verified`, `Approved`, `Rejected`, `Superseded`.
 - [x] Add source record model for email, meeting note, uploaded file, phone call, field note, vendor quote, CADbase asset, BIM object, or manual entry.
 - [ ] Add form templates for project managers, sales, utility company, electrical engineering, building superintendent, safety/EHS, operations, purchasing, maintenance, controls lead, mechanical/materials handling, IT/OT, and customer stakeholders.
 - [ ] Add email templates that map every requested fact to a CEProject field.
 - [x] Add validation output that tells the user who to ask for missing information.
+- [ ] Add CSV export for the missing-data matrix.
 
 ### Phase 2 - CEProject data model
 

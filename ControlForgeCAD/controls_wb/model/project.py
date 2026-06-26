@@ -73,9 +73,11 @@ def create_project(name: str = "Controls Project"):
     obj.IntakeQuestions = questions
     obj.NominalVoltage = ""
     obj.PhaseCount = ""
+    obj.EnclosureRating = ""
     obj.PlcPlatform = ""
     obj.SensorCount = ""
     obj.PowerFeedStatus = "Requested"
+    obj.EnclosureRatingStatus = "Requested"
     obj.PlcPlatformStatus = "Requested"
     obj.SensorCountStatus = "Requested"
     return obj
@@ -94,9 +96,11 @@ class ControlsProject:
         obj.addProperty("App::PropertyStringList", "IntakeQuestions", "Intake", "Question and response records as JSON lines")
         obj.addProperty("App::PropertyString", "NominalVoltage", "Intake", "Nominal voltage response")
         obj.addProperty("App::PropertyString", "PhaseCount", "Intake", "Phase count response")
+        obj.addProperty("App::PropertyString", "EnclosureRating", "Intake", "Enclosure rating response")
         obj.addProperty("App::PropertyString", "PlcPlatform", "Intake", "PLC platform response")
         obj.addProperty("App::PropertyString", "SensorCount", "Intake", "Sensor count response")
         obj.addProperty("App::PropertyString", "PowerFeedStatus", "Intake", "Power feed intake status")
+        obj.addProperty("App::PropertyString", "EnclosureRatingStatus", "Intake", "Enclosure rating intake status")
         obj.addProperty("App::PropertyString", "PlcPlatformStatus", "Intake", "PLC platform intake status")
         obj.addProperty("App::PropertyString", "SensorCountStatus", "Intake", "Sensor count intake status")
 
