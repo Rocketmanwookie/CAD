@@ -3,6 +3,13 @@
 
 import os
 
+from controls_wb.commands.metadata import (
+    EXPORT_COMMANDS,
+    LAYOUT_COMMANDS,
+    PROJECT_COMMANDS,
+    VALIDATION_COMMANDS,
+)
+
 try:
     import FreeCAD as App
     import FreeCADGui as Gui
@@ -30,10 +37,10 @@ if Gui is not None:
                 validate_project,
             )
 
-            self.project_commands = ["CE_NewProject"]
-            self.layout_commands = ["CE_CreatePanel"]
-            self.validation_commands = ["CE_ValidateProject", "CE_PreviewMissingData"]
-            self.export_commands = ["CE_ExportBOM", "CE_ExportCEProjectXML"]
+            self.project_commands = list(PROJECT_COMMANDS)
+            self.layout_commands = list(LAYOUT_COMMANDS)
+            self.validation_commands = list(VALIDATION_COMMANDS)
+            self.export_commands = list(EXPORT_COMMANDS)
 
             self.appendToolbar("Controls Project", self.project_commands)
             self.appendToolbar("Controls Layout", self.layout_commands)

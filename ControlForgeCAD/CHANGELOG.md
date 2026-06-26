@@ -31,11 +31,14 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - `CE_PreviewMissingData` workbench command for console preview of the active project intake missing-data matrix.
 - `CE_ExportCEProjectXML` workbench command for exporting the active project intake object to CEProject XML.
 - FreeCAD workbench registration now groups starter project, validation, missing-data, BOM, and CEProject XML commands while keeping `InitGui.py` thin.
+- Import-safe command metadata for smoke tests and workbench registration.
+- `scripts/link_freecad_workbench.py` helper for creating a FreeCAD user `Mod/ControlForgeCAD` development symlink.
+- README manual validation steps for confirming the workbench loads and expected commands appear in FreeCAD.
 
 ### Known limitations
 
 - Workbench commands are architecture stubs, not production FreeCAD tools yet.
-- FreeCAD command validation for this milestone is documented as a manual step because FreeCAD is not available in the test environment.
+- FreeCAD command validation for this milestone is documented as a manual step because no usable headless `freecadcmd` CLI is available in the test environment.
 - XML mappings are illustrative and not full certified exports.
 - CEProject XML import currently covers the intake-related XML emitted by the exporter, not future device, signal, circuit, PLC, HMI, or BIM sections.
 - Safety validation is structural only; it does not certify PL, SIL, or category compliance.

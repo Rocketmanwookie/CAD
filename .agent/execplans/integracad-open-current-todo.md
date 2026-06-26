@@ -73,7 +73,7 @@ This ExecPlan is a living implementation plan for continuing the existing `Whrsd
 
 Continue the existing FreeCAD controls-engineering workbench toward the next working MVP milestone without replacing the project scaffold. The immediate milestone is the intake and validation prototype: add an initial project/intake command and pure-Python intake validation that can run under tests without FreeCAD.
 
-Current milestone: integrate the project/intake backend into FreeCAD workbench commands so starter intake creation, validation, missing-data preview, and CEProject XML export are reachable from the workbench while backend logic remains testable without FreeCAD.
+Current milestone: add a repeatable FreeCAD workbench smoke-test and manual install/link workflow. The work should verify `Init.py` and `InitGui.py` remain import-safe outside FreeCAD, command registration metadata stays stable, and developers have exact steps for linking or copying the workbench into FreeCAD's user `Mod` directory.
 
 ## Milestones
 
@@ -114,6 +114,12 @@ Current milestone: integrate the project/intake backend into FreeCAD workbench c
 - [x] Add FreeCAD-facing CEProject XML export command wired to `controls_wb.ceproject_xml`.
 - [x] Keep `InitGui.py` as command registration and workbench UI grouping only.
 - [x] Add pure-Python command-adjacent tests for project-object discovery, missing-data formatting, and XML export selection.
+- [x] Re-checked requested guidance files for this milestone; `AGENTS.md` and `.agent/PLANS.md` remain absent in this checkout.
+- [x] Add import-safe command metadata shared by `InitGui.py` and tests.
+- [x] Add pure-Python smoke tests for command IDs, menu text, command module imports without FreeCAD, and `Init.py`/`InitGui.py` import without FreeCAD.
+- [x] Add `scripts/link_freecad_workbench.py` for creating a FreeCAD user `Mod/ControlForgeCAD` development symlink.
+- [x] Add tests for the FreeCAD `Mod` symlink helper.
+- [x] Document exact symlink, copy, launch, command-confirmation, and manual smoke validation steps in README files.
 
 ## Surprises & Discoveries
 
@@ -142,6 +148,9 @@ Current milestone: integrate the project/intake backend into FreeCAD workbench c
 - Add `CE_PreviewMissingData` and `CE_ExportCEProjectXML` as new `CE_` command IDs instead of renaming existing commands.
 - Share project-object discovery between the missing-data and XML export commands so command modules call backend helpers rather than duplicating intake parsing.
 - Export CEProject XML from the first controls project intake object in the active FreeCAD document for this milestone; multi-project selection/export can be added later when there is a clearer document workflow.
+- Keep command registration lists in `controls_wb.commands.metadata` so pure-Python tests can detect accidental command ID/menu text drift without importing real `FreeCADGui`.
+- Add a Python symlink helper instead of shell-only documentation so the workflow is testable and can accept an alternate `--mod-dir` for non-default FreeCAD profiles.
+- Treat FreeCAD CLI smoke as not feasible in this environment: `/snap/bin/freecad` is present, but no `freecadcmd`/`FreeCADCmd` command exists and `freecad --help` only emits GUI/module messages without usable headless help output.
 
 ## Validation Commands
 
@@ -195,6 +204,24 @@ python3 -m pytest ControlForgeCAD/tests/test_project_commands.py -q
 python3 -m compileall ControlForgeCAD/controls_wb/commands ControlForgeCAD/InitGui.py
 python3 -m pytest
 python3 -m compileall ControlForgeCAD
+```
+
+Commands run for the FreeCAD workbench smoke-test and install/link workflow milestone:
+
+```bash
+python3 -m pytest ControlForgeCAD/tests/test_command_metadata.py ControlForgeCAD/tests/test_freecad_link_script.py -q
+python3 -m compileall ControlForgeCAD/Init.py ControlForgeCAD/InitGui.py ControlForgeCAD/controls_wb/commands scripts/link_freecad_workbench.py
+freecad --version
+command -v freecadcmd || command -v FreeCADCmd || command -v freecad
+freecad --help
+python3 -m pytest
+python3 -m compileall ControlForgeCAD
+```
+
+FreeCAD CLI smoke feasibility result:
+
+```text
+`freecad --version` and `freecad --help` both return exit code 0, but the snap emits mount/Gtk messages and does not provide useful headless CLI/version/help output in this sandbox. `freecadcmd` and `FreeCADCmd` are not present; only `/snap/bin/freecad` is found. Automated FreeCAD GUI/workbench loading remains a documented manual validation step for this milestone.
 ```
 
 Manual FreeCAD validation steps for this milestone:
@@ -258,7 +285,18 @@ Manual FreeCAD validation steps for this milestone:
 - `python3 -m compileall ControlForgeCAD/controls_wb/commands ControlForgeCAD/InitGui.py` passed.
 - `python3 -m pytest` passed from the repository root: 34 tests.
 - `python3 -m compileall ControlForgeCAD` passed from the repository root.
-- FreeCAD itself was not run in this environment; manual validation steps are documented above and in `README.md`.
+- Added `controls_wb/commands/metadata.py` with stable command IDs, menu text, module names, and workbench command group tuples.
+- Updated `InitGui.py` to consume the metadata tuples while keeping GUI-dependent command registration in `Initialize()`.
+- Added `scripts/link_freecad_workbench.py`; it creates `~/.local/share/FreeCAD/Mod/ControlForgeCAD` as a symlink to the checkout, supports `--source` and `--mod-dir`, is idempotent for an existing matching symlink, and refuses conflicting existing paths.
+- Added smoke tests for command metadata, import-safe command modules, `Init.py`, `InitGui.py`, and the symlink helper.
+- Updated root and workbench READMEs with exact symlink/copy commands, helper-script usage, workbench launch steps, expected command IDs/menu text, and manual FreeCAD smoke steps.
+- Updated `TODO.md` and `CHANGELOG.md` for the completed smoke-test/install workflow.
+- `python3 -m pytest ControlForgeCAD/tests/test_command_metadata.py ControlForgeCAD/tests/test_freecad_link_script.py -q` passed: 8 tests.
+- `python3 -m compileall ControlForgeCAD/Init.py ControlForgeCAD/InitGui.py ControlForgeCAD/controls_wb/commands scripts/link_freecad_workbench.py` passed.
+- `python3 -m pytest` passed from the repository root: 43 tests.
+- `python3 -m compileall ControlForgeCAD` passed from the repository root.
+- Removed generated `__pycache__` directories after validation.
+- The FreeCAD snap binary was probed for CLI feasibility, but the workbench was not loaded in a GUI session in this environment; manual validation steps are documented above and in `README.md`.
 
 ## Final Notes
 

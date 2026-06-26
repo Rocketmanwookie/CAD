@@ -241,6 +241,8 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Keep dependencies minimal.
 - [x] Add tests for deterministic CEProject XML intake export.
 - [x] Add tests for CEProject XML intake import and round-trip behavior.
+- [x] Add FreeCAD workbench smoke tests for import-safe init files and command metadata.
+- [x] Add documented FreeCAD user `Mod` install/link workflow.
 - [ ] Add tests for XML examples and validators.
 - [ ] Add CI later if GitHub Actions access is available.
 - [ ] Add documentation build later.

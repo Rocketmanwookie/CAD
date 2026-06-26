@@ -97,22 +97,62 @@ Project Intake
 
 Clone, copy, or symlink this folder into your FreeCAD user `Mod` directory.
 
+From the repository root, the repeatable symlink helper is:
+
 ```bash
-mkdir -p ~/.local/share/FreeCAD/Mod
-cd ~/.local/share/FreeCAD/Mod
-git clone <repo-url> IntegraCABOpen
+python3 scripts/link_freecad_workbench.py
 ```
 
-For local development from this checkout, a symlink keeps edits live:
+The script creates `~/.local/share/FreeCAD/Mod/ControlForgeCAD` as a symlink to `/home/egrantjr/Dev/CAD/ControlForgeCAD`. To use a different FreeCAD profile or source path:
+
+```bash
+python3 scripts/link_freecad_workbench.py --mod-dir /path/to/FreeCAD/Mod --source /path/to/ControlForgeCAD
+```
+
+Equivalent manual symlink command:
 
 ```bash
 mkdir -p ~/.local/share/FreeCAD/Mod
 ln -s /home/egrantjr/Dev/CAD/ControlForgeCAD ~/.local/share/FreeCAD/Mod/ControlForgeCAD
 ```
 
-Restart FreeCAD and select **Controls / Automation** from the workbench selector. Create a project with **New Controls Project**, then confirm **Validate Controls Project**, **Preview Missing Data**, and **Export CEProject XML** appear under the workbench toolbar or menu. The XML export command writes `~/integracab_ceproject.xml`.
+Equivalent copy command:
 
-For pure-Python validation outside FreeCAD, run tests from this directory:
+```bash
+mkdir -p ~/.local/share/FreeCAD/Mod
+cp -R /home/egrantjr/Dev/CAD/ControlForgeCAD ~/.local/share/FreeCAD/Mod/ControlForgeCAD
+```
+
+Restart FreeCAD and select **Controls / Automation** from the workbench selector. Confirm these commands appear in the toolbar or menu:
+
+| Command ID | Menu text |
+|---|---|
+| `CE_NewProject` | New Controls Project |
+| `CE_CreatePanel` | Create Control Panel |
+| `CE_ValidateProject` | Validate Controls Project |
+| `CE_PreviewMissingData` | Preview Missing Data |
+| `CE_ExportBOM` | Export BOM |
+| `CE_ExportCEProjectXML` | Export CEProject XML |
+
+Manual smoke validation:
+
+1. Start or restart FreeCAD after linking or copying the workbench.
+2. Select **Controls / Automation** from the workbench selector.
+3. Run **New Controls Project** to create a starter `CE_Project`.
+4. Run **Validate Controls Project** and confirm validation messages print to the FreeCAD console.
+5. Run **Preview Missing Data** and confirm missing-data rows print to the FreeCAD console.
+6. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
+
+Automated tests do not import real FreeCAD in this environment. They compile `Init.py` and `InitGui.py`, import both files without FreeCAD installed, and verify import-safe command metadata for the workbench command IDs above.
+
+For pure-Python validation outside FreeCAD, run tests from the repository root:
+
+```bash
+python3 -m pytest
+python3 -m compileall ControlForgeCAD
+```
+
+or from this directory:
 
 ```bash
 python3 -m pytest
