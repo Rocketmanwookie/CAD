@@ -52,6 +52,8 @@ Manual FreeCAD validation:
 7. Save the document as `.FCStd`, close it, reopen it, and confirm the basic editable `CE_Project` properties are retained.
 8. Clear `SensorCount`, run **Preview Missing Data**, and confirm `io.sensorCount` is reported as missing.
 9. Fill `SensorCount`, rerun **Preview Missing Data**, and confirm the value is shown as a response rather than missing.
-10. Run **Validate Controls Project** and confirm validation reads the edited object values.
-11. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
-12. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written from the current starter intake data.
+10. Run **Create Control Panel** and confirm starter placeholder layout objects appear for panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module.
+11. Run **Validate Controls Project** and confirm validation reads the edited project and starter layout metadata.
+12. Run **Export BOM** and confirm `~/controlforgecad_bom.csv` includes starter layout objects where manufacturer/part-number/description data is assigned.
+13. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
+14. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written from the current starter intake data.

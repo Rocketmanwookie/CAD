@@ -8,20 +8,21 @@ except Exception:  # pragma: no cover
     App = None
     Gui = None
 
-from controls_wb.model.panel import create_panel
+from controls_wb.model.layout import create_starter_layout_objects
 
 
 class CreatePanelCommand:
     def GetResources(self):
         return {
             "MenuText": "Create Control Panel",
-            "ToolTip": "Create a parametric electrical control panel backplate.",
+            "ToolTip": "Create starter controls layout placeholders.",
         }
 
     def Activated(self):
         if App.ActiveDocument is None:
             App.newDocument("ControlsPanel")
-        create_panel(name="CE_Backplate", width="800 mm", height="1000 mm", depth="3 mm")
+        created = create_starter_layout_objects(App.ActiveDocument)
+        App.Console.PrintMessage(f"Created {len(created)} starter controls layout objects.\n")
         App.ActiveDocument.recompute()
 
     def IsActive(self):

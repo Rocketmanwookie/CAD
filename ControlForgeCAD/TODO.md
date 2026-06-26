@@ -133,7 +133,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 
 ### Phase 7 - Wiring, terminals, and cabinet-side power
 
-- [ ] Add terminal strip reference model.
+- [x] Add starter terminal strip reference model.
 - [ ] Add wire/from-to reference model.
 - [ ] Add internal cabinet power circuits.
 - [ ] Add control power distribution.
@@ -141,6 +141,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Add VFD/motor branch references.
 - [ ] Add sensor cable and field junction references.
 - [ ] Feed wiring/terminal data to drawing or schedule tools.
+- [x] Add starter CAD-side placeholder objects for panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module.
 
 ### Phase 8 - HMI as future companion workbench
 

@@ -134,6 +134,9 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - [x] Milestone 4: add starter I/O list model and deterministic CSV export.
 - [x] Expose `CE_ExportIOList` in workbench export command registration.
 - [x] Add tests for I/O CSV headers/rows, missing sensor-count handling, unmapped findings, and fake document-object extraction.
+- [x] Milestone 5: add starter CAD-side controls layout placeholder objects.
+- [x] Wire `CE_CreatePanel` to create panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module placeholders.
+- [x] Add tests for layout metadata, fake FreeCAD object creation, proxy persistence hooks, and BOM extraction from starter layout objects.
 
 ## Surprises & Discoveries
 
@@ -171,6 +174,7 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - Treat filled editable document-object values with `Unknown` or `Requested` starter statuses as `Received` when converting to backend intake data. This keeps Property View edits useful without forcing the user to update status fields manually.
 - Store `Customer` and `SiteLocation` as editable `CE_Project` properties now, but do not mark them as required deliverable facts yet because the current backend required-field matrix does not use them.
 - Keep Milestone 4 I/O generation intentionally simple: `SensorCount` creates starter digital-input rows marked `unmapped`; detailed rack/module/channel assignment remains a later Phase 6 task.
+- Keep Milestone 5 geometry as simple boxes with editable metadata. Manufacturer-accurate models, assembly constraints, routing, wire schedules, and detailed panel layout remain future work.
 
 ## Validation Commands
 
@@ -281,6 +285,15 @@ python3 -m pytest
 python3 -m compileall ControlForgeCAD
 ```
 
+Commands run for Milestone 5 - starter controls layout objects:
+
+```bash
+python3 -m pytest ControlForgeCAD/tests/test_layout_objects.py ControlForgeCAD/tests/test_bom.py -q
+python3 -m compileall ControlForgeCAD/controls_wb/model/layout.py ControlForgeCAD/controls_wb/commands/create_panel.py ControlForgeCAD/tests/test_layout_objects.py
+python3 -m pytest
+python3 -m compileall ControlForgeCAD
+```
+
 FreeCAD CLI smoke feasibility result:
 
 ```text
@@ -302,8 +315,11 @@ Manual FreeCAD validation steps for this milestone:
 10. Clear SensorCount, run Preview Missing Data, and confirm io.sensorCount is reported as missing.
 11. Fill SensorCount, rerun Preview Missing Data, and confirm the value is shown as a response rather than missing.
 12. Run Validate Controls Project and confirm validation reads the edited object values.
-13. Run Export CEProject XML and confirm ~/integracab_ceproject.xml is written.
-14. Run Export I/O List and confirm ~/integracab_io_list.csv is written from the current starter intake data. If rack/slot/channel data is not assigned yet, confirm Report View prints unmapped I/O warnings.
+13. Run Create Control Panel and confirm CE_Backplate, CE_DIN_Rail, CE_Wire_Duct, CE_Terminal_Strip, and CE_PLC_Rack appear in the model tree with editable controls metadata.
+14. Run Validate Controls Project and confirm validation reads the project and starter layout metadata.
+15. Run Export BOM and confirm ~/controlforgecad_bom.csv includes starter layout objects with tag/description/manufacturer/part-number data where assigned.
+16. Run Export CEProject XML and confirm ~/integracab_ceproject.xml is written.
+17. Run Export I/O List and confirm ~/integracab_io_list.csv is written from the current starter intake data. If rack/slot/channel data is not assigned yet, confirm Report View prints unmapped I/O warnings.
 ```
 
 ## Outcomes & Retrospective
@@ -377,6 +393,8 @@ Manual FreeCAD validation steps for this milestone:
 - `CE_NewProject` now opens the Project Intake dialog when possible and prints a fallback warning while creating the starter object if Qt/PySide is unavailable.
 - Milestone 4 completed: `controls_wb.io_list` defines `IOSignal`, deterministic CSV export, starter signal generation from project sensor count, and clear unmapped/missing I/O findings.
 - `CE_ExportIOList` is registered with the workbench export commands and writes `~/integracab_io_list.csv`.
+- Milestone 5 completed: `controls_wb.model.layout` defines starter layout object specs and FreeCAD-like object creation helpers for the required placeholder types.
+- `CE_CreatePanel` now creates the starter layout set, and existing BOM export includes those objects through their controls metadata.
 
 ## Final Notes
 

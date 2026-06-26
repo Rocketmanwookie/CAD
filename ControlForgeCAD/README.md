@@ -24,7 +24,7 @@ IntegraCAB Open is an integration-first FreeCAD workbench concept for controls e
 | Command ID | Menu text | Current behavior |
 |---|---|---|
 | `CE_NewProject` | New Controls Project | Opens a project intake dialog for core project/customer/site/deliverable/intake fields, then creates or refreshes an editable `CE_Project` FeaturePython document object. If Qt/PySide is unavailable, it creates the starter object and prints a warning. |
-| `CE_CreatePanel` | Create Control Panel | Creates a parametric backplate placeholder with controls metadata. |
+| `CE_CreatePanel` | Create Control Panel | Creates starter placeholder layout objects for a panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module. |
 | `CE_ExportBOM` | Export BOM | Exports controls metadata rows from the active FreeCAD document to CSV. |
 | `CE_ValidateProject` | Validate Controls Project | Reports duplicate tags, missing controls metadata, starter intake missing-data findings, and verified/approved intake facts without source records. |
 | `CE_PreviewMissingData` | Preview Missing Data | Prints the missing-data matrix for the active controls project intake object to the FreeCAD console. |
@@ -38,6 +38,8 @@ Editable `CE_Project` properties are converted back into the backend intake mode
 The pure-Python `controls_wb.ceproject_xml.ceproject_to_xml()` helper exports a `ProjectIntake` payload or `CE_Project`-style object to deterministic CEProject XML. The companion `controls_wb.ceproject_xml.parse_ceproject_xml()` helper reads the supported CEProject XML intake structure back into a stable pure-Python document wrapper. The current XML round trip includes metadata, contacts, intake deliverables and fields, intake question/response records, source records, validation findings, and missing-data matrix rows.
 
 The pure-Python `controls_wb.io_list` module provides the first starter I/O list model. It generates deterministic CSV rows with tag, description, signal type, device, PLC rack/slot/channel placeholders, terminal placeholder, source record IDs, and mapping status. At this stage, sensor count drives starter digital-input rows; rack/module/channel assignment remains a future expansion.
+
+The first CAD-side layout objects are placeholders, not manufacturer-accurate models. **Create Control Panel** creates a panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module with editable metadata such as tag, manufacturer, part number, description, panel name, voltage, current, terminal count, slot number, channel count, and signal type where applicable. BOM export includes these objects when they expose controls metadata.
 
 ## Business thesis
 
@@ -152,8 +154,11 @@ Manual smoke validation:
 8. Clear `SensorCount`, run **Preview Missing Data**, and confirm `io.sensorCount` is reported as missing.
 9. Fill `SensorCount`, rerun **Preview Missing Data**, and confirm the value is shown as a response rather than missing.
 10. Run **Validate Controls Project** and confirm validation messages print to the FreeCAD console from the edited object values.
-11. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
-12. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written. If rack/slot/channel data is not assigned yet, confirm Report View prints unmapped I/O warnings.
+11. Run **Create Control Panel** and confirm `CE_Backplate`, `CE_DIN_Rail`, `CE_Wire_Duct`, `CE_Terminal_Strip`, and `CE_PLC_Rack` appear in the model tree with editable controls metadata.
+12. Run **Validate Controls Project** and confirm validation reads the project and starter layout metadata.
+13. Run **Export BOM** and confirm `~/controlforgecad_bom.csv` includes starter layout objects with tag/description/manufacturer/part-number data where assigned.
+14. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
+15. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written. If rack/slot/channel data is not assigned yet, confirm Report View prints unmapped I/O warnings.
 
 Automated tests do not import real FreeCAD in this environment. They compile `Init.py` and `InitGui.py`, import both files without FreeCAD installed, and verify import-safe command metadata for the workbench command IDs above.
 
