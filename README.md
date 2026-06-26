@@ -49,5 +49,7 @@ Manual FreeCAD validation:
 5. Confirm a `CE_Project` object appears in the model tree.
 6. Select `CE_Project` and confirm the Property View exposes editable CEProject and Intake properties including project name, customer, site/location, deliverables, PLC platform, voltage, phase count, enclosure rating, and sensor count.
 7. Save the document as `.FCStd`, close it, reopen it, and confirm the basic editable `CE_Project` properties are retained.
-8. Run **Validate Controls Project** and **Preview Missing Data**.
-9. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
+8. Clear `SensorCount`, run **Preview Missing Data**, and confirm `io.sensorCount` is reported as missing.
+9. Fill `SensorCount`, rerun **Preview Missing Data**, and confirm the value is shown as a response rather than missing.
+10. Run **Validate Controls Project** and confirm validation reads the edited object values.
+11. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.

@@ -32,6 +32,8 @@ IntegraCAB Open is an integration-first FreeCAD workbench concept for controls e
 
 The pure-Python `controls_wb.missing_data.missing_data_matrix()` helper can build a structured missing-data matrix from a `ProjectIntake` payload or a `CE_Project`-style object without FreeCAD installed. Matrix rows include the required fact, current value, question ID, source records, verification/approval booleans, status, severity, finding, and recommended next action.
 
+Editable `CE_Project` properties are converted back into the backend intake model before validation, missing-data preview, and CEProject XML export. Filling a starter property such as `PlcPlatform` or `SensorCount` in the FreeCAD Property View is treated as a received response even if the adjacent status field is still `Requested`; blank required properties remain reported as missing.
+
 The pure-Python `controls_wb.ceproject_xml.ceproject_to_xml()` helper exports a `ProjectIntake` payload or `CE_Project`-style object to deterministic CEProject XML. The companion `controls_wb.ceproject_xml.parse_ceproject_xml()` helper reads the supported CEProject XML intake structure back into a stable pure-Python document wrapper. The current XML round trip includes metadata, contacts, intake deliverables and fields, intake question/response records, source records, validation findings, and missing-data matrix rows.
 
 ## Business thesis
@@ -142,9 +144,10 @@ Manual smoke validation:
 4. Confirm `CE_Project` appears in the model tree.
 5. Select `CE_Project` and confirm the Property View exposes editable CEProject and Intake properties including project name, customer, site/location, deliverables, PLC platform, nominal voltage, phase count, enclosure rating, and sensor count.
 6. Edit one basic property, save the document as `.FCStd`, close it, reopen it, and confirm the property value is retained.
-7. Run **Validate Controls Project** and confirm validation messages print to the FreeCAD console.
-8. Run **Preview Missing Data** and confirm missing-data rows print to the FreeCAD console.
-9. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
+7. Clear `SensorCount`, run **Preview Missing Data**, and confirm `io.sensorCount` is reported as missing.
+8. Fill `SensorCount`, rerun **Preview Missing Data**, and confirm the value is shown as a response rather than missing.
+9. Run **Validate Controls Project** and confirm validation messages print to the FreeCAD console from the edited object values.
+10. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
 
 Automated tests do not import real FreeCAD in this environment. They compile `Init.py` and `InitGui.py`, import both files without FreeCAD installed, and verify import-safe command metadata for the workbench command IDs above.
 

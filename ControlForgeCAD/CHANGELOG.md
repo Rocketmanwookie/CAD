@@ -36,6 +36,7 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - README manual validation steps for confirming the workbench loads and expected commands appear in FreeCAD.
 - Editable `CE_Project` FeaturePython document object with explicit CEProject and Intake properties for project name, customer, site/location, deliverables, PLC platform, voltage, phase count, enclosure rating, and sensor count.
 - `CE_NewProject` now creates or refreshes the active document's starter `CE_Project` object instead of relying on unstructured starter-only data.
+- Editable `CE_Project` Property View values now synchronize into backend intake validation, missing-data preview, and CEProject XML payload mapping.
 
 ### Known limitations
 

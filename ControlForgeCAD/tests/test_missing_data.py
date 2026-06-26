@@ -12,7 +12,7 @@ from controls_wb.intake import (
     SourceRecordType,
     default_project_intake,
 )
-from controls_wb.missing_data import missing_data_matrix
+from controls_wb.missing_data import missing_data_matrix, project_object_to_intake
 
 
 def _source(field_id):
@@ -193,3 +193,54 @@ def test_missing_data_matrix_uses_question_response_sources_and_project_objects(
     assert rows["io.sensorCount"].value == "12"
     assert rows["io.sensorCount"].source_record_ids == ("SRC-001",)
     assert rows["io.sensorCount"].status == "complete"
+
+
+def test_project_object_to_intake_converts_editable_properties_to_backend_fields():
+    obj = SimpleNamespace(
+        ProjectId="CE-PROJECT-001",
+        ProjectName="Line 7",
+        Customer="Acme",
+        SiteLocation="Cleveland",
+        SchemaVersion="0.1.0",
+        Deliverables=["ioList", "panelLayout"],
+        NominalVoltage="480",
+        PhaseCount="3",
+        EnclosureRating="NEMA 12",
+        PlcPlatform="Generic PLC",
+        SensorCount="18",
+        PowerFeedStatus="Requested",
+        EnclosureRatingStatus="Requested",
+        PlcPlatformStatus="Requested",
+        SensorCountStatus="Requested",
+    )
+
+    intake = project_object_to_intake(obj)
+
+    assert intake.fields["project.name"].value == "Line 7"
+    assert intake.fields["project.customer"].value == "Acme"
+    assert intake.fields["project.siteLocation"].value == "Cleveland"
+    assert intake.fields["powerFeed.nominalVoltage"].status == FieldStatus.RECEIVED
+    assert intake.fields["powerFeed.phaseCount"].status == FieldStatus.RECEIVED
+    assert intake.fields["environment.enclosureRating"].status == FieldStatus.RECEIVED
+    assert intake.fields["controls.plcPlatform"].status == FieldStatus.RECEIVED
+    assert intake.fields["io.sensorCount"].status == FieldStatus.RECEIVED
+
+
+def test_missing_data_matrix_recognizes_filled_editable_project_values():
+    obj = SimpleNamespace(
+        ProjectId="CE-PROJECT-001",
+        ProjectName="Line 7",
+        SchemaVersion="0.1.0",
+        Deliverables=["ioList"],
+        PlcPlatform="Generic PLC",
+        SensorCount="12",
+        PlcPlatformStatus="Requested",
+        SensorCountStatus="Requested",
+    )
+
+    rows = {row.fact_id: row for row in missing_data_matrix(obj)}
+
+    assert rows["controls.plcPlatform"].value == "Generic PLC"
+    assert rows["controls.plcPlatform"].status == "missing_source"
+    assert rows["io.sensorCount"].value == "12"
+    assert rows["io.sensorCount"].status == "missing_source"

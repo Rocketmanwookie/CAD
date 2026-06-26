@@ -125,6 +125,9 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - [x] Milestone 1: add a real editable `CE_Project` FreeCAD document object contract for starter intake data.
 - [x] Add pure-Python tests for CE_Project property specs, payload mapping, fake object initialization, proxy persistence hooks, and create-or-update behavior.
 - [x] Update manual FreeCAD validation steps for model-tree creation, editable properties, and `.FCStd` save/reopen confirmation.
+- [x] Milestone 2: synchronize editable CE_Project document-object properties into backend intake payloads.
+- [x] Add fake document-object tests proving edited Property View values feed validation and missing-data logic.
+- [x] Update manual FreeCAD validation steps for editing a property and rerunning validation/missing-data.
 
 ## Surprises & Discoveries
 
@@ -159,6 +162,8 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - Treat FreeCAD CLI smoke as not feasible in this environment: `/snap/bin/freecad` is present, but no `freecadcmd`/`FreeCADCmd` command exists and `freecad --help` only emits GUI/module messages without usable headless help output.
 - Keep `InitGui.py` thin by moving FreeCAD bootstrap path resolution into `controls_wb.freecad_paths`.
 - Resolve the workbench root by trying `globals()["__file__"]`, then `globals()["__spec__"].origin`, then the imported `controls_wb` package path.
+- Treat filled editable document-object values with `Unknown` or `Requested` starter statuses as `Received` when converting to backend intake data. This keeps Property View edits useful without forcing the user to update status fields manually.
+- Store `Customer` and `SiteLocation` as editable `CE_Project` properties now, but do not mark them as required deliverable facts yet because the current backend required-field matrix does not use them.
 
 ## Validation Commands
 
@@ -242,6 +247,15 @@ python3 -m pytest
 python3 -m compileall ControlForgeCAD
 ```
 
+Commands run for Milestone 2 - editable intake property synchronization:
+
+```bash
+python3 -m pytest ControlForgeCAD/tests/test_missing_data.py ControlForgeCAD/tests/test_validate_project.py -q
+python3 -m compileall ControlForgeCAD/controls_wb/missing_data.py ControlForgeCAD/tests/test_missing_data.py ControlForgeCAD/tests/test_validate_project.py
+python3 -m pytest
+python3 -m compileall ControlForgeCAD
+```
+
 FreeCAD CLI smoke feasibility result:
 
 ```text
@@ -258,8 +272,10 @@ Manual FreeCAD validation steps for this milestone:
 5. Run New Controls Project and confirm a CE_Project object appears in the model tree.
 6. Select CE_Project and confirm editable CEProject and Intake properties appear in the Property View, including project name, customer, site/location, deliverables, PLC platform, nominal voltage, phase count, enclosure rating, and sensor count.
 7. Edit a basic property, save the document as .FCStd, close it, reopen it, and confirm the property value is retained.
-8. Run Validate Controls Project and Preview Missing Data.
-9. Run Export CEProject XML and confirm ~/integracab_ceproject.xml is written.
+8. Clear SensorCount, run Preview Missing Data, and confirm io.sensorCount is reported as missing.
+9. Fill SensorCount, rerun Preview Missing Data, and confirm the value is shown as a response rather than missing.
+10. Run Validate Controls Project and confirm validation reads the edited object values.
+11. Run Export CEProject XML and confirm ~/integracab_ceproject.xml is written.
 ```
 
 ## Outcomes & Retrospective
@@ -327,6 +343,8 @@ Manual FreeCAD validation steps for this milestone:
 - Milestone 1 completed: `controls_wb.model.project` now defines an explicit editable property set for the `CE_Project` object, initializes fake and real FreeCAD-like objects through shared helpers, and gives the proxy simple persistent state hooks for FreeCAD save/reopen.
 - `CE_NewProject` now creates or refreshes the active document's `CE_Project` object via `create_or_update_project()`.
 - Milestone 1 validation passed: `python3 -m pytest` passed 50 tests; `python3 -m compileall ControlForgeCAD` passed.
+- Milestone 2 completed: `project_object_to_intake()` now converts edited `CE_Project` values into backend `ProjectIntake` fields, including project customer/site properties and received-status inference for filled starter fields.
+- Validation and missing-data helpers now operate on edited document-backed data; blank required properties still report as missing, while filled values are recognized as responses.
 
 ## Final Notes
 

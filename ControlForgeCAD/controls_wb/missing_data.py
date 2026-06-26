@@ -51,6 +51,13 @@ def _status(value: str) -> FieldStatus:
         return FieldStatus.UNKNOWN
 
 
+def _status_for_value(value: str, status_value: str) -> FieldStatus:
+    status = _status(status_value)
+    if value and status in {FieldStatus.UNKNOWN, FieldStatus.REQUESTED}:
+        return FieldStatus.RECEIVED
+    return status
+
+
 def _json_records(obj: object, attribute: str) -> list[dict[str, Any]]:
     records = []
     for item in getattr(obj, attribute, []) or []:
@@ -125,40 +132,69 @@ def project_object_to_intake(obj: object) -> ProjectIntake:
             value=getattr(obj, "ProjectName", ""),
             status=FieldStatus.RECEIVED if getattr(obj, "ProjectName", "") else FieldStatus.UNKNOWN,
         ),
+        "project.customer": IntakeField(
+            "project.customer",
+            "Customer",
+            "Project manager",
+            value=getattr(obj, "Customer", ""),
+            status=FieldStatus.RECEIVED if getattr(obj, "Customer", "") else FieldStatus.UNKNOWN,
+        ),
+        "project.siteLocation": IntakeField(
+            "project.siteLocation",
+            "Site/location",
+            "Project manager",
+            value=getattr(obj, "SiteLocation", ""),
+            status=FieldStatus.RECEIVED if getattr(obj, "SiteLocation", "") else FieldStatus.UNKNOWN,
+        ),
         "powerFeed.nominalVoltage": IntakeField(
             "powerFeed.nominalVoltage",
             "Nominal voltage",
             "Electrical engineering",
             value=getattr(obj, "NominalVoltage", ""),
-            status=_status(getattr(obj, "PowerFeedStatus", "")),
+            status=_status_for_value(
+                getattr(obj, "NominalVoltage", ""),
+                getattr(obj, "PowerFeedStatus", ""),
+            ),
         ),
         "powerFeed.phaseCount": IntakeField(
             "powerFeed.phaseCount",
             "Phase count",
             "Electrical engineering",
             value=getattr(obj, "PhaseCount", ""),
-            status=_status(getattr(obj, "PowerFeedStatus", "")),
+            status=_status_for_value(
+                getattr(obj, "PhaseCount", ""),
+                getattr(obj, "PowerFeedStatus", ""),
+            ),
         ),
         "environment.enclosureRating": IntakeField(
             "environment.enclosureRating",
             "Enclosure rating",
             "Operations / maintenance",
             value=getattr(obj, "EnclosureRating", ""),
-            status=_status(getattr(obj, "EnclosureRatingStatus", "")),
+            status=_status_for_value(
+                getattr(obj, "EnclosureRating", ""),
+                getattr(obj, "EnclosureRatingStatus", ""),
+            ),
         ),
         "controls.plcPlatform": IntakeField(
             "controls.plcPlatform",
             "PLC platform",
             "Controls lead",
             value=getattr(obj, "PlcPlatform", ""),
-            status=_status(getattr(obj, "PlcPlatformStatus", "")),
+            status=_status_for_value(
+                getattr(obj, "PlcPlatform", ""),
+                getattr(obj, "PlcPlatformStatus", ""),
+            ),
         ),
         "io.sensorCount": IntakeField(
             "io.sensorCount",
             "Sensor count or estimate",
             "Mechanical / materials handling",
             value=getattr(obj, "SensorCount", ""),
-            status=_status(getattr(obj, "SensorCountStatus", "")),
+            status=_status_for_value(
+                getattr(obj, "SensorCount", ""),
+                getattr(obj, "SensorCountStatus", ""),
+            ),
         ),
     }
     return ProjectIntake(
