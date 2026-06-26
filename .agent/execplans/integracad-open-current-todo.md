@@ -120,6 +120,8 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - [x] Add `scripts/link_freecad_workbench.py` for creating a FreeCAD user `Mod/ControlForgeCAD` development symlink.
 - [x] Add tests for the FreeCAD `Mod` symlink helper.
 - [x] Document exact symlink, copy, launch, command-confirmation, and manual smoke validation steps in README files.
+- [x] Fix manual FreeCAD GUI smoke-test workbench load failure caused by `InitGui.py` using `__file__` when FreeCAD did not define it.
+- [x] Add pure-Python coverage for resolving the workbench root without `__file__` and initializing `InitGui.py` with fake FreeCAD modules.
 
 ## Surprises & Discoveries
 
@@ -127,6 +129,7 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - The repository has no current tests even though pytest is configured.
 - The root README is not the product README; the useful README is under `ControlForgeCAD/`.
 - The TODO asks for eventual identity/package renames, but the README explicitly notes the seed still lives under `ControlForgeCAD/`.
+- Manual FreeCAD GUI smoke testing found a workbench load failure: `name '__file__' is not defined` at `ControlForgeCAD/InitGui.py:28`.
 
 ## Decision Log
 
@@ -151,6 +154,8 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - Keep command registration lists in `controls_wb.commands.metadata` so pure-Python tests can detect accidental command ID/menu text drift without importing real `FreeCADGui`.
 - Add a Python symlink helper instead of shell-only documentation so the workflow is testable and can accept an alternate `--mod-dir` for non-default FreeCAD profiles.
 - Treat FreeCAD CLI smoke as not feasible in this environment: `/snap/bin/freecad` is present, but no `freecadcmd`/`FreeCADCmd` command exists and `freecad --help` only emits GUI/module messages without usable headless help output.
+- Keep `InitGui.py` thin by moving FreeCAD bootstrap path resolution into `controls_wb.freecad_paths`.
+- Resolve the workbench root by trying `globals()["__file__"]`, then `globals()["__spec__"].origin`, then the imported `controls_wb` package path.
 
 ## Validation Commands
 
@@ -214,6 +219,13 @@ python3 -m compileall ControlForgeCAD/Init.py ControlForgeCAD/InitGui.py Control
 freecad --version
 command -v freecadcmd || command -v FreeCADCmd || command -v freecad
 freecad --help
+python3 -m pytest
+python3 -m compileall ControlForgeCAD
+```
+
+Commands run for the FreeCAD GUI `__file__` load-failure fix:
+
+```bash
 python3 -m pytest
 python3 -m compileall ControlForgeCAD
 ```

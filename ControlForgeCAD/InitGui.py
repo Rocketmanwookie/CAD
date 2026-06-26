@@ -9,6 +9,7 @@ from controls_wb.commands.metadata import (
     PROJECT_COMMANDS,
     VALIDATION_COMMANDS,
 )
+from controls_wb.freecad_paths import workbench_root_from_module_globals
 
 try:
     import FreeCAD as App
@@ -25,7 +26,7 @@ if Gui is not None:
         ToolTip = "Controls engineering tools for PLC I/O, panel layouts, wiring, BOMs, safety circuits, and XML interchange."
 
         def Initialize(self):
-            base_dir = os.path.dirname(__file__)
+            base_dir = workbench_root_from_module_globals(globals())
             Gui.addIconPath(os.path.join(base_dir, "controls_wb", "resources", "icons"))
 
             from controls_wb.commands import (  # noqa: F401
