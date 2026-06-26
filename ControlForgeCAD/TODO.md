@@ -75,6 +75,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [x] Expose starter intake validation and missing-data preview through FreeCAD workbench commands.
 - [x] Create a real editable FreeCAD `CE_Project` document object for starter intake data.
 - [x] Synchronize editable `CE_Project` properties into backend validation and missing-data intake payloads.
+- [x] Add a New Project / Intake dialog for editing starter project intake values.
 
 ### Phase 2 - CEProject data model
 

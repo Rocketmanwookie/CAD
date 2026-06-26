@@ -128,6 +128,9 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - [x] Milestone 2: synchronize editable CE_Project document-object properties into backend intake payloads.
 - [x] Add fake document-object tests proving edited Property View values feed validation and missing-data logic.
 - [x] Update manual FreeCAD validation steps for editing a property and rerunning validation/missing-data.
+- [x] Milestone 3: add a New Project / Intake dialog workflow with pure-Python form mapping helpers.
+- [x] Wire `CE_NewProject` to open the dialog when Qt/PySide is available and create a starter object as a safe fallback when it is not.
+- [x] Add tests for form value normalization, deliverable parsing, fake-object application, and create/update from form payloads.
 
 ## Surprises & Discoveries
 
@@ -256,6 +259,15 @@ python3 -m pytest
 python3 -m compileall ControlForgeCAD
 ```
 
+Commands run for Milestone 3 - New Project / Intake GUI task panel:
+
+```bash
+python3 -m pytest ControlForgeCAD/tests/test_project_intake_gui.py ControlForgeCAD/tests/test_command_metadata.py -q
+python3 -m compileall ControlForgeCAD/controls_wb/gui ControlForgeCAD/controls_wb/commands/new_project.py ControlForgeCAD/tests/test_project_intake_gui.py
+python3 -m pytest
+python3 -m compileall ControlForgeCAD
+```
+
 FreeCAD CLI smoke feasibility result:
 
 ```text
@@ -269,13 +281,15 @@ Manual FreeCAD validation steps for this milestone:
 2. Restart FreeCAD.
 3. Select the Controls / Automation workbench.
 4. Confirm New Controls Project, Validate Controls Project, Preview Missing Data, Export BOM, and Export CEProject XML appear in the workbench UI.
-5. Run New Controls Project and confirm a CE_Project object appears in the model tree.
-6. Select CE_Project and confirm editable CEProject and Intake properties appear in the Property View, including project name, customer, site/location, deliverables, PLC platform, nominal voltage, phase count, enclosure rating, and sensor count.
-7. Edit a basic property, save the document as .FCStd, close it, reopen it, and confirm the property value is retained.
-8. Clear SensorCount, run Preview Missing Data, and confirm io.sensorCount is reported as missing.
-9. Fill SensorCount, rerun Preview Missing Data, and confirm the value is shown as a response rather than missing.
-10. Run Validate Controls Project and confirm validation reads the edited object values.
-11. Run Export CEProject XML and confirm ~/integracab_ceproject.xml is written.
+5. Run New Controls Project and confirm the Project Intake dialog opens.
+6. Enter or edit project name, customer, site/location, deliverables, PLC platform, nominal voltage, phase count, enclosure rating, and sensor count, then submit the dialog.
+7. Confirm a CE_Project object appears in the model tree and Report View says the project intake was updated. If Qt/PySide cannot load, confirm the fallback warning appears and a starter CE_Project is still created.
+8. Select CE_Project and confirm editable CEProject and Intake properties appear in the Property View matching the submitted dialog values.
+9. Edit a basic property, save the document as .FCStd, close it, reopen it, and confirm the property value is retained.
+10. Clear SensorCount, run Preview Missing Data, and confirm io.sensorCount is reported as missing.
+11. Fill SensorCount, rerun Preview Missing Data, and confirm the value is shown as a response rather than missing.
+12. Run Validate Controls Project and confirm validation reads the edited object values.
+13. Run Export CEProject XML and confirm ~/integracab_ceproject.xml is written.
 ```
 
 ## Outcomes & Retrospective
@@ -345,6 +359,8 @@ Manual FreeCAD validation steps for this milestone:
 - Milestone 1 validation passed: `python3 -m pytest` passed 50 tests; `python3 -m compileall ControlForgeCAD` passed.
 - Milestone 2 completed: `project_object_to_intake()` now converts edited `CE_Project` values into backend `ProjectIntake` fields, including project customer/site properties and received-status inference for filled starter fields.
 - Validation and missing-data helpers now operate on edited document-backed data; blank required properties still report as missing, while filled values are recognized as responses.
+- Milestone 3 completed: `controls_wb.gui.project_intake` provides pure-Python form mapping helpers plus a lazy Qt dialog for editing starter intake fields.
+- `CE_NewProject` now opens the Project Intake dialog when possible and prints a fallback warning while creating the starter object if Qt/PySide is unavailable.
 
 ## Final Notes
 

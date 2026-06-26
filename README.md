@@ -45,8 +45,8 @@ Manual FreeCAD validation:
 1. Start or restart FreeCAD after linking or copying the workbench.
 2. Select **Controls / Automation** from the workbench selector.
 3. Confirm the commands listed above appear in the workbench toolbar or menu.
-4. Run **New Controls Project**.
-5. Confirm a `CE_Project` object appears in the model tree.
+4. Run **New Controls Project** and confirm the Project Intake dialog opens.
+5. Enter core intake values, submit the dialog, and confirm a `CE_Project` object appears in the model tree.
 6. Select `CE_Project` and confirm the Property View exposes editable CEProject and Intake properties including project name, customer, site/location, deliverables, PLC platform, voltage, phase count, enclosure rating, and sensor count.
 7. Save the document as `.FCStd`, close it, reopen it, and confirm the basic editable `CE_Project` properties are retained.
 8. Clear `SensorCount`, run **Preview Missing Data**, and confirm `io.sensorCount` is reported as missing.
