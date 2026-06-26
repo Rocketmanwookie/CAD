@@ -27,7 +27,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Structured project intake.
 - [x] Missing-data tracking.
 - [ ] Role-based request templates.
-- [ ] CEProject XML source-of-truth model.
+- [x] CEProject XML source-of-truth model.
 - [ ] Validation of missing, contradictory, assumed, estimated, and unapproved values.
 - [ ] Traceability between requirements, devices, signals, terminals, circuits, CADbase parts, cost records, and exports.
 - [ ] Adapter layer to CADbase, BOM tools, BIM/openBIM tools, spreadsheets, TechDraw, and future PLC/HMI/digital-twin tools.
@@ -62,7 +62,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 
 ### Phase 1 - Intake-first workflow
 
-- [ ] Build project intake schema section.
+- [x] Build project intake schema section.
 - [x] Add contacts/stakeholder model.
 - [x] Add question/response model.
 - [x] Add missing-data matrix.
@@ -76,7 +76,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 ### Phase 2 - CEProject data model
 
 - [ ] Define top-level schema sections: `Project`, `Contacts`, `Intake`, `Requirements`, `BIMReferences`, `CADbaseReferences`, `Devices`, `Signals`, `Circuits`, `PowerInterface`, `SafetyFunctions`, `HMIRequirements`, `CostingReferences`, `ExternalExports`, `ValidationFindings`.
-- [ ] Version the schema with XSD file name and internal `schemaVersion`.
+- [x] Version the schema with XSD file name and internal `schemaVersion`.
 - [ ] Make every project fact addressable by ID.
 - [ ] Make every generated artifact traceable to source fields.
 - [ ] Support assumptions and estimates without treating them as verified values.
@@ -235,6 +235,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [x] Use small, readable modules.
 - [ ] Keep schema examples human-readable.
 - [ ] Keep dependencies minimal.
+- [x] Add tests for deterministic CEProject XML intake export.
 - [ ] Add tests for XML examples and validators.
 - [ ] Add CI later if GitHub Actions access is available.
 - [ ] Add documentation build later.

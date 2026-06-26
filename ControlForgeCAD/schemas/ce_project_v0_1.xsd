@@ -8,6 +8,11 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element name="Metadata" type="MetadataType"/>
+        <xs:element name="Contacts" type="ContactsType" minOccurs="0"/>
+        <xs:element name="Intake" type="IntakeType" minOccurs="0"/>
+        <xs:element name="SourceRecords" type="SourceRecordsType" minOccurs="0"/>
+        <xs:element name="ValidationFindings" type="ValidationFindingsType" minOccurs="0"/>
+        <xs:element name="MissingDataMatrix" type="MissingDataMatrixType" minOccurs="0"/>
         <xs:element name="Devices" type="DevicesType" minOccurs="0"/>
         <xs:element name="Signals" type="SignalsType" minOccurs="0"/>
         <xs:element name="Connections" type="ConnectionsType" minOccurs="0"/>
@@ -23,6 +28,149 @@
       <xs:element name="Revision" type="xs:string" minOccurs="0"/>
       <xs:element name="Author" type="xs:string" minOccurs="0"/>
     </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ContactsType">
+    <xs:sequence>
+      <xs:element name="Contact" type="ContactType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ContactType">
+    <xs:attribute name="contactId" type="xs:string" use="required"/>
+    <xs:attribute name="role" type="xs:string" use="required"/>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="email" type="xs:string"/>
+    <xs:attribute name="organization" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="IntakeType">
+    <xs:sequence>
+      <xs:element name="Deliverables" type="DeliverablesType" minOccurs="0"/>
+      <xs:element name="Fields" type="IntakeFieldsType" minOccurs="0"/>
+      <xs:element name="Questions" type="IntakeQuestionsType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="DeliverablesType">
+    <xs:sequence>
+      <xs:element name="Deliverable" type="DeliverableType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="DeliverableType">
+    <xs:attribute name="id" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="IntakeFieldsType">
+    <xs:sequence>
+      <xs:element name="Field" type="IntakeFieldType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="IntakeFieldType">
+    <xs:attribute name="fieldId" type="xs:string" use="required"/>
+    <xs:attribute name="label" type="xs:string"/>
+    <xs:attribute name="stakeholder" type="xs:string"/>
+    <xs:attribute name="status" type="xs:string"/>
+    <xs:attribute name="value" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="IntakeQuestionsType">
+    <xs:sequence>
+      <xs:element name="Question" type="IntakeQuestionType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="IntakeQuestionType">
+    <xs:sequence>
+      <xs:element name="Prompt" type="xs:string"/>
+      <xs:element name="Response" type="xs:string" minOccurs="0"/>
+      <xs:element name="SourceRefs" type="SourceRefsType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="questionId" type="xs:string" use="required"/>
+    <xs:attribute name="fieldId" type="xs:string" use="required"/>
+    <xs:attribute name="ask" type="xs:string"/>
+    <xs:attribute name="status" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="SourceRecordsType">
+    <xs:sequence>
+      <xs:element name="SourceRecord" type="SourceRecordType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SourceRecordType">
+    <xs:sequence>
+      <xs:element name="FieldRefs" type="FieldRefsType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="sourceId" type="xs:string" use="required"/>
+    <xs:attribute name="type" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string"/>
+    <xs:attribute name="stakeholder" type="xs:string"/>
+    <xs:attribute name="reference" type="xs:string"/>
+    <xs:attribute name="receivedOn" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="FieldRefsType">
+    <xs:sequence>
+      <xs:element name="FieldRef" type="FieldRefType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FieldRefType">
+    <xs:attribute name="fieldId" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="SourceRefsType">
+    <xs:sequence>
+      <xs:element name="SourceRef" type="SourceRefType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SourceRefType">
+    <xs:attribute name="sourceId" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ValidationFindingsType">
+    <xs:sequence>
+      <xs:element name="Finding" type="ValidationFindingType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ValidationFindingType">
+    <xs:attribute name="findingId" type="xs:string" use="required"/>
+    <xs:attribute name="level" type="xs:string" use="required"/>
+    <xs:attribute name="fieldId" type="xs:string"/>
+    <xs:attribute name="ask" type="xs:string"/>
+    <xs:attribute name="message" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="MissingDataMatrixType">
+    <xs:sequence>
+      <xs:element name="MissingDataRow" type="MissingDataRowType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MissingDataRowType">
+    <xs:sequence>
+      <xs:element name="Finding" type="xs:string"/>
+      <xs:element name="NextAction" type="xs:string"/>
+      <xs:element name="SourceRefs" type="SourceRefsType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="itemId" type="xs:string" use="required"/>
+    <xs:attribute name="category" type="xs:string"/>
+    <xs:attribute name="questionId" type="xs:string"/>
+    <xs:attribute name="factId" type="xs:string"/>
+    <xs:attribute name="label" type="xs:string"/>
+    <xs:attribute name="required" type="xs:boolean"/>
+    <xs:attribute name="value" type="xs:string"/>
+    <xs:attribute name="hasResponse" type="xs:boolean"/>
+    <xs:attribute name="sourceCount" type="xs:nonNegativeInteger"/>
+    <xs:attribute name="verified" type="xs:boolean"/>
+    <xs:attribute name="approved" type="xs:boolean"/>
+    <xs:attribute name="status" type="xs:string"/>
+    <xs:attribute name="severity" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="DevicesType">

@@ -73,6 +73,8 @@ This ExecPlan is a living implementation plan for continuing the existing `Whrsd
 
 Continue the existing FreeCAD controls-engineering workbench toward the next working MVP milestone without replacing the project scaffold. The immediate milestone is the intake and validation prototype: add an initial project/intake command and pure-Python intake validation that can run under tests without FreeCAD.
 
+Current milestone: expand the CEProject XML representation for Phase 2 intake-related records so the pure-Python `ProjectIntake` model and CE project object payloads can be exported as deterministic, structured XML.
+
 ## Milestones
 
 1. Document current state and naming decisions in this ExecPlan.
@@ -101,6 +103,10 @@ Continue the existing FreeCAD controls-engineering workbench toward the next wor
 - [x] Implement Phase 1 missing-data matrix.
 - [x] Add tests for complete, missing response, missing source, needs verification, needs approval, and CE project object matrix generation.
 - [x] Update README, TODO, changelog, and this ExecPlan for the missing-data matrix milestone.
+- [x] Implement Phase 2 CEProject XML intake export.
+- [x] Expand the CEProject 0.1 XSD with optional contacts, intake, source-record, validation, and missing-data matrix sections.
+- [x] Add deterministic XML tests for minimal projects, contacts, source records, intake questions/responses, validation findings, and missing-data rows.
+- [x] Document XML export behavior and defer import/parsing as a follow-up.
 
 ## Surprises & Discoveries
 
@@ -119,6 +125,9 @@ Continue the existing FreeCAD controls-engineering workbench toward the next wor
 - Treat the starter contact/source/question-response model as sufficient to close those Phase 1 model checkboxes, while keeping templates and full CEProject XML schema work open.
 - Keep the missing-data matrix as a pure-Python helper instead of a FreeCAD command for this milestone.
 - Defer CSV export for the missing-data matrix until the project has a clearer export convention.
+- Add XML export in `controls_wb.ceproject_xml` instead of the FreeCAD model layer so it remains importable and testable without FreeCAD installed.
+- Export XML deterministically by sorting contact IDs, deliverables, field IDs, question IDs, source IDs, field references, and missing-data row IDs.
+- Do not add XML import/parsing in this milestone because the current architecture only has a one-way object-to-intake parser and no project-file loading API yet.
 
 ## Validation Commands
 
@@ -148,6 +157,14 @@ python3 -m pytest
 python3 -m compileall controls_wb tests
 ```
 
+Commands run for the Phase 2 CEProject XML intake export milestone:
+
+```bash
+python3 -m pytest ControlForgeCAD/tests/test_ceproject_xml.py -q
+python3 -m pytest
+python3 -m compileall ControlForgeCAD
+```
+
 ## Outcomes & Retrospective
 
 - Added `controls_wb/intake.py` with `FieldStatus`, starter intake fields, selected-deliverable requirements, and validation findings that include an `ask` owner.
@@ -174,6 +191,14 @@ python3 -m compileall controls_wb tests
 - CSV export was not added; it is recorded as the next missing-data matrix follow-up in `TODO.md`.
 - `python3 -m pytest` passed: 16 tests. The environment still prints `Failed to create stream fd: Operation not permitted` before pytest output, but tests complete successfully.
 - `python3 -m compileall controls_wb tests` passed. The same stream-fd warning appears before compile output.
+- Added `controls_wb/ceproject_xml.py` with `ceproject_element()` and `ceproject_to_xml()` pure-Python export helpers.
+- CEProject XML export now emits `Metadata`, optional `Contacts`, `Intake`, `SourceRecords`, `ValidationFindings`, and `MissingDataMatrix` sections for records supported by the current model.
+- The existing `Devices`, `Signals`, and `Connections` schema sections remain optional and unchanged, preserving the existing conveyor demo XML structure.
+- XML tests parse the generated output with `xml.etree.ElementTree` and verify stable ordering for deterministic comparisons.
+- `python3 -m pytest ControlForgeCAD/tests/test_ceproject_xml.py -q` passed: 5 tests.
+- `required_fields_for()` now iterates selected deliverables in sorted order so validation and missing-data output are stable when callers pass a set.
+- `python3 -m pytest` passed from the repository root: 21 tests.
+- `python3 -m compileall ControlForgeCAD` passed from the repository root.
 
 ## Final Notes
 

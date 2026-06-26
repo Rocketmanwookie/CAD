@@ -24,9 +24,12 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - Validation warning for verified or approved intake facts that lack source records.
 - Pure-Python missing-data matrix rows for required intake facts, including response/source coverage, verification, approval, severity, findings, and next actions.
 - CE project object parsing shared by validation and missing-data matrix generation, including enclosure rating response/status fields.
+- Pure-Python deterministic CEProject XML export for intake metadata, contacts, fields, question/response records, source records, validation findings, and missing-data matrix rows.
+- CEProject 0.1 XSD expansion for optional contacts, intake, source-record, validation, and missing-data matrix sections.
 
 ### Known limitations
 
 - Workbench commands are architecture stubs, not production FreeCAD tools yet.
 - XML mappings are illustrative and not full certified exports.
+- CEProject XML import/parsing is not implemented yet.
 - Safety validation is structural only; it does not certify PL, SIL, or category compliance.

@@ -190,7 +190,7 @@ def default_project_intake(project_id: str = "CE-PROJECT-001", name: str = "Cont
 
 def required_fields_for(deliverables: Iterable[str]) -> dict[str, IntakeField]:
     required: dict[str, IntakeField] = {}
-    for deliverable in deliverables:
+    for deliverable in sorted(deliverables):
         for intake_field in REQUIRED_FIELDS_BY_DELIVERABLE.get(deliverable, ()):
             required.setdefault(intake_field.field_id, intake_field)
     return required
