@@ -1,16 +1,51 @@
 # SPDX-License-Identifier: MIT
-"""Pure-Python CEProject XML export helpers."""
+"""Pure-Python CEProject XML import/export helpers."""
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from xml.etree import ElementTree as ET
 
-from controls_wb.intake import ProjectIntake, validate_intake
-from controls_wb.missing_data import missing_data_matrix, project_object_to_intake
+from controls_wb.intake import (
+    Contact,
+    FieldStatus,
+    IntakeField,
+    IntakeQuestionResponse,
+    ProjectIntake,
+    SourceRecord,
+    SourceRecordType,
+    ValidationFinding,
+    validate_intake,
+)
+from controls_wb.missing_data import MissingDataRow, missing_data_matrix, project_object_to_intake
 
 
 CEPROJECT_NAMESPACE = "https://whrsdaparty.github.io/ceproject/0.1"
 ET.register_namespace("", CEPROJECT_NAMESPACE)
+
+
+class CEProjectXmlError(ValueError):
+    """Raised when a CEProject XML document cannot be parsed safely."""
+
+
+@dataclass(frozen=True)
+class CEProjectXmlValidationFinding:
+    """Validation finding as it appears in CEProject XML."""
+
+    finding_id: str
+    level: str
+    field_id: str
+    message: str
+    ask: str = ""
+
+
+@dataclass(frozen=True)
+class CEProjectXmlDocument:
+    """Parsed CEProject XML content supported by the current intake model."""
+
+    intake: ProjectIntake
+    validation_findings: tuple[CEProjectXmlValidationFinding, ...] = ()
+    missing_data_rows: tuple[MissingDataRow, ...] = ()
 
 
 def _element(name: str, attrib: dict[str, str] | None = None) -> ET.Element:
@@ -63,6 +98,37 @@ def ceproject_to_xml(project: ProjectIntake | object) -> str:
     tree = ET.ElementTree(root)
     ET.indent(tree, space="  ")
     return ET.tostring(root, encoding="unicode", xml_declaration=True, short_empty_elements=True)
+
+
+def parse_ceproject_xml(xml_text: str | bytes) -> CEProjectXmlDocument:
+    """Parse supported CEProject XML into a stable pure-Python representation."""
+    try:
+        root = ET.fromstring(xml_text)
+    except ET.ParseError as exc:
+        raise CEProjectXmlError(f"Invalid CEProject XML: {exc}") from exc
+
+    _require_tag(root, "CEProject")
+    project_id = _required_attr(root, "projectId", "CEProject")
+    schema_version = _required_attr(root, "schemaVersion", "CEProject")
+    metadata = _required_child(root, "Metadata", "CEProject")
+    name = _required_text(metadata, "Name", "Metadata")
+
+    intake_element = _required_child(root, "Intake", "CEProject")
+    intake = ProjectIntake(
+        project_id=project_id,
+        name=name,
+        schema_version=schema_version,
+        deliverables=_parse_deliverables(intake_element),
+        fields=_parse_fields(intake_element),
+        contacts=_parse_contacts(root),
+        source_records=_parse_source_records(root),
+        questions=_parse_questions(intake_element),
+    )
+    return CEProjectXmlDocument(
+        intake=intake,
+        validation_findings=_parse_validation_findings(root),
+        missing_data_rows=_parse_missing_data_rows(root),
+    )
 
 
 def _append_contacts(root: ET.Element, intake: ProjectIntake) -> None:
@@ -202,3 +268,226 @@ def _append_missing_data_matrix(root: ET.Element, intake: ProjectIntake) -> None
             source_refs = _child(row_element, "SourceRefs")
             for source_id in row.source_record_ids:
                 _child(source_refs, "SourceRef", {"sourceId": source_id})
+
+
+def _local_name(element: ET.Element) -> str:
+    return element.tag.rsplit("}", 1)[1] if element.tag.startswith("{") else element.tag
+
+
+def _children(parent: ET.Element, name: str) -> list[ET.Element]:
+    return [child for child in list(parent) if _local_name(child) == name]
+
+
+def _child_or_none(parent: ET.Element, name: str) -> ET.Element | None:
+    matches = _children(parent, name)
+    return matches[0] if matches else None
+
+
+def _require_tag(element: ET.Element, name: str) -> None:
+    if _local_name(element) != name:
+        raise CEProjectXmlError(f"Expected root element {name}, found {_local_name(element)}.")
+
+
+def _required_child(parent: ET.Element, name: str, context: str) -> ET.Element:
+    child = _child_or_none(parent, name)
+    if child is None:
+        raise CEProjectXmlError(f"Missing required {name} element in {context}.")
+    return child
+
+
+def _required_text(parent: ET.Element, name: str, context: str) -> str:
+    child = _required_child(parent, name, context)
+    text = child.text or ""
+    if not text:
+        raise CEProjectXmlError(f"Missing required text for {context}/{name}.")
+    return text
+
+
+def _required_attr(element: ET.Element, attr: str, context: str) -> str:
+    value = element.attrib.get(attr, "")
+    if not value:
+        raise CEProjectXmlError(f"Missing required {attr} attribute on {context}.")
+    return value
+
+
+def _status(value: str, context: str) -> FieldStatus:
+    try:
+        return FieldStatus(value)
+    except ValueError as exc:
+        raise CEProjectXmlError(f"Invalid field status {value!r} in {context}.") from exc
+
+
+def _source_type(value: str, context: str) -> SourceRecordType:
+    try:
+        return SourceRecordType(value)
+    except ValueError as exc:
+        raise CEProjectXmlError(f"Invalid source record type {value!r} in {context}.") from exc
+
+
+def _bool_attr(element: ET.Element, attr: str, context: str) -> bool:
+    value = _required_attr(element, attr, context)
+    if value == "true":
+        return True
+    if value == "false":
+        return False
+    raise CEProjectXmlError(f"Invalid boolean value {value!r} for {context}@{attr}.")
+
+
+def _int_attr(element: ET.Element, attr: str, context: str) -> int:
+    value = _required_attr(element, attr, context)
+    try:
+        return int(value)
+    except ValueError as exc:
+        raise CEProjectXmlError(f"Invalid integer value {value!r} for {context}@{attr}.") from exc
+
+
+def _parse_deliverables(intake_element: ET.Element) -> set[str]:
+    deliverables = _child_or_none(intake_element, "Deliverables")
+    if deliverables is None:
+        return set()
+    return {
+        _required_attr(deliverable, "id", "Deliverable")
+        for deliverable in _children(deliverables, "Deliverable")
+    }
+
+
+def _parse_fields(intake_element: ET.Element) -> dict[str, IntakeField]:
+    fields = _child_or_none(intake_element, "Fields")
+    if fields is None:
+        return {}
+    parsed = {}
+    for field in _children(fields, "Field"):
+        field_id = _required_attr(field, "fieldId", "Field")
+        parsed[field_id] = IntakeField(
+            field_id=field_id,
+            label=_required_attr(field, "label", f"Field {field_id}"),
+            stakeholder=_required_attr(field, "stakeholder", f"Field {field_id}"),
+            status=_status(_required_attr(field, "status", f"Field {field_id}"), f"Field {field_id}"),
+            value=field.attrib.get("value", ""),
+        )
+    return parsed
+
+
+def _parse_contacts(root: ET.Element) -> dict[str, Contact]:
+    contacts = _child_or_none(root, "Contacts")
+    if contacts is None:
+        return {}
+    parsed = {}
+    for contact in _children(contacts, "Contact"):
+        contact_id = _required_attr(contact, "contactId", "Contact")
+        parsed[contact_id] = Contact(
+            contact_id=contact_id,
+            role=_required_attr(contact, "role", f"Contact {contact_id}"),
+            name=contact.attrib.get("name", ""),
+            email=contact.attrib.get("email", ""),
+            organization=contact.attrib.get("organization", ""),
+        )
+    return parsed
+
+
+def _parse_questions(intake_element: ET.Element) -> dict[str, IntakeQuestionResponse]:
+    questions = _child_or_none(intake_element, "Questions")
+    if questions is None:
+        return {}
+    parsed = {}
+    for question in _children(questions, "Question"):
+        question_id = _required_attr(question, "questionId", "Question")
+        source_refs = _child_or_none(question, "SourceRefs")
+        parsed[question_id] = IntakeQuestionResponse(
+            question_id=question_id,
+            field_id=_required_attr(question, "fieldId", f"Question {question_id}"),
+            prompt=_required_text(question, "Prompt", f"Question {question_id}"),
+            ask=_required_attr(question, "ask", f"Question {question_id}"),
+            status=_status(
+                _required_attr(question, "status", f"Question {question_id}"),
+                f"Question {question_id}",
+            ),
+            response=(_child_or_none(question, "Response").text or "") if _child_or_none(question, "Response") is not None else "",
+            source_ids=tuple(
+                _required_attr(source_ref, "sourceId", f"Question {question_id} SourceRef")
+                for source_ref in _children(source_refs, "SourceRef")
+            )
+            if source_refs is not None
+            else (),
+        )
+    return parsed
+
+
+def _parse_source_records(root: ET.Element) -> dict[str, SourceRecord]:
+    sources = _child_or_none(root, "SourceRecords")
+    if sources is None:
+        return {}
+    parsed = {}
+    for source in _children(sources, "SourceRecord"):
+        source_id = _required_attr(source, "sourceId", "SourceRecord")
+        field_refs = _child_or_none(source, "FieldRefs")
+        parsed[source_id] = SourceRecord(
+            source_id=source_id,
+            source_type=_source_type(
+                _required_attr(source, "type", f"SourceRecord {source_id}"),
+                f"SourceRecord {source_id}",
+            ),
+            title=_required_attr(source, "title", f"SourceRecord {source_id}"),
+            stakeholder=_required_attr(source, "stakeholder", f"SourceRecord {source_id}"),
+            field_ids=tuple(
+                _required_attr(field_ref, "fieldId", f"SourceRecord {source_id} FieldRef")
+                for field_ref in _children(field_refs, "FieldRef")
+            )
+            if field_refs is not None
+            else (),
+            reference=source.attrib.get("reference", ""),
+            received_on=source.attrib.get("receivedOn", ""),
+        )
+    return parsed
+
+
+def _parse_validation_findings(root: ET.Element) -> tuple[CEProjectXmlValidationFinding, ...]:
+    validation = _child_or_none(root, "ValidationFindings")
+    if validation is None:
+        return ()
+    return tuple(
+        CEProjectXmlValidationFinding(
+            finding_id=_required_attr(finding, "findingId", "Finding"),
+            level=_required_attr(finding, "level", "Finding"),
+            field_id=_required_attr(finding, "fieldId", "Finding"),
+            message=_required_attr(finding, "message", "Finding"),
+            ask=finding.attrib.get("ask", ""),
+        )
+        for finding in _children(validation, "Finding")
+    )
+
+
+def _parse_missing_data_rows(root: ET.Element) -> tuple[MissingDataRow, ...]:
+    matrix = _child_or_none(root, "MissingDataMatrix")
+    if matrix is None:
+        return ()
+    rows = []
+    for row in _children(matrix, "MissingDataRow"):
+        item_id = _required_attr(row, "itemId", "MissingDataRow")
+        source_refs = _child_or_none(row, "SourceRefs")
+        rows.append(
+            MissingDataRow(
+                item_id=item_id,
+                category=_required_attr(row, "category", f"MissingDataRow {item_id}"),
+                question_id=row.attrib.get("questionId", ""),
+                fact_id=_required_attr(row, "factId", f"MissingDataRow {item_id}"),
+                label=_required_attr(row, "label", f"MissingDataRow {item_id}"),
+                required=_bool_attr(row, "required", f"MissingDataRow {item_id}"),
+                value=row.attrib.get("value", ""),
+                has_response=_bool_attr(row, "hasResponse", f"MissingDataRow {item_id}"),
+                source_record_ids=tuple(
+                    _required_attr(source_ref, "sourceId", f"MissingDataRow {item_id} SourceRef")
+                    for source_ref in _children(source_refs, "SourceRef")
+                )
+                if source_refs is not None
+                else (),
+                source_count=_int_attr(row, "sourceCount", f"MissingDataRow {item_id}"),
+                verified=_bool_attr(row, "verified", f"MissingDataRow {item_id}"),
+                approved=_bool_attr(row, "approved", f"MissingDataRow {item_id}"),
+                status=_required_attr(row, "status", f"MissingDataRow {item_id}"),
+                severity=_required_attr(row, "severity", f"MissingDataRow {item_id}"),
+                finding=_required_text(row, "Finding", f"MissingDataRow {item_id}"),
+                next_action=_required_text(row, "NextAction", f"MissingDataRow {item_id}"),
+            )
+        )
+    return tuple(rows)

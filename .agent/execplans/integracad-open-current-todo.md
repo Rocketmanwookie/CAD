@@ -73,7 +73,7 @@ This ExecPlan is a living implementation plan for continuing the existing `Whrsd
 
 Continue the existing FreeCAD controls-engineering workbench toward the next working MVP milestone without replacing the project scaffold. The immediate milestone is the intake and validation prototype: add an initial project/intake command and pure-Python intake validation that can run under tests without FreeCAD.
 
-Current milestone: expand the CEProject XML representation for Phase 2 intake-related records so the pure-Python `ProjectIntake` model and CE project object payloads can be exported as deterministic, structured XML.
+Current milestone: add pure-Python CEProject XML import and round-trip validation for the Phase 2 intake-related XML structure currently produced by the exporter.
 
 ## Milestones
 
@@ -107,6 +107,9 @@ Current milestone: expand the CEProject XML representation for Phase 2 intake-re
 - [x] Expand the CEProject 0.1 XSD with optional contacts, intake, source-record, validation, and missing-data matrix sections.
 - [x] Add deterministic XML tests for minimal projects, contacts, source records, intake questions/responses, validation findings, and missing-data rows.
 - [x] Document XML export behavior and defer import/parsing as a follow-up.
+- [x] Implement Phase 2 CEProject XML intake import/parsing.
+- [x] Add import tests for minimal XML, contacts, source records, intake questions/responses, validation and missing-data findings, representative round-trip data, and invalid/incomplete XML handling.
+- [x] Update README, TODO, changelog, and this ExecPlan for the XML import/round-trip milestone.
 
 ## Surprises & Discoveries
 
@@ -128,6 +131,10 @@ Current milestone: expand the CEProject XML representation for Phase 2 intake-re
 - Add XML export in `controls_wb.ceproject_xml` instead of the FreeCAD model layer so it remains importable and testable without FreeCAD installed.
 - Export XML deterministically by sorting contact IDs, deliverables, field IDs, question IDs, source IDs, field references, and missing-data row IDs.
 - Do not add XML import/parsing in this milestone because the current architecture only has a one-way object-to-intake parser and no project-file loading API yet.
+- Add XML import/parsing in `controls_wb.ceproject_xml` beside the exporter so the XML surface remains a pure-Python boundary.
+- Return a `CEProjectXmlDocument` wrapper from `parse_ceproject_xml()` instead of changing `ProjectIntake`, because parsed validation findings and missing-data rows are XML document sections rather than editable intake source fields.
+- Raise `CEProjectXmlError` for malformed XML, missing required metadata, invalid enum values, invalid booleans, or invalid integers instead of silently dropping unsupported required content.
+- Keep the importer scoped to the intake-related XML currently emitted by `ceproject_to_xml()`; future device, signal, circuit, PLC, HMI, or BIM sections remain outside this milestone.
 
 ## Validation Commands
 
@@ -165,6 +172,15 @@ python3 -m pytest
 python3 -m compileall ControlForgeCAD
 ```
 
+Commands run for the Phase 2 CEProject XML intake import/round-trip milestone:
+
+```bash
+python3 -m pytest ControlForgeCAD/tests/test_ceproject_xml.py -q
+python3 -m compileall ControlForgeCAD/controls_wb
+python3 -m pytest
+python3 -m compileall ControlForgeCAD
+```
+
 ## Outcomes & Retrospective
 
 - Added `controls_wb/intake.py` with `FieldStatus`, starter intake fields, selected-deliverable requirements, and validation findings that include an `ask` owner.
@@ -198,6 +214,14 @@ python3 -m compileall ControlForgeCAD
 - `python3 -m pytest ControlForgeCAD/tests/test_ceproject_xml.py -q` passed: 5 tests.
 - `required_fields_for()` now iterates selected deliverables in sorted order so validation and missing-data output are stable when callers pass a set.
 - `python3 -m pytest` passed from the repository root: 21 tests.
+- `python3 -m compileall ControlForgeCAD` passed from the repository root.
+- Added `CEProjectXmlError`, `CEProjectXmlDocument`, and `parse_ceproject_xml()` in `controls_wb/ceproject_xml.py`.
+- CEProject XML import now parses project ID, schema version, metadata name, contacts, deliverables, intake fields, intake question/response records, source records, validation findings, and missing-data matrix rows into pure-Python dataclasses.
+- Import failures for malformed XML, missing required elements/attributes, invalid field status values, invalid source record types, invalid booleans, and invalid integers now raise `CEProjectXmlError` with context.
+- XML round-trip tests now prove a representative exported intake can be parsed back with equivalent supported project identity, contacts, deliverables, fields, source records, questions, and missing-data source references.
+- `python3 -m pytest ControlForgeCAD/tests/test_ceproject_xml.py -q` passed: 13 tests.
+- `python3 -m compileall ControlForgeCAD/controls_wb` passed.
+- `python3 -m pytest` passed from the repository root: 29 tests.
 - `python3 -m compileall ControlForgeCAD` passed from the repository root.
 
 ## Final Notes

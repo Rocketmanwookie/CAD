@@ -26,10 +26,12 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - CE project object parsing shared by validation and missing-data matrix generation, including enclosure rating response/status fields.
 - Pure-Python deterministic CEProject XML export for intake metadata, contacts, fields, question/response records, source records, validation findings, and missing-data matrix rows.
 - CEProject 0.1 XSD expansion for optional contacts, intake, source-record, validation, and missing-data matrix sections.
+- Pure-Python CEProject XML import for the supported intake XML structure, including contacts, source records, questions/responses, validation findings, and missing-data rows.
+- Export/import round-trip tests for representative intake-related CEProject XML data.
 
 ### Known limitations
 
 - Workbench commands are architecture stubs, not production FreeCAD tools yet.
 - XML mappings are illustrative and not full certified exports.
-- CEProject XML import/parsing is not implemented yet.
+- CEProject XML import currently covers the intake-related XML emitted by the exporter, not future device, signal, circuit, PLC, HMI, or BIM sections.
 - Safety validation is structural only; it does not certify PL, SIL, or category compliance.

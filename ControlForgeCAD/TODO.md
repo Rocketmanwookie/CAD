@@ -77,6 +77,8 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 
 - [ ] Define top-level schema sections: `Project`, `Contacts`, `Intake`, `Requirements`, `BIMReferences`, `CADbaseReferences`, `Devices`, `Signals`, `Circuits`, `PowerInterface`, `SafetyFunctions`, `HMIRequirements`, `CostingReferences`, `ExternalExports`, `ValidationFindings`.
 - [x] Version the schema with XSD file name and internal `schemaVersion`.
+- [x] Add pure-Python import for the supported CEProject intake XML structure.
+- [x] Add export/import round-trip tests for intake metadata, contacts, source records, questions, validation findings, and missing-data rows.
 - [ ] Make every project fact addressable by ID.
 - [ ] Make every generated artifact traceable to source fields.
 - [ ] Support assumptions and estimates without treating them as verified values.
@@ -236,6 +238,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Keep schema examples human-readable.
 - [ ] Keep dependencies minimal.
 - [x] Add tests for deterministic CEProject XML intake export.
+- [x] Add tests for CEProject XML intake import and round-trip behavior.
 - [ ] Add tests for XML examples and validators.
 - [ ] Add CI later if GitHub Actions access is available.
 - [ ] Add documentation build later.
