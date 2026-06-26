@@ -34,6 +34,8 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - Import-safe command metadata for smoke tests and workbench registration.
 - `scripts/link_freecad_workbench.py` helper for creating a FreeCAD user `Mod/ControlForgeCAD` development symlink.
 - README manual validation steps for confirming the workbench loads and expected commands appear in FreeCAD.
+- Editable `CE_Project` FeaturePython document object with explicit CEProject and Intake properties for project name, customer, site/location, deliverables, PLC platform, voltage, phase count, enclosure rating, and sensor count.
+- `CE_NewProject` now creates or refreshes the active document's starter `CE_Project` object instead of relying on unstructured starter-only data.
 
 ### Known limitations
 

@@ -23,7 +23,7 @@ IntegraCAB Open is an integration-first FreeCAD workbench concept for controls e
 
 | Command ID | Menu text | Current behavior |
 |---|---|---|
-| `CE_NewProject` | New Controls Project | Creates a starter `CE_Project` object with CEProject metadata, stakeholder contacts, source records, question/response records, required response fields, and initial intake statuses. |
+| `CE_NewProject` | New Controls Project | Creates or refreshes an editable `CE_Project` FeaturePython document object with CEProject metadata, project/customer/site fields, stakeholder contacts, source records, question/response records, required response fields, and initial intake statuses. |
 | `CE_CreatePanel` | Create Control Panel | Creates a parametric backplate placeholder with controls metadata. |
 | `CE_ExportBOM` | Export BOM | Exports controls metadata rows from the active FreeCAD document to CSV. |
 | `CE_ValidateProject` | Validate Controls Project | Reports duplicate tags, missing controls metadata, starter intake missing-data findings, and verified/approved intake facts without source records. |
@@ -138,10 +138,13 @@ Manual smoke validation:
 
 1. Start or restart FreeCAD after linking or copying the workbench.
 2. Select **Controls / Automation** from the workbench selector.
-3. Run **New Controls Project** to create a starter `CE_Project`.
-4. Run **Validate Controls Project** and confirm validation messages print to the FreeCAD console.
-5. Run **Preview Missing Data** and confirm missing-data rows print to the FreeCAD console.
-6. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
+3. Run **New Controls Project** to create or refresh a starter `CE_Project`.
+4. Confirm `CE_Project` appears in the model tree.
+5. Select `CE_Project` and confirm the Property View exposes editable CEProject and Intake properties including project name, customer, site/location, deliverables, PLC platform, nominal voltage, phase count, enclosure rating, and sensor count.
+6. Edit one basic property, save the document as `.FCStd`, close it, reopen it, and confirm the property value is retained.
+7. Run **Validate Controls Project** and confirm validation messages print to the FreeCAD console.
+8. Run **Preview Missing Data** and confirm missing-data rows print to the FreeCAD console.
+9. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
 
 Automated tests do not import real FreeCAD in this environment. They compile `Init.py` and `InitGui.py`, import both files without FreeCAD installed, and verify import-safe command metadata for the workbench command IDs above.
 

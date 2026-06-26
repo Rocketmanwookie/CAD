@@ -73,6 +73,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [x] Add validation output that tells the user who to ask for missing information.
 - [ ] Add CSV export for the missing-data matrix.
 - [x] Expose starter intake validation and missing-data preview through FreeCAD workbench commands.
+- [x] Create a real editable FreeCAD `CE_Project` document object for starter intake data.
 
 ### Phase 2 - CEProject data model
 

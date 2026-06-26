@@ -8,7 +8,7 @@ except Exception:  # pragma: no cover
     App = None
     Gui = None
 
-from controls_wb.model.project import create_project
+from controls_wb.model.project import create_or_update_project
 
 
 class NewProjectCommand:
@@ -21,7 +21,7 @@ class NewProjectCommand:
     def Activated(self):
         if App.ActiveDocument is None:
             App.newDocument("ControlsProject")
-        create_project()
+        create_or_update_project(App.ActiveDocument)
         App.ActiveDocument.recompute()
 
     def IsActive(self):

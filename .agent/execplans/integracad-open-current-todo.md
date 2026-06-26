@@ -122,6 +122,9 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - [x] Document exact symlink, copy, launch, command-confirmation, and manual smoke validation steps in README files.
 - [x] Fix manual FreeCAD GUI smoke-test workbench load failure caused by `InitGui.py` using `__file__` when FreeCAD did not define it.
 - [x] Add pure-Python coverage for resolving the workbench root without `__file__` and initializing `InitGui.py` with fake FreeCAD modules.
+- [x] Milestone 1: add a real editable `CE_Project` FreeCAD document object contract for starter intake data.
+- [x] Add pure-Python tests for CE_Project property specs, payload mapping, fake object initialization, proxy persistence hooks, and create-or-update behavior.
+- [x] Update manual FreeCAD validation steps for model-tree creation, editable properties, and `.FCStd` save/reopen confirmation.
 
 ## Surprises & Discoveries
 
@@ -230,6 +233,15 @@ python3 -m pytest
 python3 -m compileall ControlForgeCAD
 ```
 
+Commands run for Milestone 1 - real FreeCAD CE_Project document object:
+
+```bash
+python3 -m pytest ControlForgeCAD/tests/test_project_model.py -q
+python3 -m compileall ControlForgeCAD/controls_wb/model/project.py ControlForgeCAD/controls_wb/commands/new_project.py
+python3 -m pytest
+python3 -m compileall ControlForgeCAD
+```
+
 FreeCAD CLI smoke feasibility result:
 
 ```text
@@ -243,8 +255,11 @@ Manual FreeCAD validation steps for this milestone:
 2. Restart FreeCAD.
 3. Select the Controls / Automation workbench.
 4. Confirm New Controls Project, Validate Controls Project, Preview Missing Data, Export BOM, and Export CEProject XML appear in the workbench UI.
-5. Run New Controls Project, then Validate Controls Project and Preview Missing Data.
-6. Run Export CEProject XML and confirm ~/integracab_ceproject.xml is written.
+5. Run New Controls Project and confirm a CE_Project object appears in the model tree.
+6. Select CE_Project and confirm editable CEProject and Intake properties appear in the Property View, including project name, customer, site/location, deliverables, PLC platform, nominal voltage, phase count, enclosure rating, and sensor count.
+7. Edit a basic property, save the document as .FCStd, close it, reopen it, and confirm the property value is retained.
+8. Run Validate Controls Project and Preview Missing Data.
+9. Run Export CEProject XML and confirm ~/integracab_ceproject.xml is written.
 ```
 
 ## Outcomes & Retrospective
@@ -309,6 +324,9 @@ Manual FreeCAD validation steps for this milestone:
 - `python3 -m compileall ControlForgeCAD` passed from the repository root.
 - Removed generated `__pycache__` directories after validation.
 - The FreeCAD snap binary was probed for CLI feasibility, but the workbench was not loaded in a GUI session in this environment; manual validation steps are documented above and in `README.md`.
+- Milestone 1 completed: `controls_wb.model.project` now defines an explicit editable property set for the `CE_Project` object, initializes fake and real FreeCAD-like objects through shared helpers, and gives the proxy simple persistent state hooks for FreeCAD save/reopen.
+- `CE_NewProject` now creates or refreshes the active document's `CE_Project` object via `create_or_update_project()`.
+- Milestone 1 validation passed: `python3 -m pytest` passed 50 tests; `python3 -m compileall ControlForgeCAD` passed.
 
 ## Final Notes
 
