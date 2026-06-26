@@ -124,8 +124,8 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 
 - [ ] Add PLC platform requirement fields.
 - [ ] Add rack/slot/module/channel model.
-- [ ] Add signal registry.
-- [ ] Add I/O count estimates and actual assignments.
+- [x] Add starter signal registry.
+- [x] Add I/O count estimates and starter unmapped assignments.
 - [ ] Add signal-to-device, signal-to-terminal, signal-to-wire, and signal-to-HMI relationships.
 - [ ] Add PLCopen XML export plan.
 - [ ] Add vendor-neutral export first; vendor-specific adapters later.

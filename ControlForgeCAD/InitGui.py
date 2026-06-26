@@ -89,6 +89,7 @@ if Gui is not None:
                 create_panel,
                 export_bom,
                 export_ceproject_xml,
+                export_io_list,
                 missing_data,
                 new_project,
                 validate_project,

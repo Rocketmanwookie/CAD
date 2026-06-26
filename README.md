@@ -32,6 +32,7 @@ In FreeCAD, select **Controls / Automation** from the workbench selector. Confir
 - `CE_PreviewMissingData` - Preview Missing Data
 - `CE_ExportBOM` - Export BOM
 - `CE_ExportCEProjectXML` - Export CEProject XML
+- `CE_ExportIOList` - Export I/O List
 
 Pure-Python validation from the repository root:
 
@@ -53,3 +54,4 @@ Manual FreeCAD validation:
 9. Fill `SensorCount`, rerun **Preview Missing Data**, and confirm the value is shown as a response rather than missing.
 10. Run **Validate Controls Project** and confirm validation reads the edited object values.
 11. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
+12. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written from the current starter intake data.

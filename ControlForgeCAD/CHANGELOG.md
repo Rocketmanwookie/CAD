@@ -38,6 +38,8 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - `CE_NewProject` now creates or refreshes the active document's starter `CE_Project` object instead of relying on unstructured starter-only data.
 - Editable `CE_Project` Property View values now synchronize into backend intake validation, missing-data preview, and CEProject XML payload mapping.
 - `CE_NewProject` now opens a Project Intake dialog for core starter fields when Qt/PySide is available, with a safe starter-object fallback when the GUI cannot be shown.
+- Starter pure-Python I/O list model and deterministic CSV export helpers driven by project intake sensor count.
+- `CE_ExportIOList` workbench command for exporting `~/integracab_io_list.csv` and reporting unmapped starter I/O points.
 
 ### Known limitations
 

@@ -29,12 +29,15 @@ IntegraCAB Open is an integration-first FreeCAD workbench concept for controls e
 | `CE_ValidateProject` | Validate Controls Project | Reports duplicate tags, missing controls metadata, starter intake missing-data findings, and verified/approved intake facts without source records. |
 | `CE_PreviewMissingData` | Preview Missing Data | Prints the missing-data matrix for the active controls project intake object to the FreeCAD console. |
 | `CE_ExportCEProjectXML` | Export CEProject XML | Exports the first controls project intake object in the active document to `~/integracab_ceproject.xml`. |
+| `CE_ExportIOList` | Export I/O List | Exports a deterministic starter I/O list CSV to `~/integracab_io_list.csv` from the current project intake sensor count. |
 
 The pure-Python `controls_wb.missing_data.missing_data_matrix()` helper can build a structured missing-data matrix from a `ProjectIntake` payload or a `CE_Project`-style object without FreeCAD installed. Matrix rows include the required fact, current value, question ID, source records, verification/approval booleans, status, severity, finding, and recommended next action.
 
 Editable `CE_Project` properties are converted back into the backend intake model before validation, missing-data preview, and CEProject XML export. Filling a starter property such as `PlcPlatform` or `SensorCount` in the FreeCAD Property View is treated as a received response even if the adjacent status field is still `Requested`; blank required properties remain reported as missing.
 
 The pure-Python `controls_wb.ceproject_xml.ceproject_to_xml()` helper exports a `ProjectIntake` payload or `CE_Project`-style object to deterministic CEProject XML. The companion `controls_wb.ceproject_xml.parse_ceproject_xml()` helper reads the supported CEProject XML intake structure back into a stable pure-Python document wrapper. The current XML round trip includes metadata, contacts, intake deliverables and fields, intake question/response records, source records, validation findings, and missing-data matrix rows.
+
+The pure-Python `controls_wb.io_list` module provides the first starter I/O list model. It generates deterministic CSV rows with tag, description, signal type, device, PLC rack/slot/channel placeholders, terminal placeholder, source record IDs, and mapping status. At this stage, sensor count drives starter digital-input rows; rack/module/channel assignment remains a future expansion.
 
 ## Business thesis
 
@@ -135,6 +138,7 @@ Restart FreeCAD and select **Controls / Automation** from the workbench selector
 | `CE_PreviewMissingData` | Preview Missing Data |
 | `CE_ExportBOM` | Export BOM |
 | `CE_ExportCEProjectXML` | Export CEProject XML |
+| `CE_ExportIOList` | Export I/O List |
 
 Manual smoke validation:
 
@@ -149,6 +153,7 @@ Manual smoke validation:
 9. Fill `SensorCount`, rerun **Preview Missing Data**, and confirm the value is shown as a response rather than missing.
 10. Run **Validate Controls Project** and confirm validation messages print to the FreeCAD console from the edited object values.
 11. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
+12. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written. If rack/slot/channel data is not assigned yet, confirm Report View prints unmapped I/O warnings.
 
 Automated tests do not import real FreeCAD in this environment. They compile `Init.py` and `InitGui.py`, import both files without FreeCAD installed, and verify import-safe command metadata for the workbench command IDs above.
 

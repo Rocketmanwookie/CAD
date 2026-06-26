@@ -131,6 +131,9 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - [x] Milestone 3: add a New Project / Intake dialog workflow with pure-Python form mapping helpers.
 - [x] Wire `CE_NewProject` to open the dialog when Qt/PySide is available and create a starter object as a safe fallback when it is not.
 - [x] Add tests for form value normalization, deliverable parsing, fake-object application, and create/update from form payloads.
+- [x] Milestone 4: add starter I/O list model and deterministic CSV export.
+- [x] Expose `CE_ExportIOList` in workbench export command registration.
+- [x] Add tests for I/O CSV headers/rows, missing sensor-count handling, unmapped findings, and fake document-object extraction.
 
 ## Surprises & Discoveries
 
@@ -167,6 +170,7 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - Resolve the workbench root by trying `globals()["__file__"]`, then `globals()["__spec__"].origin`, then the imported `controls_wb` package path.
 - Treat filled editable document-object values with `Unknown` or `Requested` starter statuses as `Received` when converting to backend intake data. This keeps Property View edits useful without forcing the user to update status fields manually.
 - Store `Customer` and `SiteLocation` as editable `CE_Project` properties now, but do not mark them as required deliverable facts yet because the current backend required-field matrix does not use them.
+- Keep Milestone 4 I/O generation intentionally simple: `SensorCount` creates starter digital-input rows marked `unmapped`; detailed rack/module/channel assignment remains a later Phase 6 task.
 
 ## Validation Commands
 
@@ -268,6 +272,15 @@ python3 -m pytest
 python3 -m compileall ControlForgeCAD
 ```
 
+Commands run for Milestone 4 - I/O list model and CSV export:
+
+```bash
+python3 -m pytest ControlForgeCAD/tests/test_io_list.py ControlForgeCAD/tests/test_command_metadata.py -q
+python3 -m compileall ControlForgeCAD/controls_wb/io_list.py ControlForgeCAD/controls_wb/commands/export_io_list.py ControlForgeCAD/InitGui.py ControlForgeCAD/tests/test_io_list.py
+python3 -m pytest
+python3 -m compileall ControlForgeCAD
+```
+
 FreeCAD CLI smoke feasibility result:
 
 ```text
@@ -290,6 +303,7 @@ Manual FreeCAD validation steps for this milestone:
 11. Fill SensorCount, rerun Preview Missing Data, and confirm the value is shown as a response rather than missing.
 12. Run Validate Controls Project and confirm validation reads the edited object values.
 13. Run Export CEProject XML and confirm ~/integracab_ceproject.xml is written.
+14. Run Export I/O List and confirm ~/integracab_io_list.csv is written from the current starter intake data. If rack/slot/channel data is not assigned yet, confirm Report View prints unmapped I/O warnings.
 ```
 
 ## Outcomes & Retrospective
@@ -361,6 +375,8 @@ Manual FreeCAD validation steps for this milestone:
 - Validation and missing-data helpers now operate on edited document-backed data; blank required properties still report as missing, while filled values are recognized as responses.
 - Milestone 3 completed: `controls_wb.gui.project_intake` provides pure-Python form mapping helpers plus a lazy Qt dialog for editing starter intake fields.
 - `CE_NewProject` now opens the Project Intake dialog when possible and prints a fallback warning while creating the starter object if Qt/PySide is unavailable.
+- Milestone 4 completed: `controls_wb.io_list` defines `IOSignal`, deterministic CSV export, starter signal generation from project sensor count, and clear unmapped/missing I/O findings.
+- `CE_ExportIOList` is registered with the workbench export commands and writes `~/integracab_io_list.csv`.
 
 ## Final Notes
 
