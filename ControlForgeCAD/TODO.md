@@ -72,6 +72,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Add email templates that map every requested fact to a CEProject field.
 - [x] Add validation output that tells the user who to ask for missing information.
 - [ ] Add CSV export for the missing-data matrix.
+- [x] Expose starter intake validation and missing-data preview through FreeCAD workbench commands.
 
 ### Phase 2 - CEProject data model
 
@@ -79,6 +80,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [x] Version the schema with XSD file name and internal `schemaVersion`.
 - [x] Add pure-Python import for the supported CEProject intake XML structure.
 - [x] Add export/import round-trip tests for intake metadata, contacts, source records, questions, validation findings, and missing-data rows.
+- [x] Expose CEProject intake XML export through a FreeCAD workbench command.
 - [ ] Make every project fact addressable by ID.
 - [ ] Make every generated artifact traceable to source fields.
 - [ ] Support assumptions and estimates without treating them as verified values.

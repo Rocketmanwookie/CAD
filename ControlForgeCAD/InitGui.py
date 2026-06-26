@@ -21,16 +21,28 @@ if Gui is not None:
             base_dir = os.path.dirname(__file__)
             Gui.addIconPath(os.path.join(base_dir, "controls_wb", "resources", "icons"))
 
-            from controls_wb.commands import create_panel, export_bom, new_project, validate_project  # noqa: F401
+            from controls_wb.commands import (  # noqa: F401
+                create_panel,
+                export_bom,
+                export_ceproject_xml,
+                missing_data,
+                new_project,
+                validate_project,
+            )
 
             self.project_commands = ["CE_NewProject"]
             self.layout_commands = ["CE_CreatePanel"]
-            self.export_commands = ["CE_ExportBOM", "CE_ValidateProject"]
+            self.validation_commands = ["CE_ValidateProject", "CE_PreviewMissingData"]
+            self.export_commands = ["CE_ExportBOM", "CE_ExportCEProjectXML"]
 
             self.appendToolbar("Controls Project", self.project_commands)
             self.appendToolbar("Controls Layout", self.layout_commands)
+            self.appendToolbar("Controls Validation", self.validation_commands)
             self.appendToolbar("Controls Exports", self.export_commands)
-            self.appendMenu("Controls / Automation", self.project_commands + self.layout_commands)
+            self.appendMenu(
+                "Controls / Automation",
+                self.project_commands + self.layout_commands + self.validation_commands,
+            )
             self.appendMenu(["Controls / Automation", "Exports"], self.export_commands)
 
         def Activated(self):
@@ -42,7 +54,10 @@ if Gui is not None:
                 App.Console.PrintMessage("Controls Engineering Workbench deactivated\n")
 
         def ContextMenu(self, recipient):
-            self.appendContextMenu("Controls / Automation", self.project_commands + self.layout_commands)
+            self.appendContextMenu(
+                "Controls / Automation",
+                self.project_commands + self.layout_commands + self.validation_commands,
+            )
 
         def GetClassName(self):
             return "Gui::PythonWorkbench"

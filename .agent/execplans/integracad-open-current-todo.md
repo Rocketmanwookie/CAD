@@ -73,7 +73,7 @@ This ExecPlan is a living implementation plan for continuing the existing `Whrsd
 
 Continue the existing FreeCAD controls-engineering workbench toward the next working MVP milestone without replacing the project scaffold. The immediate milestone is the intake and validation prototype: add an initial project/intake command and pure-Python intake validation that can run under tests without FreeCAD.
 
-Current milestone: add pure-Python CEProject XML import and round-trip validation for the Phase 2 intake-related XML structure currently produced by the exporter.
+Current milestone: integrate the project/intake backend into FreeCAD workbench commands so starter intake creation, validation, missing-data preview, and CEProject XML export are reachable from the workbench while backend logic remains testable without FreeCAD.
 
 ## Milestones
 
@@ -110,6 +110,10 @@ Current milestone: add pure-Python CEProject XML import and round-trip validatio
 - [x] Implement Phase 2 CEProject XML intake import/parsing.
 - [x] Add import tests for minimal XML, contacts, source records, intake questions/responses, validation and missing-data findings, representative round-trip data, and invalid/incomplete XML handling.
 - [x] Update README, TODO, changelog, and this ExecPlan for the XML import/round-trip milestone.
+- [x] Add FreeCAD-facing missing-data preview command wired to `controls_wb.missing_data`.
+- [x] Add FreeCAD-facing CEProject XML export command wired to `controls_wb.ceproject_xml`.
+- [x] Keep `InitGui.py` as command registration and workbench UI grouping only.
+- [x] Add pure-Python command-adjacent tests for project-object discovery, missing-data formatting, and XML export selection.
 
 ## Surprises & Discoveries
 
@@ -135,6 +139,9 @@ Current milestone: add pure-Python CEProject XML import and round-trip validatio
 - Return a `CEProjectXmlDocument` wrapper from `parse_ceproject_xml()` instead of changing `ProjectIntake`, because parsed validation findings and missing-data rows are XML document sections rather than editable intake source fields.
 - Raise `CEProjectXmlError` for malformed XML, missing required metadata, invalid enum values, invalid booleans, or invalid integers instead of silently dropping unsupported required content.
 - Keep the importer scoped to the intake-related XML currently emitted by `ceproject_to_xml()`; future device, signal, circuit, PLC, HMI, or BIM sections remain outside this milestone.
+- Add `CE_PreviewMissingData` and `CE_ExportCEProjectXML` as new `CE_` command IDs instead of renaming existing commands.
+- Share project-object discovery between the missing-data and XML export commands so command modules call backend helpers rather than duplicating intake parsing.
+- Export CEProject XML from the first controls project intake object in the active FreeCAD document for this milestone; multi-project selection/export can be added later when there is a clearer document workflow.
 
 ## Validation Commands
 
@@ -181,6 +188,26 @@ python3 -m pytest
 python3 -m compileall ControlForgeCAD
 ```
 
+Commands run for the FreeCAD command integration milestone:
+
+```bash
+python3 -m pytest ControlForgeCAD/tests/test_project_commands.py -q
+python3 -m compileall ControlForgeCAD/controls_wb/commands ControlForgeCAD/InitGui.py
+python3 -m pytest
+python3 -m compileall ControlForgeCAD
+```
+
+Manual FreeCAD validation steps for this milestone:
+
+```text
+1. Symlink or copy /home/egrantjr/Dev/CAD/ControlForgeCAD into the FreeCAD user Mod directory.
+2. Restart FreeCAD.
+3. Select the Controls / Automation workbench.
+4. Confirm New Controls Project, Validate Controls Project, Preview Missing Data, Export BOM, and Export CEProject XML appear in the workbench UI.
+5. Run New Controls Project, then Validate Controls Project and Preview Missing Data.
+6. Run Export CEProject XML and confirm ~/integracab_ceproject.xml is written.
+```
+
 ## Outcomes & Retrospective
 
 - Added `controls_wb/intake.py` with `FieldStatus`, starter intake fields, selected-deliverable requirements, and validation findings that include an `ask` owner.
@@ -223,6 +250,15 @@ python3 -m compileall ControlForgeCAD
 - `python3 -m compileall ControlForgeCAD/controls_wb` passed.
 - `python3 -m pytest` passed from the repository root: 29 tests.
 - `python3 -m compileall ControlForgeCAD` passed from the repository root.
+- Added `controls_wb/commands/missing_data.py` with `CE_PreviewMissingData`, pure-Python project-object discovery, row generation, and console line formatting.
+- Added `controls_wb/commands/export_ceproject_xml.py` with `CE_ExportCEProjectXML` and a pure-Python helper that exports the first controls project intake object through `ceproject_to_xml()`.
+- Updated `InitGui.py` to import/register the new command modules and group validation commands separately from export commands.
+- Added `tests/test_project_commands.py` for command-adjacent pure-Python behavior.
+- `python3 -m pytest ControlForgeCAD/tests/test_project_commands.py -q` passed: 5 tests.
+- `python3 -m compileall ControlForgeCAD/controls_wb/commands ControlForgeCAD/InitGui.py` passed.
+- `python3 -m pytest` passed from the repository root: 34 tests.
+- `python3 -m compileall ControlForgeCAD` passed from the repository root.
+- FreeCAD itself was not run in this environment; manual validation steps are documented above and in `README.md`.
 
 ## Final Notes
 

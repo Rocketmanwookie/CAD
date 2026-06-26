@@ -27,6 +27,8 @@ IntegraCAB Open is an integration-first FreeCAD workbench concept for controls e
 | `CE_CreatePanel` | Create Control Panel | Creates a parametric backplate placeholder with controls metadata. |
 | `CE_ExportBOM` | Export BOM | Exports controls metadata rows from the active FreeCAD document to CSV. |
 | `CE_ValidateProject` | Validate Controls Project | Reports duplicate tags, missing controls metadata, starter intake missing-data findings, and verified/approved intake facts without source records. |
+| `CE_PreviewMissingData` | Preview Missing Data | Prints the missing-data matrix for the active controls project intake object to the FreeCAD console. |
+| `CE_ExportCEProjectXML` | Export CEProject XML | Exports the first controls project intake object in the active document to `~/integracab_ceproject.xml`. |
 
 The pure-Python `controls_wb.missing_data.missing_data_matrix()` helper can build a structured missing-data matrix from a `ProjectIntake` payload or a `CE_Project`-style object without FreeCAD installed. Matrix rows include the required fact, current value, question ID, source records, verification/approval booleans, status, severity, finding, and recommended next action.
 
@@ -93,7 +95,7 @@ Project Intake
 
 ## Quick install for development
 
-Clone or copy this folder into your FreeCAD user `Mod` directory.
+Clone, copy, or symlink this folder into your FreeCAD user `Mod` directory.
 
 ```bash
 mkdir -p ~/.local/share/FreeCAD/Mod
@@ -101,7 +103,14 @@ cd ~/.local/share/FreeCAD/Mod
 git clone <repo-url> IntegraCABOpen
 ```
 
-Restart FreeCAD and select **Controls / Automation** from the workbench selector once the workbench metadata is fully renamed.
+For local development from this checkout, a symlink keeps edits live:
+
+```bash
+mkdir -p ~/.local/share/FreeCAD/Mod
+ln -s /home/egrantjr/Dev/CAD/ControlForgeCAD ~/.local/share/FreeCAD/Mod/ControlForgeCAD
+```
+
+Restart FreeCAD and select **Controls / Automation** from the workbench selector. Create a project with **New Controls Project**, then confirm **Validate Controls Project**, **Preview Missing Data**, and **Export CEProject XML** appear under the workbench toolbar or menu. The XML export command writes `~/integracab_ceproject.xml`.
 
 For pure-Python validation outside FreeCAD, run tests from this directory:
 
