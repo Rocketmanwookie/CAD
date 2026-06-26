@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: MIT
 
+import json
 from types import SimpleNamespace
 
 from controls_wb.commands.validate_project import validate_document_objects
@@ -34,3 +35,33 @@ def test_validate_document_objects_reports_project_intake_owner():
         "WARNING",
         "PLC platform is missing for selected deliverables. Ask: Controls lead.",
     ) in messages
+
+
+def test_validate_document_objects_uses_project_source_records():
+    messages = validate_document_objects(
+        [
+            SimpleNamespace(
+                ProjectId="CE-PROJECT-001",
+                ProjectName="Controls Project",
+                SchemaVersion="0.1.0",
+                Deliverables=["ioList"],
+                PlcPlatform="Generic PLC",
+                PlcPlatformStatus="Verified",
+                SensorCount="12",
+                SensorCountStatus="Verified",
+                SourceRecords=[
+                    json.dumps(
+                        {
+                            "id": "SRC-001",
+                            "type": "email",
+                            "title": "Controls confirmation",
+                            "stakeholder": "Controls lead",
+                            "fieldIds": ["controls.plcPlatform", "io.sensorCount"],
+                        }
+                    )
+                ],
+            )
+        ]
+    )
+
+    assert messages == [("INFO", "No intake validation messages.")]

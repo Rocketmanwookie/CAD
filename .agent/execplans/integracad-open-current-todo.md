@@ -33,13 +33,15 @@ This ExecPlan is a living implementation plan for continuing the existing `Whrsd
   - `InitGui.py` is present and registers `ControlsEngineeringWorkbench` when `FreeCADGui` is importable.
   - GUI imports are guarded for non-FreeCAD environments.
 - Existing command IDs:
+  - `CE_NewProject`
   - `CE_CreatePanel`
   - `CE_ExportBOM`
   - `CE_ValidateProject`
 - Existing commands:
+  - `new_project.py` creates a starter `CE_Project` with CEProject metadata, intake statuses, contacts, source records, and question/response records.
   - `create_panel.py` creates a parametric backplate placeholder named `CE_Backplate`.
   - `export_bom.py` collects object attributes `Tag`, `Description`, `Manufacturer`, and `PartNumber` into CSV rows.
-  - `validate_project.py` checks duplicate tags and missing description/part number for tagged objects.
+  - `validate_project.py` checks duplicate tags, missing description/part number for tagged objects, missing intake facts, and verified/approved intake facts without source records.
 - Existing model code:
   - `controls_wb/model/panel.py` defines a FreeCAD FeaturePython control panel/backplate placeholder.
 - Existing TODO items:
@@ -49,7 +51,8 @@ This ExecPlan is a living implementation plan for continuing the existing `Whrsd
   - Phase 2 prioritizes CEProject data model sections, schema versioning, ID-addressable facts, generated-artifact traceability, and assumptions/estimates.
   - Phase 6 later covers PLC/I/O and signal registry work.
 - Existing tests:
-  - `pyproject.toml` configures `pytest` with `testpaths = ["tests"]`, but no `tests/` directory currently exists.
+  - `pyproject.toml` configures `pytest` with `testpaths = ["tests"]`.
+  - Current tests cover intake validation, BOM row collection, project payload serialization, and document validation helpers.
 - Existing examples:
   - `examples/conveyor_demo.ceproject.xml` contains a CEProject 0.1.0 conveyor demo with `Metadata`, `Devices`, `Signals`, and `Connections`.
 - Existing README/install instructions:
@@ -78,6 +81,7 @@ Continue the existing FreeCAD controls-engineering workbench toward the next wor
 5. Add focused pure-Python tests for intake validation, existing BOM collection, and existing tag validation.
 6. Update README and TODO to reflect completed behavior only.
 7. Run validation commands and record results.
+8. Add starter stakeholder contact, source-record, and question/response models.
 
 ## Progress
 
@@ -89,6 +93,10 @@ Continue the existing FreeCAD controls-engineering workbench toward the next wor
 - [x] Add or update tests.
 - [x] Update docs/TODO.
 - [x] Run validation.
+- [x] Implement starter contact/source/question-response milestone.
+- [x] Add source-record traceability validation for verified or approved intake facts.
+- [x] Add tests for open intake questions, source-backed verified facts, missing source warnings, serialized project payloads, and document validation source parsing.
+- [x] Update README, TODO, and changelog for the source/question model behavior.
 
 ## Surprises & Discoveries
 
@@ -104,6 +112,7 @@ Continue the existing FreeCAD controls-engineering workbench toward the next wor
 - Implement business logic as pure Python under `controls_wb/` and keep `InitGui.py` thin.
 - Treat Phase 1 intake/validation as the next TODO-backed milestone before PLC/I/O expansion.
 - Update `TODO.md` checkboxes only for behavior that is present in code now. Broader roadmap items remain open even when a seed exists.
+- Treat the starter contact/source/question-response model as sufficient to close those Phase 1 model checkboxes, while keeping templates, missing-data matrix, and full CEProject XML schema work open.
 
 ## Validation Commands
 
@@ -113,6 +122,14 @@ Commands run after implementation:
 cd ControlForgeCAD
 python -m pytest
 python -m compileall controls_wb tests
+python3 -m pytest
+python3 -m compileall controls_wb tests
+```
+
+Commands run for the contact/source/question-response milestone:
+
+```bash
+cd ControlForgeCAD
 python3 -m pytest
 python3 -m compileall controls_wb tests
 ```
@@ -128,6 +145,13 @@ python3 -m compileall controls_wb tests
 - `python -m pytest` and `python -m compileall controls_wb tests` failed because `python` is not on PATH in this environment.
 - `python3 -m pytest` passed: 6 tests.
 - `python3 -m compileall controls_wb tests` passed.
+- Added starter `Contact`, `SourceRecord`, `SourceRecordType`, and `IntakeQuestionResponse` pure-Python models.
+- `default_project_intake()` now seeds stakeholder contacts, a manual-entry source for the project name, and requested questions for missing starter fields.
+- `open_questions_for()` returns unresolved question/response records for intake follow-up workflows.
+- `CE_Project` now stores contacts, source records, and intake questions as JSON string-list properties, plus simple response value fields for nominal voltage, phase count, PLC platform, and sensor count.
+- `CE_ValidateProject` now parses those JSON string-list properties and warns when verified or approved required fields have no source record.
+- `python3 -m pytest` passed: 10 tests. The environment still prints `Failed to create stream fd: Operation not permitted` before pytest output, but tests complete successfully.
+- `python3 -m compileall controls_wb tests` passed. The same stream-fd warning appears before compile output.
 
 ## Final Notes
 

@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: MIT
 """Run first-pass controls project validation."""
 
+import json
+
 try:
     import FreeCAD as App
     import FreeCADGui as Gui
@@ -8,7 +10,16 @@ except Exception:  # pragma: no cover
     App = None
     Gui = None
 
-from controls_wb.intake import FieldStatus, IntakeField, ProjectIntake, validate_intake
+from controls_wb.intake import (
+    Contact,
+    FieldStatus,
+    IntakeField,
+    IntakeQuestionResponse,
+    ProjectIntake,
+    SourceRecord,
+    SourceRecordType,
+    validate_intake,
+)
 
 
 def _status(value):
@@ -16,6 +27,69 @@ def _status(value):
         return FieldStatus(value)
     except ValueError:
         return FieldStatus.UNKNOWN
+
+
+def _json_records(obj, attribute):
+    records = []
+    for item in getattr(obj, attribute, []) or []:
+        try:
+            records.append(json.loads(item))
+        except (TypeError, ValueError):
+            continue
+    return records
+
+
+def _contacts_from_project_object(obj):
+    contacts = {}
+    for record in _json_records(obj, "Contacts"):
+        contact_id = record.get("id", "")
+        if contact_id:
+            contacts[contact_id] = Contact(
+                contact_id=contact_id,
+                role=record.get("role", ""),
+                name=record.get("name", ""),
+                email=record.get("email", ""),
+                organization=record.get("organization", ""),
+            )
+    return contacts
+
+
+def _sources_from_project_object(obj):
+    sources = {}
+    for record in _json_records(obj, "SourceRecords"):
+        source_id = record.get("id", "")
+        if source_id:
+            try:
+                source_type = SourceRecordType(record.get("type", "manual_entry"))
+            except ValueError:
+                source_type = SourceRecordType.MANUAL_ENTRY
+            sources[source_id] = SourceRecord(
+                source_id=source_id,
+                source_type=source_type,
+                title=record.get("title", ""),
+                stakeholder=record.get("stakeholder", ""),
+                field_ids=tuple(record.get("fieldIds", ())),
+                reference=record.get("reference", ""),
+                received_on=record.get("receivedOn", ""),
+            )
+    return sources
+
+
+def _questions_from_project_object(obj):
+    questions = {}
+    for record in _json_records(obj, "IntakeQuestions"):
+        question_id = record.get("id", "")
+        if question_id:
+            questions[question_id] = IntakeQuestionResponse(
+                question_id=question_id,
+                field_id=record.get("fieldId", ""),
+                prompt=record.get("prompt", ""),
+                ask=record.get("ask", ""),
+                status=_status(record.get("status", "")),
+                response=record.get("response", ""),
+                source_ids=tuple(record.get("sourceIds", ())),
+            )
+    return questions
 
 
 def _intake_from_project_object(obj):
@@ -31,24 +105,28 @@ def _intake_from_project_object(obj):
             "powerFeed.nominalVoltage",
             "Nominal voltage",
             "Electrical engineering",
+            value=getattr(obj, "NominalVoltage", ""),
             status=_status(getattr(obj, "PowerFeedStatus", "")),
         ),
         "powerFeed.phaseCount": IntakeField(
             "powerFeed.phaseCount",
             "Phase count",
             "Electrical engineering",
+            value=getattr(obj, "PhaseCount", ""),
             status=_status(getattr(obj, "PowerFeedStatus", "")),
         ),
         "controls.plcPlatform": IntakeField(
             "controls.plcPlatform",
             "PLC platform",
             "Controls lead",
+            value=getattr(obj, "PlcPlatform", ""),
             status=_status(getattr(obj, "PlcPlatformStatus", "")),
         ),
         "io.sensorCount": IntakeField(
             "io.sensorCount",
             "Sensor count or estimate",
             "Mechanical / materials handling",
+            value=getattr(obj, "SensorCount", ""),
             status=_status(getattr(obj, "SensorCountStatus", "")),
         ),
     }
@@ -58,6 +136,9 @@ def _intake_from_project_object(obj):
         schema_version=getattr(obj, "SchemaVersion", "0.1.0"),
         fields=fields,
         deliverables=set(getattr(obj, "Deliverables", [])),
+        contacts=_contacts_from_project_object(obj),
+        source_records=_sources_from_project_object(obj),
+        questions=_questions_from_project_object(obj),
     )
 
 

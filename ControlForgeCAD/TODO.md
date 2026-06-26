@@ -63,11 +63,11 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 ### Phase 1 - Intake-first workflow
 
 - [ ] Build project intake schema section.
-- [ ] Add contacts/stakeholder model.
-- [ ] Add question/response model.
+- [x] Add contacts/stakeholder model.
+- [x] Add question/response model.
 - [ ] Add missing-data matrix.
 - [x] Add field status model: `Unknown`, `Requested`, `Received`, `Assumed`, `Estimated`, `Verified`, `Approved`, `Rejected`, `Superseded`.
-- [ ] Add source record model for email, meeting note, uploaded file, phone call, field note, vendor quote, CADbase asset, BIM object, or manual entry.
+- [x] Add source record model for email, meeting note, uploaded file, phone call, field note, vendor quote, CADbase asset, BIM object, or manual entry.
 - [ ] Add form templates for project managers, sales, utility company, electrical engineering, building superintendent, safety/EHS, operations, purchasing, maintenance, controls lead, mechanical/materials handling, IT/OT, and customer stakeholders.
 - [ ] Add email templates that map every requested fact to a CEProject field.
 - [x] Add validation output that tells the user who to ask for missing information.

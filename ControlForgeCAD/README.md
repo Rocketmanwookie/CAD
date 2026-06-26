@@ -23,10 +23,10 @@ IntegraCAB Open is an integration-first FreeCAD workbench concept for controls e
 
 | Command ID | Menu text | Current behavior |
 |---|---|---|
-| `CE_NewProject` | New Controls Project | Creates a starter `CE_Project` object with CEProject metadata and initial intake statuses. |
+| `CE_NewProject` | New Controls Project | Creates a starter `CE_Project` object with CEProject metadata, stakeholder contacts, source records, question/response records, and initial intake statuses. |
 | `CE_CreatePanel` | Create Control Panel | Creates a parametric backplate placeholder with controls metadata. |
 | `CE_ExportBOM` | Export BOM | Exports controls metadata rows from the active FreeCAD document to CSV. |
-| `CE_ValidateProject` | Validate Controls Project | Reports duplicate tags, missing controls metadata, and starter intake missing-data findings. |
+| `CE_ValidateProject` | Validate Controls Project | Reports duplicate tags, missing controls metadata, starter intake missing-data findings, and verified/approved intake facts without source records. |
 
 ## Business thesis
 

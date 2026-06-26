@@ -20,6 +20,8 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - Starter `CE_NewProject` command for creating a CEProject intake object.
 - Pure-Python intake field status and missing-data validation helpers.
 - Tests for intake validation, BOM row collection, and document validation helpers.
+- Starter stakeholder contact, source-record, and intake question/response models.
+- Validation warning for verified or approved intake facts that lack source records.
 
 ### Known limitations
 
