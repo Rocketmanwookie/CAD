@@ -17,6 +17,9 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - License strategy section.
 - Version-control and configuration-management policy.
 - Project-name brainstorm document.
+- Starter `CE_NewProject` command for creating a CEProject intake object.
+- Pure-Python intake field status and missing-data validation helpers.
+- Tests for intake validation, BOM row collection, and document validation helpers.
 
 ### Known limitations
 

@@ -8,7 +8,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Use display name: `IntegraCAB™ Open`.
 - [ ] Use repository/folder slug: `integracab-open` where practical.
 - [ ] Use Python package name: `integracab`.
-- [ ] Use FreeCAD workbench/menu label: `Controls / Automation`.
+- [x] Use FreeCAD workbench/menu label: `Controls / Automation`.
 - [ ] Keep XML project format name: `CEProject`.
 - [ ] Keep tagline: `The open-source FreeCAD workbench that unites PLC controls with CAD.`
 - [ ] Avoid the trademark symbol in filenames, Python imports, XML namespaces, or package identifiers.
@@ -66,11 +66,11 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Add contacts/stakeholder model.
 - [ ] Add question/response model.
 - [ ] Add missing-data matrix.
-- [ ] Add field status model: `Unknown`, `Requested`, `Received`, `Assumed`, `Estimated`, `Verified`, `Approved`, `Rejected`, `Superseded`.
+- [x] Add field status model: `Unknown`, `Requested`, `Received`, `Assumed`, `Estimated`, `Verified`, `Approved`, `Rejected`, `Superseded`.
 - [ ] Add source record model for email, meeting note, uploaded file, phone call, field note, vendor quote, CADbase asset, BIM object, or manual entry.
 - [ ] Add form templates for project managers, sales, utility company, electrical engineering, building superintendent, safety/EHS, operations, purchasing, maintenance, controls lead, mechanical/materials handling, IT/OT, and customer stakeholders.
 - [ ] Add email templates that map every requested fact to a CEProject field.
-- [ ] Add validation output that tells the user who to ask for missing information.
+- [x] Add validation output that tells the user who to ask for missing information.
 
 ### Phase 2 - CEProject data model
 
@@ -212,14 +212,14 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 
 ## 8. Validation engine backlog
 
-- [ ] Missing required data by selected deliverables.
+- [x] Missing required data by selected deliverables.
 - [ ] Contradictory voltage/phase values.
 - [ ] Missing available fault current.
 - [ ] Missing SCCR target.
 - [ ] Missing enclosure/environmental rating.
-- [ ] Missing PLC platform.
+- [x] Missing PLC platform.
 - [ ] Missing preferred vendors.
-- [ ] Missing sensor count or I/O estimate.
+- [x] Missing sensor count or I/O estimate.
 - [ ] Missing HMI requirement set.
 - [ ] Missing upstream BIM/feed reference.
 - [ ] Missing CADbase part reference.
@@ -231,7 +231,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 
 ## 9. Open-source maintainability
 
-- [ ] Use small, readable modules.
+- [x] Use small, readable modules.
 - [ ] Keep schema examples human-readable.
 - [ ] Keep dependencies minimal.
 - [ ] Add tests for XML examples and validators.

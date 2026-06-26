@@ -19,6 +19,15 @@ IntegraCAB Open is an integration-first FreeCAD workbench concept for controls e
 | License | MIT for original project code and docs |
 | XML schema version | CEProject 0.1.0 |
 
+## Current prototype commands
+
+| Command ID | Menu text | Current behavior |
+|---|---|---|
+| `CE_NewProject` | New Controls Project | Creates a starter `CE_Project` object with CEProject metadata and initial intake statuses. |
+| `CE_CreatePanel` | Create Control Panel | Creates a parametric backplate placeholder with controls metadata. |
+| `CE_ExportBOM` | Export BOM | Exports controls metadata rows from the active FreeCAD document to CSV. |
+| `CE_ValidateProject` | Validate Controls Project | Reports duplicate tags, missing controls metadata, and starter intake missing-data findings. |
+
 ## Business thesis
 
 Less havoc = more money.
@@ -89,6 +98,12 @@ git clone <repo-url> IntegraCABOpen
 ```
 
 Restart FreeCAD and select **Controls / Automation** from the workbench selector once the workbench metadata is fully renamed.
+
+For pure-Python validation outside FreeCAD, run tests from this directory:
+
+```bash
+python3 -m pytest
+```
 
 ## License
 
