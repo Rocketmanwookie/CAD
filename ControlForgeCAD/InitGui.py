@@ -90,6 +90,7 @@ if Gui is not None:
                 export_bom,
                 export_ceproject_xml,
                 export_io_list,
+                export_missing_data_csv,
                 missing_data,
                 new_project,
                 validate_project,

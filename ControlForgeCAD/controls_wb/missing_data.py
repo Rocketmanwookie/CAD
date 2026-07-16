@@ -3,8 +3,10 @@
 
 from __future__ import annotations
 
+import csv
 import json
 from dataclasses import asdict, dataclass
+from io import StringIO
 from typing import Any
 
 from controls_wb.intake import (
@@ -16,6 +18,25 @@ from controls_wb.intake import (
     SourceRecord,
     SourceRecordType,
     required_fields_for,
+)
+
+MISSING_DATA_HEADERS = (
+    "ItemId",
+    "Category",
+    "QuestionId",
+    "FactId",
+    "Label",
+    "Required",
+    "Value",
+    "HasResponse",
+    "SourceRecordIds",
+    "SourceCount",
+    "Verified",
+    "Approved",
+    "Status",
+    "Severity",
+    "Finding",
+    "NextAction",
 )
 
 
@@ -42,6 +63,26 @@ class MissingDataRow:
         payload = asdict(self)
         payload["source_record_ids"] = list(self.source_record_ids)
         return payload
+
+    def to_csv_row(self) -> dict[str, Any]:
+        return {
+            "ItemId": self.item_id,
+            "Category": self.category,
+            "QuestionId": self.question_id,
+            "FactId": self.fact_id,
+            "Label": self.label,
+            "Required": self.required,
+            "Value": self.value,
+            "HasResponse": self.has_response,
+            "SourceRecordIds": ";".join(self.source_record_ids),
+            "SourceCount": self.source_count,
+            "Verified": self.verified,
+            "Approved": self.approved,
+            "Status": self.status,
+            "Severity": self.severity,
+            "Finding": self.finding,
+            "NextAction": self.next_action,
+        }
 
 
 def _status(value: str) -> FieldStatus:
@@ -319,3 +360,12 @@ def missing_data_matrix(project: ProjectIntake | object) -> list[MissingDataRow]
         )
 
     return rows
+
+
+def missing_data_csv(rows: list[MissingDataRow]) -> str:
+    output = StringIO()
+    writer = csv.DictWriter(output, fieldnames=list(MISSING_DATA_HEADERS), lineterminator="\n")
+    writer.writeheader()
+    for row in rows:
+        writer.writerow(row.to_csv_row())
+    return output.getvalue()

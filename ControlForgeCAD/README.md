@@ -30,8 +30,10 @@ IntegraCAB Open is an integration-first FreeCAD workbench concept for controls e
 | `CE_PreviewMissingData` | Preview Missing Data | Prints the missing-data matrix for the active controls project intake object to the FreeCAD console. |
 | `CE_ExportCEProjectXML` | Export CEProject XML | Exports the first controls project intake object in the active document to `~/integracab_ceproject.xml`. |
 | `CE_ExportIOList` | Export I/O List | Exports a deterministic starter I/O list CSV to `~/integracab_io_list.csv` from the current project intake sensor count. |
+| `CE_ExportMissingDataCSV` | Export Missing Data CSV | Exports the active controls project missing-data matrix to `~/integracab_missing_data.csv`. |
 
 The pure-Python `controls_wb.missing_data.missing_data_matrix()` helper can build a structured missing-data matrix from a `ProjectIntake` payload or a `CE_Project`-style object without FreeCAD installed. Matrix rows include the required fact, current value, question ID, source records, verification/approval booleans, status, severity, finding, and recommended next action.
+The companion `controls_wb.missing_data.missing_data_csv()` helper serializes those rows to a deterministic CSV export for spreadsheet review.
 
 Editable `CE_Project` properties are converted back into the backend intake model before validation, missing-data preview, and CEProject XML export. Filling a starter property such as `PlcPlatform` or `SensorCount` in the FreeCAD Property View is treated as a received response even if the adjacent status field is still `Requested`; blank required properties remain reported as missing.
 
@@ -141,6 +143,7 @@ Restart FreeCAD and select **Controls / Automation** from the workbench selector
 | `CE_ExportBOM` | Export BOM |
 | `CE_ExportCEProjectXML` | Export CEProject XML |
 | `CE_ExportIOList` | Export I/O List |
+| `CE_ExportMissingDataCSV` | Export Missing Data CSV |
 
 Manual smoke validation:
 
@@ -159,6 +162,7 @@ Manual smoke validation:
 13. Run **Export BOM** and confirm `~/controlforgecad_bom.csv` includes starter layout objects with tag/description/manufacturer/part-number data where assigned.
 14. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
 15. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written. If rack/slot/channel data is not assigned yet, confirm Report View prints unmapped I/O warnings.
+16. Run **Export Missing Data CSV** and confirm `~/integracab_missing_data.csv` is written with one row per required intake fact.
 
 Automated tests do not import real FreeCAD in this environment. They compile `Init.py` and `InitGui.py`, import both files without FreeCAD installed, and verify import-safe command metadata for the workbench command IDs above.
 

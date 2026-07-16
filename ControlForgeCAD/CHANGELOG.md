@@ -42,6 +42,7 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - `CE_ExportIOList` workbench command for exporting `~/integracab_io_list.csv` and reporting unmapped starter I/O points.
 - Starter CAD-side controls layout objects for panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module placeholders.
 - `CE_CreatePanel` now creates the starter layout object set, and BOM export can include those objects through their controls metadata.
+- Deterministic missing-data matrix CSV export helper and `CE_ExportMissingDataCSV` workbench command.
 
 ### Known limitations
 

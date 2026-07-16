@@ -14,7 +14,12 @@ class CommandSpec:
 PROJECT_COMMANDS = ("CE_NewProject",)
 LAYOUT_COMMANDS = ("CE_CreatePanel",)
 VALIDATION_COMMANDS = ("CE_ValidateProject", "CE_PreviewMissingData")
-EXPORT_COMMANDS = ("CE_ExportBOM", "CE_ExportCEProjectXML", "CE_ExportIOList")
+EXPORT_COMMANDS = (
+    "CE_ExportBOM",
+    "CE_ExportCEProjectXML",
+    "CE_ExportIOList",
+    "CE_ExportMissingDataCSV",
+)
 
 COMMAND_SPECS = (
     CommandSpec("CE_NewProject", "New Controls Project", "new_project"),
@@ -24,6 +29,7 @@ COMMAND_SPECS = (
     CommandSpec("CE_ExportBOM", "Export BOM", "export_bom"),
     CommandSpec("CE_ExportCEProjectXML", "Export CEProject XML", "export_ceproject_xml"),
     CommandSpec("CE_ExportIOList", "Export I/O List", "export_io_list"),
+    CommandSpec("CE_ExportMissingDataCSV", "Export Missing Data CSV", "export_missing_data_csv"),
 )
 
 

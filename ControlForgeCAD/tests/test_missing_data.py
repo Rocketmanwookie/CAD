@@ -12,7 +12,13 @@ from controls_wb.intake import (
     SourceRecordType,
     default_project_intake,
 )
-from controls_wb.missing_data import missing_data_matrix, project_object_to_intake
+from controls_wb.commands.export_missing_data_csv import missing_data_csv_for_objects
+from controls_wb.missing_data import (
+    MISSING_DATA_HEADERS,
+    missing_data_csv,
+    missing_data_matrix,
+    project_object_to_intake,
+)
 
 
 def _source(field_id):
@@ -244,3 +250,56 @@ def test_missing_data_matrix_recognizes_filled_editable_project_values():
     assert rows["controls.plcPlatform"].status == "missing_source"
     assert rows["io.sensorCount"].value == "12"
     assert rows["io.sensorCount"].status == "missing_source"
+
+
+def test_missing_data_csv_uses_stable_headers_and_source_joining():
+    intake = _intake_for(
+        IntakeField(
+            "controls.plcPlatform",
+            "PLC platform",
+            "Controls lead",
+            value="Generic PLC",
+            status=FieldStatus.APPROVED,
+        )
+    )
+
+    rows = missing_data_matrix(intake)
+    csv_text = missing_data_csv(rows)
+
+    assert csv_text.splitlines()[0] == ",".join(MISSING_DATA_HEADERS)
+    assert (
+        "MD-CONTROLS-PLCPLATFORM,controls,,controls.plcPlatform,PLC platform,True,"
+        "Generic PLC,True,SRC-CONTROLS-PLCPLATFORM,1,True,True,complete,info,"
+        "PLC platform is approved and source-backed.,No action required."
+    ) in csv_text
+
+
+def test_missing_data_csv_command_helper_reads_project_objects_only():
+    project = SimpleNamespace(
+        ProjectId="CE-PROJECT-001",
+        ProjectName="Controls Project",
+        SchemaVersion="0.1.0",
+        Deliverables=["ioList"],
+        PlcPlatform="",
+        SensorCount="",
+        PlcPlatformStatus="Requested",
+        SensorCountStatus="Requested",
+        IntakeQuestions=[
+            json.dumps(
+                {
+                    "id": "Q-CONTROLS-PLCPLATFORM",
+                    "fieldId": "controls.plcPlatform",
+                    "prompt": "Select PLC platform.",
+                    "ask": "Controls lead",
+                    "status": FieldStatus.REQUESTED.value,
+                    "response": "",
+                    "sourceIds": [],
+                }
+            )
+        ],
+    )
+
+    csv_text = missing_data_csv_for_objects([SimpleNamespace(Tag="M101"), project])
+
+    assert csv_text.startswith(",".join(MISSING_DATA_HEADERS))
+    assert "MD-CONTROLS-PLCPLATFORM,controls,Q-CONTROLS-PLCPLATFORM" in csv_text
