@@ -1,6 +1,12 @@
-# CAD
+# integraCAD Open
 
-This repository currently contains the IntegraCAB Open / ControlForgeCAD FreeCAD workbench under `ControlForgeCAD/`.
+This repository contains **integraCAD Open**, an open-source controls-engineering CAD project. Its current FreeCAD implementation is the **ControlForgeCAD** workbench under `ControlForgeCAD/`.
+
+## Project documentation
+
+- [Architecture overview](docs/ARCHITECTURE.md) — system boundaries, components, data flows, and extension strategy. *(Being established as the architectural source of truth.)*
+- [Contributing](CONTRIBUTING.md) — development workflow, testing expectations, architecture boundaries, and documentation requirements.
+- [Changelog](CHANGELOG.md) — implemented milestones, unreleased changes, and contributor-facing change history.
 
 ## FreeCAD development install
 
@@ -34,14 +40,16 @@ In FreeCAD, select **Controls / Automation** from the workbench selector. Confir
 - `CE_ExportCEProjectXML` - Export CEProject XML
 - `CE_ExportIOList` - Export I/O List
 
-Pure-Python validation from the repository root:
+## Automated validation
+
+Run from the repository root:
 
 ```bash
 python3 -m pytest
 python3 -m compileall ControlForgeCAD
 ```
 
-Manual FreeCAD validation:
+## Manual FreeCAD validation
 
 1. Start or restart FreeCAD after linking or copying the workbench.
 2. Select **Controls / Automation** from the workbench selector.
@@ -57,3 +65,7 @@ Manual FreeCAD validation:
 12. Run **Export BOM** and confirm `~/controlforgecad_bom.csv` includes starter layout objects where manufacturer/part-number/description data is assigned.
 13. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
 14. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written from the current starter intake data.
+
+## Contribution traceability
+
+Every material contribution should update the relevant documentation and add an entry under **Unreleased** in [`CHANGELOG.md`](CHANGELOG.md). See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the expected entry format and validation workflow.
