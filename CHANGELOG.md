@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to integraCAD Open are documented in this file.
+All notable changes to **integraCAD Open** are documented in this file.
 
 This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) conventions and intends to use [Semantic Versioning](https://semver.org/) once formal releases begin.
 
@@ -8,12 +8,19 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Added
 
-- Architecture documentation initiative covering system boundaries, components, data flows, extension points, and operational considerations.
-- Contributor documentation and changelog traceability.
+- Established [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) as the architectural source of truth for integraCAD Open, covering system context, layered architecture, component responsibilities, dependency boundaries, object contracts, data flows, extension strategy, testing, operational considerations, and current-versus-planned capabilities. Commit: `6dfeb12`.
+- Added contributor-facing architecture checklists for project fields, FreeCAD document objects, exports, and vendor adapters in [`CONTRIBUTING.md`](CONTRIBUTING.md). Commit: `1a0c985`.
+- Added a README architecture summary, current-capability statement, generated-artifact contract summary, and extension guidance. Commit: `b4c70c0`.
+- Added contributor documentation and changelog traceability. Commits: `f1f9a6c`, `b5de200`, `c7a3fe1`.
 
 ### Changed
 
-- Documentation terminology is being aligned so **integraCAD Open** identifies the overall project and **ControlForgeCAD** identifies the FreeCAD workbench implementation.
+- Standardized project terminology so **integraCAD Open** identifies the overall project and **ControlForgeCAD** identifies the FreeCAD workbench implementation.
+- Defined the supported dependency direction from FreeCAD UI and adapters toward application services, domain contracts, and deterministic serializers.
+- Documented `CE_Project` as the authoritative interactive project aggregate stored in the FreeCAD document.
+- Clarified that starter layout objects, CEProject XML, BOM CSV, I/O-list CSV, and validation are implemented foundation contracts with partial engineering scope.
+- Clarified that manufacturer catalog adapters, automatic hardware selection, full schematic generation, terminal/wire schedules, and PLC vendor project-file generation remain planned.
+- Expanded contribution requirements so material contract, schema, boundary, data-flow, or implementation-status changes must update architecture documentation and this changelog.
 
 ## Milestone History
 
@@ -70,4 +77,6 @@ Each contribution should add an entry under **Unreleased** using one of these ca
 - `Fixed` for defect corrections.
 - `Security` for vulnerability-related changes.
 
-Entries should describe user-visible or contributor-relevant effects, reference the affected subsystem, and include an issue or pull-request link when available.
+Entries should describe user-visible or contributor-relevant effects, reference the affected subsystem, state whether a public contract or generated artifact changed, and include an issue or pull-request link when available.
+
+A change to system boundaries, object contracts, validation paths, XML/CSV schemas, dependency direction, or implementation-status claims must also update [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
