@@ -137,6 +137,7 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - [x] Add `CE_AddIOSignal` dialog workflow for selectable I/O type, user label, and deterministic auto tag/address generation.
 - [x] Store explicit I/O signals on `CE_Project` as JSON-line records and include them in I/O CSV export before remaining sensor-count placeholders.
 - [x] Extend the Project Intake dialog with Siemens/Allen-Bradley make selection, contingent PLC line dropdowns, DI/DO/AI/AO counts, and optional modular I/O accessories.
+- [x] Add Project Intake setup source metadata and attach one source record to filled starter setup facts.
 - [ ] Add a project setup/import workflow from structured definition files such as CEProject XML, YAML, and UML-derived interchange where practical.
 - [x] Milestone 5: add starter CAD-side controls layout placeholder objects.
 - [x] Wire `CE_CreatePanel` to create panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module placeholders.
@@ -179,6 +180,7 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - Store `Customer` and `SiteLocation` as editable `CE_Project` properties now, but do not mark them as required deliverable facts yet because the current backend required-field matrix does not use them.
 - Keep Milestone 4 I/O generation intentionally simple: Project setup creates addressed starter DI/DO/AI/AO rows from counts; detailed rack/module/channel assignment and module capacity matching remain later Phase 6 work.
 - Add explicit I/O signal rows as the first labeling workflow: digital input/output, analog input/output, and relay rows receive deterministic generated tags and addresses, while rack/slot/channel assignment remains later work.
+- Capture one setup source record during Project Intake submission so filled starter facts are source-backed instead of reported as `missing_source`; verification and approval remain separate lifecycle steps.
 - Treat project setup as both GUI-driven and file-driven. CEProject XML is the canonical internal format, while YAML and UML-derived interchange can be supported as adapter inputs when they map cleanly to the same `CE_Project` object fields.
 - Keep Milestone 5 geometry as simple boxes with editable metadata. Manufacturer-accurate models, assembly constraints, routing, wire schedules, and detailed panel layout remain future work.
 
@@ -314,7 +316,7 @@ Manual FreeCAD validation steps for this milestone:
 3. Select the Controls / Automation workbench.
 4. Confirm New Controls Project, Validate Controls Project, Preview Missing Data, Export BOM, and Export CEProject XML appear in the workbench UI.
 5. Run New Controls Project and confirm the Project Intake dialog opens.
-6. Enter or edit project name, customer, site/location, deliverables, nominal voltage, phase count, enclosure rating, PLC make, PLC line, DI/DO/AI/AO counts, and optional I/O accessories, then submit the dialog.
+6. Enter or edit project name, customer, site/location, deliverables, nominal voltage, phase count, enclosure rating, PLC make, PLC line, DI/DO/AI/AO counts, optional I/O accessories, and source metadata, then submit the dialog.
 7. Confirm a CE_Project object appears in the model tree and Report View says the project intake was updated. If Qt/PySide cannot load, confirm the fallback warning appears and a starter CE_Project is still created.
 8. Select CE_Project and confirm editable CEProject and Intake properties appear in the Property View matching the submitted dialog values.
 9. Edit a basic property, save the document as .FCStd, close it, reopen it, and confirm the property value is retained.

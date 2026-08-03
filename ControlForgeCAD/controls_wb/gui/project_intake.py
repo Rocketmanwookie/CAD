@@ -7,8 +7,10 @@ functions so tests and command metadata imports do not require a FreeCAD GUI.
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 
+from controls_wb.intake import SourceRecordType
 from controls_wb.model.project import create_or_update_project, ensure_project_properties
 
 PLC_LINES_BY_MAKE = {
@@ -21,6 +23,26 @@ IO_ACCESSORY_OPTIONS = (
     "Ethernet I/O adapter",
     "I/O terminal bases",
     "Expansion power supply",
+)
+
+SOURCE_TYPE_LABELS = {
+    "Manual entry": SourceRecordType.MANUAL_ENTRY.value,
+    "Customer email": SourceRecordType.EMAIL.value,
+    "Meeting note": SourceRecordType.MEETING_NOTE.value,
+    "Phone call": SourceRecordType.PHONE_CALL.value,
+    "Field note": SourceRecordType.FIELD_NOTE.value,
+    "Vendor quote": SourceRecordType.VENDOR_QUOTE.value,
+    "Uploaded file / reference": SourceRecordType.UPLOADED_FILE.value,
+}
+
+SETUP_SOURCE_ID = "SRC-PROJECT-SETUP-001"
+SETUP_SOURCE_FIELDS = (
+    ("ProjectName", "project.name"),
+    ("NominalVoltage", "powerFeed.nominalVoltage"),
+    ("PhaseCount", "powerFeed.phaseCount"),
+    ("EnclosureRating", "environment.enclosureRating"),
+    ("PlcPlatform", "controls.plcPlatform"),
+    ("SensorCount", "io.sensorCount"),
 )
 
 
@@ -109,6 +131,71 @@ def total_input_count(di_count: object, ai_count: object) -> str:
     return str(total) if total else ""
 
 
+def source_type_labels() -> tuple[str, ...]:
+    return tuple(SOURCE_TYPE_LABELS)
+
+
+def source_type_value_from_label(label: str) -> str:
+    return SOURCE_TYPE_LABELS.get(label, SourceRecordType.MANUAL_ENTRY.value)
+
+
+def source_type_label_from_value(value: str) -> str:
+    for label, source_type in SOURCE_TYPE_LABELS.items():
+        if source_type == value:
+            return label
+    return "Manual entry"
+
+
+def _setup_source_field_ids(normalized: dict[str, object]) -> list[str]:
+    field_ids = []
+    for property_name, field_id in SETUP_SOURCE_FIELDS:
+        value = normalized.get(property_name, "")
+        if isinstance(value, list):
+            has_value = bool(value)
+        else:
+            has_value = bool(str(value).strip())
+        if has_value:
+            field_ids.append(field_id)
+    return field_ids
+
+
+def setup_source_record_from_form(values: dict[str, object], normalized: dict[str, object]) -> str | None:
+    field_ids = _setup_source_field_ids(normalized)
+    if not field_ids:
+        return None
+    title = str(values.get("SourceTitle", "")).strip() or "Project setup"
+    stakeholder = str(values.get("SourceStakeholder", "")).strip() or "Project manager"
+    source_type = source_type_value_from_label(str(values.get("SourceType", "")))
+    reference = str(values.get("SourceReference", "")).strip()
+    return json.dumps(
+        {
+            "id": SETUP_SOURCE_ID,
+            "type": source_type,
+            "title": title,
+            "stakeholder": stakeholder,
+            "fieldIds": field_ids,
+            "reference": reference,
+            "receivedOn": "",
+        },
+        sort_keys=True,
+    )
+
+
+def _merge_setup_source_record(existing_records: object, setup_source_record: str | None) -> list[str]:
+    records = []
+    for record in list(existing_records or []):
+        try:
+            payload = json.loads(record)
+        except (TypeError, ValueError):
+            records.append(record)
+            continue
+        if payload.get("id") != SETUP_SOURCE_ID:
+            records.append(record)
+    if setup_source_record:
+        records.append(setup_source_record)
+    return records
+
+
 def form_values_from_project(obj: object | None) -> dict[str, str]:
     values: dict[str, str] = {}
     for field in CORE_INTAKE_FORM_FIELDS:
@@ -125,6 +212,20 @@ def form_values_from_project(obj: object | None) -> dict[str, str]:
         platform = str(getattr(obj, "PlcPlatform", "") if obj is not None else "")
         values["PlcMake"] = "Allen-Bradley" if "Allen" in platform or "ControlLogix" in platform or "CompactLogix" in platform else "Siemens"
     values["PlcLine"] = normalized_plc_line(values["PlcMake"], values["PlcLine"])
+    values["SourceType"] = "Manual entry"
+    values["SourceTitle"] = "Project setup"
+    values["SourceStakeholder"] = "Project manager"
+    values["SourceReference"] = ""
+    for record in getattr(obj, "SourceRecords", []) if obj is not None else []:
+        try:
+            payload = json.loads(record)
+        except (TypeError, ValueError):
+            continue
+        if payload.get("id") == SETUP_SOURCE_ID:
+            values["SourceType"] = source_type_label_from_value(payload.get("type", ""))
+            values["SourceTitle"] = payload.get("title", "") or "Project setup"
+            values["SourceStakeholder"] = payload.get("stakeholder", "") or "Project manager"
+            values["SourceReference"] = payload.get("reference", "")
     return values
 
 
@@ -152,8 +253,15 @@ def normalized_form_values(values: dict[str, str]) -> dict[str, object]:
 
 
 def apply_form_values_to_project(obj: object, values: dict[str, str]) -> object:
-    for property_name, value in normalized_form_values(values).items():
+    normalized = normalized_form_values(values)
+    for property_name, value in normalized.items():
         setattr(obj, property_name, value)
+    setup_source_record = setup_source_record_from_form(values, normalized)
+    setattr(
+        obj,
+        "SourceRecords",
+        _merge_setup_source_record(getattr(obj, "SourceRecords", []), setup_source_record),
+    )
     return obj
 
 
@@ -174,6 +282,11 @@ def create_or_update_project_from_form(document: object, values: dict[str, str])
         obj = create_or_update_project(document, name=str(normalized["ProjectName"]))
     for property_name, value in normalized.items():
         setattr(obj, property_name, value)
+    setup_source_record = setup_source_record_from_form(values, normalized)
+    obj.SourceRecords = _merge_setup_source_record(
+        getattr(obj, "SourceRecords", []),
+        setup_source_record,
+    )
     return obj
 
 
@@ -241,6 +354,23 @@ def show_project_intake_dialog(document: object, parent=None, console=None) -> o
         accessory_layout.addWidget(checkbox)
     layout.addLayout(form)
     layout.addWidget(accessory_box)
+
+    source_type_editor = QtWidgets.QComboBox()
+    source_type_editor.addItems(list(source_type_labels()))
+    source_type_editor.setCurrentText(initial_values["SourceType"])
+    source_title_editor = QtWidgets.QLineEdit(initial_values["SourceTitle"])
+    source_stakeholder_editor = QtWidgets.QLineEdit(initial_values["SourceStakeholder"])
+    source_reference_editor = QtWidgets.QLineEdit(initial_values["SourceReference"])
+    editors["SourceType"] = source_type_editor
+    editors["SourceTitle"] = source_title_editor
+    editors["SourceStakeholder"] = source_stakeholder_editor
+    editors["SourceReference"] = source_reference_editor
+    source_form = QtWidgets.QFormLayout()
+    source_form.addRow("Source type", source_type_editor)
+    source_form.addRow("Source title", source_title_editor)
+    source_form.addRow("Source stakeholder", source_stakeholder_editor)
+    source_form.addRow("Source reference", source_reference_editor)
+    layout.addLayout(source_form)
 
     buttons = QtWidgets.QDialogButtonBox(
         QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel
