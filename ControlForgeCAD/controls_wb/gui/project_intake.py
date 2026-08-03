@@ -18,12 +18,123 @@ PLC_LINES_BY_MAKE = {
     "Allen-Bradley": ("Micro800", "CompactLogix 5380", "ControlLogix 5580"),
 }
 
+POWER_CONFIGURATIONS = (
+    "1PH 120V",
+    "1PH 240V",
+    "3PH 208V",
+    "3PH 240V",
+    "3PH 480V",
+    "3PH 600V",
+)
+
+ENCLOSURE_RATING_OPTIONS = (
+    "UL Listed",
+    "NEMA 12",
+    "NEMA 4",
+    "NEMA 4X",
+    "IP65",
+    "Explosion proof",
+)
+
 IO_ACCESSORY_OPTIONS = (
     "Remote / modular I/O bank",
     "Ethernet I/O adapter",
     "I/O terminal bases",
     "Expansion power supply",
 )
+
+COMMUNICATION_PROTOCOL_OPTIONS = (
+    "PROFINET",
+    "PROFIBUS",
+    "Modbus TCP",
+    "Modbus RTU",
+    "EtherNet/IP",
+    "DeviceNet",
+)
+
+PLC_HARDWARE_BY_LINE = {
+    ("Siemens", "S7-1200"): {
+        "cpus": {
+            "CPU 1212C starter": {"di": 8, "do": 6, "ai": 2, "ao": 0},
+            "CPU 1214C starter": {"di": 14, "do": 10, "ai": 2, "ao": 0},
+        },
+        "io_modules": (
+            {"name": "SM 1221 DI 16", "di": 16, "do": 0, "ai": 0, "ao": 0},
+            {"name": "SM 1222 DO 16", "di": 0, "do": 16, "ai": 0, "ao": 0},
+            {"name": "SM 1231 AI 8", "di": 0, "do": 0, "ai": 8, "ao": 0},
+            {"name": "SM 1232 AO 4", "di": 0, "do": 0, "ai": 0, "ao": 4},
+        ),
+        "ethernet": ("CM 1241 / Ethernet module", "CP 1243 communications module"),
+        "power": ("PM 1207 power module", "SITOP 24 VDC supply"),
+    },
+    ("Siemens", "S7-1500"): {
+        "cpus": {
+            "CPU 1511 starter": {"di": 0, "do": 0, "ai": 0, "ao": 0},
+            "CPU 1512 starter": {"di": 0, "do": 0, "ai": 0, "ao": 0},
+        },
+        "io_modules": (
+            {"name": "SM 521 DI 32", "di": 32, "do": 0, "ai": 0, "ao": 0},
+            {"name": "SM 522 DO 32", "di": 0, "do": 32, "ai": 0, "ao": 0},
+            {"name": "SM 531 AI 8", "di": 0, "do": 0, "ai": 8, "ao": 0},
+            {"name": "SM 532 AO 4", "di": 0, "do": 0, "ai": 0, "ao": 4},
+        ),
+        "ethernet": ("CP 1543 communications processor", "Industrial Ethernet interface"),
+        "power": ("PM 1507 load power supply", "SITOP 24 VDC supply"),
+    },
+    ("Siemens", "ET 200SP"): {
+        "cpus": {
+            "ET 200SP CPU starter": {"di": 0, "do": 0, "ai": 0, "ao": 0},
+        },
+        "io_modules": (
+            {"name": "ET 200SP DI 16", "di": 16, "do": 0, "ai": 0, "ao": 0},
+            {"name": "ET 200SP DO 16", "di": 0, "do": 16, "ai": 0, "ao": 0},
+            {"name": "ET 200SP AI 8", "di": 0, "do": 0, "ai": 8, "ao": 0},
+            {"name": "ET 200SP AO 4", "di": 0, "do": 0, "ai": 0, "ao": 4},
+        ),
+        "ethernet": ("ET 200SP interface module", "Industrial Ethernet interface"),
+        "power": ("ET 200SP power module", "SITOP 24 VDC supply"),
+    },
+    ("Allen-Bradley", "Micro800"): {
+        "cpus": {
+            "Micro820 starter": {"di": 12, "do": 8, "ai": 4, "ao": 0},
+            "Micro850 starter": {"di": 14, "do": 10, "ai": 4, "ao": 0},
+        },
+        "io_modules": (
+            {"name": "Micro800 DI 16", "di": 16, "do": 0, "ai": 0, "ao": 0},
+            {"name": "Micro800 DO 16", "di": 0, "do": 16, "ai": 0, "ao": 0},
+            {"name": "Micro800 AI 8", "di": 0, "do": 0, "ai": 8, "ao": 0},
+            {"name": "Micro800 AO 4", "di": 0, "do": 0, "ai": 0, "ao": 4},
+        ),
+        "ethernet": ("Micro800 Ethernet plug-in", "Panel Ethernet switch"),
+        "power": ("Micro800 24 VDC power supply", "Panel 24 VDC supply"),
+    },
+    ("Allen-Bradley", "CompactLogix 5380"): {
+        "cpus": {
+            "CompactLogix 5380 starter": {"di": 0, "do": 0, "ai": 0, "ao": 0},
+        },
+        "io_modules": (
+            {"name": "5069-IB16 DI 16", "di": 16, "do": 0, "ai": 0, "ao": 0},
+            {"name": "5069-OB16 DO 16", "di": 0, "do": 16, "ai": 0, "ao": 0},
+            {"name": "5069-IF8 AI 8", "di": 0, "do": 0, "ai": 8, "ao": 0},
+            {"name": "5069-OF4 AO 4", "di": 0, "do": 0, "ai": 0, "ao": 4},
+        ),
+        "ethernet": ("5069 Ethernet adapter", "Panel Ethernet switch"),
+        "power": ("5069 field power distributor", "Panel 24 VDC supply"),
+    },
+    ("Allen-Bradley", "ControlLogix 5580"): {
+        "cpus": {
+            "ControlLogix 5580 starter": {"di": 0, "do": 0, "ai": 0, "ao": 0},
+        },
+        "io_modules": (
+            {"name": "1756-IB16 DI 16", "di": 16, "do": 0, "ai": 0, "ao": 0},
+            {"name": "1756-OB16 DO 16", "di": 0, "do": 16, "ai": 0, "ao": 0},
+            {"name": "1756-IF8 AI 8", "di": 0, "do": 0, "ai": 8, "ao": 0},
+            {"name": "1756-OF4 AO 4", "di": 0, "do": 0, "ai": 0, "ao": 4},
+        ),
+        "ethernet": ("ControlLogix Ethernet bridge", "Panel Ethernet switch"),
+        "power": ("ControlLogix chassis power supply", "Panel 24 VDC supply"),
+    },
+}
 
 SOURCE_TYPE_LABELS = {
     "Manual entry": SourceRecordType.MANUAL_ENTRY.value,
@@ -58,19 +169,20 @@ CORE_INTAKE_FORM_FIELDS = (
     IntakeFormField("Customer", "Customer", "Customer"),
     IntakeFormField("SiteLocation", "Site/location", "SiteLocation"),
     IntakeFormField("Deliverables", "Deliverables", "Deliverables"),
-    IntakeFormField("NominalVoltage", "Nominal voltage", "NominalVoltage"),
-    IntakeFormField("PhaseCount", "Phase count", "PhaseCount"),
-    IntakeFormField("EnclosureRating", "Enclosure rating", "EnclosureRating"),
 )
 
 PLC_IO_FORM_FIELDS = (
     IntakeFormField("PlcMake", "PLC make", "PlcMake"),
     IntakeFormField("PlcLine", "PLC line", "PlcLine"),
+    IntakeFormField("PlcCPU", "PLC CPU", "PlcCPU"),
     IntakeFormField("DICount", "DI count", "DICount"),
     IntakeFormField("DOCount", "DO count", "DOCount"),
     IntakeFormField("AICount", "AI count", "AICount"),
     IntakeFormField("AOCount", "AO count", "AOCount"),
     IntakeFormField("IOAccessories", "I/O accessories", "IOAccessories"),
+    IntakeFormField("EthernetAdapter", "Ethernet adapter", "EthernetAdapter"),
+    IntakeFormField("ExpansionPowerSupply", "Expansion power supply", "ExpansionPowerSupply"),
+    IntakeFormField("CommunicationProtocols", "Communication protocols", "CommunicationProtocols"),
 )
 
 
@@ -100,6 +212,33 @@ def format_accessories(value: object) -> str:
     return format_deliverables(value)
 
 
+def parse_multiselect(value: str | list[str] | tuple[str, ...] | set[str]) -> list[str]:
+    return parse_deliverables(value)
+
+
+def format_multiselect(value: object) -> str:
+    return format_deliverables(value)
+
+
+def parse_power_configuration(value: str) -> tuple[str, str]:
+    text = str(value).strip().upper()
+    if not text:
+        return "", ""
+    parts = text.split()
+    if len(parts) != 2:
+        return "", text.removesuffix("V")
+    phase = parts[0].removesuffix("PH")
+    voltage = parts[1].removesuffix("V")
+    return voltage, phase
+
+
+def power_configuration_from_values(voltage: object, phase_count: object) -> str:
+    voltage_text = str(voltage or "").strip().removesuffix("V")
+    phase_text = str(phase_count or "").strip().removesuffix("PH")
+    candidate = f"{phase_text}PH {voltage_text}V" if voltage_text and phase_text else ""
+    return candidate if candidate in POWER_CONFIGURATIONS else "3PH 480V"
+
+
 def plc_lines_for_make(make: str) -> tuple[str, ...]:
     return PLC_LINES_BY_MAKE.get(make, ())
 
@@ -118,6 +257,18 @@ def plc_platform_from_make_line(make: str, line: str) -> str:
     return " ".join(part for part in (clean_make, clean_line) if part)
 
 
+def plc_hardware_for(make: str, line: str) -> dict[str, object]:
+    return PLC_HARDWARE_BY_LINE.get((make, line), {"cpus": {}, "io_modules": (), "ethernet": (), "power": ()})
+
+
+def plc_cpu_options(make: str, line: str) -> tuple[str, ...]:
+    return tuple(plc_hardware_for(make, line).get("cpus", {}))
+
+
+def hardware_dropdown_options(make: str, line: str, key: str) -> tuple[str, ...]:
+    return tuple(plc_hardware_for(make, line).get(key, ()))
+
+
 def _safe_count(value: object) -> str:
     try:
         count = int(str(value).strip())
@@ -126,9 +277,64 @@ def _safe_count(value: object) -> str:
     return str(max(count, 0))
 
 
+def _count_int(value: object) -> int:
+    return int(_safe_count(value) or "0")
+
+
 def total_input_count(di_count: object, ai_count: object) -> str:
     total = int(_safe_count(di_count) or "0") + int(_safe_count(ai_count) or "0")
     return str(total) if total else ""
+
+
+def _module_count_for(needed: int, capacity: int) -> int:
+    if needed <= 0 or capacity <= 0:
+        return 0
+    return (needed + capacity - 1) // capacity
+
+
+def io_expansion_suggestion(
+    make: str,
+    line: str,
+    cpu: str,
+    di_count: object,
+    do_count: object,
+    ai_count: object,
+    ao_count: object,
+) -> str:
+    hardware = plc_hardware_for(make, line)
+    cpu_caps = hardware.get("cpus", {}).get(cpu, {})
+    modules = hardware.get("io_modules", ())
+    requested = {
+        "di": _count_int(di_count),
+        "do": _count_int(do_count),
+        "ai": _count_int(ai_count),
+        "ao": _count_int(ao_count),
+    }
+    suggestions = []
+    for io_key, requested_count in requested.items():
+        target = int(requested_count * 1.2 + 0.9999)
+        available_on_cpu = int(cpu_caps.get(io_key, 0))
+        extra_needed = max(target - available_on_cpu, 0)
+        if extra_needed == 0:
+            continue
+        compatible = [module for module in modules if int(module.get(io_key, 0)) > 0]
+        if not compatible:
+            suggestions.append(f"{io_key.upper()}: need {extra_needed} extra; no starter module in catalog.")
+            continue
+        best = min(
+            compatible,
+            key=lambda module: (
+                _module_count_for(extra_needed, int(module[io_key])) * int(module[io_key]) - extra_needed,
+                _module_count_for(extra_needed, int(module[io_key])),
+            ),
+        )
+        module_count = _module_count_for(extra_needed, int(best[io_key]))
+        suggestions.append(
+            f"{io_key.upper()}: target {target}, CPU {available_on_cpu}, add {module_count} x {best['name']}"
+        )
+    if not suggestions:
+        return "CPU I/O covers requested counts with 20% spare."
+    return "; ".join(suggestions)
 
 
 def source_type_labels() -> tuple[str, ...]:
@@ -203,15 +409,34 @@ def form_values_from_project(obj: object | None) -> dict[str, str]:
         values[field.key] = format_deliverables(value) if field.key == "Deliverables" else str(value or "")
     for field in PLC_IO_FORM_FIELDS:
         value = getattr(obj, field.property_name, "") if obj is not None else ""
-        values[field.key] = format_accessories(value) if field.key == "IOAccessories" else str(value or "")
+        if field.key in {"IOAccessories", "CommunicationProtocols"}:
+            values[field.key] = format_multiselect(value)
+        else:
+            values[field.key] = str(value or "")
     if not values["ProjectName"]:
         values["ProjectName"] = "Controls Project"
     if not values["Deliverables"]:
         values["Deliverables"] = "ioList, panelLayout"
+    values["PowerConfiguration"] = str(getattr(obj, "PowerConfiguration", "") if obj is not None else "") or power_configuration_from_values(
+        getattr(obj, "NominalVoltage", "") if obj is not None else "",
+        getattr(obj, "PhaseCount", "") if obj is not None else "",
+    )
+    values["EnclosureRatings"] = format_multiselect(
+        getattr(obj, "EnclosureRatings", "") if obj is not None else ""
+    ) or str(getattr(obj, "EnclosureRating", "") if obj is not None else "")
     if not values["PlcMake"]:
         platform = str(getattr(obj, "PlcPlatform", "") if obj is not None else "")
         values["PlcMake"] = "Allen-Bradley" if "Allen" in platform or "ControlLogix" in platform or "CompactLogix" in platform else "Siemens"
     values["PlcLine"] = normalized_plc_line(values["PlcMake"], values["PlcLine"])
+    cpu_options = plc_cpu_options(values["PlcMake"], values["PlcLine"])
+    if values["PlcCPU"] not in cpu_options:
+        values["PlcCPU"] = cpu_options[0] if cpu_options else ""
+    ethernet_options = hardware_dropdown_options(values["PlcMake"], values["PlcLine"], "ethernet")
+    if values["EthernetAdapter"] not in ethernet_options:
+        values["EthernetAdapter"] = ethernet_options[0] if ethernet_options else ""
+    power_options = hardware_dropdown_options(values["PlcMake"], values["PlcLine"], "power")
+    if values["ExpansionPowerSupply"] not in power_options:
+        values["ExpansionPowerSupply"] = power_options[0] if power_options else ""
     values["SourceType"] = "Manual entry"
     values["SourceTitle"] = "Project setup"
     values["SourceStakeholder"] = "Project manager"
@@ -234,12 +459,28 @@ def normalized_form_values(values: dict[str, str]) -> dict[str, object]:
     for field in CORE_INTAKE_FORM_FIELDS:
         value = values.get(field.key, "")
         normalized[field.property_name] = parse_deliverables(value) if field.key == "Deliverables" else str(value).strip()
+    power_configuration = str(
+        values.get("PowerConfiguration", "")
+        or power_configuration_from_values(values.get("NominalVoltage", ""), values.get("PhaseCount", ""))
+    ).strip() or "3PH 480V"
+    if power_configuration not in POWER_CONFIGURATIONS:
+        power_configuration = "3PH 480V"
+    nominal_voltage, phase_count = parse_power_configuration(power_configuration)
+    normalized["PowerConfiguration"] = power_configuration
+    normalized["NominalVoltage"] = nominal_voltage
+    normalized["PhaseCount"] = phase_count
+    enclosure_ratings = parse_multiselect(values.get("EnclosureRatings", "") or values.get("EnclosureRating", ""))
+    normalized["EnclosureRatings"] = enclosure_ratings
+    normalized["EnclosureRating"] = ", ".join(enclosure_ratings)
     plc_make = str(values.get("PlcMake", "Siemens")).strip() or "Siemens"
     if plc_make not in PLC_LINES_BY_MAKE:
         plc_make = "Siemens"
     plc_line = normalized_plc_line(plc_make, values.get("PlcLine", ""))
     normalized["PlcMake"] = plc_make
     normalized["PlcLine"] = plc_line
+    cpu_options = plc_cpu_options(plc_make, plc_line)
+    plc_cpu = str(values.get("PlcCPU", "")).strip()
+    normalized["PlcCPU"] = plc_cpu if plc_cpu in cpu_options else (cpu_options[0] if cpu_options else "")
     normalized["PlcPlatform"] = plc_platform_from_make_line(plc_make, plc_line)
     normalized["DICount"] = _safe_count(values.get("DICount", ""))
     normalized["DOCount"] = _safe_count(values.get("DOCount", ""))
@@ -247,6 +488,22 @@ def normalized_form_values(values: dict[str, str]) -> dict[str, object]:
     normalized["AOCount"] = _safe_count(values.get("AOCount", ""))
     normalized["SensorCount"] = total_input_count(normalized["DICount"], normalized["AICount"])
     normalized["IOAccessories"] = parse_accessories(values.get("IOAccessories", ""))
+    ethernet_options = hardware_dropdown_options(plc_make, plc_line, "ethernet")
+    ethernet_adapter = str(values.get("EthernetAdapter", "")).strip()
+    normalized["EthernetAdapter"] = ethernet_adapter if ethernet_adapter in ethernet_options else (ethernet_options[0] if ethernet_options else "")
+    power_options = hardware_dropdown_options(plc_make, plc_line, "power")
+    expansion_power = str(values.get("ExpansionPowerSupply", "")).strip()
+    normalized["ExpansionPowerSupply"] = expansion_power if expansion_power in power_options else (power_options[0] if power_options else "")
+    normalized["CommunicationProtocols"] = parse_multiselect(values.get("CommunicationProtocols", ""))
+    normalized["IOExpansionSuggestion"] = io_expansion_suggestion(
+        plc_make,
+        plc_line,
+        str(normalized["PlcCPU"]),
+        normalized["DICount"],
+        normalized["DOCount"],
+        normalized["AICount"],
+        normalized["AOCount"],
+    )
     if not normalized["ProjectName"]:
         normalized["ProjectName"] = "Controls Project"
     return normalized
@@ -318,26 +575,78 @@ def show_project_intake_dialog(document: object, parent=None, console=None) -> o
         editor = QtWidgets.QLineEdit(initial_values[field.key])
         editors[field.key] = editor
         form.addRow(field.label, editor)
+
+    power_editor = QtWidgets.QComboBox()
+    power_editor.addItems(list(POWER_CONFIGURATIONS))
+    power_editor.setCurrentText(initial_values["PowerConfiguration"])
+    editors["PowerConfiguration"] = power_editor
+    form.addRow("Power", power_editor)
+
+    enclosure_editors = {}
+    enclosure_box = QtWidgets.QWidget()
+    enclosure_layout = QtWidgets.QVBoxLayout(enclosure_box)
+    selected_enclosures = set(parse_multiselect(initial_values["EnclosureRatings"]))
+    for enclosure in ENCLOSURE_RATING_OPTIONS:
+        checkbox = QtWidgets.QCheckBox(enclosure)
+        checkbox.setChecked(enclosure in selected_enclosures)
+        enclosure_editors[enclosure] = checkbox
+        enclosure_layout.addWidget(checkbox)
+    layout.addLayout(form)
+    layout.addWidget(enclosure_box)
+
     make_editor = QtWidgets.QComboBox()
     make_editor.addItems(list(PLC_LINES_BY_MAKE.keys()))
     make_editor.setCurrentText(initial_values["PlcMake"])
     line_editor = QtWidgets.QComboBox()
+    cpu_editor = QtWidgets.QComboBox()
+    ethernet_editor = QtWidgets.QComboBox()
+    power_supply_editor = QtWidgets.QComboBox()
+
+    def refresh_hardware():
+        cpu_current = cpu_editor.currentText() or initial_values["PlcCPU"]
+        ethernet_current = ethernet_editor.currentText() or initial_values["EthernetAdapter"]
+        power_current = power_supply_editor.currentText() or initial_values["ExpansionPowerSupply"]
+        cpu_editor.clear()
+        cpu_editor.addItems(list(plc_cpu_options(make_editor.currentText(), line_editor.currentText())))
+        cpu_editor.setCurrentText(cpu_current if cpu_current in plc_cpu_options(make_editor.currentText(), line_editor.currentText()) else (cpu_editor.itemText(0) if cpu_editor.count() else ""))
+        ethernet_editor.clear()
+        ethernet_editor.addItems(list(hardware_dropdown_options(make_editor.currentText(), line_editor.currentText(), "ethernet")))
+        ethernet_editor.setCurrentText(ethernet_current if ethernet_current in hardware_dropdown_options(make_editor.currentText(), line_editor.currentText(), "ethernet") else (ethernet_editor.itemText(0) if ethernet_editor.count() else ""))
+        power_supply_editor.clear()
+        power_supply_editor.addItems(list(hardware_dropdown_options(make_editor.currentText(), line_editor.currentText(), "power")))
+        power_supply_editor.setCurrentText(power_current if power_current in hardware_dropdown_options(make_editor.currentText(), line_editor.currentText(), "power") else (power_supply_editor.itemText(0) if power_supply_editor.count() else ""))
 
     def refresh_lines():
         current_line = line_editor.currentText() or initial_values["PlcLine"]
         line_editor.clear()
         line_editor.addItems(list(plc_lines_for_make(make_editor.currentText())))
         line_editor.setCurrentText(normalized_plc_line(make_editor.currentText(), current_line))
+        refresh_hardware()
 
     make_editor.currentTextChanged.connect(lambda _text: refresh_lines())
+    line_editor.currentTextChanged.connect(lambda _text: refresh_hardware())
     refresh_lines()
     editors["PlcMake"] = make_editor
     editors["PlcLine"] = line_editor
+    editors["PlcCPU"] = cpu_editor
+    editors["EthernetAdapter"] = ethernet_editor
+    editors["ExpansionPowerSupply"] = power_supply_editor
     form.addRow("PLC make", make_editor)
     form.addRow("PLC line", line_editor)
+    form.addRow("PLC CPU", cpu_editor)
+    form.addRow("Ethernet adapter", ethernet_editor)
+    form.addRow("Expansion power supply", power_supply_editor)
 
     for field in PLC_IO_FORM_FIELDS:
-        if field.key in {"PlcMake", "PlcLine", "IOAccessories"}:
+        if field.key in {
+            "PlcMake",
+            "PlcLine",
+            "PlcCPU",
+            "IOAccessories",
+            "EthernetAdapter",
+            "ExpansionPowerSupply",
+            "CommunicationProtocols",
+        }:
             continue
         editor = QtWidgets.QLineEdit(initial_values[field.key])
         editors[field.key] = editor
@@ -352,8 +661,18 @@ def show_project_intake_dialog(document: object, parent=None, console=None) -> o
         checkbox.setChecked(accessory in selected_accessories)
         accessory_editors[accessory] = checkbox
         accessory_layout.addWidget(checkbox)
-    layout.addLayout(form)
     layout.addWidget(accessory_box)
+
+    protocol_editors = {}
+    protocol_box = QtWidgets.QWidget()
+    protocol_layout = QtWidgets.QVBoxLayout(protocol_box)
+    selected_protocols = set(parse_multiselect(initial_values["CommunicationProtocols"]))
+    for protocol in COMMUNICATION_PROTOCOL_OPTIONS:
+        checkbox = QtWidgets.QCheckBox(protocol)
+        checkbox.setChecked(protocol in selected_protocols)
+        protocol_editors[protocol] = checkbox
+        protocol_layout.addWidget(checkbox)
+    layout.addWidget(protocol_box)
 
     source_type_editor = QtWidgets.QComboBox()
     source_type_editor.addItems(list(source_type_labels()))
@@ -394,7 +713,24 @@ def show_project_intake_dialog(document: object, parent=None, console=None) -> o
         for accessory, checkbox in accessory_editors.items()
         if checkbox.isChecked()
     ]
+    values["EnclosureRatings"] = [
+        enclosure
+        for enclosure, checkbox in enclosure_editors.items()
+        if checkbox.isChecked()
+    ]
+    values["CommunicationProtocols"] = [
+        protocol
+        for protocol, checkbox in protocol_editors.items()
+        if checkbox.isChecked()
+    ]
     project = create_or_update_project_from_form(document, values)
     if console is not None:
         console.PrintMessage(f"Controls project intake updated: {project.ProjectName}\n")
+        console.PrintMessage(f"I/O expansion plan: {project.IOExpansionSuggestion}\n")
+    if getattr(project, "IOExpansionSuggestion", ""):
+        QtWidgets.QMessageBox.information(
+            dialog,
+            "I/O Expansion Plan",
+            project.IOExpansionSuggestion,
+        )
     return project

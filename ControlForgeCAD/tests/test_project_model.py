@@ -59,16 +59,23 @@ def test_project_property_specs_expose_editable_intake_fields():
     assert specs["IOSignals"].group == "I/O"
     assert specs["NominalVoltage"].group == "Intake"
     assert specs["PhaseCount"].group == "Intake"
+    assert specs["PowerConfiguration"].group == "Power"
+    assert specs["EnclosureRatings"].property_type == "App::PropertyStringList"
     assert specs["EnclosureRating"].group == "Intake"
     assert specs["PlcPlatform"].group == "Intake"
     assert specs["PlcMake"].group == "PLC / I/O"
     assert specs["PlcLine"].group == "PLC / I/O"
+    assert specs["PlcCPU"].group == "PLC / I/O"
     assert specs["SensorCount"].group == "Intake"
     assert specs["DICount"].group == "PLC / I/O"
     assert specs["DOCount"].group == "PLC / I/O"
     assert specs["AICount"].group == "PLC / I/O"
     assert specs["AOCount"].group == "PLC / I/O"
     assert specs["IOAccessories"].property_type == "App::PropertyStringList"
+    assert specs["EthernetAdapter"].group == "PLC / I/O"
+    assert specs["ExpansionPowerSupply"].group == "PLC / I/O"
+    assert specs["IOExpansionSuggestion"].group == "PLC / I/O"
+    assert specs["CommunicationProtocols"].property_type == "App::PropertyStringList"
 
 
 def test_intake_to_project_properties_maps_starter_payload():
@@ -81,6 +88,8 @@ def test_intake_to_project_properties_maps_starter_payload():
     assert properties["SiteLocation"] == ""
     assert properties["IOSignals"] == []
     assert properties["IOAccessories"] == []
+    assert properties["EnclosureRatings"] == []
+    assert properties["CommunicationProtocols"] == []
     assert properties["PowerFeedStatus"] == "Requested"
 
 
@@ -96,8 +105,11 @@ def test_initialize_project_object_adds_properties_and_proxy():
     assert "Customer" in obj.PropertiesList
     assert "SiteLocation" in obj.PropertiesList
     assert "IOSignals" in obj.PropertiesList
+    assert "PowerConfiguration" in obj.PropertiesList
+    assert "EnclosureRatings" in obj.PropertiesList
     assert "DICount" in obj.PropertiesList
     assert "IOAccessories" in obj.PropertiesList
+    assert "CommunicationProtocols" in obj.PropertiesList
     assert "PlcPlatform" in obj.PropertiesList
 
 

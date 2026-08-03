@@ -33,9 +33,12 @@ PROJECT_PROPERTY_SPECS = (
     ProjectPropertySpec("App::PropertyStringList", "IOSignals", "I/O", "Explicit I/O signal records as JSON lines"),
     ProjectPropertySpec("App::PropertyString", "NominalVoltage", "Intake", "Nominal voltage response"),
     ProjectPropertySpec("App::PropertyString", "PhaseCount", "Intake", "Phase count response"),
+    ProjectPropertySpec("App::PropertyString", "PowerConfiguration", "Power", "Combined phase and voltage"),
     ProjectPropertySpec("App::PropertyString", "EnclosureRating", "Intake", "Enclosure rating response"),
+    ProjectPropertySpec("App::PropertyStringList", "EnclosureRatings", "Intake", "Selected enclosure ratings"),
     ProjectPropertySpec("App::PropertyString", "PlcMake", "PLC / I/O", "PLC manufacturer"),
     ProjectPropertySpec("App::PropertyString", "PlcLine", "PLC / I/O", "PLC product line"),
+    ProjectPropertySpec("App::PropertyString", "PlcCPU", "PLC / I/O", "PLC CPU selection"),
     ProjectPropertySpec("App::PropertyString", "PlcPlatform", "Intake", "PLC platform response"),
     ProjectPropertySpec("App::PropertyString", "SensorCount", "Intake", "Sensor count response"),
     ProjectPropertySpec("App::PropertyString", "DICount", "PLC / I/O", "Digital input count"),
@@ -43,6 +46,10 @@ PROJECT_PROPERTY_SPECS = (
     ProjectPropertySpec("App::PropertyString", "AICount", "PLC / I/O", "Analog input count"),
     ProjectPropertySpec("App::PropertyString", "AOCount", "PLC / I/O", "Analog output count"),
     ProjectPropertySpec("App::PropertyStringList", "IOAccessories", "PLC / I/O", "Selected I/O accessories"),
+    ProjectPropertySpec("App::PropertyString", "EthernetAdapter", "PLC / I/O", "Compatible Ethernet adapter"),
+    ProjectPropertySpec("App::PropertyString", "ExpansionPowerSupply", "PLC / I/O", "Compatible expansion power supply"),
+    ProjectPropertySpec("App::PropertyString", "IOExpansionSuggestion", "PLC / I/O", "I/O expansion planning suggestion"),
+    ProjectPropertySpec("App::PropertyStringList", "CommunicationProtocols", "PLC / I/O", "Selected communication protocols"),
     ProjectPropertySpec("App::PropertyString", "PowerFeedStatus", "Intake", "Power feed intake status"),
     ProjectPropertySpec("App::PropertyString", "EnclosureRatingStatus", "Intake", "Enclosure rating intake status"),
     ProjectPropertySpec("App::PropertyString", "PlcPlatformStatus", "Intake", "PLC platform intake status"),
@@ -117,11 +124,14 @@ def intake_to_project_properties(intake: ProjectIntake) -> dict[str, object]:
         "PhaseCount": intake.fields.get("powerFeed.phaseCount", "").value
         if "powerFeed.phaseCount" in intake.fields
         else "",
+        "PowerConfiguration": "",
         "EnclosureRating": intake.fields.get("environment.enclosureRating", "").value
         if "environment.enclosureRating" in intake.fields
         else "",
+        "EnclosureRatings": [],
         "PlcMake": "",
         "PlcLine": "",
+        "PlcCPU": "",
         "PlcPlatform": intake.fields.get("controls.plcPlatform", "").value
         if "controls.plcPlatform" in intake.fields
         else "",
@@ -133,6 +143,10 @@ def intake_to_project_properties(intake: ProjectIntake) -> dict[str, object]:
         "AICount": "",
         "AOCount": "",
         "IOAccessories": [],
+        "EthernetAdapter": "",
+        "ExpansionPowerSupply": "",
+        "IOExpansionSuggestion": "",
+        "CommunicationProtocols": [],
         "PowerFeedStatus": "Requested",
         "EnclosureRatingStatus": "Requested",
         "PlcPlatformStatus": "Requested",

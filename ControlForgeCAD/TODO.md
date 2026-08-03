@@ -96,6 +96,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Track upstream transformer/source equipment.
 - [ ] Track source distribution equipment and circuit ID.
 - [ ] Track voltage, phase, frequency, feeder ampacity, conductor/raceway reference, available fault current, grounding system, disconnecting means, metering requirements, source drawing, and BIM object reference.
+- [ ] Calculate estimated amperage from configured phase/voltage and load assumptions once load data exists.
 - [ ] Integrate with IFC/ifcXML references where available.
 - [ ] Export unresolved coordination items as BCF-style issues later.
 - [ ] Do not duplicate the full building electrical model.
@@ -127,6 +128,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Add rack/slot/module/channel model.
 - [x] Add starter signal registry.
 - [x] Add I/O count estimates and starter unmapped assignments.
+- [ ] Validate PLC CPU onboard I/O capacity and suggest compatible expansion modules with 20 percent spare capacity.
 - [ ] Add signal-to-device, signal-to-terminal, signal-to-wire, and signal-to-HMI relationships.
 - [ ] Add PLCopen XML export plan.
 - [ ] Add vendor-neutral export first; vendor-specific adapters later.

@@ -137,6 +137,7 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - [x] Add `CE_AddIOSignal` dialog workflow for selectable I/O type, user label, and deterministic auto tag/address generation.
 - [x] Store explicit I/O signals on `CE_Project` as JSON-line records and include them in I/O CSV export before remaining sensor-count placeholders.
 - [x] Extend the Project Intake dialog with Siemens/Allen-Bradley make selection, contingent PLC line dropdowns, DI/DO/AI/AO counts, and optional modular I/O accessories.
+- [x] Replace separate voltage/phase text fields with a combined phase/voltage dropdown, enclosure rating checkboxes, communication protocol checkboxes, PLC CPU selection, compatible Ethernet/power dropdowns, and an I/O expansion planning popup.
 - [x] Add Project Intake setup source metadata and attach one source record to filled starter setup facts.
 - [ ] Add a project setup/import workflow from structured definition files such as CEProject XML, YAML, and UML-derived interchange where practical.
 - [x] Milestone 5: add starter CAD-side controls layout placeholder objects.
@@ -179,6 +180,8 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - Treat filled editable document-object values with `Unknown` or `Requested` starter statuses as `Received` when converting to backend intake data. This keeps Property View edits useful without forcing the user to update status fields manually.
 - Store `Customer` and `SiteLocation` as editable `CE_Project` properties now, but do not mark them as required deliverable facts yet because the current backend required-field matrix does not use them.
 - Keep Milestone 4 I/O generation intentionally simple: Project setup creates addressed starter DI/DO/AI/AO rows from counts; detailed rack/module/channel assignment and module capacity matching remain later Phase 6 work.
+- Use the current I/O expansion popup as a starter planning aid: it subtracts onboard CPU I/O, targets requested I/O times 1.2 for 20 percent spare capacity, and suggests the nearest starter module count from a small internal catalog. Vendor part numbers and procurement suitability still need verification against official catalogs.
+- Defer amperage calculation until load assumptions and power-drop modeling exist; track it under Phase 3.
 - Add explicit I/O signal rows as the first labeling workflow: digital input/output, analog input/output, and relay rows receive deterministic generated tags and addresses, while rack/slot/channel assignment remains later work.
 - Capture one setup source record during Project Intake submission so filled starter facts are source-backed instead of reported as `missing_source`; verification and approval remain separate lifecycle steps.
 - Treat project setup as both GUI-driven and file-driven. CEProject XML is the canonical internal format, while YAML and UML-derived interchange can be supported as adapter inputs when they map cleanly to the same `CE_Project` object fields.
