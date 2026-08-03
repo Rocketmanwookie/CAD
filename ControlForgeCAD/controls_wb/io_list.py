@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import csv
+import json
 from dataclasses import asdict, dataclass
 from io import StringIO
 from typing import Any
@@ -13,6 +14,7 @@ from controls_wb.missing_data import project_object_to_intake
 
 IO_LIST_HEADERS = (
     "Tag",
+    "Address",
     "Description",
     "SignalType",
     "Device",
@@ -26,10 +28,29 @@ IO_LIST_HEADERS = (
 
 
 @dataclass(frozen=True)
+class IOSignalType:
+    key: str
+    label: str
+    signal_type: str
+    tag_prefix: str
+    address_kind: str
+
+
+IO_SIGNAL_TYPES = (
+    IOSignalType("digital_input", "Digital Input", "digital_input", "DI", "input_bit"),
+    IOSignalType("digital_output", "Digital Output", "digital_output", "DO", "output_bit"),
+    IOSignalType("analog_input", "Analog Input", "analog_input", "AI", "input_word"),
+    IOSignalType("analog_output", "Analog Output", "analog_output", "AO", "output_word"),
+    IOSignalType("relay", "Relay", "relay", "RLY", "relay"),
+)
+
+
+@dataclass(frozen=True)
 class IOSignal:
     tag: str
     description: str
     signal_type: str
+    address: str = ""
     device: str = ""
     rack: str = ""
     slot: str = ""
@@ -41,6 +62,7 @@ class IOSignal:
     def to_csv_row(self) -> dict[str, Any]:
         return {
             "Tag": self.tag,
+            "Address": self.address,
             "Description": self.description,
             "SignalType": self.signal_type,
             "Device": self.device,
@@ -58,6 +80,111 @@ class IOSignal:
         return payload
 
 
+def io_signal_type_for_key(key: str) -> IOSignalType:
+    for signal_type in IO_SIGNAL_TYPES:
+        if signal_type.key == key:
+            return signal_type
+    raise ValueError(f"Unsupported I/O signal type: {key}")
+
+
+def io_signal_type_labels() -> tuple[str, ...]:
+    return tuple(signal_type.label for signal_type in IO_SIGNAL_TYPES)
+
+
+def io_signal_type_key_from_label(label: str) -> str:
+    for signal_type in IO_SIGNAL_TYPES:
+        if signal_type.label == label:
+            return signal_type.key
+    raise ValueError(f"Unsupported I/O signal type label: {label}")
+
+
+def _tag_index(tag: str, prefix: str) -> int:
+    marker = f"{prefix}-"
+    if not tag.startswith(marker):
+        return 0
+    try:
+        return int(tag.removeprefix(marker))
+    except ValueError:
+        return 0
+
+
+def next_signal_index(signals: list[IOSignal], signal_type: IOSignalType) -> int:
+    return max((_tag_index(signal.tag, signal_type.tag_prefix) for signal in signals), default=0) + 1
+
+
+def auto_address(signal_type: IOSignalType, index: int) -> str:
+    zero_based = max(index - 1, 0)
+    if signal_type.address_kind == "input_bit":
+        return f"%I{zero_based // 8}.{zero_based % 8}"
+    if signal_type.address_kind == "output_bit":
+        return f"%Q{zero_based // 8}.{zero_based % 8}"
+    if signal_type.address_kind == "input_word":
+        return f"%IW{zero_based * 2}"
+    if signal_type.address_kind == "output_word":
+        return f"%QW{zero_based * 2}"
+    if signal_type.address_kind == "relay":
+        return f"RLY-{index:04d}"
+    return ""
+
+
+def create_labeled_io_signal(signal_type_key: str, label: str, existing_signals: list[IOSignal] | None = None) -> IOSignal:
+    signal_type = io_signal_type_for_key(signal_type_key)
+    existing = existing_signals or []
+    index = next_signal_index(existing, signal_type)
+    clean_label = str(label).strip() or signal_type.label
+    return IOSignal(
+        tag=f"{signal_type.tag_prefix}-{index:04d}",
+        address=auto_address(signal_type, index),
+        description=clean_label,
+        signal_type=signal_type.signal_type,
+        device=clean_label,
+        mapping_status="mapped" if signal_type.address_kind == "relay" else "addressed",
+    )
+
+
+def serialize_io_signal(signal: IOSignal) -> str:
+    return json.dumps(signal.to_dict(), sort_keys=True)
+
+
+def deserialize_io_signal(record: str | dict[str, Any]) -> IOSignal:
+    payload = json.loads(record) if isinstance(record, str) else dict(record)
+    source_record_ids = payload.get("source_record_ids", payload.get("sourceRecordIds", ()))
+    return IOSignal(
+        tag=str(payload.get("tag", "")),
+        address=str(payload.get("address", "")),
+        description=str(payload.get("description", "")),
+        signal_type=str(payload.get("signal_type", payload.get("signalType", ""))),
+        device=str(payload.get("device", "")),
+        rack=str(payload.get("rack", "")),
+        slot=str(payload.get("slot", "")),
+        channel=str(payload.get("channel", "")),
+        terminal=str(payload.get("terminal", "")),
+        source_record_ids=tuple(str(source_id) for source_id in source_record_ids),
+        mapping_status=str(payload.get("mapping_status", payload.get("mappingStatus", "unmapped"))),
+    )
+
+
+def explicit_io_signals_from_project(project: object) -> list[IOSignal]:
+    signals: list[IOSignal] = []
+    for record in getattr(project, "IOSignals", []) or []:
+        try:
+            signal = deserialize_io_signal(record)
+        except (TypeError, ValueError, json.JSONDecodeError):
+            continue
+        if signal.tag:
+            signals.append(signal)
+    return signals
+
+
+def append_io_signal_to_project(project: object, signal_type_key: str, label: str) -> IOSignal:
+    existing = explicit_io_signals_from_project(project)
+    signal = create_labeled_io_signal(signal_type_key, label, existing)
+    records = list(getattr(project, "IOSignals", []) or [])
+    records.append(serialize_io_signal(signal))
+    setattr(project, "IOSignals", records)
+    return signal
+
+
 def _safe_sensor_count(value: str) -> int:
     try:
         count = int(str(value).strip())
@@ -66,11 +193,16 @@ def _safe_sensor_count(value: str) -> int:
     return max(count, 0)
 
 
-def starter_io_signals_from_project(project: object) -> list[IOSignal]:
+def starter_io_signals_from_project(project: object, existing_signals: list[IOSignal] | None = None) -> list[IOSignal]:
     """Build starter I/O signals from the current project intake data."""
     intake = project_object_to_intake(project)
     sensor_field = intake.fields.get("io.sensorCount")
     count = _safe_sensor_count(sensor_field.value if sensor_field else "")
+    existing = existing_signals or []
+    digital_input_type = io_signal_type_for_key("digital_input")
+    existing_input_count = sum(1 for signal in existing if signal.signal_type == "digital_input")
+    remaining_count = max(count - existing_input_count, 0)
+    start_index = next_signal_index(existing, digital_input_type)
     source_record_ids = tuple(
         sorted(
             source.source_id
@@ -79,7 +211,7 @@ def starter_io_signals_from_project(project: object) -> list[IOSignal]:
         )
     )
 
-    if count == 0:
+    if count == 0 and not existing:
         return [
             IOSignal(
                 tag="IO-UNASSIGNED-001",
@@ -93,13 +225,14 @@ def starter_io_signals_from_project(project: object) -> list[IOSignal]:
     return [
         IOSignal(
             tag=f"DI-{index:04d}",
+            address=auto_address(digital_input_type, index),
             description=f"Starter discrete input {index}",
             signal_type="digital_input",
             device=f"Sensor {index}",
             source_record_ids=source_record_ids,
             mapping_status="unmapped",
         )
-        for index in range(1, count + 1)
+        for index in range(start_index, start_index + remaining_count)
     ]
 
 
@@ -107,7 +240,9 @@ def io_signals_from_objects(objects: list[object]) -> list[IOSignal]:
     signals: list[IOSignal] = []
     for obj in objects:
         if hasattr(obj, "ProjectId") and hasattr(obj, "Deliverables"):
-            signals.extend(starter_io_signals_from_project(obj))
+            explicit_signals = explicit_io_signals_from_project(obj)
+            signals.extend(explicit_signals)
+            signals.extend(starter_io_signals_from_project(obj, explicit_signals))
     return signals
 
 
@@ -125,7 +260,7 @@ def unmapped_io_findings(signals: list[IOSignal]) -> list[str]:
     for signal in signals:
         if signal.mapping_status == "missing":
             findings.append(f"ERROR: {signal.tag} has no usable I/O source data.")
-        elif signal.mapping_status != "mapped":
+        elif signal.mapping_status == "unmapped":
             findings.append(f"WARNING: {signal.tag} is not mapped to PLC rack/slot/channel.")
     return findings
 
@@ -134,7 +269,7 @@ def io_mapping_summary(signals: list[IOSignal]) -> str | None:
     missing_count = sum(1 for signal in signals if signal.mapping_status == "missing")
     unmapped_count = sum(
         1 for signal in signals
-        if signal.mapping_status not in {"mapped", "missing"}
+        if signal.mapping_status == "unmapped"
     )
     missing_label = "signal" if missing_count == 1 else "signals"
     unmapped_label = "signal" if unmapped_count == 1 else "signals"

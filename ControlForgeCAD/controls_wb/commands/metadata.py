@@ -11,7 +11,7 @@ class CommandSpec:
     module_name: str
 
 
-PROJECT_COMMANDS = ("CE_NewProject",)
+PROJECT_COMMANDS = ("CE_NewProject", "CE_AddIOSignal")
 LAYOUT_COMMANDS = ("CE_CreatePanel",)
 VALIDATION_COMMANDS = ("CE_ValidateProject", "CE_PreviewMissingData")
 EXPORT_COMMANDS = (
@@ -23,6 +23,7 @@ EXPORT_COMMANDS = (
 
 COMMAND_SPECS = (
     CommandSpec("CE_NewProject", "New Controls Project", "new_project"),
+    CommandSpec("CE_AddIOSignal", "Add I/O Signal", "add_io_signal"),
     CommandSpec("CE_CreatePanel", "Create Control Panel", "create_panel"),
     CommandSpec("CE_ValidateProject", "Validate Controls Project", "validate_project"),
     CommandSpec("CE_PreviewMissingData", "Preview Missing Data", "missing_data"),

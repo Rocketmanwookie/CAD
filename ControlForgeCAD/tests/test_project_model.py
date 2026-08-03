@@ -55,6 +55,8 @@ def test_project_property_specs_expose_editable_intake_fields():
     assert specs["Customer"].group == "CEProject"
     assert specs["SiteLocation"].description == "Site or installation location"
     assert specs["Deliverables"].property_type == "App::PropertyStringList"
+    assert specs["IOSignals"].property_type == "App::PropertyStringList"
+    assert specs["IOSignals"].group == "I/O"
     assert specs["NominalVoltage"].group == "Intake"
     assert specs["PhaseCount"].group == "Intake"
     assert specs["EnclosureRating"].group == "Intake"
@@ -70,6 +72,7 @@ def test_intake_to_project_properties_maps_starter_payload():
     assert properties["Deliverables"] == ["ioList", "panelLayout"]
     assert properties["Customer"] == ""
     assert properties["SiteLocation"] == ""
+    assert properties["IOSignals"] == []
     assert properties["PowerFeedStatus"] == "Requested"
 
 
@@ -84,6 +87,7 @@ def test_initialize_project_object_adds_properties_and_proxy():
     assert "ProjectName" in obj.PropertiesList
     assert "Customer" in obj.PropertiesList
     assert "SiteLocation" in obj.PropertiesList
+    assert "IOSignals" in obj.PropertiesList
     assert "PlcPlatform" in obj.PropertiesList
 
 

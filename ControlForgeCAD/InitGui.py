@@ -87,6 +87,7 @@ if Gui is not None:
 
             from controls_wb.commands import (  # noqa: F401
                 create_panel,
+                add_io_signal,
                 export_bom,
                 export_ceproject_xml,
                 export_io_list,

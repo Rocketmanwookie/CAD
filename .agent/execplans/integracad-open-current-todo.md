@@ -134,6 +134,8 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - [x] Milestone 4: add starter I/O list model and deterministic CSV export.
 - [x] Expose `CE_ExportIOList` in workbench export command registration.
 - [x] Add tests for I/O CSV headers/rows, missing sensor-count handling, unmapped findings, and fake document-object extraction.
+- [x] Add `CE_AddIOSignal` dialog workflow for selectable I/O type, user label, and deterministic auto tag/address generation.
+- [x] Store explicit I/O signals on `CE_Project` as JSON-line records and include them in I/O CSV export before remaining sensor-count placeholders.
 - [x] Milestone 5: add starter CAD-side controls layout placeholder objects.
 - [x] Wire `CE_CreatePanel` to create panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module placeholders.
 - [x] Add tests for layout metadata, fake FreeCAD object creation, proxy persistence hooks, and BOM extraction from starter layout objects.
@@ -174,6 +176,7 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - Treat filled editable document-object values with `Unknown` or `Requested` starter statuses as `Received` when converting to backend intake data. This keeps Property View edits useful without forcing the user to update status fields manually.
 - Store `Customer` and `SiteLocation` as editable `CE_Project` properties now, but do not mark them as required deliverable facts yet because the current backend required-field matrix does not use them.
 - Keep Milestone 4 I/O generation intentionally simple: `SensorCount` creates starter digital-input rows marked `unmapped`; detailed rack/module/channel assignment remains a later Phase 6 task.
+- Add explicit I/O signal rows as the first labeling workflow: digital input/output, analog input/output, and relay rows receive deterministic generated tags and addresses, while rack/slot/channel assignment remains later work.
 - Keep Milestone 5 geometry as simple boxes with editable metadata. Manufacturer-accurate models, assembly constraints, routing, wire schedules, and detailed panel layout remain future work.
 
 ## Validation Commands
@@ -319,7 +322,8 @@ Manual FreeCAD validation steps for this milestone:
 14. Run Validate Controls Project and confirm validation reads the project and starter layout metadata.
 15. Run Export BOM and confirm ~/controlforgecad_bom.csv includes starter layout objects with tag/description/manufacturer/part-number data where assigned.
 16. Run Export CEProject XML and confirm ~/integracab_ceproject.xml is written.
-17. Run Export I/O List and confirm ~/integracab_io_list.csv is written from the current starter intake data. If rack/slot/channel data is not assigned yet, confirm Report View prints unmapped I/O warnings.
+17. Run Add I/O Signal, choose a type, enter a label, and confirm Report View prints the generated tag and address.
+18. Run Export I/O List and confirm ~/integracab_io_list.csv is written from explicit I/O rows plus remaining starter intake data. If rack/slot/channel data is not assigned yet, confirm Report View prints a concise unmapped I/O summary.
 ```
 
 ## Outcomes & Retrospective

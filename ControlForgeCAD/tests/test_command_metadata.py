@@ -20,6 +20,7 @@ from controls_wb.freecad_paths import workbench_root_from_module_globals
 def test_command_metadata_matches_expected_workbench_commands():
     assert all_command_ids() == (
         "CE_NewProject",
+        "CE_AddIOSignal",
         "CE_CreatePanel",
         "CE_ValidateProject",
         "CE_PreviewMissingData",
@@ -28,7 +29,7 @@ def test_command_metadata_matches_expected_workbench_commands():
         "CE_ExportIOList",
         "CE_ExportMissingDataCSV",
     )
-    assert PROJECT_COMMANDS == ("CE_NewProject",)
+    assert PROJECT_COMMANDS == ("CE_NewProject", "CE_AddIOSignal")
     assert LAYOUT_COMMANDS == ("CE_CreatePanel",)
     assert VALIDATION_COMMANDS == ("CE_ValidateProject", "CE_PreviewMissingData")
     assert EXPORT_COMMANDS == (
@@ -41,6 +42,7 @@ def test_command_metadata_matches_expected_workbench_commands():
 
 def test_command_metadata_exposes_menu_text_for_manual_validation_docs():
     assert command_menu_text("CE_NewProject") == "New Controls Project"
+    assert command_menu_text("CE_AddIOSignal") == "Add I/O Signal"
     assert command_menu_text("CE_PreviewMissingData") == "Preview Missing Data"
     assert command_menu_text("CE_ExportCEProjectXML") == "Export CEProject XML"
     assert command_menu_text("CE_ExportIOList") == "Export I/O List"
