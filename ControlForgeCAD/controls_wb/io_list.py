@@ -44,6 +44,20 @@ IO_SIGNAL_TYPES = (
     IOSignalType("relay", "Relay", "relay", "RLY", "relay"),
 )
 
+COUNT_PROPERTY_BY_SIGNAL_TYPE = {
+    "digital_input": "DICount",
+    "digital_output": "DOCount",
+    "analog_input": "AICount",
+    "analog_output": "AOCount",
+}
+
+STARTER_DESCRIPTION_BY_SIGNAL_TYPE = {
+    "digital_input": "Starter digital input",
+    "digital_output": "Starter digital output",
+    "analog_input": "Starter analog input",
+    "analog_output": "Starter analog output",
+}
+
 
 @dataclass(frozen=True)
 class IOSignal:
@@ -193,16 +207,49 @@ def _safe_sensor_count(value: str) -> int:
     return max(count, 0)
 
 
+def _typed_count(project: object, signal_type_key: str) -> int:
+    property_name = COUNT_PROPERTY_BY_SIGNAL_TYPE[signal_type_key]
+    return _safe_sensor_count(getattr(project, property_name, ""))
+
+
+def _has_typed_counts(project: object) -> bool:
+    return any(
+        str(getattr(project, property_name, "")).strip()
+        for property_name in COUNT_PROPERTY_BY_SIGNAL_TYPE.values()
+    )
+
+
+def _starter_signals_for_type(
+    signal_type_key: str,
+    count: int,
+    existing_signals: list[IOSignal],
+    source_record_ids: tuple[str, ...] = (),
+) -> list[IOSignal]:
+    signal_type = io_signal_type_for_key(signal_type_key)
+    existing_count = sum(
+        1 for signal in existing_signals
+        if signal.signal_type == signal_type.signal_type
+    )
+    remaining_count = max(count - existing_count, 0)
+    start_index = next_signal_index(existing_signals, signal_type)
+    return [
+        IOSignal(
+            tag=f"{signal_type.tag_prefix}-{index:04d}",
+            address=auto_address(signal_type, index),
+            description=f"{STARTER_DESCRIPTION_BY_SIGNAL_TYPE[signal_type_key]} {index}",
+            signal_type=signal_type.signal_type,
+            device=f"{signal_type.label} {index}",
+            source_record_ids=source_record_ids,
+            mapping_status="addressed",
+        )
+        for index in range(start_index, start_index + remaining_count)
+    ]
+
+
 def starter_io_signals_from_project(project: object, existing_signals: list[IOSignal] | None = None) -> list[IOSignal]:
     """Build starter I/O signals from the current project intake data."""
     intake = project_object_to_intake(project)
-    sensor_field = intake.fields.get("io.sensorCount")
-    count = _safe_sensor_count(sensor_field.value if sensor_field else "")
     existing = existing_signals or []
-    digital_input_type = io_signal_type_for_key("digital_input")
-    existing_input_count = sum(1 for signal in existing if signal.signal_type == "digital_input")
-    remaining_count = max(count - existing_input_count, 0)
-    start_index = next_signal_index(existing, digital_input_type)
     source_record_ids = tuple(
         sorted(
             source.source_id
@@ -211,6 +258,21 @@ def starter_io_signals_from_project(project: object, existing_signals: list[IOSi
         )
     )
 
+    if _has_typed_counts(project):
+        signals: list[IOSignal] = []
+        for signal_type_key in COUNT_PROPERTY_BY_SIGNAL_TYPE:
+            signals.extend(
+                _starter_signals_for_type(
+                    signal_type_key,
+                    _typed_count(project, signal_type_key),
+                    existing + signals,
+                    source_record_ids if signal_type_key in {"digital_input", "analog_input"} else (),
+                )
+            )
+        return signals
+
+    sensor_field = intake.fields.get("io.sensorCount")
+    count = _safe_sensor_count(sensor_field.value if sensor_field else "")
     if count == 0 and not existing:
         return [
             IOSignal(
@@ -222,18 +284,12 @@ def starter_io_signals_from_project(project: object, existing_signals: list[IOSi
             )
         ]
 
-    return [
-        IOSignal(
-            tag=f"DI-{index:04d}",
-            address=auto_address(digital_input_type, index),
-            description=f"Starter discrete input {index}",
-            signal_type="digital_input",
-            device=f"Sensor {index}",
-            source_record_ids=source_record_ids,
-            mapping_status="unmapped",
-        )
-        for index in range(start_index, start_index + remaining_count)
-    ]
+    return _starter_signals_for_type(
+        "digital_input",
+        count,
+        existing,
+        source_record_ids,
+    )
 
 
 def io_signals_from_objects(objects: list[object]) -> list[IOSignal]:

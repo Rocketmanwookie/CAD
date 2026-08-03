@@ -41,6 +41,19 @@ def _project(sensor_count="2"):
     )
 
 
+def _typed_project(di="2", do="1", ai="1", ao="1"):
+    project = _project("")
+    project.PlcMake = "Siemens"
+    project.PlcLine = "S7-1500"
+    project.PlcPlatform = "Siemens S7-1500"
+    project.DICount = di
+    project.DOCount = do
+    project.AICount = ai
+    project.AOCount = ao
+    project.IOAccessories = ["Remote / modular I/O bank"]
+    return project
+
+
 def test_io_signal_csv_row_uses_stable_headers():
     signal = IOSignal(
         tag="DI-0001",
@@ -68,22 +81,35 @@ def test_starter_io_signals_from_project_sensor_count():
         IOSignal(
             tag="DI-0001",
             address="%I0.0",
-            description="Starter discrete input 1",
+            description="Starter digital input 1",
             signal_type="digital_input",
-            device="Sensor 1",
+            device="Digital Input 1",
             source_record_ids=("SRC-IO",),
-            mapping_status="unmapped",
+            mapping_status="addressed",
         ),
         IOSignal(
             tag="DI-0002",
             address="%I0.1",
-            description="Starter discrete input 2",
+            description="Starter digital input 2",
             signal_type="digital_input",
-            device="Sensor 2",
+            device="Digital Input 2",
             source_record_ids=("SRC-IO",),
-            mapping_status="unmapped",
+            mapping_status="addressed",
         ),
     ]
+
+
+def test_starter_io_signals_from_typed_project_counts():
+    signals = starter_io_signals_from_project(_typed_project(di="2", do="1", ai="1", ao="1"))
+
+    assert [(signal.tag, signal.address, signal.signal_type) for signal in signals] == [
+        ("DI-0001", "%I0.0", "digital_input"),
+        ("DI-0002", "%I0.1", "digital_input"),
+        ("DO-0001", "%Q0.0", "digital_output"),
+        ("AI-0001", "%IW0", "analog_input"),
+        ("AO-0001", "%QW0", "analog_output"),
+    ]
+    assert {signal.mapping_status for signal in signals} == {"addressed"}
 
 
 def test_starter_io_signals_reports_missing_or_invalid_sensor_count():
@@ -105,8 +131,8 @@ def test_io_list_csv_is_deterministic():
 
     assert csv_text == (
         "Tag,Address,Description,SignalType,Device,Rack,Slot,Channel,Terminal,SourceRecordIds,MappingStatus\n"
-        "DI-0001,%I0.0,Starter discrete input 1,digital_input,Sensor 1,,,,,SRC-IO,unmapped\n"
-        "DI-0002,%I0.1,Starter discrete input 2,digital_input,Sensor 2,,,,,SRC-IO,unmapped\n"
+        "DI-0001,%I0.0,Starter digital input 1,digital_input,Digital Input 1,,,,,SRC-IO,addressed\n"
+        "DI-0002,%I0.1,Starter digital input 2,digital_input,Digital Input 2,,,,,SRC-IO,addressed\n"
     )
 
 
@@ -117,7 +143,17 @@ def test_unmapped_io_findings_are_clear():
 
 
 def test_io_mapping_summary_collapses_unmapped_warning_noise():
-    summary = io_mapping_summary(starter_io_signals_from_project(_project("30")))
+    summary = io_mapping_summary(
+        [
+            IOSignal(
+                tag=f"DI-{index:04d}",
+                description=f"Starter digital input {index}",
+                signal_type="digital_input",
+                mapping_status="unmapped",
+            )
+            for index in range(1, 31)
+        ]
+    )
 
     assert summary == (
         "WARNING: I/O list has 30 signals not mapped to PLC rack/slot/channel. "
@@ -169,7 +205,7 @@ def test_explicit_io_signals_reduce_remaining_starter_inputs():
 
     assert signals[0] == explicit
     assert [signal.tag for signal in signals] == ["DI-0001", "DI-0002"]
-    assert signals[1].description == "Starter discrete input 2"
+    assert signals[1].description == "Starter digital input 2"
 
 
 def test_io_signal_form_mapping_appends_to_existing_project():
@@ -192,4 +228,4 @@ def test_io_signals_and_command_helper_read_project_objects_only():
     objects = [SimpleNamespace(Tag="M101"), _project("1")]
 
     assert [signal.tag for signal in io_signals_from_objects(objects)] == ["DI-0001"]
-    assert "DI-0001,%I0.0,Starter discrete input 1" in io_list_csv_for_objects(objects)
+    assert "DI-0001,%I0.0,Starter digital input 1" in io_list_csv_for_objects(objects)

@@ -34,8 +34,15 @@ PROJECT_PROPERTY_SPECS = (
     ProjectPropertySpec("App::PropertyString", "NominalVoltage", "Intake", "Nominal voltage response"),
     ProjectPropertySpec("App::PropertyString", "PhaseCount", "Intake", "Phase count response"),
     ProjectPropertySpec("App::PropertyString", "EnclosureRating", "Intake", "Enclosure rating response"),
+    ProjectPropertySpec("App::PropertyString", "PlcMake", "PLC / I/O", "PLC manufacturer"),
+    ProjectPropertySpec("App::PropertyString", "PlcLine", "PLC / I/O", "PLC product line"),
     ProjectPropertySpec("App::PropertyString", "PlcPlatform", "Intake", "PLC platform response"),
     ProjectPropertySpec("App::PropertyString", "SensorCount", "Intake", "Sensor count response"),
+    ProjectPropertySpec("App::PropertyString", "DICount", "PLC / I/O", "Digital input count"),
+    ProjectPropertySpec("App::PropertyString", "DOCount", "PLC / I/O", "Digital output count"),
+    ProjectPropertySpec("App::PropertyString", "AICount", "PLC / I/O", "Analog input count"),
+    ProjectPropertySpec("App::PropertyString", "AOCount", "PLC / I/O", "Analog output count"),
+    ProjectPropertySpec("App::PropertyStringList", "IOAccessories", "PLC / I/O", "Selected I/O accessories"),
     ProjectPropertySpec("App::PropertyString", "PowerFeedStatus", "Intake", "Power feed intake status"),
     ProjectPropertySpec("App::PropertyString", "EnclosureRatingStatus", "Intake", "Enclosure rating intake status"),
     ProjectPropertySpec("App::PropertyString", "PlcPlatformStatus", "Intake", "PLC platform intake status"),
@@ -113,12 +120,19 @@ def intake_to_project_properties(intake: ProjectIntake) -> dict[str, object]:
         "EnclosureRating": intake.fields.get("environment.enclosureRating", "").value
         if "environment.enclosureRating" in intake.fields
         else "",
+        "PlcMake": "",
+        "PlcLine": "",
         "PlcPlatform": intake.fields.get("controls.plcPlatform", "").value
         if "controls.plcPlatform" in intake.fields
         else "",
         "SensorCount": intake.fields.get("io.sensorCount", "").value
         if "io.sensorCount" in intake.fields
         else "",
+        "DICount": "",
+        "DOCount": "",
+        "AICount": "",
+        "AOCount": "",
+        "IOAccessories": [],
         "PowerFeedStatus": "Requested",
         "EnclosureRatingStatus": "Requested",
         "PlcPlatformStatus": "Requested",

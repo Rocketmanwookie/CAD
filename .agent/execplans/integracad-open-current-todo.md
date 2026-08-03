@@ -136,6 +136,7 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - [x] Add tests for I/O CSV headers/rows, missing sensor-count handling, unmapped findings, and fake document-object extraction.
 - [x] Add `CE_AddIOSignal` dialog workflow for selectable I/O type, user label, and deterministic auto tag/address generation.
 - [x] Store explicit I/O signals on `CE_Project` as JSON-line records and include them in I/O CSV export before remaining sensor-count placeholders.
+- [x] Extend the Project Intake dialog with Siemens/Allen-Bradley make selection, contingent PLC line dropdowns, DI/DO/AI/AO counts, and optional modular I/O accessories.
 - [x] Milestone 5: add starter CAD-side controls layout placeholder objects.
 - [x] Wire `CE_CreatePanel` to create panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module placeholders.
 - [x] Add tests for layout metadata, fake FreeCAD object creation, proxy persistence hooks, and BOM extraction from starter layout objects.
@@ -175,7 +176,7 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - Resolve the workbench root by trying `globals()["__file__"]`, then `globals()["__spec__"].origin`, then the imported `controls_wb` package path.
 - Treat filled editable document-object values with `Unknown` or `Requested` starter statuses as `Received` when converting to backend intake data. This keeps Property View edits useful without forcing the user to update status fields manually.
 - Store `Customer` and `SiteLocation` as editable `CE_Project` properties now, but do not mark them as required deliverable facts yet because the current backend required-field matrix does not use them.
-- Keep Milestone 4 I/O generation intentionally simple: `SensorCount` creates starter digital-input rows marked `unmapped`; detailed rack/module/channel assignment remains a later Phase 6 task.
+- Keep Milestone 4 I/O generation intentionally simple: Project setup creates addressed starter DI/DO/AI/AO rows from counts; detailed rack/module/channel assignment and module capacity matching remain later Phase 6 work.
 - Add explicit I/O signal rows as the first labeling workflow: digital input/output, analog input/output, and relay rows receive deterministic generated tags and addresses, while rack/slot/channel assignment remains later work.
 - Keep Milestone 5 geometry as simple boxes with editable metadata. Manufacturer-accurate models, assembly constraints, routing, wire schedules, and detailed panel layout remain future work.
 
@@ -311,12 +312,12 @@ Manual FreeCAD validation steps for this milestone:
 3. Select the Controls / Automation workbench.
 4. Confirm New Controls Project, Validate Controls Project, Preview Missing Data, Export BOM, and Export CEProject XML appear in the workbench UI.
 5. Run New Controls Project and confirm the Project Intake dialog opens.
-6. Enter or edit project name, customer, site/location, deliverables, PLC platform, nominal voltage, phase count, enclosure rating, and sensor count, then submit the dialog.
+6. Enter or edit project name, customer, site/location, deliverables, nominal voltage, phase count, enclosure rating, PLC make, PLC line, DI/DO/AI/AO counts, and optional I/O accessories, then submit the dialog.
 7. Confirm a CE_Project object appears in the model tree and Report View says the project intake was updated. If Qt/PySide cannot load, confirm the fallback warning appears and a starter CE_Project is still created.
 8. Select CE_Project and confirm editable CEProject and Intake properties appear in the Property View matching the submitted dialog values.
 9. Edit a basic property, save the document as .FCStd, close it, reopen it, and confirm the property value is retained.
-10. Clear SensorCount, run Preview Missing Data, and confirm io.sensorCount is reported as missing.
-11. Fill SensorCount, rerun Preview Missing Data, and confirm the value is shown as a response rather than missing.
+10. Clear all input counts, run Preview Missing Data, and confirm io.sensorCount is reported as missing.
+11. Fill DI or AI count, rerun Preview Missing Data, and confirm the value is shown as a response rather than missing.
 12. Run Validate Controls Project and confirm validation reads the edited object values.
 13. Run Create Control Panel and confirm CE_Backplate, CE_DIN_Rail, CE_Wire_Duct, CE_Terminal_Strip, and CE_PLC_Rack appear in the model tree with editable controls metadata.
 14. Run Validate Controls Project and confirm validation reads the project and starter layout metadata.
@@ -395,7 +396,7 @@ Manual FreeCAD validation steps for this milestone:
 - Validation and missing-data helpers now operate on edited document-backed data; blank required properties still report as missing, while filled values are recognized as responses.
 - Milestone 3 completed: `controls_wb.gui.project_intake` provides pure-Python form mapping helpers plus a lazy Qt dialog for editing starter intake fields.
 - `CE_NewProject` now opens the Project Intake dialog when possible and prints a fallback warning while creating the starter object if Qt/PySide is unavailable.
-- Milestone 4 completed: `controls_wb.io_list` defines `IOSignal`, deterministic CSV export, starter signal generation from project sensor count, and clear unmapped/missing I/O findings.
+- Milestone 4 completed: `controls_wb.io_list` defines `IOSignal`, deterministic CSV export, starter signal generation from project DI/DO/AI/AO counts, explicit user-labeled I/O rows, and clear missing/unmapped I/O summaries.
 - `CE_ExportIOList` is registered with the workbench export commands and writes `~/integracab_io_list.csv`.
 - Milestone 5 completed: `controls_wb.model.layout` defines starter layout object specs and FreeCAD-like object creation helpers for the required placeholder types.
 - `CE_CreatePanel` now creates the starter layout set, and existing BOM export includes those objects through their controls metadata.

@@ -61,7 +61,14 @@ def test_project_property_specs_expose_editable_intake_fields():
     assert specs["PhaseCount"].group == "Intake"
     assert specs["EnclosureRating"].group == "Intake"
     assert specs["PlcPlatform"].group == "Intake"
+    assert specs["PlcMake"].group == "PLC / I/O"
+    assert specs["PlcLine"].group == "PLC / I/O"
     assert specs["SensorCount"].group == "Intake"
+    assert specs["DICount"].group == "PLC / I/O"
+    assert specs["DOCount"].group == "PLC / I/O"
+    assert specs["AICount"].group == "PLC / I/O"
+    assert specs["AOCount"].group == "PLC / I/O"
+    assert specs["IOAccessories"].property_type == "App::PropertyStringList"
 
 
 def test_intake_to_project_properties_maps_starter_payload():
@@ -73,6 +80,7 @@ def test_intake_to_project_properties_maps_starter_payload():
     assert properties["Customer"] == ""
     assert properties["SiteLocation"] == ""
     assert properties["IOSignals"] == []
+    assert properties["IOAccessories"] == []
     assert properties["PowerFeedStatus"] == "Requested"
 
 
@@ -88,6 +96,8 @@ def test_initialize_project_object_adds_properties_and_proxy():
     assert "Customer" in obj.PropertiesList
     assert "SiteLocation" in obj.PropertiesList
     assert "IOSignals" in obj.PropertiesList
+    assert "DICount" in obj.PropertiesList
+    assert "IOAccessories" in obj.PropertiesList
     assert "PlcPlatform" in obj.PropertiesList
 
 
