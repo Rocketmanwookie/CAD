@@ -9,8 +9,10 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from hashlib import sha256
 from pathlib import Path
 
+from controls_wb.ceproject_xml import CEProjectXmlError, parse_ceproject_xml
 from controls_wb.hardware_catalog import (
     line_catalog,
     lines_for_make,
@@ -20,7 +22,7 @@ from controls_wb.hardware_catalog import (
     io_expansion_suggestion as catalog_io_expansion_suggestion,
 )
 from controls_wb.intake import SourceRecordType
-from controls_wb.model.project import create_or_update_project, ensure_project_properties
+from controls_wb.model.project import create_or_update_project, ensure_project_properties, intake_to_project_properties
 
 HARDWARE_CATALOG = load_hardware_catalog()
 PLC_LINES_BY_MAKE = {make: lines_for_make(HARDWARE_CATALOG, make) for make in makes(HARDWARE_CATALOG)}
@@ -71,6 +73,7 @@ SOURCE_TYPE_LABELS = {
 }
 
 SETUP_SOURCE_ID = "SRC-PROJECT-SETUP-001"
+CEPROJECT_IMPORT_SOURCE_ID_PREFIX = "SRC-CEPROJECT-IMPORT-"
 SETUP_SOURCE_FIELDS = (
     ("ProjectName", "project.name"),
     ("NominalVoltage", "powerFeed.nominalVoltage"),
@@ -79,6 +82,8 @@ SETUP_SOURCE_FIELDS = (
     ("PlcPlatform", "controls.plcPlatform"),
     ("SensorCount", "io.sensorCount"),
 )
+
+CEPROJECT_IMPORT_REQUIRED_KEYS = ("id", "projectId", "projectName", "xmlText")
 
 
 @dataclass(frozen=True)
@@ -244,6 +249,173 @@ def source_type_label_from_value(value: str) -> str:
         if source_type == value:
             return label
     return "Manual entry"
+
+
+def _field_value(document, field_id: str) -> str:
+    field = document.intake.fields.get(field_id)
+    return field.value if field is not None else ""
+
+
+def _plc_make_line_from_platform(platform: str) -> tuple[str, str]:
+    clean_platform = str(platform).strip()
+    for make, lines in PLC_LINES_BY_MAKE.items():
+        for line in lines:
+            if clean_platform == plc_platform_from_make_line(make, line):
+                return make, line
+            if clean_platform.startswith(f"{make} ") and clean_platform.removeprefix(f"{make} ").strip() == line:
+                return make, line
+    if clean_platform:
+        for make, lines in PLC_LINES_BY_MAKE.items():
+            if clean_platform.startswith(make):
+                return make, lines[0] if lines else ""
+    return "Siemens", normalized_plc_line("Siemens", "")
+
+
+def form_values_from_ceproject_xml(xml_text: str | bytes) -> dict[str, str]:
+    """Return project-intake form values from supported CEProject XML."""
+    document = parse_ceproject_xml(xml_text)
+    nominal_voltage = _field_value(document, "powerFeed.nominalVoltage")
+    phase_count = _field_value(document, "powerFeed.phaseCount")
+    enclosure_rating = _field_value(document, "environment.enclosureRating")
+    plc_platform = _field_value(document, "controls.plcPlatform")
+    sensor_count = _field_value(document, "io.sensorCount")
+    plc_make, plc_line = _plc_make_line_from_platform(plc_platform)
+    cpu_options = plc_cpu_options(plc_make, plc_line)
+    ethernet_options = hardware_dropdown_options(plc_make, plc_line, "ethernet")
+    power_options = hardware_dropdown_options(plc_make, plc_line, "power")
+
+    return {
+        "ProjectName": document.intake.name,
+        "Customer": "",
+        "SiteLocation": "",
+        "Deliverables": format_deliverables(document.intake.deliverables),
+        "PowerConfiguration": power_configuration_from_values(nominal_voltage, phase_count),
+        "EnclosureRatings": enclosure_rating,
+        "PlcMake": plc_make,
+        "PlcLine": plc_line,
+        "PlcCPU": cpu_options[0] if cpu_options else "",
+        "DICount": _safe_count(sensor_count),
+        "DOCount": "",
+        "AICount": "",
+        "AOCount": "",
+        "IOAccessories": "",
+        "EthernetAdapter": ethernet_options[0] if ethernet_options else "",
+        "ExpansionPowerSupply": power_options[0] if power_options else "",
+        "CommunicationProtocols": "",
+        "SourceType": "Uploaded file / reference",
+        "SourceTitle": f"Imported CEProject XML: {document.intake.name}",
+        "SourceStakeholder": "Project manager",
+        "SourceReference": document.intake.project_id,
+    }
+
+
+def ceproject_import_record(xml_text: str | bytes, source_path: str = "") -> str:
+    """Create a durable JSON import record for a CEProject XML upload."""
+    text = xml_text.decode("utf-8") if isinstance(xml_text, bytes) else str(xml_text)
+    document = parse_ceproject_xml(text)
+    digest = sha256(text.encode("utf-8")).hexdigest()[:12]
+    return json.dumps(
+        {
+            "id": digest,
+            "projectId": document.intake.project_id,
+            "projectName": document.intake.name,
+            "schemaVersion": document.intake.schema_version,
+            "sourcePath": source_path,
+            "xmlText": text,
+        },
+        sort_keys=True,
+    )
+
+
+def ceproject_import_records_from_project(obj: object | None) -> list[dict[str, str]]:
+    records = []
+    for raw_record in getattr(obj, "CEProjectImports", []) if obj is not None else []:
+        try:
+            record = json.loads(raw_record)
+        except (TypeError, ValueError):
+            continue
+        if all(record.get(key) for key in CEPROJECT_IMPORT_REQUIRED_KEYS):
+            records.append(record)
+    return records
+
+
+def merge_ceproject_import_records(existing_records: object, new_record: str | None) -> list[str]:
+    records_by_id = {}
+    for raw_record in list(existing_records or []):
+        try:
+            record = json.loads(raw_record)
+        except (TypeError, ValueError):
+            continue
+        if all(record.get(key) for key in CEPROJECT_IMPORT_REQUIRED_KEYS):
+            records_by_id[record["id"]] = json.dumps(record, sort_keys=True)
+    if new_record:
+        try:
+            record = json.loads(new_record)
+        except (TypeError, ValueError):
+            record = {}
+        if all(record.get(key) for key in CEPROJECT_IMPORT_REQUIRED_KEYS):
+            records_by_id[record["id"]] = json.dumps(record, sort_keys=True)
+    return [records_by_id[key] for key in sorted(records_by_id)]
+
+
+def ceproject_import_label(record: dict[str, str]) -> str:
+    name = record.get("projectName", "CEProject XML")
+    project_id = record.get("projectId", "")
+    source_path = record.get("sourcePath", "")
+    suffix = Path(source_path).name if source_path else project_id
+    return f"{name} ({suffix})" if suffix else name
+
+
+def _source_records_by_id(raw_records: object) -> dict[str, str]:
+    records = {}
+    for raw_record in list(raw_records or []):
+        try:
+            record = json.loads(raw_record)
+        except (TypeError, ValueError):
+            continue
+        record_id = record.get("id")
+        if record_id:
+            records[record_id] = json.dumps(record, sort_keys=True)
+    return records
+
+
+def _ceproject_import_source_record(record: dict[str, str]) -> str:
+    import_id = record.get("id", "")
+    return json.dumps(
+        {
+            "id": f"{CEPROJECT_IMPORT_SOURCE_ID_PREFIX}{import_id}",
+            "type": SourceRecordType.UPLOADED_FILE.value,
+            "title": f"Imported CEProject XML: {record.get('projectName', 'CEProject XML')}",
+            "stakeholder": "Project manager",
+            "fieldIds": [
+                "project.name",
+                "powerFeed.nominalVoltage",
+                "powerFeed.phaseCount",
+                "environment.enclosureRating",
+                "controls.plcPlatform",
+                "io.sensorCount",
+            ],
+            "reference": record.get("sourcePath", "") or record.get("projectId", ""),
+            "receivedOn": "",
+        },
+        sort_keys=True,
+    )
+
+
+def apply_ceproject_import_to_project(obj: object, record: dict[str, str]) -> None:
+    """Preserve metadata from a remembered CEProject XML import on the project object."""
+    document = parse_ceproject_xml(record["xmlText"])
+    imported_properties = intake_to_project_properties(document.intake)
+    obj.ProjectId = imported_properties["ProjectId"]
+    obj.SchemaVersion = imported_properties["SchemaVersion"]
+    obj.Contacts = imported_properties["Contacts"]
+    obj.IntakeQuestions = imported_properties["IntakeQuestions"]
+
+    records_by_id = _source_records_by_id(imported_properties["SourceRecords"])
+    records_by_id.update(_source_records_by_id(getattr(obj, "SourceRecords", [])))
+    import_source = json.loads(_ceproject_import_source_record(record))
+    records_by_id[import_source["id"]] = json.dumps(import_source, sort_keys=True)
+    obj.SourceRecords = [records_by_id[key] for key in sorted(records_by_id)]
 
 
 def _setup_source_field_ids(normalized: dict[str, object]) -> list[str]:
@@ -413,6 +585,15 @@ def apply_form_values_to_project(obj: object, values: dict[str, str]) -> object:
         "SourceRecords",
         _merge_setup_source_record(getattr(obj, "SourceRecords", []), setup_source_record),
     )
+    obj.CEProjectImports = merge_ceproject_import_records(
+        getattr(obj, "CEProjectImports", []),
+        values.get("CEProjectImportRecord"),
+    )
+    selected_import_id = str(values.get("SelectedCEProjectImportId", "")).strip()
+    for record in ceproject_import_records_from_project(obj):
+        if record.get("id") == selected_import_id:
+            apply_ceproject_import_to_project(obj, record)
+            break
     return obj
 
 
@@ -438,6 +619,15 @@ def create_or_update_project_from_form(document: object, values: dict[str, str])
         getattr(obj, "SourceRecords", []),
         setup_source_record,
     )
+    obj.CEProjectImports = merge_ceproject_import_records(
+        getattr(obj, "CEProjectImports", []),
+        values.get("CEProjectImportRecord"),
+    )
+    selected_import_id = str(values.get("SelectedCEProjectImportId", "")).strip()
+    for record in ceproject_import_records_from_project(obj):
+        if record.get("id") == selected_import_id:
+            apply_ceproject_import_to_project(obj, record)
+            break
     return obj
 
 
@@ -590,6 +780,111 @@ def show_project_intake_dialog(document: object, parent=None, console=None) -> o
     source_form.addRow("Source reference", source_reference_editor)
     layout.addLayout(source_form)
 
+    import_records = ceproject_import_records_from_project(existing)
+    selected_import_id = ""
+    pending_import_record = ""
+    import_editor = QtWidgets.QComboBox()
+
+    def refresh_import_editor(current_id: str = ""):
+        import_editor.clear()
+        for record in import_records:
+            import_editor.addItem(ceproject_import_label(record))
+        if current_id:
+            for index, record in enumerate(import_records):
+                if record.get("id") == current_id:
+                    import_editor.setCurrentIndex(index)
+                    break
+
+    def apply_import_values(record: dict[str, str]):
+        imported_values = form_values_from_ceproject_xml(record["xmlText"])
+        for key in ("ProjectName", "Customer", "SiteLocation", "Deliverables"):
+            editor = editors.get(key)
+            if editor is not None and hasattr(editor, "setText"):
+                editor.setText(imported_values.get(key, ""))
+
+        power_editor.setCurrentText(imported_values["PowerConfiguration"])
+        make_editor.setCurrentText(imported_values["PlcMake"])
+        line_editor.setCurrentText(imported_values["PlcLine"])
+        cpu_editor.setCurrentText(imported_values["PlcCPU"])
+        ethernet_editor.setCurrentText(imported_values["EthernetAdapter"])
+        power_supply_editor.setCurrentText(imported_values["ExpansionPowerSupply"])
+
+        for key in ("DICount", "DOCount", "AICount", "AOCount"):
+            editor = editors.get(key)
+            if editor is not None and hasattr(editor, "setText"):
+                editor.setText(imported_values.get(key, ""))
+
+        selected_enclosure_values = set(parse_multiselect(imported_values["EnclosureRatings"]))
+        for enclosure, checkbox in enclosure_editors.items():
+            checkbox.setChecked(enclosure in selected_enclosure_values)
+
+        selected_accessory_values = set(parse_accessories(imported_values["IOAccessories"]))
+        for accessory, checkbox in accessory_editors.items():
+            checkbox.setChecked(accessory in selected_accessory_values)
+
+        selected_protocol_values = set(parse_multiselect(imported_values["CommunicationProtocols"]))
+        for protocol, checkbox in protocol_editors.items():
+            checkbox.setChecked(protocol in selected_protocol_values)
+
+        source_type_editor.setCurrentText(imported_values["SourceType"])
+        source_title_editor.setText(imported_values["SourceTitle"])
+        source_stakeholder_editor.setText(imported_values["SourceStakeholder"])
+        source_reference_editor.setText(imported_values["SourceReference"])
+
+    def selected_import_record():
+        index = import_editor.currentIndex()
+        if 0 <= index < len(import_records):
+            return import_records[index]
+        return None
+
+    def apply_selected_import():
+        nonlocal selected_import_id
+        record = selected_import_record()
+        if record is None:
+            return
+        try:
+            apply_import_values(record)
+        except CEProjectXmlError as exc:
+            QtWidgets.QMessageBox.critical(dialog, "CEProject XML Import", str(exc))
+            return
+        selected_import_id = record["id"]
+
+    def import_ceproject_xml():
+        nonlocal pending_import_record, selected_import_id
+        result = QtWidgets.QFileDialog.getOpenFileName(
+            dialog,
+            "Import CEProject XML",
+            str(Path.home()),
+            "CEProject XML (*.ceproject.xml *.xml);;XML files (*.xml);;All files (*)",
+        )
+        source_path = result[0] if isinstance(result, tuple) else result
+        if not source_path:
+            return
+        try:
+            xml_text = Path(source_path).read_text(encoding="utf-8")
+            pending_import_record = ceproject_import_record(xml_text, source_path)
+            record = json.loads(pending_import_record)
+            import_records[:] = [candidate for candidate in import_records if candidate.get("id") != record["id"]]
+            import_records.append(record)
+            import_records.sort(key=lambda candidate: ceproject_import_label(candidate))
+            refresh_import_editor(record["id"])
+            apply_import_values(record)
+            selected_import_id = record["id"]
+        except (OSError, UnicodeError, CEProjectXmlError) as exc:
+            QtWidgets.QMessageBox.critical(dialog, "CEProject XML Import", str(exc))
+
+    import_box = QtWidgets.QWidget()
+    import_layout = QtWidgets.QHBoxLayout(import_box)
+    import_button = QtWidgets.QPushButton("Import CEProject XML")
+    apply_import_button = QtWidgets.QPushButton("Apply selected XML")
+    import_button.clicked.connect(import_ceproject_xml)
+    apply_import_button.clicked.connect(apply_selected_import)
+    import_layout.addWidget(import_editor)
+    import_layout.addWidget(import_button)
+    import_layout.addWidget(apply_import_button)
+    refresh_import_editor()
+    form.addRow("Saved CEProject XML", import_box)
+
     buttons = QtWidgets.QDialogButtonBox(
         QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel
     )
@@ -622,6 +917,8 @@ def show_project_intake_dialog(document: object, parent=None, console=None) -> o
         for protocol, checkbox in protocol_editors.items()
         if checkbox.isChecked()
     ]
+    values["CEProjectImportRecord"] = pending_import_record
+    values["SelectedCEProjectImportId"] = selected_import_id
     project = create_or_update_project_from_form(document, values)
     if console is not None:
         console.PrintMessage(f"Controls project intake updated: {project.ProjectName}\n")

@@ -23,7 +23,7 @@ IntegraCAB Open is an integration-first FreeCAD workbench concept for controls e
 
 | Command ID | Menu text | Current behavior |
 |---|---|---|
-| `CE_NewProject` | New Controls Project | Opens a project intake dialog for core project/customer/site/deliverable fields, combined phase/voltage selection, enclosure rating checkboxes, XML-backed PLC make/line/CPU selection, typed DI/DO/AI/AO counts, compatible Ethernet/power dropdowns, communication protocol checkboxes, optional I/O accessories, setup source metadata, and a link to the project setup hardware catalog guide. It creates or updates an editable `CE_Project` object and shows an I/O expansion planning popup. If Qt/PySide is unavailable, it creates the starter object and prints a warning. |
+| `CE_NewProject` | New Controls Project | Opens a project intake dialog for core project/customer/site/deliverable fields, combined phase/voltage selection, enclosure rating checkboxes, XML-backed PLC make/line/CPU selection, typed DI/DO/AI/AO counts, compatible Ethernet/power dropdowns, communication protocol checkboxes, optional I/O accessories, setup source metadata, a remembered CEProject XML import selector, and a link to the project setup hardware catalog guide. It creates or updates an editable `CE_Project` object and shows an I/O expansion planning popup. If Qt/PySide is unavailable, it creates the starter object and prints a warning. |
 | `CE_AddIOSignal` | Add I/O Signal | Opens an I/O signal dialog with selectable digital input, digital output, analog input, analog output, and relay types; user labels are stored as explicit signal rows with auto-generated tags and addresses. |
 | `CE_CreatePanel` | Create Control Panel | Creates starter placeholder layout objects for a panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module. |
 | `CE_ExportBOM` | Export BOM | Exports controls metadata rows from the active FreeCAD document to CSV. |
@@ -46,7 +46,7 @@ The PLC hardware catalog lives at `controls_wb/resources/hardware/plc_catalog.xm
 
 Project setup records a setup source record for filled starter facts. The source can be a manual entry, customer email, meeting note, phone call, field note, vendor quote, or uploaded file/reference. That source is attached to project name, voltage, phase, enclosure rating, PLC platform, and sensor/input-count facts where values are present.
 
-Project setup should also become file-driven, not only dialog-driven. The roadmap includes importing setup data from structured definition files such as CEProject XML, YAML, and UML-derived interchange formats where practical, then creating or updating the same editable `CE_Project` object.
+Project setup can import supported CEProject XML through the Project Intake dialog. Imported XML is remembered on the editable `CE_Project` object, can be selected again later, and preserves parsed project metadata, contacts, source records, and intake questions. YAML and UML-derived setup formats remain future adapter inputs where practical.
 
 The first CAD-side layout objects are placeholders, not manufacturer-accurate models. **Create Control Panel** creates a panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module with editable metadata such as tag, manufacturer, part number, description, panel name, voltage, current, terminal count, slot number, channel count, and signal type where applicable. BOM export includes these objects when they expose controls metadata.
 
@@ -163,17 +163,18 @@ Manual smoke validation:
 5. Confirm the I/O expansion planning popup appears and suggests whether CPU I/O covers the requested count plus 20 percent spare, or which starter expansion modules are needed.
 6. Confirm `CE_Project` appears in the model tree and the Report View says the project intake was updated. If Qt/PySide cannot be loaded, confirm the fallback warning is printed and a starter `CE_Project` is still created.
 7. Select `CE_Project` and confirm the Property View exposes editable CEProject and Intake properties matching the dialog values.
-8. Edit one basic property, save the document as `.FCStd`, close it, reopen it, and confirm the property value is retained.
-9. Clear all input counts, run **Preview Missing Data**, and confirm `io.sensorCount` is reported as missing.
-10. Fill DI or AI count, rerun **Preview Missing Data**, and confirm the value is shown as a response rather than missing.
-11. Run **Validate Controls Project** and confirm validation messages print to the FreeCAD console from the edited object values. Filled setup fields with source metadata should not report `missing_source`; they may still need verification or approval.
-12. Run **Add I/O Signal**, choose an I/O type, enter a label, and confirm Report View prints the generated tag and address.
-13. Run **Create Control Panel** and confirm `CE_Backplate`, `CE_DIN_Rail`, `CE_Wire_Duct`, `CE_Terminal_Strip`, and `CE_PLC_Rack` appear in the model tree with editable controls metadata.
-14. Run **Validate Controls Project** and confirm validation reads the project and starter layout metadata.
-15. Run **Export BOM** and confirm `~/controlforgecad_bom.csv` includes starter layout objects with tag/description/manufacturer/part-number data where assigned.
-16. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
-17. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written. If starter I/O remains unmapped, confirm Report View prints a concise summary and the CSV contains the detailed rows.
-18. Run **Export Missing Data CSV** and confirm `~/integracab_missing_data.csv` is written with one row per required intake fact.
+8. Reopen **New Controls Project**, import a CEProject XML file, submit, reopen the dialog, and confirm the imported XML appears in **Saved CEProject XML** and can be applied again.
+9. Edit one basic property, save the document as `.FCStd`, close it, reopen it, and confirm the property value is retained.
+10. Clear all input counts, run **Preview Missing Data**, and confirm `io.sensorCount` is reported as missing.
+11. Fill DI or AI count, rerun **Preview Missing Data**, and confirm the value is shown as a response rather than missing.
+12. Run **Validate Controls Project** and confirm validation messages print to the FreeCAD console from the edited object values. Filled setup fields with source metadata should not report `missing_source`; they may still need verification or approval.
+13. Run **Add I/O Signal**, choose an I/O type, enter a label, and confirm Report View prints the generated tag and address.
+14. Run **Create Control Panel** and confirm `CE_Backplate`, `CE_DIN_Rail`, `CE_Wire_Duct`, `CE_Terminal_Strip`, and `CE_PLC_Rack` appear in the model tree with editable controls metadata.
+15. Run **Validate Controls Project** and confirm validation reads the project and starter layout metadata.
+16. Run **Export BOM** and confirm `~/controlforgecad_bom.csv` includes starter layout objects with tag/description/manufacturer/part-number data where assigned.
+17. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
+18. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written. If starter I/O remains unmapped, confirm Report View prints a concise summary and the CSV contains the detailed rows.
+19. Run **Export Missing Data CSV** and confirm `~/integracab_missing_data.csv` is written with one row per required intake fact.
 
 Automated tests do not import real FreeCAD in this environment. They compile `Init.py` and `InitGui.py`, import both files without FreeCAD installed, and verify import-safe command metadata for the workbench command IDs above.
 

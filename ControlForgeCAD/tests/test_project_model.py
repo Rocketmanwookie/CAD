@@ -54,6 +54,8 @@ def test_project_property_specs_expose_editable_intake_fields():
     assert specs["ProjectName"].property_type == "App::PropertyString"
     assert specs["Customer"].group == "CEProject"
     assert specs["SiteLocation"].description == "Site or installation location"
+    assert specs["CEProjectImports"].property_type == "App::PropertyStringList"
+    assert specs["CEProjectImports"].group == "CEProject"
     assert specs["Deliverables"].property_type == "App::PropertyStringList"
     assert specs["IOSignals"].property_type == "App::PropertyStringList"
     assert specs["IOSignals"].group == "I/O"
@@ -86,6 +88,7 @@ def test_intake_to_project_properties_maps_starter_payload():
     assert properties["Deliverables"] == ["ioList", "panelLayout"]
     assert properties["Customer"] == ""
     assert properties["SiteLocation"] == ""
+    assert properties["CEProjectImports"] == []
     assert properties["IOSignals"] == []
     assert properties["IOAccessories"] == []
     assert properties["EnclosureRatings"] == []
@@ -104,6 +107,7 @@ def test_initialize_project_object_adds_properties_and_proxy():
     assert "ProjectName" in obj.PropertiesList
     assert "Customer" in obj.PropertiesList
     assert "SiteLocation" in obj.PropertiesList
+    assert "CEProjectImports" in obj.PropertiesList
     assert "IOSignals" in obj.PropertiesList
     assert "PowerConfiguration" in obj.PropertiesList
     assert "EnclosureRatings" in obj.PropertiesList
