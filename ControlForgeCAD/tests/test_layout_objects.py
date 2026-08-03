@@ -6,6 +6,7 @@ from controls_wb.model.layout import (
     ControlsLayoutObject,
     create_starter_layout_objects,
     layout_object_metadata,
+    starter_layout_specs_for_project,
 )
 
 
@@ -63,6 +64,8 @@ def test_create_starter_layout_objects_adds_editable_properties():
     assert "TerminalCount" in plc_rack.PropertiesList
     assert "SlotNumber" in plc_rack.PropertiesList
     assert "ChannelCount" in plc_rack.PropertiesList
+    assert "CadModelPath" in plc_rack.PropertiesList
+    assert "CadModelSha256" in plc_rack.PropertiesList
     assert terminal_strip.TerminalCount == 16
     assert plc_rack.Voltage == "24 VDC"
     assert plc_rack.ChannelCount == 16
@@ -84,7 +87,55 @@ def test_layout_object_metadata_is_pure_python():
         "SlotNumber": 0,
         "ChannelCount": 16,
         "SignalType": "mixed_io",
+        "CadModelPath": "",
+        "CadModelFormat": "",
+        "CadModelSha256": "",
     }
+
+
+def test_starter_layout_specs_use_selected_plc_catalog_part():
+    project = type(
+        "Project",
+        (),
+        {
+            "ProjectId": "CE-PROJECT-001",
+            "PlcMake": "Siemens",
+            "PlcLine": "S7-1200",
+            "PlcCPU": "CPU 1214C DC/DC/DC",
+        },
+    )()
+
+    plc_spec = starter_layout_specs_for_project(project)[4]
+
+    assert plc_spec.manufacturer == "Siemens"
+    assert plc_spec.part_number == "6ES7214-1AG40-0XB0"
+    assert plc_spec.description == "CPU 1214C DC/DC/DC PLC CPU placeholder"
+    assert plc_spec.channel_count == 26
+    assert plc_spec.cad_model_format == "STEP"
+    assert plc_spec.cad_model_path.endswith("Siemens S7-1200.STEP")
+
+
+def test_create_starter_layout_objects_uses_existing_project_plc_selection():
+    document = FakeDocument()
+    project = type(
+        "Project",
+        (),
+        {
+            "ProjectId": "CE-PROJECT-001",
+            "PlcMake": "Siemens",
+            "PlcLine": "S7-1200",
+            "PlcCPU": "CPU 1212C DC/DC/DC",
+        },
+    )()
+    document.Objects.append(project)
+
+    plc_rack = create_starter_layout_objects(document)[4]
+
+    assert plc_rack.Manufacturer == "Siemens"
+    assert plc_rack.PartNumber == "6ES7212-1AE40-0XB0"
+    assert plc_rack.ChannelCount == 16
+    assert plc_rack.CadModelFormat == "STEP"
+    assert plc_rack.CadModelSha256 == "e5cdccde78115ef54856dfedc8705b5fc3031057e5db17068369b92e33a7e3b8"
 
 
 def test_layout_proxy_round_trips_persistent_state():

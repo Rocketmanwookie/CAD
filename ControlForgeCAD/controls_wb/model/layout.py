@@ -3,7 +3,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+
+from controls_wb.hardware_catalog import default_catalog_path, line_catalog, load_hardware_catalog, part_by_name
 
 try:
     import FreeCAD as App
@@ -30,6 +32,9 @@ class LayoutObjectSpec:
     slot_number: int = 0
     channel_count: int = 0
     signal_type: str = ""
+    cad_model_path: str = ""
+    cad_model_format: str = ""
+    cad_model_sha256: str = ""
 
 
 STARTER_LAYOUT_SPECS = (
@@ -99,6 +104,9 @@ LAYOUT_PROPERTY_SPECS = (
     ("App::PropertyInteger", "SlotNumber", "Controls", "PLC slot number"),
     ("App::PropertyInteger", "ChannelCount", "Controls", "I/O channel count"),
     ("App::PropertyString", "SignalType", "Controls", "Signal type"),
+    ("App::PropertyString", "CadModelPath", "CADbase", "Referenced CAD model path"),
+    ("App::PropertyString", "CadModelFormat", "CADbase", "Referenced CAD model format"),
+    ("App::PropertyString", "CadModelSha256", "CADbase", "Referenced CAD model SHA-256"),
     ("App::PropertyLength", "Width", "Geometry", "Placeholder width"),
     ("App::PropertyLength", "Height", "Geometry", "Placeholder height"),
     ("App::PropertyLength", "Depth", "Geometry", "Placeholder depth"),
@@ -124,6 +132,9 @@ def apply_layout_spec(obj, spec: LayoutObjectSpec):
     obj.SlotNumber = spec.slot_number
     obj.ChannelCount = spec.channel_count
     obj.SignalType = spec.signal_type
+    obj.CadModelPath = spec.cad_model_path
+    obj.CadModelFormat = spec.cad_model_format
+    obj.CadModelSha256 = spec.cad_model_sha256
     obj.Width = spec.width
     obj.Height = spec.height
     obj.Depth = spec.depth
@@ -143,7 +154,59 @@ def layout_object_metadata(obj) -> dict[str, object]:
         "SlotNumber": getattr(obj, "SlotNumber", 0),
         "ChannelCount": getattr(obj, "ChannelCount", 0),
         "SignalType": getattr(obj, "SignalType", ""),
+        "CadModelPath": getattr(obj, "CadModelPath", ""),
+        "CadModelFormat": getattr(obj, "CadModelFormat", ""),
+        "CadModelSha256": getattr(obj, "CadModelSha256", ""),
     }
+
+
+def _project_object(document) -> object | None:
+    for obj in getattr(document, "Objects", []) or []:
+        if hasattr(obj, "ProjectId") and hasattr(obj, "PlcMake") and hasattr(obj, "PlcLine"):
+            return obj
+    return None
+
+
+def _step_cad_ref(part):
+    for cad_ref in part.cad_refs:
+        if cad_ref.format.upper() == "STEP":
+            return cad_ref
+    return part.cad_refs[0] if part.cad_refs else None
+
+
+def starter_layout_specs_for_project(project: object | None) -> tuple[LayoutObjectSpec, ...]:
+    if project is None:
+        return STARTER_LAYOUT_SPECS
+    catalog = load_hardware_catalog(default_catalog_path())
+    line = line_catalog(
+        catalog,
+        str(getattr(project, "PlcMake", "")),
+        str(getattr(project, "PlcLine", "")),
+    )
+    if line is None:
+        return STARTER_LAYOUT_SPECS
+    cpu = part_by_name(line.cpus, str(getattr(project, "PlcCPU", "")))
+    if cpu is None:
+        return STARTER_LAYOUT_SPECS
+    cad_ref = _step_cad_ref(cpu)
+    updated_specs = []
+    for spec in STARTER_LAYOUT_SPECS:
+        if spec.name != "CE_PLC_Rack":
+            updated_specs.append(spec)
+            continue
+        updated_specs.append(
+            replace(
+                spec,
+                manufacturer=str(getattr(project, "PlcMake", "")) or line.make,
+                part_number=cpu.part_number,
+                description=f"{cpu.name} PLC CPU placeholder",
+                channel_count=cpu.di + cpu.do + cpu.ai + cpu.ao,
+                cad_model_path=cad_ref.local_path if cad_ref else "",
+                cad_model_format=cad_ref.format if cad_ref else "",
+                cad_model_sha256=cad_ref.sha256 if cad_ref else "",
+            )
+        )
+    return tuple(updated_specs)
 
 
 def create_layout_object(document, spec: LayoutObjectSpec):
@@ -155,7 +218,8 @@ def create_layout_object(document, spec: LayoutObjectSpec):
 def create_starter_layout_objects(document=None) -> list[object]:
     if document is None:
         document = App.ActiveDocument
-    return [create_layout_object(document, spec) for spec in STARTER_LAYOUT_SPECS]
+    specs = starter_layout_specs_for_project(_project_object(document))
+    return [create_layout_object(document, spec) for spec in specs]
 
 
 class ControlsLayoutObject:

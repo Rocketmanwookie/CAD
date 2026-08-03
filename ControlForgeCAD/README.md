@@ -48,7 +48,7 @@ Project setup records a setup source record for filled starter facts. The source
 
 Project setup can import supported CEProject XML through the Project Intake dialog. Imported XML is remembered on the editable `CE_Project` object, can be selected again later, and preserves parsed project metadata, contacts, source records, and intake questions. YAML and UML-derived setup formats remain future adapter inputs where practical.
 
-The first CAD-side layout objects are placeholders, not manufacturer-accurate models. **Create Control Panel** creates a panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module with editable metadata such as tag, manufacturer, part number, description, panel name, voltage, current, terminal count, slot number, channel count, and signal type where applicable. BOM export includes these objects when they expose controls metadata.
+The first CAD-side layout objects are placeholders, not manufacturer-accurate models. **Create Control Panel** creates a panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module with editable metadata such as tag, manufacturer, part number, description, panel name, voltage, current, terminal count, slot number, channel count, and signal type where applicable. When a selected PLC CPU exists in the XML hardware catalog, the PLC placeholder receives the catalog manufacturer, part number, onboard channel count, and CADbase reference metadata. BOM export includes these objects when they expose controls metadata.
 
 ## Business thesis
 
