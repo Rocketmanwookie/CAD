@@ -42,6 +42,8 @@ The pure-Python `controls_wb.ceproject_xml.ceproject_to_xml()` helper exports a 
 
 The pure-Python `controls_wb.io_list` module provides the first starter I/O list model. It generates deterministic CSV rows with tag, address, description, signal type, device, PLC rack/slot/channel placeholders, terminal placeholder, source record IDs, and mapping status. Project setup captures Siemens or Allen-Bradley PLC make/line, DI/DO/AI/AO counts, and optional modular I/O accessories. Explicit user-labeled I/O signals can be added through the dialog and reduce the remaining starter placeholders.
 
+Project setup should also become file-driven, not only dialog-driven. The roadmap includes importing setup data from structured definition files such as CEProject XML, YAML, and UML-derived interchange formats where practical, then creating or updating the same editable `CE_Project` object.
+
 The first CAD-side layout objects are placeholders, not manufacturer-accurate models. **Create Control Panel** creates a panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module with editable metadata such as tag, manufacturer, part number, description, panel name, voltage, current, terminal count, slot number, channel count, and signal type where applicable. BOM export includes these objects when they expose controls metadata.
 
 ## Business thesis

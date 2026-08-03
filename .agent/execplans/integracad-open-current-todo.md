@@ -137,6 +137,7 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - [x] Add `CE_AddIOSignal` dialog workflow for selectable I/O type, user label, and deterministic auto tag/address generation.
 - [x] Store explicit I/O signals on `CE_Project` as JSON-line records and include them in I/O CSV export before remaining sensor-count placeholders.
 - [x] Extend the Project Intake dialog with Siemens/Allen-Bradley make selection, contingent PLC line dropdowns, DI/DO/AI/AO counts, and optional modular I/O accessories.
+- [ ] Add a project setup/import workflow from structured definition files such as CEProject XML, YAML, and UML-derived interchange where practical.
 - [x] Milestone 5: add starter CAD-side controls layout placeholder objects.
 - [x] Wire `CE_CreatePanel` to create panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module placeholders.
 - [x] Add tests for layout metadata, fake FreeCAD object creation, proxy persistence hooks, and BOM extraction from starter layout objects.
@@ -178,6 +179,7 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - Store `Customer` and `SiteLocation` as editable `CE_Project` properties now, but do not mark them as required deliverable facts yet because the current backend required-field matrix does not use them.
 - Keep Milestone 4 I/O generation intentionally simple: Project setup creates addressed starter DI/DO/AI/AO rows from counts; detailed rack/module/channel assignment and module capacity matching remain later Phase 6 work.
 - Add explicit I/O signal rows as the first labeling workflow: digital input/output, analog input/output, and relay rows receive deterministic generated tags and addresses, while rack/slot/channel assignment remains later work.
+- Treat project setup as both GUI-driven and file-driven. CEProject XML is the canonical internal format, while YAML and UML-derived interchange can be supported as adapter inputs when they map cleanly to the same `CE_Project` object fields.
 - Keep Milestone 5 geometry as simple boxes with editable metadata. Manufacturer-accurate models, assembly constraints, routing, wire schedules, and detailed panel layout remain future work.
 
 ## Validation Commands

@@ -84,6 +84,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [x] Add pure-Python import for the supported CEProject intake XML structure.
 - [x] Add export/import round-trip tests for intake metadata, contacts, source records, questions, validation findings, and missing-data rows.
 - [x] Expose CEProject intake XML export through a FreeCAD workbench command.
+- [ ] Add project setup/import from structured definition files such as CEProject XML, YAML, and UML-derived interchange where practical.
 - [ ] Make every project fact addressable by ID.
 - [ ] Make every generated artifact traceable to source fields.
 - [ ] Support assumptions and estimates without treating them as verified values.
