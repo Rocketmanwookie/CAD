@@ -128,3 +128,31 @@ def unmapped_io_findings(signals: list[IOSignal]) -> list[str]:
         elif signal.mapping_status != "mapped":
             findings.append(f"WARNING: {signal.tag} is not mapped to PLC rack/slot/channel.")
     return findings
+
+
+def io_mapping_summary(signals: list[IOSignal]) -> str | None:
+    missing_count = sum(1 for signal in signals if signal.mapping_status == "missing")
+    unmapped_count = sum(
+        1 for signal in signals
+        if signal.mapping_status not in {"mapped", "missing"}
+    )
+    missing_label = "signal" if missing_count == 1 else "signals"
+    unmapped_label = "signal" if unmapped_count == 1 else "signals"
+
+    if missing_count and unmapped_count:
+        return (
+            f"WARNING: I/O list has {missing_count} {missing_label} with missing source data "
+            f"and {unmapped_count} {unmapped_label} not mapped to PLC rack/slot/channel. "
+            "See integracab_io_list.csv for details."
+        )
+    if missing_count:
+        return (
+            f"ERROR: I/O list has {missing_count} {missing_label} with missing source data. "
+            "See integracab_io_list.csv for details."
+        )
+    if unmapped_count:
+        return (
+            f"WARNING: I/O list has {unmapped_count} {unmapped_label} not mapped to "
+            "PLC rack/slot/channel. See integracab_io_list.csv for details."
+        )
+    return None

@@ -115,7 +115,7 @@ if Gui is not None:
             try:
                 import FreeCAD as App
 
-                App.Console.PrintMessage("Controls Engineering Workbench activated\n")
+                App.Console.PrintMessage("Controls / Automation workbench activated\n")
             except Exception:
                 pass
 
@@ -123,7 +123,7 @@ if Gui is not None:
             try:
                 import FreeCAD as App
 
-                App.Console.PrintMessage("Controls Engineering Workbench deactivated\n")
+                App.Console.PrintMessage("Controls / Automation workbench deactivated\n")
             except Exception:
                 pass
 

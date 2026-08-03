@@ -10,7 +10,7 @@ except Exception:  # pragma: no cover
     App = None
     Gui = None
 
-from controls_wb.io_list import io_list_csv, io_signals_from_objects, unmapped_io_findings
+from controls_wb.io_list import io_list_csv, io_mapping_summary, io_signals_from_objects
 
 
 def io_list_csv_for_objects(objects) -> str:
@@ -32,8 +32,9 @@ class ExportIOListCommand:
         signals = io_signals_from_objects(App.ActiveDocument.Objects)
         output_path = Path.home() / "integracab_io_list.csv"
         output_path.write_text(io_list_csv(signals), encoding="utf-8")
-        for finding in unmapped_io_findings(signals):
-            App.Console.PrintMessage(f"{finding}\n")
+        summary = io_mapping_summary(signals)
+        if summary:
+            App.Console.PrintMessage(f"{summary}\n")
         App.Console.PrintMessage(f"I/O list exported to {output_path}\n")
 
     def IsActive(self):

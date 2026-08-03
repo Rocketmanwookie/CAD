@@ -8,6 +8,7 @@ from controls_wb.io_list import (
     IO_LIST_HEADERS,
     IOSignal,
     io_list_csv,
+    io_mapping_summary,
     io_signals_from_objects,
     starter_io_signals_from_project,
     unmapped_io_findings,
@@ -105,6 +106,24 @@ def test_unmapped_io_findings_are_clear():
     findings = unmapped_io_findings(starter_io_signals_from_project(_project("")))
 
     assert findings == ["ERROR: IO-UNASSIGNED-001 has no usable I/O source data."]
+
+
+def test_io_mapping_summary_collapses_unmapped_warning_noise():
+    summary = io_mapping_summary(starter_io_signals_from_project(_project("30")))
+
+    assert summary == (
+        "WARNING: I/O list has 30 signals not mapped to PLC rack/slot/channel. "
+        "See integracab_io_list.csv for details."
+    )
+
+
+def test_io_mapping_summary_reports_missing_source_data_as_error():
+    summary = io_mapping_summary(starter_io_signals_from_project(_project("")))
+
+    assert summary == (
+        "ERROR: I/O list has 1 signal with missing source data. "
+        "See integracab_io_list.csv for details."
+    )
 
 
 def test_io_signals_and_command_helper_read_project_objects_only():
