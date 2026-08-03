@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panelHardwareCatalog schemaVersion="0.1.0">
+  <sources>
+    <source id="starter-generic-panel-hardware" title="Starter generic panel hardware placeholders"/>
+  </sources>
+  <parts>
+    <part layoutName="CE_Backplate" manufacturer="Generic" partNumber="PANEL-BACKPLATE-800X1000" description="Generic 800 x 1000 mm enclosure/backplate placeholder" verified="false" sourceId="starter-generic-panel-hardware"/>
+    <part layoutName="CE_DIN_Rail" manufacturer="Generic" partNumber="DIN-RAIL-35MM-600" description="Generic 35 mm DIN rail placeholder, 600 mm" verified="false" sourceId="starter-generic-panel-hardware"/>
+    <part layoutName="CE_Wire_Duct" manufacturer="Generic" partNumber="WIRE-DUCT-80X60-600" description="Generic slotted wire duct placeholder, 80 x 60 x 600 mm" verified="false" sourceId="starter-generic-panel-hardware"/>
+    <part layoutName="CE_Terminal_Strip" manufacturer="Generic" partNumber="TERMINAL-STRIP-16" description="Generic 16-position terminal strip placeholder" verified="false" sourceId="starter-generic-panel-hardware"/>
+  </parts>
+</panelHardwareCatalog>

@@ -67,6 +67,9 @@ def test_create_starter_layout_objects_adds_editable_properties():
     assert "CadModelPath" in plc_rack.PropertiesList
     assert "CadModelSha256" in plc_rack.PropertiesList
     assert terminal_strip.TerminalCount == 16
+    assert objects[0].Manufacturer == "Generic"
+    assert objects[0].PartNumber == "PANEL-BACKPLATE-800X1000"
+    assert terminal_strip.PartNumber == "TERMINAL-STRIP-16"
     assert plc_rack.Voltage == "24 VDC"
     assert plc_rack.ChannelCount == 16
 
@@ -158,7 +161,13 @@ def test_bom_export_includes_starter_layout_objects_with_metadata():
     rows = collect_bom_rows(objects)
 
     assert rows[0]["Tag"] == "PANEL-001"
-    assert rows[0]["Description"] == "Control panel enclosure/backplate placeholder"
+    assert rows[0] == {
+        "Tag": "PANEL-001",
+        "Description": "Generic 800 x 1000 mm enclosure/backplate placeholder",
+        "Manufacturer": "Generic",
+        "PartNumber": "PANEL-BACKPLATE-800X1000",
+        "Quantity": 1,
+    }
     assert rows[4] == {
         "Tag": "PLC-001",
         "Description": "PLC rack/module placeholder",

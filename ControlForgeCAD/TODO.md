@@ -149,6 +149,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Add sensor cable and field junction references.
 - [ ] Feed wiring/terminal data to drawing or schedule tools.
 - [x] Add starter CAD-side placeholder objects for panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module.
+- [x] Seed XML-backed generic panel hardware placeholders for backplate, DIN rail, wire duct, and terminal strip starter BOM metadata.
 
 ### Phase 8 - HMI as future companion workbench
 

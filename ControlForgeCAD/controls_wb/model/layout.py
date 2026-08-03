@@ -6,6 +6,11 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 
 from controls_wb.hardware_catalog import default_catalog_path, line_catalog, load_hardware_catalog, part_by_name
+from controls_wb.panel_hardware_catalog import (
+    default_panel_catalog_path,
+    load_panel_hardware_catalog,
+    part_for_layout,
+)
 
 try:
     import FreeCAD as App
@@ -175,8 +180,9 @@ def _step_cad_ref(part):
 
 
 def starter_layout_specs_for_project(project: object | None) -> tuple[LayoutObjectSpec, ...]:
+    specs = _starter_layout_specs_with_panel_catalog()
     if project is None:
-        return STARTER_LAYOUT_SPECS
+        return specs
     catalog = load_hardware_catalog(default_catalog_path())
     line = line_catalog(
         catalog,
@@ -184,13 +190,13 @@ def starter_layout_specs_for_project(project: object | None) -> tuple[LayoutObje
         str(getattr(project, "PlcLine", "")),
     )
     if line is None:
-        return STARTER_LAYOUT_SPECS
+        return specs
     cpu = part_by_name(line.cpus, str(getattr(project, "PlcCPU", "")))
     if cpu is None:
-        return STARTER_LAYOUT_SPECS
+        return specs
     cad_ref = _step_cad_ref(cpu)
     updated_specs = []
-    for spec in STARTER_LAYOUT_SPECS:
+    for spec in specs:
         if spec.name != "CE_PLC_Rack":
             updated_specs.append(spec)
             continue
@@ -204,6 +210,25 @@ def starter_layout_specs_for_project(project: object | None) -> tuple[LayoutObje
                 cad_model_path=cad_ref.local_path if cad_ref else "",
                 cad_model_format=cad_ref.format if cad_ref else "",
                 cad_model_sha256=cad_ref.sha256 if cad_ref else "",
+            )
+        )
+    return tuple(updated_specs)
+
+
+def _starter_layout_specs_with_panel_catalog() -> tuple[LayoutObjectSpec, ...]:
+    catalog = load_panel_hardware_catalog(default_panel_catalog_path())
+    updated_specs = []
+    for spec in STARTER_LAYOUT_SPECS:
+        part = part_for_layout(catalog, spec.name)
+        if part is None:
+            updated_specs.append(spec)
+            continue
+        updated_specs.append(
+            replace(
+                spec,
+                manufacturer=part.manufacturer,
+                part_number=part.part_number,
+                description=part.description,
             )
         )
     return tuple(updated_specs)

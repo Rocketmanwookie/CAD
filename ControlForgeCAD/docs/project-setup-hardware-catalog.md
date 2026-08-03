@@ -3,8 +3,14 @@
 IntegraCAB Open loads PLC hardware planning data from
 [`controls_wb/resources/hardware/plc_catalog.xml`](../controls_wb/resources/hardware/plc_catalog.xml).
 
-The XML schema is
+The PLC XML schema is
 [`schemas/plc_hardware_catalog_v0_1.xsd`](../schemas/plc_hardware_catalog_v0_1.xsd).
+
+Starter panel hardware placeholder data is loaded from
+[`controls_wb/resources/hardware/panel_catalog.xml`](../controls_wb/resources/hardware/panel_catalog.xml).
+
+The panel hardware XML schema is
+[`schemas/panel_hardware_catalog_v0_1.xsd`](../schemas/panel_hardware_catalog_v0_1.xsd).
 
 The Project Intake dialog uses this catalog for PLC make, line, CPU, compatible Ethernet/power choices, and the I/O expansion planning popup.
 
@@ -29,6 +35,17 @@ The catalog also records a local Siemens S7-1200 Easy Book source:
 CPU entries can include local CAD references. The current Siemens S7-1200 CPU entries point to the provided CADBaseLibrary STEP and SolidWorks part files by local path and SHA-256 checksum. These files are not copied into the repository.
 
 Always verify final part selections against current Siemens catalog data and project electrical requirements before procurement.
+
+## Panel hardware starter seed
+
+The panel hardware catalog currently includes unverified generic placeholder parts for:
+
+- `PANEL-001` enclosure/backplate.
+- `DIN-001` DIN rail.
+- `DUCT-001` wire duct.
+- `TB-001` terminal strip.
+
+These records are intended to make starter BOM and validation output cleaner while real enclosure, rail, duct, and terminal part numbers are selected. Keep them marked `verified="false"` until replaced with source-backed vendor parts.
 
 ## Updating the catalog
 

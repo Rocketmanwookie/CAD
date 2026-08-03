@@ -146,6 +146,7 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - [x] Milestone 5: add starter CAD-side controls layout placeholder objects.
 - [x] Wire `CE_CreatePanel` to create panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module placeholders.
 - [x] Populate the starter PLC layout placeholder from the selected XML catalog CPU, including manufacturer, part number, onboard channel count, and CADbase reference metadata.
+- [x] Add XML-backed generic panel hardware placeholders for backplate, DIN rail, wire duct, and terminal strip so starter BOM/validation output has part metadata for those objects.
 - [x] Add tests for layout metadata, fake FreeCAD object creation, proxy persistence hooks, and BOM extraction from starter layout objects.
 
 ## Surprises & Discoveries
@@ -187,6 +188,7 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - Use the current I/O expansion popup as a starter planning aid: it subtracts onboard CPU I/O, targets requested I/O times 1.2 for 20 percent spare capacity, and suggests the nearest starter module count from the XML hardware catalog. The current source-backed seed covers Siemens S7-1200; future vendor families should be added through XML with official source records before being marked verified.
 - Store CADbase/vendor asset references as metadata first: local path, format, and checksum are enough for traceability now, while actual FreeCAD STEP import/placement remains a later CADbase adapter/layout workflow.
 - Manual FreeCAD GUI smoke on 2026-08-03 completed workbench activation, project intake, DI/DO/AI/AO signal creation, starter layout creation, validation, missing-data preview, BOM export, CEProject XML export, I/O list export, and missing-data CSV export. Remaining validation noise from that run was catalog/layout metadata, especially missing part numbers on starter placeholders.
+- Keep the panel hardware seed intentionally generic and `verified=false`; it is a BOM/validation cleanup scaffold until real vendor enclosure, DIN rail, wire duct, and terminal strip parts are selected.
 - Defer amperage calculation until load assumptions and power-drop modeling exist; track it under Phase 3. The calculation must account for high-current controlled devices and panel loads such as motors, heat strips, VFDs, DC power supplies, Ethernet/network equipment, coils/relays/contactors, spare capacity, and diversity assumptions.
 - Add explicit I/O signal rows as the first labeling workflow: digital input/output, analog input/output, and relay rows receive deterministic generated tags and addresses, while rack/slot/channel assignment remains later work.
 - Capture one setup source record during Project Intake submission so filled starter facts are source-backed instead of reported as `missing_source`; verification and approval remain separate lifecycle steps.
