@@ -7,12 +7,23 @@
     <source id="siemens-sm-1222-do16-datasheet" title="Siemens SM 1222 DQ 16x24 VDC data sheet 6ES7222-1BH32-0XB0" url="https://support.industry.siemens.com/teddatasheet/?caller=SIOS&amp;format=pdf&amp;language=en&amp;mlfbs=6ES7222-1BH32-0XB0"/>
     <source id="siemens-sm-1231-ai8-datasheet" title="Siemens SM 1231 AI 8 data sheet 6ES7231-4HF32-0XB0" url="https://support.industry.siemens.com/teddatasheet/?caller=SIOS&amp;format=pdf&amp;language=en&amp;mlfbs=6ES7231-4HF32-0XB0"/>
     <source id="siemens-sm-1232-ao4-datasheet" title="Siemens SM 1232 AQ 4 data sheet 6ES7232-4HD32-0XB0" url="https://support.industry.siemens.com/teddatasheet/?caller=SIOS&amp;format=pdf&amp;language=en&amp;mlfbs=6ES7232-4HD32-0XB0"/>
+    <source id="siemens-s7-1200-easy-book-local" title="Siemens S7-1200 Easy Book manual" localPath="/home/egrantjr/Downloads/s71200_easy_book_en-US_en-US.pdf" sha256="ce2f5a5d7f8d9c1410b3e5718230eb5c6b975c9a8a0be2b5bc9977f9d299694f" documentNumber="A5E02486774-AG"/>
   </sources>
   <make name="Siemens">
     <line name="S7-1200" vendorVerified="true">
       <cpus>
-        <cpu name="CPU 1212C DC/DC/DC" partNumber="6ES7212-1AE40-0XB0" di="8" do="6" ai="2" ao="0" verified="true" sourceId="siemens-cpu-1212c-datasheet"/>
-        <cpu name="CPU 1214C DC/DC/DC" partNumber="6ES7214-1AG40-0XB0" di="14" do="10" ai="2" ao="0" verified="true" sourceId="siemens-s7-1200-portfolio"/>
+        <cpu name="CPU 1212C DC/DC/DC" partNumber="6ES7212-1AE40-0XB0" di="8" do="6" ai="2" ao="0" verified="true" sourceId="siemens-cpu-1212c-datasheet">
+          <cadRefs>
+            <cadRef format="STEP" localPath="/home/egrantjr/Documents/CADBaseLibrary/siemens-plc-s7-1200-1.snapshot.7/Siemens S7-1200.STEP" sha256="e5cdccde78115ef54856dfedc8705b5fc3031057e5db17068369b92e33a7e3b8"/>
+            <cadRef format="SLDPRT" localPath="/home/egrantjr/Documents/CADBaseLibrary/siemens-plc-s7-1200-1.snapshot.7/Siemens S7-1200.SLDPRT" sha256="2d9780d278d44cf3a07a73600924ec7c72ad4c9573dd535dda6877770206860c"/>
+          </cadRefs>
+        </cpu>
+        <cpu name="CPU 1214C DC/DC/DC" partNumber="6ES7214-1AG40-0XB0" di="14" do="10" ai="2" ao="0" verified="true" sourceId="siemens-s7-1200-portfolio">
+          <cadRefs>
+            <cadRef format="STEP" localPath="/home/egrantjr/Documents/CADBaseLibrary/siemens-plc-s7-1200-1.snapshot.7/Siemens S7-1200.STEP" sha256="e5cdccde78115ef54856dfedc8705b5fc3031057e5db17068369b92e33a7e3b8"/>
+            <cadRef format="SLDPRT" localPath="/home/egrantjr/Documents/CADBaseLibrary/siemens-plc-s7-1200-1.snapshot.7/Siemens S7-1200.SLDPRT" sha256="2d9780d278d44cf3a07a73600924ec7c72ad4c9573dd535dda6877770206860c"/>
+          </cadRefs>
+        </cpu>
       </cpus>
       <ioModules>
         <module name="SM 1221 DI 16x24 V DC" partNumber="6ES7221-1BH32-0XB0" di="16" do="0" ai="0" ao="0" verified="true" sourceId="siemens-sm-1221-di16-datasheet"/>

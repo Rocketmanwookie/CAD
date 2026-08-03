@@ -21,6 +21,13 @@ The first vendor-verified seed is Siemens S7-1200. The catalog currently include
 | AI module | SM 1231 AI 8 `6ES7231-4HF32-0XB0` | 8 AI |
 | AO module | SM 1232 AQ 4 `6ES7232-4HD32-0XB0` | 4 AO |
 
+The catalog also records a local Siemens S7-1200 Easy Book source:
+
+- `A5E02486774-AG`
+- `/home/egrantjr/Downloads/s71200_easy_book_en-US_en-US.pdf`
+
+CPU entries can include local CAD references. The current Siemens S7-1200 CPU entries point to the provided CADBaseLibrary STEP and SolidWorks part files by local path and SHA-256 checksum. These files are not copied into the repository.
+
 Always verify final part selections against current Siemens catalog data and project electrical requirements before procurement.
 
 ## Updating the catalog
@@ -30,9 +37,10 @@ To add or revise hardware:
 1. Edit [`controls_wb/resources/hardware/plc_catalog.xml`](../controls_wb/resources/hardware/plc_catalog.xml).
 2. Keep vendor-verified parts marked `verified="true"` only when source-backed.
 3. Add source entries under `<sources>` with official URLs where practical.
-4. Keep unverified placeholders marked `verified="false"`.
-5. Validate the XML shape against [`schemas/plc_hardware_catalog_v0_1.xsd`](../schemas/plc_hardware_catalog_v0_1.xsd).
-6. Run:
+4. Add `<cadRefs>` entries with local paths and checksums when CADbase assets exist.
+5. Keep unverified placeholders marked `verified="false"`.
+6. Validate the XML shape against [`schemas/plc_hardware_catalog_v0_1.xsd`](../schemas/plc_hardware_catalog_v0_1.xsd).
+7. Run:
 
 ```bash
 python3 -m pytest

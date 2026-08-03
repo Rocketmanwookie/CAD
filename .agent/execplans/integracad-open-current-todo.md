@@ -140,6 +140,7 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - [x] Replace separate voltage/phase text fields with a combined phase/voltage dropdown, enclosure rating checkboxes, communication protocol checkboxes, PLC CPU selection, compatible Ethernet/power dropdowns, and an I/O expansion planning popup.
 - [x] Add Project Intake setup source metadata and attach one source record to filled starter setup facts.
 - [x] Replace the internal starter PLC hardware map with an XML-backed catalog seeded with source-backed Siemens S7-1200 CPU and I/O module part numbers, plus a linked project setup guide and XML schema.
+- [x] Add local Siemens S7-1200 Easy Book and CADBaseLibrary STEP/SLDPRT references to the XML hardware catalog using paths and SHA-256 checksums instead of copying vendor assets into the repository.
 - [x] Add a Project Intake CEProject XML import workflow that remembers imported XML on `CE_Project` and lets it be selected again later.
 - [ ] Add YAML and UML-derived project setup/import adapters where practical.
 - [x] Milestone 5: add starter CAD-side controls layout placeholder objects.
@@ -183,6 +184,7 @@ Current milestone: add a repeatable FreeCAD workbench smoke-test and manual inst
 - Store `Customer` and `SiteLocation` as editable `CE_Project` properties now, but do not mark them as required deliverable facts yet because the current backend required-field matrix does not use them.
 - Keep Milestone 4 I/O generation intentionally simple: Project setup creates addressed starter DI/DO/AI/AO rows from counts; detailed rack/module/channel assignment and module capacity matching remain later Phase 6 work.
 - Use the current I/O expansion popup as a starter planning aid: it subtracts onboard CPU I/O, targets requested I/O times 1.2 for 20 percent spare capacity, and suggests the nearest starter module count from the XML hardware catalog. The current source-backed seed covers Siemens S7-1200; future vendor families should be added through XML with official source records before being marked verified.
+- Store CADbase/vendor asset references as metadata first: local path, format, and checksum are enough for traceability now, while actual FreeCAD STEP import/placement remains a later CADbase adapter/layout workflow.
 - Defer amperage calculation until load assumptions and power-drop modeling exist; track it under Phase 3. The calculation must account for high-current controlled devices and panel loads such as motors, heat strips, VFDs, DC power supplies, Ethernet/network equipment, coils/relays/contactors, spare capacity, and diversity assumptions.
 - Add explicit I/O signal rows as the first labeling workflow: digital input/output, analog input/output, and relay rows receive deterministic generated tags and addresses, while rack/slot/channel assignment remains later work.
 - Capture one setup source record during Project Intake submission so filled starter facts are source-backed instead of reported as `missing_source`; verification and approval remain separate lifecycle steps.

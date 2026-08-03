@@ -16,7 +16,10 @@
         <xs:complexType>
           <xs:attribute name="id" type="xs:ID" use="required"/>
           <xs:attribute name="title" type="xs:string" use="required"/>
-          <xs:attribute name="url" type="xs:anyURI" use="required"/>
+          <xs:attribute name="url" type="xs:anyURI"/>
+          <xs:attribute name="localPath" type="xs:string"/>
+          <xs:attribute name="sha256" type="xs:string"/>
+          <xs:attribute name="documentNumber" type="xs:string"/>
         </xs:complexType>
       </xs:element>
     </xs:sequence>
@@ -50,6 +53,9 @@
   </xs:complexType>
 
   <xs:complexType name="partType">
+    <xs:sequence>
+      <xs:element name="cadRefs" type="cadRefsType" minOccurs="0"/>
+    </xs:sequence>
     <xs:attribute name="name" type="xs:string" use="required"/>
     <xs:attribute name="partNumber" type="xs:string"/>
     <xs:attribute name="di" type="xs:nonNegativeInteger" default="0"/>
@@ -58,5 +64,17 @@
     <xs:attribute name="ao" type="xs:nonNegativeInteger" default="0"/>
     <xs:attribute name="verified" type="xs:boolean" default="false"/>
     <xs:attribute name="sourceId" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="cadRefsType">
+    <xs:sequence>
+      <xs:element name="cadRef" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="format" type="xs:string" use="required"/>
+          <xs:attribute name="localPath" type="xs:string" use="required"/>
+          <xs:attribute name="sha256" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
   </xs:complexType>
 </xs:schema>

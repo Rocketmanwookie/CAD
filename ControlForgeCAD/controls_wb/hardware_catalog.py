@@ -11,7 +11,17 @@ from xml.etree import ElementTree as ET
 @dataclass(frozen=True)
 class HardwareSource:
     title: str
-    url: str
+    url: str = ""
+    local_path: str = ""
+    sha256: str = ""
+    document_number: str = ""
+
+
+@dataclass(frozen=True)
+class HardwareCadRef:
+    format: str
+    local_path: str
+    sha256: str = ""
 
 
 @dataclass(frozen=True)
@@ -24,6 +34,7 @@ class HardwarePart:
     ao: int = 0
     verified: bool = False
     source_id: str = ""
+    cad_refs: tuple[HardwareCadRef, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -54,6 +65,9 @@ def load_hardware_catalog(path: Path | None = None) -> HardwareCatalog:
         source.get("id", ""): HardwareSource(
             title=source.get("title", ""),
             url=source.get("url", ""),
+            local_path=source.get("localPath", ""),
+            sha256=source.get("sha256", ""),
+            document_number=source.get("documentNumber", ""),
         )
         for source in root.findall("./sources/source")
         if source.get("id")
@@ -94,6 +108,14 @@ def _part(item: ET.Element) -> HardwarePart:
         ao=_int_attr(item, "ao"),
         verified=item.get("verified", "false").lower() == "true",
         source_id=item.get("sourceId", ""),
+        cad_refs=tuple(
+            HardwareCadRef(
+                format=cad_ref.get("format", ""),
+                local_path=cad_ref.get("localPath", ""),
+                sha256=cad_ref.get("sha256", ""),
+            )
+            for cad_ref in item.findall("./cadRefs/cadRef")
+        ),
     )
 
 
