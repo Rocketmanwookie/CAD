@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="plcHardwareCatalog">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="sources" type="sourcesType" minOccurs="0"/>
+        <xs:element name="make" type="makeType" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="schemaVersion" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="sourcesType">
+    <xs:sequence>
+      <xs:element name="source" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="id" type="xs:ID" use="required"/>
+          <xs:attribute name="title" type="xs:string" use="required"/>
+          <xs:attribute name="url" type="xs:anyURI" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="makeType">
+    <xs:sequence>
+      <xs:element name="line" type="lineType" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="lineType">
+    <xs:sequence>
+      <xs:element name="cpus" type="partsType"/>
+      <xs:element name="ioModules" type="partsType"/>
+      <xs:element name="ethernetAdapters" type="partsType" minOccurs="0"/>
+      <xs:element name="powerSupplies" type="partsType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="vendorVerified" type="xs:boolean" default="false"/>
+  </xs:complexType>
+
+  <xs:complexType name="partsType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="cpu" type="partType"/>
+      <xs:element name="module" type="partType"/>
+      <xs:element name="adapter" type="partType"/>
+      <xs:element name="powerSupply" type="partType"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="partType">
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="partNumber" type="xs:string"/>
+    <xs:attribute name="di" type="xs:nonNegativeInteger" default="0"/>
+    <xs:attribute name="do" type="xs:nonNegativeInteger" default="0"/>
+    <xs:attribute name="ai" type="xs:nonNegativeInteger" default="0"/>
+    <xs:attribute name="ao" type="xs:nonNegativeInteger" default="0"/>
+    <xs:attribute name="verified" type="xs:boolean" default="false"/>
+    <xs:attribute name="sourceId" type="xs:string"/>
+  </xs:complexType>
+</xs:schema>

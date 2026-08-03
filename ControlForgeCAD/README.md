@@ -23,7 +23,7 @@ IntegraCAB Open is an integration-first FreeCAD workbench concept for controls e
 
 | Command ID | Menu text | Current behavior |
 |---|---|---|
-| `CE_NewProject` | New Controls Project | Opens a project intake dialog for core project/customer/site/deliverable fields, combined phase/voltage selection, enclosure rating checkboxes, Siemens or Allen-Bradley PLC make/line/CPU selection, typed DI/DO/AI/AO counts, compatible Ethernet/power dropdowns, communication protocol checkboxes, optional I/O accessories, and setup source metadata. It creates or updates an editable `CE_Project` object and shows an I/O expansion planning popup. If Qt/PySide is unavailable, it creates the starter object and prints a warning. |
+| `CE_NewProject` | New Controls Project | Opens a project intake dialog for core project/customer/site/deliverable fields, combined phase/voltage selection, enclosure rating checkboxes, XML-backed PLC make/line/CPU selection, typed DI/DO/AI/AO counts, compatible Ethernet/power dropdowns, communication protocol checkboxes, optional I/O accessories, setup source metadata, and a link to the project setup hardware catalog guide. It creates or updates an editable `CE_Project` object and shows an I/O expansion planning popup. If Qt/PySide is unavailable, it creates the starter object and prints a warning. |
 | `CE_AddIOSignal` | Add I/O Signal | Opens an I/O signal dialog with selectable digital input, digital output, analog input, analog output, and relay types; user labels are stored as explicit signal rows with auto-generated tags and addresses. |
 | `CE_CreatePanel` | Create Control Panel | Creates starter placeholder layout objects for a panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module. |
 | `CE_ExportBOM` | Export BOM | Exports controls metadata rows from the active FreeCAD document to CSV. |
@@ -40,7 +40,9 @@ Editable `CE_Project` properties are converted back into the backend intake mode
 
 The pure-Python `controls_wb.ceproject_xml.ceproject_to_xml()` helper exports a `ProjectIntake` payload or `CE_Project`-style object to deterministic CEProject XML. The companion `controls_wb.ceproject_xml.parse_ceproject_xml()` helper reads the supported CEProject XML intake structure back into a stable pure-Python document wrapper. The current XML round trip includes metadata, contacts, intake deliverables and fields, intake question/response records, source records, validation findings, and missing-data matrix rows.
 
-The pure-Python `controls_wb.io_list` module provides the first starter I/O list model. It generates deterministic CSV rows with tag, address, description, signal type, device, PLC rack/slot/channel placeholders, terminal placeholder, source record IDs, and mapping status. Project setup captures Siemens or Allen-Bradley PLC make/line/CPU, DI/DO/AI/AO counts, compatible Ethernet and power-supply selections, communication protocols, enclosure ratings, and optional modular I/O accessories. Explicit user-labeled I/O signals can be added through the dialog and reduce the remaining starter placeholders.
+The pure-Python `controls_wb.io_list` module provides the first starter I/O list model. It generates deterministic CSV rows with tag, address, description, signal type, device, PLC rack/slot/channel placeholders, terminal placeholder, source record IDs, and mapping status. Project setup captures XML-backed PLC make/line/CPU, DI/DO/AI/AO counts, compatible Ethernet and power-supply selections, communication protocols, enclosure ratings, and optional modular I/O accessories. Explicit user-labeled I/O signals can be added through the dialog and reduce the remaining starter placeholders.
+
+The PLC hardware catalog lives at `controls_wb/resources/hardware/plc_catalog.xml` and is shaped by `schemas/plc_hardware_catalog_v0_1.xsd`. The first source-backed seed is Siemens S7-1200; see [`docs/project-setup-hardware-catalog.md`](docs/project-setup-hardware-catalog.md) for the verified starter parts, update rules, and amperage-calculation roadmap.
 
 Project setup records a setup source record for filled starter facts. The source can be a manual entry, customer email, meeting note, phone call, field note, vendor quote, or uploaded file/reference. That source is attached to project name, voltage, phase, enclosure rating, PLC platform, and sensor/input-count facts where values are present.
 
@@ -104,6 +106,7 @@ Project Intake
 - `docs/learning-path.md` - controls engineering learning path.
 - `docs/companion-workbenches.md` - HMI and digital twin future workbench scope.
 - `docs/standards-resource-map.md` - standards/resource families to point toward.
+- `docs/project-setup-hardware-catalog.md` - XML-backed PLC catalog guide and schema link.
 - `templates/email/` - role-based request templates.
 - `templates/forms/` - structured form/schema seeds.
 
@@ -155,8 +158,8 @@ Manual smoke validation:
 
 1. Start or restart FreeCAD after linking or copying the workbench.
 2. Select **Controls / Automation** from the workbench selector.
-3. Run **New Controls Project** and confirm the Project Intake dialog opens.
-4. Enter or edit project name, customer, site/location, deliverables, phase/voltage, enclosure ratings, PLC make, PLC line, PLC CPU, DI/DO/AI/AO counts, compatible Ethernet/power selections, communication protocols, optional I/O accessories, and source metadata, then submit the dialog.
+3. Run **New Controls Project** and confirm the Project Intake dialog opens with a link to the project setup hardware catalog guide.
+4. Enter or edit project name, customer, site/location, deliverables, phase/voltage, enclosure ratings, XML-backed PLC make, PLC line, PLC CPU, DI/DO/AI/AO counts, compatible Ethernet/power selections, communication protocols, optional I/O accessories, and source metadata, then submit the dialog.
 5. Confirm the I/O expansion planning popup appears and suggests whether CPU I/O covers the requested count plus 20 percent spare, or which starter expansion modules are needed.
 6. Confirm `CE_Project` appears in the model tree and the Report View says the project intake was updated. If Qt/PySide cannot be loaded, confirm the fallback warning is printed and a starter `CE_Project` is still created.
 7. Select `CE_Project` and confirm the Property View exposes editable CEProject and Intake properties matching the dialog values.

@@ -9,14 +9,22 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from pathlib import Path
 
+from controls_wb.hardware_catalog import (
+    line_catalog,
+    lines_for_make,
+    load_hardware_catalog,
+    makes,
+    part_names,
+    io_expansion_suggestion as catalog_io_expansion_suggestion,
+)
 from controls_wb.intake import SourceRecordType
 from controls_wb.model.project import create_or_update_project, ensure_project_properties
 
-PLC_LINES_BY_MAKE = {
-    "Siemens": ("S7-1200", "S7-1500", "ET 200SP"),
-    "Allen-Bradley": ("Micro800", "CompactLogix 5380", "ControlLogix 5580"),
-}
+HARDWARE_CATALOG = load_hardware_catalog()
+PLC_LINES_BY_MAKE = {make: lines_for_make(HARDWARE_CATALOG, make) for make in makes(HARDWARE_CATALOG)}
+PROJECT_SETUP_GUIDE = Path(__file__).resolve().parents[2] / "docs" / "project-setup-hardware-catalog.md"
 
 POWER_CONFIGURATIONS = (
     "1PH 120V",
@@ -51,90 +59,6 @@ COMMUNICATION_PROTOCOL_OPTIONS = (
     "EtherNet/IP",
     "DeviceNet",
 )
-
-PLC_HARDWARE_BY_LINE = {
-    ("Siemens", "S7-1200"): {
-        "cpus": {
-            "CPU 1212C starter": {"di": 8, "do": 6, "ai": 2, "ao": 0},
-            "CPU 1214C starter": {"di": 14, "do": 10, "ai": 2, "ao": 0},
-        },
-        "io_modules": (
-            {"name": "SM 1221 DI 16", "di": 16, "do": 0, "ai": 0, "ao": 0},
-            {"name": "SM 1222 DO 16", "di": 0, "do": 16, "ai": 0, "ao": 0},
-            {"name": "SM 1231 AI 8", "di": 0, "do": 0, "ai": 8, "ao": 0},
-            {"name": "SM 1232 AO 4", "di": 0, "do": 0, "ai": 0, "ao": 4},
-        ),
-        "ethernet": ("CM 1241 / Ethernet module", "CP 1243 communications module"),
-        "power": ("PM 1207 power module", "SITOP 24 VDC supply"),
-    },
-    ("Siemens", "S7-1500"): {
-        "cpus": {
-            "CPU 1511 starter": {"di": 0, "do": 0, "ai": 0, "ao": 0},
-            "CPU 1512 starter": {"di": 0, "do": 0, "ai": 0, "ao": 0},
-        },
-        "io_modules": (
-            {"name": "SM 521 DI 32", "di": 32, "do": 0, "ai": 0, "ao": 0},
-            {"name": "SM 522 DO 32", "di": 0, "do": 32, "ai": 0, "ao": 0},
-            {"name": "SM 531 AI 8", "di": 0, "do": 0, "ai": 8, "ao": 0},
-            {"name": "SM 532 AO 4", "di": 0, "do": 0, "ai": 0, "ao": 4},
-        ),
-        "ethernet": ("CP 1543 communications processor", "Industrial Ethernet interface"),
-        "power": ("PM 1507 load power supply", "SITOP 24 VDC supply"),
-    },
-    ("Siemens", "ET 200SP"): {
-        "cpus": {
-            "ET 200SP CPU starter": {"di": 0, "do": 0, "ai": 0, "ao": 0},
-        },
-        "io_modules": (
-            {"name": "ET 200SP DI 16", "di": 16, "do": 0, "ai": 0, "ao": 0},
-            {"name": "ET 200SP DO 16", "di": 0, "do": 16, "ai": 0, "ao": 0},
-            {"name": "ET 200SP AI 8", "di": 0, "do": 0, "ai": 8, "ao": 0},
-            {"name": "ET 200SP AO 4", "di": 0, "do": 0, "ai": 0, "ao": 4},
-        ),
-        "ethernet": ("ET 200SP interface module", "Industrial Ethernet interface"),
-        "power": ("ET 200SP power module", "SITOP 24 VDC supply"),
-    },
-    ("Allen-Bradley", "Micro800"): {
-        "cpus": {
-            "Micro820 starter": {"di": 12, "do": 8, "ai": 4, "ao": 0},
-            "Micro850 starter": {"di": 14, "do": 10, "ai": 4, "ao": 0},
-        },
-        "io_modules": (
-            {"name": "Micro800 DI 16", "di": 16, "do": 0, "ai": 0, "ao": 0},
-            {"name": "Micro800 DO 16", "di": 0, "do": 16, "ai": 0, "ao": 0},
-            {"name": "Micro800 AI 8", "di": 0, "do": 0, "ai": 8, "ao": 0},
-            {"name": "Micro800 AO 4", "di": 0, "do": 0, "ai": 0, "ao": 4},
-        ),
-        "ethernet": ("Micro800 Ethernet plug-in", "Panel Ethernet switch"),
-        "power": ("Micro800 24 VDC power supply", "Panel 24 VDC supply"),
-    },
-    ("Allen-Bradley", "CompactLogix 5380"): {
-        "cpus": {
-            "CompactLogix 5380 starter": {"di": 0, "do": 0, "ai": 0, "ao": 0},
-        },
-        "io_modules": (
-            {"name": "5069-IB16 DI 16", "di": 16, "do": 0, "ai": 0, "ao": 0},
-            {"name": "5069-OB16 DO 16", "di": 0, "do": 16, "ai": 0, "ao": 0},
-            {"name": "5069-IF8 AI 8", "di": 0, "do": 0, "ai": 8, "ao": 0},
-            {"name": "5069-OF4 AO 4", "di": 0, "do": 0, "ai": 0, "ao": 4},
-        ),
-        "ethernet": ("5069 Ethernet adapter", "Panel Ethernet switch"),
-        "power": ("5069 field power distributor", "Panel 24 VDC supply"),
-    },
-    ("Allen-Bradley", "ControlLogix 5580"): {
-        "cpus": {
-            "ControlLogix 5580 starter": {"di": 0, "do": 0, "ai": 0, "ao": 0},
-        },
-        "io_modules": (
-            {"name": "1756-IB16 DI 16", "di": 16, "do": 0, "ai": 0, "ao": 0},
-            {"name": "1756-OB16 DO 16", "di": 0, "do": 16, "ai": 0, "ao": 0},
-            {"name": "1756-IF8 AI 8", "di": 0, "do": 0, "ai": 8, "ao": 0},
-            {"name": "1756-OF4 AO 4", "di": 0, "do": 0, "ai": 0, "ao": 4},
-        ),
-        "ethernet": ("ControlLogix Ethernet bridge", "Panel Ethernet switch"),
-        "power": ("ControlLogix chassis power supply", "Panel 24 VDC supply"),
-    },
-}
 
 SOURCE_TYPE_LABELS = {
     "Manual entry": SourceRecordType.MANUAL_ENTRY.value,
@@ -257,16 +181,20 @@ def plc_platform_from_make_line(make: str, line: str) -> str:
     return " ".join(part for part in (clean_make, clean_line) if part)
 
 
-def plc_hardware_for(make: str, line: str) -> dict[str, object]:
-    return PLC_HARDWARE_BY_LINE.get((make, line), {"cpus": {}, "io_modules": (), "ethernet": (), "power": ()})
-
-
 def plc_cpu_options(make: str, line: str) -> tuple[str, ...]:
-    return tuple(plc_hardware_for(make, line).get("cpus", {}))
+    line_data = line_catalog(HARDWARE_CATALOG, make, line)
+    return part_names(line_data.cpus) if line_data else ()
 
 
 def hardware_dropdown_options(make: str, line: str, key: str) -> tuple[str, ...]:
-    return tuple(plc_hardware_for(make, line).get(key, ()))
+    line_data = line_catalog(HARDWARE_CATALOG, make, line)
+    if line_data is None:
+        return ()
+    if key == "ethernet":
+        return part_names(line_data.ethernet)
+    if key == "power":
+        return part_names(line_data.power)
+    return ()
 
 
 def _safe_count(value: object) -> str:
@@ -277,19 +205,9 @@ def _safe_count(value: object) -> str:
     return str(max(count, 0))
 
 
-def _count_int(value: object) -> int:
-    return int(_safe_count(value) or "0")
-
-
 def total_input_count(di_count: object, ai_count: object) -> str:
     total = int(_safe_count(di_count) or "0") + int(_safe_count(ai_count) or "0")
     return str(total) if total else ""
-
-
-def _module_count_for(needed: int, capacity: int) -> int:
-    if needed <= 0 or capacity <= 0:
-        return 0
-    return (needed + capacity - 1) // capacity
 
 
 def io_expansion_suggestion(
@@ -301,40 +219,16 @@ def io_expansion_suggestion(
     ai_count: object,
     ao_count: object,
 ) -> str:
-    hardware = plc_hardware_for(make, line)
-    cpu_caps = hardware.get("cpus", {}).get(cpu, {})
-    modules = hardware.get("io_modules", ())
-    requested = {
-        "di": _count_int(di_count),
-        "do": _count_int(do_count),
-        "ai": _count_int(ai_count),
-        "ao": _count_int(ao_count),
-    }
-    suggestions = []
-    for io_key, requested_count in requested.items():
-        target = int(requested_count * 1.2 + 0.9999)
-        available_on_cpu = int(cpu_caps.get(io_key, 0))
-        extra_needed = max(target - available_on_cpu, 0)
-        if extra_needed == 0:
-            continue
-        compatible = [module for module in modules if int(module.get(io_key, 0)) > 0]
-        if not compatible:
-            suggestions.append(f"{io_key.upper()}: need {extra_needed} extra; no starter module in catalog.")
-            continue
-        best = min(
-            compatible,
-            key=lambda module: (
-                _module_count_for(extra_needed, int(module[io_key])) * int(module[io_key]) - extra_needed,
-                _module_count_for(extra_needed, int(module[io_key])),
-            ),
-        )
-        module_count = _module_count_for(extra_needed, int(best[io_key]))
-        suggestions.append(
-            f"{io_key.upper()}: target {target}, CPU {available_on_cpu}, add {module_count} x {best['name']}"
-        )
-    if not suggestions:
-        return "CPU I/O covers requested counts with 20% spare."
-    return "; ".join(suggestions)
+    return catalog_io_expansion_suggestion(
+        HARDWARE_CATALOG,
+        make,
+        line,
+        cpu,
+        di_count,
+        do_count,
+        ai_count,
+        ao_count,
+    )
 
 
 def source_type_labels() -> tuple[str, ...]:
@@ -569,6 +463,11 @@ def show_project_intake_dialog(document: object, parent=None, console=None) -> o
     dialog = QtWidgets.QDialog(parent)
     dialog.setWindowTitle("Project Intake")
     layout = QtWidgets.QVBoxLayout(dialog)
+    guide_link = QtWidgets.QLabel(
+        f'<a href="{PROJECT_SETUP_GUIDE.as_uri()}">Project setup hardware catalog guide</a>'
+    )
+    guide_link.setOpenExternalLinks(True)
+    layout.addWidget(guide_link)
     form = QtWidgets.QFormLayout()
     editors = {}
     for field in CORE_INTAKE_FORM_FIELDS:

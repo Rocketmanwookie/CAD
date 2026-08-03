@@ -96,7 +96,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Track upstream transformer/source equipment.
 - [ ] Track source distribution equipment and circuit ID.
 - [ ] Track voltage, phase, frequency, feeder ampacity, conductor/raceway reference, available fault current, grounding system, disconnecting means, metering requirements, source drawing, and BIM object reference.
-- [ ] Calculate estimated amperage from configured phase/voltage and load assumptions once load data exists.
+- [ ] Calculate estimated amperage from configured phase/voltage and load assumptions once load data exists, including motors, heat strips, VFDs, DC power supplies, Ethernet/network equipment, controlled coils/relays/contactors, spare capacity, and diversity assumptions.
 - [ ] Integrate with IFC/ifcXML references where available.
 - [ ] Export unresolved coordination items as BCF-style issues later.
 - [ ] Do not duplicate the full building electrical model.
@@ -124,11 +124,12 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 
 ### Phase 6 - PLC/I/O controls package
 
-- [ ] Add PLC platform requirement fields.
+- [x] Add PLC platform requirement fields.
 - [ ] Add rack/slot/module/channel model.
 - [x] Add starter signal registry.
 - [x] Add I/O count estimates and starter unmapped assignments.
-- [ ] Validate PLC CPU onboard I/O capacity and suggest compatible expansion modules with 20 percent spare capacity.
+- [x] Validate PLC CPU onboard I/O capacity and suggest compatible expansion modules with 20 percent spare capacity.
+- [x] Seed an XML-backed Siemens S7-1200 starter catalog with source-backed CPU and I/O module part numbers.
 - [ ] Add signal-to-device, signal-to-terminal, signal-to-wire, and signal-to-HMI relationships.
 - [ ] Add PLCopen XML export plan.
 - [ ] Add vendor-neutral export first; vendor-specific adapters later.

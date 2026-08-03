@@ -69,16 +69,16 @@ def test_form_values_from_project_reads_existing_object():
             "PhaseCount": "3",
             "PowerConfiguration": "3PH 480V",
             "EnclosureRatings": ["UL Listed", "NEMA 12"],
-            "PlcMake": "Allen-Bradley",
-            "PlcLine": "CompactLogix 5380",
-            "PlcCPU": "CompactLogix 5380 starter",
+            "PlcMake": "Siemens",
+            "PlcLine": "S7-1200",
+            "PlcCPU": "CPU 1212C DC/DC/DC",
             "DICount": "16",
             "DOCount": "8",
             "AICount": "2",
             "AOCount": "1",
             "IOAccessories": ["Remote / modular I/O bank"],
-            "EthernetAdapter": "5069 Ethernet adapter",
-            "ExpansionPowerSupply": "5069 field power distributor",
+            "EthernetAdapter": "Integrated PROFINET interface",
+            "ExpansionPowerSupply": "External 24 VDC supply required",
             "CommunicationProtocols": ["EtherNet/IP", "Modbus TCP"],
             "SourceRecords": [
                 json.dumps(
@@ -100,11 +100,11 @@ def test_form_values_from_project_reads_existing_object():
     assert values["Customer"] == "Acme"
     assert values["SiteLocation"] == "Cleveland"
     assert values["Deliverables"] == "ioList, panelLayout"
-    assert values["PlcMake"] == "Allen-Bradley"
-    assert values["PlcLine"] == "CompactLogix 5380"
+    assert values["PlcMake"] == "Siemens"
+    assert values["PlcLine"] == "S7-1200"
     assert values["PowerConfiguration"] == "3PH 480V"
     assert values["EnclosureRatings"] == "NEMA 12, UL Listed"
-    assert values["PlcCPU"] == "CompactLogix 5380 starter"
+    assert values["PlcCPU"] == "CPU 1212C DC/DC/DC"
     assert values["DICount"] == "16"
     assert values["IOAccessories"] == "Remote / modular I/O bank"
     assert values["CommunicationProtocols"] == "EtherNet/IP, Modbus TCP"
@@ -123,9 +123,9 @@ def test_normalized_form_values_strips_text_and_deliverables():
             "Deliverables": " panelLayout,ioList ",
             "PowerConfiguration": "3PH 480V",
             "EnclosureRatings": " UL Listed, NEMA 12 ",
-            "PlcMake": " Allen-Bradley ",
-            "PlcLine": " ControlLogix 5580 ",
-            "PlcCPU": "ControlLogix 5580 starter",
+            "PlcMake": " Siemens ",
+            "PlcLine": " S7-1200 ",
+            "PlcCPU": "CPU 1214C DC/DC/DC",
             "DICount": " 16 ",
             "DOCount": " 8 ",
             "AICount": " 2 ",
@@ -142,10 +142,10 @@ def test_normalized_form_values_strips_text_and_deliverables():
     assert values["PowerConfiguration"] == "3PH 480V"
     assert values["EnclosureRatings"] == ["NEMA 12", "UL Listed"]
     assert values["EnclosureRating"] == "NEMA 12, UL Listed"
-    assert values["PlcMake"] == "Allen-Bradley"
-    assert values["PlcLine"] == "ControlLogix 5580"
-    assert values["PlcPlatform"] == "Allen-Bradley ControlLogix 5580"
-    assert values["PlcCPU"] == "ControlLogix 5580 starter"
+    assert values["PlcMake"] == "Siemens"
+    assert values["PlcLine"] == "S7-1200"
+    assert values["PlcPlatform"] == "Siemens S7-1200"
+    assert values["PlcCPU"] == "CPU 1214C DC/DC/DC"
     assert values["DICount"] == "16"
     assert values["SensorCount"] == "18"
     assert values["IOAccessories"] == ["Ethernet I/O adapter", "Remote / modular I/O bank"]
@@ -157,10 +157,10 @@ def test_plc_make_line_helpers_keep_line_contingent_on_make():
     assert "3PH 480V" in POWER_CONFIGURATIONS
     assert "UL Listed" in ENCLOSURE_RATING_OPTIONS
     assert "PROFIBUS" in COMMUNICATION_PROTOCOL_OPTIONS
-    assert PLC_LINES_BY_MAKE["Siemens"] == ("S7-1200", "S7-1500", "ET 200SP")
+    assert PLC_LINES_BY_MAKE["Siemens"] == ("S7-1200",)
     assert normalized_plc_line("Siemens", "CompactLogix 5380") == "S7-1200"
-    assert normalized_plc_line("Allen-Bradley", "CompactLogix 5380") == "CompactLogix 5380"
-    assert plc_platform_from_make_line("Siemens", "S7-1500") == "Siemens S7-1500"
+    assert normalized_plc_line("Allen-Bradley", "CompactLogix 5380") == "Micro800"
+    assert plc_platform_from_make_line("Siemens", "S7-1200") == "Siemens S7-1200"
     assert parse_power_configuration("3PH 480V") == ("480", "3")
     assert power_configuration_from_values("480", "3") == "3PH 480V"
     assert total_input_count("16", "2") == "18"
@@ -172,15 +172,16 @@ def test_io_expansion_suggestion_targets_twenty_percent_spare():
     suggestion = io_expansion_suggestion(
         "Siemens",
         "S7-1200",
-        "CPU 1212C starter",
+        "CPU 1212C DC/DC/DC",
         "20",
         "12",
         "4",
         "2",
     )
 
-    assert "DI: target 24, CPU 8, add 1 x SM 1221 DI 16" in suggestion
-    assert "DO: target 15, CPU 6, add 1 x SM 1222 DO 16" in suggestion
+    assert "DI: target 24, CPU 8, add 1 x SM 1221 DI 16x24 V DC" in suggestion
+    assert "DO: target 15, CPU 6, add 1 x SM 1222 DQ 16x24 VDC" in suggestion
+    assert "vendor-verified" in suggestion
 
 
 def test_setup_source_record_from_form_attaches_filled_setup_fields():
@@ -192,7 +193,7 @@ def test_setup_source_record_from_form_attaches_filled_setup_fields():
             "PhaseCount": "3",
             "EnclosureRating": "NEMA 12",
             "PlcMake": "Siemens",
-            "PlcLine": "S7-1500",
+            "PlcLine": "S7-1200",
             "DICount": "16",
             "DOCount": "8",
             "AICount": "2",
@@ -240,15 +241,15 @@ def test_apply_form_values_to_project_updates_object():
             "PowerConfiguration": "3PH 480V",
             "EnclosureRatings": "UL Listed, NEMA 12",
             "PlcMake": "Siemens",
-            "PlcLine": "S7-1500",
-            "PlcCPU": "CPU 1511 starter",
+            "PlcLine": "S7-1200",
+            "PlcCPU": "CPU 1214C DC/DC/DC",
             "DICount": "16",
             "DOCount": "8",
             "AICount": "2",
             "AOCount": "1",
             "IOAccessories": "Remote / modular I/O bank",
-            "EthernetAdapter": "CP 1543 communications processor",
-            "ExpansionPowerSupply": "PM 1507 load power supply",
+            "EthernetAdapter": "Integrated PROFINET interface",
+            "ExpansionPowerSupply": "External 24 VDC supply required",
             "CommunicationProtocols": "PROFINET, Modbus TCP",
             "SourceType": "Customer email",
             "SourceTitle": "Customer controls basis",
@@ -264,15 +265,15 @@ def test_apply_form_values_to_project_updates_object():
     assert obj.PhaseCount == "3"
     assert obj.EnclosureRatings == ["NEMA 12", "UL Listed"]
     assert obj.PlcMake == "Siemens"
-    assert obj.PlcLine == "S7-1500"
-    assert obj.PlcCPU == "CPU 1511 starter"
-    assert obj.PlcPlatform == "Siemens S7-1500"
+    assert obj.PlcLine == "S7-1200"
+    assert obj.PlcCPU == "CPU 1214C DC/DC/DC"
+    assert obj.PlcPlatform == "Siemens S7-1200"
     assert obj.DICount == "16"
     assert obj.SensorCount == "18"
     assert obj.IOAccessories == ["Remote / modular I/O bank"]
     assert obj.CommunicationProtocols == ["Modbus TCP", "PROFINET"]
-    assert obj.EthernetAdapter == "CP 1543 communications processor"
-    assert obj.ExpansionPowerSupply == "PM 1507 load power supply"
+    assert obj.EthernetAdapter == "Integrated PROFINET interface"
+    assert obj.ExpansionPowerSupply == "External 24 VDC supply required"
     assert "DI:" in obj.IOExpansionSuggestion
     assert len(obj.SourceRecords) >= 1
     setup_source = json.loads(obj.SourceRecords[-1])
@@ -294,7 +295,7 @@ def test_create_or_update_project_from_form_creates_ce_project():
             "EnclosureRatings": "UL Listed, NEMA 12",
             "PlcMake": "Allen-Bradley",
             "PlcLine": "Micro800",
-            "PlcCPU": "Micro820 starter",
+            "PlcCPU": "Micro800 starter placeholder",
             "DICount": "10",
             "DOCount": "4",
             "AICount": "1",
@@ -359,7 +360,7 @@ def test_create_or_update_project_from_form_preserves_existing_io_signals():
             "EnclosureRatings": "NEMA 12",
             "PlcMake": "Siemens",
             "PlcLine": "S7-1200",
-            "PlcCPU": "CPU 1212C starter",
+            "PlcCPU": "CPU 1212C DC/DC/DC",
             "DICount": "4",
             "DOCount": "2",
             "AICount": "0",

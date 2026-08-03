@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plcHardwareCatalog schemaVersion="0.1.0">
+  <sources>
+    <source id="siemens-s7-1200-portfolio" title="Siemens SIMATIC S7-1200 portfolio overview" url="https://assets.new.siemens.com/siemens/assets/api/uuid:8845079d-8656-4f0b-9a2b-afaf24d0aef7/s7-1200-portfolio.pdf"/>
+    <source id="siemens-cpu-1212c-datasheet" title="Siemens CPU 1212C data sheet 6ES7212-1AE40-0XB0" url="https://support.industry.siemens.com/teddatasheet/?caller=SIOS&amp;format=pdf&amp;language=en&amp;mlfbs=6ES7212-1AE40-0XB0"/>
+    <source id="siemens-sm-1221-di16-datasheet" title="Siemens SM 1221 DI 16x24 V DC data sheet 6ES7221-1BH32-0XB0" url="https://support.industry.siemens.com/teddatasheet/?caller=SIOS&amp;format=pdf&amp;language=en&amp;mlfbs=6ES7221-1BH32-0XB0"/>
+    <source id="siemens-sm-1222-do16-datasheet" title="Siemens SM 1222 DQ 16x24 VDC data sheet 6ES7222-1BH32-0XB0" url="https://support.industry.siemens.com/teddatasheet/?caller=SIOS&amp;format=pdf&amp;language=en&amp;mlfbs=6ES7222-1BH32-0XB0"/>
+    <source id="siemens-sm-1231-ai8-datasheet" title="Siemens SM 1231 AI 8 data sheet 6ES7231-4HF32-0XB0" url="https://support.industry.siemens.com/teddatasheet/?caller=SIOS&amp;format=pdf&amp;language=en&amp;mlfbs=6ES7231-4HF32-0XB0"/>
+    <source id="siemens-sm-1232-ao4-datasheet" title="Siemens SM 1232 AQ 4 data sheet 6ES7232-4HD32-0XB0" url="https://support.industry.siemens.com/teddatasheet/?caller=SIOS&amp;format=pdf&amp;language=en&amp;mlfbs=6ES7232-4HD32-0XB0"/>
+  </sources>
+  <make name="Siemens">
+    <line name="S7-1200" vendorVerified="true">
+      <cpus>
+        <cpu name="CPU 1212C DC/DC/DC" partNumber="6ES7212-1AE40-0XB0" di="8" do="6" ai="2" ao="0" verified="true" sourceId="siemens-cpu-1212c-datasheet"/>
+        <cpu name="CPU 1214C DC/DC/DC" partNumber="6ES7214-1AG40-0XB0" di="14" do="10" ai="2" ao="0" verified="true" sourceId="siemens-s7-1200-portfolio"/>
+      </cpus>
+      <ioModules>
+        <module name="SM 1221 DI 16x24 V DC" partNumber="6ES7221-1BH32-0XB0" di="16" do="0" ai="0" ao="0" verified="true" sourceId="siemens-sm-1221-di16-datasheet"/>
+        <module name="SM 1222 DQ 16x24 VDC" partNumber="6ES7222-1BH32-0XB0" di="0" do="16" ai="0" ao="0" verified="true" sourceId="siemens-sm-1222-do16-datasheet"/>
+        <module name="SM 1231 AI 8" partNumber="6ES7231-4HF32-0XB0" di="0" do="0" ai="8" ao="0" verified="true" sourceId="siemens-sm-1231-ai8-datasheet"/>
+        <module name="SM 1232 AQ 4" partNumber="6ES7232-4HD32-0XB0" di="0" do="0" ai="0" ao="4" verified="true" sourceId="siemens-sm-1232-ao4-datasheet"/>
+      </ioModules>
+      <ethernetAdapters>
+        <adapter name="Integrated PROFINET interface" partNumber="onboard" verified="true" sourceId="siemens-s7-1200-portfolio"/>
+      </ethernetAdapters>
+      <powerSupplies>
+        <powerSupply name="External 24 VDC supply required" partNumber="project-specific" verified="false" sourceId=""/>
+      </powerSupplies>
+    </line>
+  </make>
+  <make name="Allen-Bradley">
+    <line name="Micro800" vendorVerified="false">
+      <cpus>
+        <cpu name="Micro800 starter placeholder" partNumber="" di="0" do="0" ai="0" ao="0" verified="false" sourceId=""/>
+      </cpus>
+      <ioModules/>
+      <ethernetAdapters/>
+      <powerSupplies/>
+    </line>
+  </make>
+</plcHardwareCatalog>
