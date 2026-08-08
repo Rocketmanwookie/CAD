@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<terminal_block_project generator="qet_tb_generator" schema_version="0.1">
+  <terminal_block name="TB1">
+    <terminal index="1" tag="X1:1" label="24VDC" side="left" type="feedthrough" bridge="" wire="1001" />
+    <terminal index="2" tag="X1:2" label="0VDC" side="right" type="ground" bridge="" wire="1002" />
+  </terminal_block>
+</terminal_block_project>
