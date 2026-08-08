@@ -35,6 +35,8 @@ PROJECT_PROPERTY_SPECS = (
     ProjectPropertySpec("App::PropertyString", "NominalVoltage", "Intake", "Nominal voltage response"),
     ProjectPropertySpec("App::PropertyString", "PhaseCount", "Intake", "Phase count response"),
     ProjectPropertySpec("App::PropertyString", "PowerConfiguration", "Power", "Combined phase and voltage"),
+    ProjectPropertySpec("App::PropertyStringList", "ControlledLoads", "Power", "Controlled load records as type, label, quantity, watts/hp"),
+    ProjectPropertySpec("App::PropertyString", "EstimatedLoadAmps", "Power", "Estimated load current with spare capacity"),
     ProjectPropertySpec("App::PropertyString", "EnclosureRating", "Intake", "Enclosure rating response"),
     ProjectPropertySpec("App::PropertyStringList", "EnclosureRatings", "Intake", "Selected enclosure ratings"),
     ProjectPropertySpec("App::PropertyString", "PlcMake", "PLC / I/O", "PLC manufacturer"),
@@ -127,6 +129,8 @@ def intake_to_project_properties(intake: ProjectIntake) -> dict[str, object]:
         if "powerFeed.phaseCount" in intake.fields
         else "",
         "PowerConfiguration": "",
+        "ControlledLoads": [],
+        "EstimatedLoadAmps": "",
         "EnclosureRating": intake.fields.get("environment.enclosureRating", "").value
         if "environment.enclosureRating" in intake.fields
         else "",

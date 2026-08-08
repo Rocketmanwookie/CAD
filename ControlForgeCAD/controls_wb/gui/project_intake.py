@@ -23,6 +23,7 @@ from controls_wb.hardware_catalog import (
 )
 from controls_wb.intake import SourceRecordType
 from controls_wb.model.project import create_or_update_project, ensure_project_properties, intake_to_project_properties
+from controls_wb.power_loads import estimated_total_amps, format_load_lines, parse_load_lines
 
 HARDWARE_CATALOG = load_hardware_catalog()
 PLC_LINES_BY_MAKE = {make: lines_for_make(HARDWARE_CATALOG, make) for make in makes(HARDWARE_CATALOG)}
@@ -112,6 +113,10 @@ PLC_IO_FORM_FIELDS = (
     IntakeFormField("EthernetAdapter", "Ethernet adapter", "EthernetAdapter"),
     IntakeFormField("ExpansionPowerSupply", "Expansion power supply", "ExpansionPowerSupply"),
     IntakeFormField("CommunicationProtocols", "Communication protocols", "CommunicationProtocols"),
+)
+
+POWER_LOAD_FORM_FIELDS = (
+    IntakeFormField("ControlledLoads", "Controlled loads", "ControlledLoads"),
 )
 
 
@@ -290,6 +295,7 @@ def form_values_from_ceproject_xml(xml_text: str | bytes) -> dict[str, str]:
         "SiteLocation": "",
         "Deliverables": format_deliverables(document.intake.deliverables),
         "PowerConfiguration": power_configuration_from_values(nominal_voltage, phase_count),
+        "ControlledLoads": "",
         "EnclosureRatings": enclosure_rating,
         "PlcMake": plc_make,
         "PlcLine": plc_line,
@@ -479,6 +485,9 @@ def form_values_from_project(obj: object | None) -> dict[str, str]:
             values[field.key] = format_multiselect(value)
         else:
             values[field.key] = str(value or "")
+    for field in POWER_LOAD_FORM_FIELDS:
+        value = getattr(obj, field.property_name, "") if obj is not None else ""
+        values[field.key] = format_load_lines(value)
     if not values["ProjectName"]:
         values["ProjectName"] = "Controls Project"
     if not values["Deliverables"]:
@@ -561,6 +570,12 @@ def normalized_form_values(values: dict[str, str]) -> dict[str, object]:
     expansion_power = str(values.get("ExpansionPowerSupply", "")).strip()
     normalized["ExpansionPowerSupply"] = expansion_power if expansion_power in power_options else (power_options[0] if power_options else "")
     normalized["CommunicationProtocols"] = parse_multiselect(values.get("CommunicationProtocols", ""))
+    normalized["ControlledLoads"] = parse_load_lines(values.get("ControlledLoads", ""))
+    normalized["EstimatedLoadAmps"] = estimated_total_amps(
+        normalized["ControlledLoads"],
+        normalized["NominalVoltage"],
+        normalized["PhaseCount"],
+    )
     normalized["IOExpansionSuggestion"] = io_expansion_suggestion(
         plc_make,
         plc_line,
@@ -670,6 +685,12 @@ def show_project_intake_dialog(document: object, parent=None, console=None) -> o
     power_editor.setCurrentText(initial_values["PowerConfiguration"])
     editors["PowerConfiguration"] = power_editor
     form.addRow("Power", power_editor)
+
+    loads_editor = QtWidgets.QTextEdit()
+    loads_editor.setPlainText(initial_values["ControlledLoads"])
+    loads_editor.setPlaceholderText("motor, Conveyor motor, 1, 1.5hp")
+    editors["ControlledLoads"] = loads_editor
+    form.addRow("Controlled loads", loads_editor)
 
     enclosure_editors = {}
     enclosure_box = QtWidgets.QWidget()
@@ -900,6 +921,8 @@ def show_project_intake_dialog(document: object, parent=None, console=None) -> o
     for key, editor in editors.items():
         if hasattr(editor, "currentText"):
             values[key] = editor.currentText()
+        elif hasattr(editor, "toPlainText"):
+            values[key] = editor.toPlainText()
         else:
             values[key] = editor.text()
     values["IOAccessories"] = [

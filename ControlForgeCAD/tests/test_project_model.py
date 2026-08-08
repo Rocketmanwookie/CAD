@@ -62,6 +62,8 @@ def test_project_property_specs_expose_editable_intake_fields():
     assert specs["NominalVoltage"].group == "Intake"
     assert specs["PhaseCount"].group == "Intake"
     assert specs["PowerConfiguration"].group == "Power"
+    assert specs["ControlledLoads"].property_type == "App::PropertyStringList"
+    assert specs["EstimatedLoadAmps"].group == "Power"
     assert specs["EnclosureRatings"].property_type == "App::PropertyStringList"
     assert specs["EnclosureRating"].group == "Intake"
     assert specs["PlcPlatform"].group == "Intake"
@@ -93,6 +95,8 @@ def test_intake_to_project_properties_maps_starter_payload():
     assert properties["IOAccessories"] == []
     assert properties["EnclosureRatings"] == []
     assert properties["CommunicationProtocols"] == []
+    assert properties["ControlledLoads"] == []
+    assert properties["EstimatedLoadAmps"] == ""
     assert properties["PowerFeedStatus"] == "Requested"
 
 
@@ -110,6 +114,8 @@ def test_initialize_project_object_adds_properties_and_proxy():
     assert "CEProjectImports" in obj.PropertiesList
     assert "IOSignals" in obj.PropertiesList
     assert "PowerConfiguration" in obj.PropertiesList
+    assert "ControlledLoads" in obj.PropertiesList
+    assert "EstimatedLoadAmps" in obj.PropertiesList
     assert "EnclosureRatings" in obj.PropertiesList
     assert "DICount" in obj.PropertiesList
     assert "IOAccessories" in obj.PropertiesList

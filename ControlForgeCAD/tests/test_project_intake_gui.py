@@ -152,6 +152,7 @@ def test_form_values_from_project_reads_existing_object():
             "NominalVoltage": "480",
             "PhaseCount": "3",
             "PowerConfiguration": "3PH 480V",
+            "ControlledLoads": ["motor, Conveyor, 2, 1hp"],
             "EnclosureRatings": ["UL Listed", "NEMA 12"],
             "PlcMake": "Siemens",
             "PlcLine": "S7-1200",
@@ -187,6 +188,7 @@ def test_form_values_from_project_reads_existing_object():
     assert values["PlcMake"] == "Siemens"
     assert values["PlcLine"] == "S7-1200"
     assert values["PowerConfiguration"] == "3PH 480V"
+    assert values["ControlledLoads"] == "motor, Conveyor, 2, 1hp"
     assert values["EnclosureRatings"] == "NEMA 12, UL Listed"
     assert values["PlcCPU"] == "CPU 1212C DC/DC/DC"
     assert values["DICount"] == "16"
@@ -206,6 +208,7 @@ def test_normalized_form_values_strips_text_and_deliverables():
             "SiteLocation": " Cleveland ",
             "Deliverables": " panelLayout,ioList ",
             "PowerConfiguration": "3PH 480V",
+            "ControlledLoads": " motor, Conveyor, 2, 1hp\nheat_strip, Cabinet heater, 1, 500W ",
             "EnclosureRatings": " UL Listed, NEMA 12 ",
             "PlcMake": " Siemens ",
             "PlcLine": " S7-1200 ",
@@ -224,6 +227,11 @@ def test_normalized_form_values_strips_text_and_deliverables():
     assert values["NominalVoltage"] == "480"
     assert values["PhaseCount"] == "3"
     assert values["PowerConfiguration"] == "3PH 480V"
+    assert values["ControlledLoads"] == [
+        "motor, Conveyor, 2, 1hp",
+        "heat_strip, Cabinet heater, 1, 500W",
+    ]
+    assert values["EstimatedLoadAmps"] == "3.54"
     assert values["EnclosureRatings"] == ["NEMA 12", "UL Listed"]
     assert values["EnclosureRating"] == "NEMA 12, UL Listed"
     assert values["PlcMake"] == "Siemens"
@@ -323,6 +331,7 @@ def test_apply_form_values_to_project_updates_object():
             "SiteLocation": "Cleveland",
             "Deliverables": "ioList",
             "PowerConfiguration": "3PH 480V",
+            "ControlledLoads": "motor, Conveyor, 2, 1hp",
             "EnclosureRatings": "UL Listed, NEMA 12",
             "PlcMake": "Siemens",
             "PlcLine": "S7-1200",
@@ -345,6 +354,8 @@ def test_apply_form_values_to_project_updates_object():
     assert obj.ProjectName == "Line 7"
     assert obj.Deliverables == ["ioList"]
     assert obj.PowerConfiguration == "3PH 480V"
+    assert obj.ControlledLoads == ["motor, Conveyor, 2, 1hp"]
+    assert obj.EstimatedLoadAmps == "2.82"
     assert obj.NominalVoltage == "480"
     assert obj.PhaseCount == "3"
     assert obj.EnclosureRatings == ["NEMA 12", "UL Listed"]

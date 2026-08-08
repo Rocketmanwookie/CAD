@@ -97,6 +97,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Track upstream transformer/source equipment.
 - [ ] Track source distribution equipment and circuit ID.
 - [ ] Track voltage, phase, frequency, feeder ampacity, conductor/raceway reference, available fault current, grounding system, disconnecting means, metering requirements, source drawing, and BIM object reference.
+- [x] Add starter controlled-load lines on `CE_Project` and estimate load amperage from phase/voltage with 20 percent spare capacity.
 - [ ] Calculate estimated amperage from configured phase/voltage and load assumptions once load data exists, including motors, heat strips, VFDs, DC power supplies, Ethernet/network equipment, controlled coils/relays/contactors, spare capacity, and diversity assumptions.
 - [ ] Integrate with IFC/ifcXML references where available.
 - [ ] Export unresolved coordination items as BCF-style issues later.

@@ -66,7 +66,28 @@ python3 -m compileall ControlForgeCAD
 
 ## Amperage calculation roadmap
 
-Amperage calculation should not be based only on phase and voltage. It needs modeled load data, including large current drawing devices controlled by the panel:
+Amperage calculation should not be based only on phase and voltage. Project Intake now stores starter controlled-load lines and estimates current with 20 percent spare capacity.
+
+Use one load per line:
+
+```text
+type, label, quantity, watts-or-hp
+```
+
+Examples:
+
+```text
+motor, Conveyor motor, 2, 1hp
+heat_strip, Cabinet heater, 1, 500W
+vfd, Pump drive, 1, 2.2kW
+power_supply, 24 VDC controls supply, 1, 240W
+ethernet, Network switch, 1, 25W
+coil, Contactor coils, 4, 8W
+```
+
+Supported starter load types are `motor`, `vfd`, `heat_strip`, `power_supply`, `ethernet`, `coil`, `relay`, and `other`.
+
+The estimate uses type defaults for power factor and efficiency, then applies a 20 percent spare factor. It is a planning aid only. Final panel, feeder, breaker, conductor, SCCR, thermal, and code calculations still need engineering review and source-backed load data, including large current drawing devices controlled by the panel:
 
 - Motors.
 - Heat strips.
@@ -76,4 +97,4 @@ Amperage calculation should not be based only on phase and voltage. It needs mod
 - Solenoids, relays, and contactor coils where relevant.
 - Spare capacity and diversity/usage assumptions.
 
-The current phase/voltage dropdown prepares the power configuration input. Load-based current calculation belongs with the upcoming power-drop/load model.
+The current phase/voltage dropdown prepares the power configuration input. This starter load estimate is the first power-drop/load model scaffold; richer device-level load records should replace the free-text lines later.
