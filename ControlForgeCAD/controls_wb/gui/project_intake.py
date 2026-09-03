@@ -24,6 +24,7 @@ from controls_wb.hardware_catalog import (
 from controls_wb.intake import SourceRecordType
 from controls_wb.model.project import create_or_update_project, ensure_project_properties, intake_to_project_properties
 from controls_wb.power_loads import estimated_total_amps, format_load_lines, parse_load_lines
+from controls_wb.setup_import import ProjectSetupImportError, parse_project_setup
 
 HARDWARE_CATALOG = load_hardware_catalog()
 PLC_LINES_BY_MAKE = {make: lines_for_make(HARDWARE_CATALOG, make) for make in makes(HARDWARE_CATALOG)}
@@ -313,6 +314,17 @@ def form_values_from_ceproject_xml(xml_text: str | bytes) -> dict[str, str]:
         "SourceStakeholder": "Project manager",
         "SourceReference": document.intake.project_id,
     }
+
+
+def form_values_from_project_setup_text(text: str, source_format: str = "auto") -> dict[str, object]:
+    """Return Project Intake form values from YAML-ish or UML-derived setup text."""
+    result = parse_project_setup(text, source_format)
+    values = dict(result.values)
+    values.setdefault("SourceType", "Uploaded file / reference")
+    values.setdefault("SourceTitle", f"Imported {source_format} project setup")
+    values.setdefault("SourceStakeholder", "Project manager")
+    values["ImportWarnings"] = list(result.warnings)
+    return values
 
 
 def ceproject_import_record(xml_text: str | bytes, source_path: str = "") -> str:
@@ -816,41 +828,44 @@ def show_project_intake_dialog(document: object, parent=None, console=None) -> o
                     import_editor.setCurrentIndex(index)
                     break
 
-    def apply_import_values(record: dict[str, str]):
-        imported_values = form_values_from_ceproject_xml(record["xmlText"])
+    def apply_imported_form_values(imported_values: dict[str, object]):
         for key in ("ProjectName", "Customer", "SiteLocation", "Deliverables"):
             editor = editors.get(key)
             if editor is not None and hasattr(editor, "setText"):
-                editor.setText(imported_values.get(key, ""))
+                editor.setText(format_deliverables(imported_values.get(key, "")) if key == "Deliverables" else str(imported_values.get(key, "")))
 
-        power_editor.setCurrentText(imported_values["PowerConfiguration"])
-        make_editor.setCurrentText(imported_values["PlcMake"])
-        line_editor.setCurrentText(imported_values["PlcLine"])
-        cpu_editor.setCurrentText(imported_values["PlcCPU"])
-        ethernet_editor.setCurrentText(imported_values["EthernetAdapter"])
-        power_supply_editor.setCurrentText(imported_values["ExpansionPowerSupply"])
+        loads_editor.setPlainText(format_load_lines(imported_values.get("ControlledLoads", "")))
+        power_editor.setCurrentText(str(imported_values.get("PowerConfiguration", "")))
+        make_editor.setCurrentText(str(imported_values.get("PlcMake", "")))
+        line_editor.setCurrentText(str(imported_values.get("PlcLine", "")))
+        cpu_editor.setCurrentText(str(imported_values.get("PlcCPU", "")))
+        ethernet_editor.setCurrentText(str(imported_values.get("EthernetAdapter", "")))
+        power_supply_editor.setCurrentText(str(imported_values.get("ExpansionPowerSupply", "")))
 
         for key in ("DICount", "DOCount", "AICount", "AOCount"):
             editor = editors.get(key)
             if editor is not None and hasattr(editor, "setText"):
-                editor.setText(imported_values.get(key, ""))
+                editor.setText(str(imported_values.get(key, "")))
 
-        selected_enclosure_values = set(parse_multiselect(imported_values["EnclosureRatings"]))
+        selected_enclosure_values = set(parse_multiselect(imported_values.get("EnclosureRatings", "")))
         for enclosure, checkbox in enclosure_editors.items():
             checkbox.setChecked(enclosure in selected_enclosure_values)
 
-        selected_accessory_values = set(parse_accessories(imported_values["IOAccessories"]))
+        selected_accessory_values = set(parse_accessories(imported_values.get("IOAccessories", "")))
         for accessory, checkbox in accessory_editors.items():
             checkbox.setChecked(accessory in selected_accessory_values)
 
-        selected_protocol_values = set(parse_multiselect(imported_values["CommunicationProtocols"]))
+        selected_protocol_values = set(parse_multiselect(imported_values.get("CommunicationProtocols", "")))
         for protocol, checkbox in protocol_editors.items():
             checkbox.setChecked(protocol in selected_protocol_values)
 
-        source_type_editor.setCurrentText(imported_values["SourceType"])
-        source_title_editor.setText(imported_values["SourceTitle"])
-        source_stakeholder_editor.setText(imported_values["SourceStakeholder"])
-        source_reference_editor.setText(imported_values["SourceReference"])
+        source_type_editor.setCurrentText(str(imported_values.get("SourceType", "Uploaded file / reference")))
+        source_title_editor.setText(str(imported_values.get("SourceTitle", "Imported project setup")))
+        source_stakeholder_editor.setText(str(imported_values.get("SourceStakeholder", "Project manager")))
+        source_reference_editor.setText(str(imported_values.get("SourceReference", "")))
+
+    def apply_import_values(record: dict[str, str]):
+        apply_imported_form_values(form_values_from_ceproject_xml(record["xmlText"]))
 
     def selected_import_record():
         index = import_editor.currentIndex()
@@ -894,14 +909,41 @@ def show_project_intake_dialog(document: object, parent=None, console=None) -> o
         except (OSError, UnicodeError, CEProjectXmlError) as exc:
             QtWidgets.QMessageBox.critical(dialog, "CEProject XML Import", str(exc))
 
+    def import_project_setup_text():
+        result = QtWidgets.QFileDialog.getOpenFileName(
+            dialog,
+            "Import Project Setup",
+            str(Path.home()),
+            "Project setup (*.yaml *.yml *.puml *.plantuml *.uml *.txt);;All files (*)",
+        )
+        source_path = result[0] if isinstance(result, tuple) else result
+        if not source_path:
+            return
+        suffix = Path(source_path).suffix.lower()
+        source_format = "plantuml" if suffix in {".puml", ".plantuml", ".uml"} else "yaml"
+        try:
+            setup_text = Path(source_path).read_text(encoding="utf-8")
+            imported_values = form_values_from_project_setup_text(setup_text, source_format)
+            imported_values["SourceReference"] = source_path
+            apply_imported_form_values(imported_values)
+            warnings = imported_values.get("ImportWarnings", [])
+            if console is not None and warnings:
+                for warning in warnings:
+                    console.PrintWarning(f"Project setup import: {warning}\n")
+        except (OSError, UnicodeError, ProjectSetupImportError) as exc:
+            QtWidgets.QMessageBox.critical(dialog, "Project Setup Import", str(exc))
+
     import_box = QtWidgets.QWidget()
     import_layout = QtWidgets.QHBoxLayout(import_box)
     import_button = QtWidgets.QPushButton("Import CEProject XML")
+    import_setup_button = QtWidgets.QPushButton("Import Setup YAML/UML")
     apply_import_button = QtWidgets.QPushButton("Apply selected XML")
     import_button.clicked.connect(import_ceproject_xml)
+    import_setup_button.clicked.connect(import_project_setup_text)
     apply_import_button.clicked.connect(apply_selected_import)
     import_layout.addWidget(import_editor)
     import_layout.addWidget(import_button)
+    import_layout.addWidget(import_setup_button)
     import_layout.addWidget(apply_import_button)
     refresh_import_editor()
     form.addRow("Saved CEProject XML", import_box)

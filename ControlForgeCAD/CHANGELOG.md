@@ -43,6 +43,8 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - Starter CAD-side controls layout objects for panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module placeholders.
 - `CE_CreatePanel` now creates the starter layout object set, and BOM export can include those objects through their controls metadata.
 - Deterministic missing-data matrix CSV export helper and `CE_ExportMissingDataCSV` workbench command.
+- Pure-Python project setup import adapters for lightweight YAML-ish setup files and PlantUML/UML-derived fact lines.
+- Project Intake dialog button for importing YAML, YML, PUML, PlantUML, UML, or TXT setup files into starter intake fields.
 
 ### Known limitations
 
@@ -50,4 +52,5 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - FreeCAD command validation for this milestone is documented as a manual step because no usable headless `freecadcmd` CLI is available in the test environment.
 - XML mappings are illustrative and not full certified exports.
 - CEProject XML import currently covers the intake-related XML emitted by the exporter, not future device, signal, circuit, PLC, HMI, or BIM sections.
+- YAML/UML setup import intentionally supports a small key/value and list subset; full YAML and formal UML parsing remain future adapter work.
 - Safety validation is structural only; it does not certify PL, SIL, or category compliance.

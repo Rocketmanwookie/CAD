@@ -14,6 +14,7 @@ from controls_wb.gui.project_intake import (
     create_or_update_project_from_form,
     form_values_from_project,
     form_values_from_ceproject_xml,
+    form_values_from_project_setup_text,
     io_expansion_suggestion,
     merge_ceproject_import_records,
     normalized_form_values,
@@ -488,6 +489,35 @@ def test_ceproject_xml_import_record_maps_to_project_setup_form_values():
     assert values["PlcLine"] == "S7-1200"
     assert values["DICount"] == "30"
     assert values["SourceType"] == "Uploaded file / reference"
+
+
+def test_project_setup_text_import_maps_to_normalized_form_values():
+    values = form_values_from_project_setup_text(
+        """
+project:
+  name: Line 11
+  customer: Acme
+deliverables:
+  - ioList
+power:
+  configuration: 3PH 480V
+plc:
+  make: Siemens
+  line: S7-1200
+io:
+  di_count: 8
+  ai_count: 2
+"""
+    )
+    normalized = normalized_form_values(values)
+
+    assert normalized["ProjectName"] == "Line 11"
+    assert normalized["Customer"] == "Acme"
+    assert normalized["Deliverables"] == ["ioList"]
+    assert normalized["PowerConfiguration"] == "3PH 480V"
+    assert normalized["PlcPlatform"] == "Siemens S7-1200"
+    assert normalized["SensorCount"] == "10"
+    assert values["ImportWarnings"] == []
 
 
 def test_ceproject_xml_import_records_are_deduplicated_and_selectable():
