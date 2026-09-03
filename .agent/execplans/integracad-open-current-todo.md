@@ -623,9 +623,25 @@ python3 -m compileall ControlForgeCAD
 
 Result: passed.
 
-Commit readiness:
+Final checkpoint:
 
-- Full validation is green.
-- The only unrelated working-tree item observed is untouched untracked
-  `.vscode/`.
-- Commit the Slice A mapper fix if `git diff --check` is clean.
+- Slice A mapper fix was committed as
+  `74d1fc6 Preserve live project facts in XML intake mapping`.
+- Full validation was green before commit: `/usr/bin/python3 -m pytest`
+  passed 113 tests, and `python3 -m compileall ControlForgeCAD` passed.
+- Final observed repository state: branch `controlforgecad`, ahead 19 and
+  behind 7 versus `origin/controlforgecad`.
+- Working tree is clean except for untouched untracked `.vscode/`.
+- Codex usage was at 93% of the 5-hour window after the commit, so stop here
+  and continue later rather than starting new implementation work.
+
+Next recommended milestone:
+
+- Start generated artifact traceability.
+- Add fact/source references to BOM rows and I/O CSV rows.
+- Ensure output rows distinguish generated starter rows from explicit
+  user-labeled `IOSignals`.
+- Keep `io.sensorCount` canonical as input points only (`DICount + AICount`
+  when `SensorCount` is blank).
+- Do not pull/rebase/push until the user decides how to handle the branch being
+  ahead 19 and behind 7 versus `origin/controlforgecad`.
