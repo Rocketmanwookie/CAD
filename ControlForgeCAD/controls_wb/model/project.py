@@ -9,6 +9,7 @@ try:
 except Exception:  # pragma: no cover
     App = None
 
+from controls_wb.fact_ids import FactIds
 from controls_wb.intake import SCHEMA_VERSION, ProjectIntake, default_project_intake
 
 
@@ -122,27 +123,27 @@ def intake_to_project_properties(intake: ProjectIntake) -> dict[str, object]:
         "SourceRecords": sources,
         "IntakeQuestions": questions,
         "IOSignals": [],
-        "NominalVoltage": intake.fields.get("powerFeed.nominalVoltage", "").value
-        if "powerFeed.nominalVoltage" in intake.fields
+        "NominalVoltage": intake.fields.get(FactIds.POWER_NOMINAL_VOLTAGE, "").value
+        if FactIds.POWER_NOMINAL_VOLTAGE in intake.fields
         else "",
-        "PhaseCount": intake.fields.get("powerFeed.phaseCount", "").value
-        if "powerFeed.phaseCount" in intake.fields
+        "PhaseCount": intake.fields.get(FactIds.POWER_PHASE_COUNT, "").value
+        if FactIds.POWER_PHASE_COUNT in intake.fields
         else "",
         "PowerConfiguration": "",
         "ControlledLoads": [],
         "EstimatedLoadAmps": "",
-        "EnclosureRating": intake.fields.get("environment.enclosureRating", "").value
-        if "environment.enclosureRating" in intake.fields
+        "EnclosureRating": intake.fields.get(FactIds.ENCLOSURE_RATING, "").value
+        if FactIds.ENCLOSURE_RATING in intake.fields
         else "",
         "EnclosureRatings": [],
         "PlcMake": "",
         "PlcLine": "",
         "PlcCPU": "",
-        "PlcPlatform": intake.fields.get("controls.plcPlatform", "").value
-        if "controls.plcPlatform" in intake.fields
+        "PlcPlatform": intake.fields.get(FactIds.PLC_PLATFORM, "").value
+        if FactIds.PLC_PLATFORM in intake.fields
         else "",
-        "SensorCount": intake.fields.get("io.sensorCount", "").value
-        if "io.sensorCount" in intake.fields
+        "SensorCount": intake.fields.get(FactIds.SENSOR_COUNT, "").value
+        if FactIds.SENSOR_COUNT in intake.fields
         else "",
         "DICount": "",
         "DOCount": "",

@@ -45,6 +45,8 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - Deterministic missing-data matrix CSV export helper and `CE_ExportMissingDataCSV` workbench command.
 - Pure-Python project setup import adapters for lightweight YAML-ish setup files and PlantUML/UML-derived fact lines.
 - Project Intake dialog button for importing YAML, YML, PUML, PlantUML, UML, or TXT setup files into starter intake fields.
+- Stable pure-Python CEProject fact ID registry for current project, intake, power, PLC/I/O, source, contact, and status facts.
+- Intake requirements, starter question IDs, setup source records, editable project properties, and missing-data row IDs now use the central fact ID registry.
 
 ### Known limitations
 
@@ -53,4 +55,5 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - XML mappings are illustrative and not full certified exports.
 - CEProject XML import currently covers the intake-related XML emitted by the exporter, not future device, signal, circuit, PLC, HMI, or BIM sections.
 - YAML/UML setup import intentionally supports a small key/value and list subset; full YAML and formal UML parsing remain future adapter work.
+- Generated artifact rows are not yet fully trace-linked back to fact IDs beyond existing source record and missing-data references.
 - Safety validation is structural only; it does not certify PL, SIL, or category compliance.

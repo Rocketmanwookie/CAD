@@ -73,7 +73,7 @@ This ExecPlan is a living implementation plan for continuing the existing `Whrsd
 
 Continue the existing FreeCAD controls-engineering workbench toward the next working MVP milestone without replacing the project scaffold. The immediate milestone is the intake and validation prototype: add an initial project/intake command and pure-Python intake validation that can run under tests without FreeCAD.
 
-Current milestone: add lightweight YAML and UML-derived project setup import adapters that feed the existing Project Intake form mapping without adding dependencies or changing the CEProject XML import path.
+Current milestone: make every currently supported project fact addressable through a stable pure-Python CEProject fact ID registry, then wire existing intake, source-record, question, property, and missing-data paths to that registry without changing exported XML behavior.
 
 ## Milestones
 
@@ -143,6 +143,7 @@ Current milestone: add lightweight YAML and UML-derived project setup import ada
 - [x] Add local Siemens S7-1200 Easy Book and CADBaseLibrary STEP/SLDPRT references to the XML hardware catalog using paths and SHA-256 checksums instead of copying vendor assets into the repository.
 - [x] Add a Project Intake CEProject XML import workflow that remembers imported XML on `CE_Project` and lets it be selected again later.
 - [x] Add YAML and UML-derived project setup/import adapters where practical.
+- [x] Make every current project fact addressable by stable ID.
 - [x] Milestone 5: add starter CAD-side controls layout placeholder objects.
 - [x] Wire `CE_CreatePanel` to create panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module placeholders.
 - [x] Populate the starter PLC layout placeholder from the selected XML catalog CPU, including manufacturer, part number, onboard channel count, and CADbase reference metadata.
@@ -197,6 +198,8 @@ Current milestone: add lightweight YAML and UML-derived project setup import ada
 - Keep Milestone 5 geometry as simple boxes with editable metadata. Manufacturer-accurate models, assembly constraints, routing, wire schedules, and detailed panel layout remain future work.
 - Keep YAML/UML setup import lightweight for now: parse dependency-free key/value and list facts into the existing Project Intake form-value keys, then let the current normalization logic handle dropdown validation, defaults, source records, I/O counts, and load estimates.
 - Do not remember YAML/UML setup text as CEProject XML import records yet; unlike CEProject XML, these formats are adapter inputs rather than the canonical project source format.
+- Make the fact ID registry a pure-Python module (`controls_wb.fact_ids`) instead of embedding fact IDs in the FreeCAD object layer. FreeCAD properties, intake requirements, source records, question IDs, and missing-data rows can then share one canonical address surface while CEProject XML output remains backward-compatible.
+- Keep unsupported future schema sections out of the fact registry until they have real model fields. Device, circuit, safety, HMI, and BIM fact IDs should be added when their data models exist.
 
 ## Validation Commands
 
@@ -325,6 +328,15 @@ python3 -m compileall ControlForgeCAD/controls_wb/setup_import.py ControlForgeCA
 python3 -m compileall ControlForgeCAD
 ```
 
+Commands run for the stable fact ID registry milestone:
+
+```bash
+/usr/bin/python3 -m pytest ControlForgeCAD/tests/test_fact_ids.py ControlForgeCAD/tests/test_intake.py ControlForgeCAD/tests/test_missing_data.py ControlForgeCAD/tests/test_project_model.py ControlForgeCAD/tests/test_project_intake_gui.py -q
+python3 -m compileall ControlForgeCAD/controls_wb/fact_ids.py ControlForgeCAD/controls_wb/intake.py ControlForgeCAD/controls_wb/missing_data.py ControlForgeCAD/controls_wb/model/project.py ControlForgeCAD/controls_wb/gui/project_intake.py ControlForgeCAD/tests/test_fact_ids.py
+/usr/bin/python3 -m pytest
+python3 -m compileall ControlForgeCAD
+```
+
 FreeCAD CLI smoke feasibility result:
 
 ```text
@@ -435,6 +447,13 @@ Manual FreeCAD validation steps for this milestone:
 - `/usr/bin/python3 -m pytest ControlForgeCAD/tests/test_setup_import.py ControlForgeCAD/tests/test_project_intake_gui.py -q` passed: 19 tests.
 - `python3 -m compileall ControlForgeCAD/controls_wb/setup_import.py ControlForgeCAD/controls_wb/gui/project_intake.py ControlForgeCAD/tests/test_setup_import.py ControlForgeCAD/tests/test_project_intake_gui.py` passed.
 - `/usr/bin/python3 -m pytest` passed from the repository root: 103 tests.
+- `python3 -m compileall ControlForgeCAD` passed from the repository root.
+- Added `controls_wb/fact_ids.py` as the stable CEProject fact ID registry for currently supported project, intake, power, PLC/I/O, contact, source, question, signal, and status facts.
+- Intake required fields, starter question IDs, setup source-record field IDs, project property mappings, and missing-data item IDs/categories now use the fact registry instead of local string construction.
+- Added fact registry tests for uniqueness, deterministic ordering, project-property coverage, required-field coverage, derived question/missing-data IDs, and loud failure for unknown facts/properties.
+- `/usr/bin/python3 -m pytest ControlForgeCAD/tests/test_fact_ids.py ControlForgeCAD/tests/test_intake.py ControlForgeCAD/tests/test_missing_data.py ControlForgeCAD/tests/test_project_model.py ControlForgeCAD/tests/test_project_intake_gui.py -q` passed: 40 tests.
+- `python3 -m compileall ControlForgeCAD/controls_wb/fact_ids.py ControlForgeCAD/controls_wb/intake.py ControlForgeCAD/controls_wb/missing_data.py ControlForgeCAD/controls_wb/model/project.py ControlForgeCAD/controls_wb/gui/project_intake.py ControlForgeCAD/tests/test_fact_ids.py` passed.
+- `/usr/bin/python3 -m pytest` passed from the repository root: 108 tests.
 - `python3 -m compileall ControlForgeCAD` passed from the repository root.
 
 ## Final Notes

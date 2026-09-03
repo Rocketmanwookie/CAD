@@ -7,6 +7,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Iterable
 
+from controls_wb.fact_ids import FactIds, fact_spec, question_id_for_fact_id
+
 
 SCHEMA_VERSION = "0.1.0"
 
@@ -95,22 +97,27 @@ class ProjectIntake:
     questions: dict[str, IntakeQuestionResponse] = field(default_factory=dict)
 
 
+def _required_field(fact_id: str, status: FieldStatus = FieldStatus.UNKNOWN) -> IntakeField:
+    spec = fact_spec(fact_id)
+    return IntakeField(spec.fact_id, spec.label, spec.stakeholder, status=status)
+
+
 REQUIRED_FIELDS_BY_DELIVERABLE: dict[str, tuple[IntakeField, ...]] = {
     "panelLayout": (
-        IntakeField("project.name", "Project name", "Project manager"),
-        IntakeField("powerFeed.nominalVoltage", "Nominal voltage", "Electrical engineering"),
-        IntakeField("powerFeed.phaseCount", "Phase count", "Electrical engineering"),
-        IntakeField("environment.enclosureRating", "Enclosure rating", "Operations / maintenance"),
+        _required_field(FactIds.PROJECT_NAME),
+        _required_field(FactIds.POWER_NOMINAL_VOLTAGE),
+        _required_field(FactIds.POWER_PHASE_COUNT),
+        _required_field(FactIds.ENCLOSURE_RATING),
     ),
     "ioList": (
-        IntakeField("project.name", "Project name", "Project manager"),
-        IntakeField("controls.plcPlatform", "PLC platform", "Controls lead"),
-        IntakeField("io.sensorCount", "Sensor count or estimate", "Mechanical / materials handling"),
+        _required_field(FactIds.PROJECT_NAME),
+        _required_field(FactIds.PLC_PLATFORM),
+        _required_field(FactIds.SENSOR_COUNT),
     ),
     "bomSourceExport": (
-        IntakeField("project.name", "Project name", "Project manager"),
-        IntakeField("purchasing.preferredVendors", "Preferred vendors", "Purchasing"),
-        IntakeField("costing.budgetStatus", "Budget or quote status", "Sales / estimator"),
+        _required_field(FactIds.PROJECT_NAME),
+        _required_field(FactIds.PREFERRED_VENDORS),
+        _required_field(FactIds.BUDGET_STATUS),
     ),
 }
 
@@ -119,41 +126,41 @@ def default_project_intake(project_id: str = "CE-PROJECT-001", name: str = "Cont
     """Create the starter intake used by the first FreeCAD project command."""
     source_id = "SRC-MANUAL-001"
     fields = {
-        "project.name": IntakeField(
-            "project.name",
-            "Project name",
-            "Project manager",
+        FactIds.PROJECT_NAME: IntakeField(
+            FactIds.PROJECT_NAME,
+            fact_spec(FactIds.PROJECT_NAME).label,
+            fact_spec(FactIds.PROJECT_NAME).stakeholder,
             value=name,
             status=FieldStatus.RECEIVED,
         ),
-        "powerFeed.nominalVoltage": IntakeField(
-            "powerFeed.nominalVoltage",
-            "Nominal voltage",
-            "Electrical engineering",
+        FactIds.POWER_NOMINAL_VOLTAGE: IntakeField(
+            FactIds.POWER_NOMINAL_VOLTAGE,
+            fact_spec(FactIds.POWER_NOMINAL_VOLTAGE).label,
+            fact_spec(FactIds.POWER_NOMINAL_VOLTAGE).stakeholder,
             status=FieldStatus.REQUESTED,
         ),
-        "powerFeed.phaseCount": IntakeField(
-            "powerFeed.phaseCount",
-            "Phase count",
-            "Electrical engineering",
+        FactIds.POWER_PHASE_COUNT: IntakeField(
+            FactIds.POWER_PHASE_COUNT,
+            fact_spec(FactIds.POWER_PHASE_COUNT).label,
+            fact_spec(FactIds.POWER_PHASE_COUNT).stakeholder,
             status=FieldStatus.REQUESTED,
         ),
-        "environment.enclosureRating": IntakeField(
-            "environment.enclosureRating",
-            "Enclosure rating",
-            "Operations / maintenance",
+        FactIds.ENCLOSURE_RATING: IntakeField(
+            FactIds.ENCLOSURE_RATING,
+            fact_spec(FactIds.ENCLOSURE_RATING).label,
+            fact_spec(FactIds.ENCLOSURE_RATING).stakeholder,
             status=FieldStatus.REQUESTED,
         ),
-        "controls.plcPlatform": IntakeField(
-            "controls.plcPlatform",
-            "PLC platform",
-            "Controls lead",
+        FactIds.PLC_PLATFORM: IntakeField(
+            FactIds.PLC_PLATFORM,
+            fact_spec(FactIds.PLC_PLATFORM).label,
+            fact_spec(FactIds.PLC_PLATFORM).stakeholder,
             status=FieldStatus.REQUESTED,
         ),
-        "io.sensorCount": IntakeField(
-            "io.sensorCount",
-            "Sensor count or estimate",
-            "Mechanical / materials handling",
+        FactIds.SENSOR_COUNT: IntakeField(
+            FactIds.SENSOR_COUNT,
+            fact_spec(FactIds.SENSOR_COUNT).label,
+            fact_spec(FactIds.SENSOR_COUNT).stakeholder,
             status=FieldStatus.REQUESTED,
         ),
     }
@@ -173,7 +180,7 @@ def default_project_intake(project_id: str = "CE-PROJECT-001", name: str = "Cont
             SourceRecordType.MANUAL_ENTRY,
             "Starter project creation",
             "Project manager",
-            field_ids=("project.name",),
+            field_ids=(FactIds.PROJECT_NAME,),
         )
     }
     questions = _starter_questions(fields)
@@ -200,7 +207,7 @@ def _starter_questions(fields: dict[str, IntakeField]) -> dict[str, IntakeQuesti
     questions: dict[str, IntakeQuestionResponse] = {}
     for field in fields.values():
         if field.status in {FieldStatus.UNKNOWN, FieldStatus.REQUESTED}:
-            question_id = f"Q-{field.field_id.replace('.', '-').upper()}"
+            question_id = question_id_for_fact_id(field.field_id)
             questions[question_id] = IntakeQuestionResponse(
                 question_id,
                 field.field_id,

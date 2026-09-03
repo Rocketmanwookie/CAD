@@ -46,6 +46,8 @@ The PLC hardware catalog lives at `controls_wb/resources/hardware/plc_catalog.xm
 
 Project setup records a setup source record for filled starter facts. The source can be a manual entry, customer email, meeting note, phone call, field note, vendor quote, or uploaded file/reference. That source is attached to project name, voltage, phase, enclosure rating, PLC platform, and sensor/input-count facts where values are present.
 
+The current project facts are addressable through the pure-Python `controls_wb.fact_ids` registry. It assigns stable IDs to supported project, intake, power, PLC/I/O, contact, source, question, signal, and status facts. Intake requirements, starter question IDs, setup source records, editable `CE_Project` property mappings, and missing-data row IDs use that registry so downstream exports can point back to the same fact surface.
+
 Project setup can also store starter controlled-load lines such as `motor, Conveyor motor, 2, 1hp` and estimate total load amps from the selected phase/voltage with 20 percent spare capacity. This is an early planning aid, not a final electrical design calculation.
 
 Project setup can import supported CEProject XML through the Project Intake dialog. Imported XML is remembered on the editable `CE_Project` object, can be selected again later, and preserves parsed project metadata, contacts, source records, and intake questions. The dialog can also import lightweight YAML-ish setup notes and PlantUML/UML-derived fact lines that map into the same Project Intake fields. Those setup text imports are adapter inputs, not remembered CEProject source records yet.

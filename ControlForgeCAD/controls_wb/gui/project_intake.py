@@ -13,6 +13,7 @@ from hashlib import sha256
 from pathlib import Path
 
 from controls_wb.ceproject_xml import CEProjectXmlError, parse_ceproject_xml
+from controls_wb.fact_ids import FactIds
 from controls_wb.hardware_catalog import (
     line_catalog,
     lines_for_make,
@@ -77,12 +78,12 @@ SOURCE_TYPE_LABELS = {
 SETUP_SOURCE_ID = "SRC-PROJECT-SETUP-001"
 CEPROJECT_IMPORT_SOURCE_ID_PREFIX = "SRC-CEPROJECT-IMPORT-"
 SETUP_SOURCE_FIELDS = (
-    ("ProjectName", "project.name"),
-    ("NominalVoltage", "powerFeed.nominalVoltage"),
-    ("PhaseCount", "powerFeed.phaseCount"),
-    ("EnclosureRating", "environment.enclosureRating"),
-    ("PlcPlatform", "controls.plcPlatform"),
-    ("SensorCount", "io.sensorCount"),
+    ("ProjectName", FactIds.PROJECT_NAME),
+    ("NominalVoltage", FactIds.POWER_NOMINAL_VOLTAGE),
+    ("PhaseCount", FactIds.POWER_PHASE_COUNT),
+    ("EnclosureRating", FactIds.ENCLOSURE_RATING),
+    ("PlcPlatform", FactIds.PLC_PLATFORM),
+    ("SensorCount", FactIds.SENSOR_COUNT),
 )
 
 CEPROJECT_IMPORT_REQUIRED_KEYS = ("id", "projectId", "projectName", "xmlText")

@@ -9,6 +9,7 @@ from dataclasses import asdict, dataclass
 from io import StringIO
 from typing import Any
 
+from controls_wb.fact_ids import FactIds, category_for_fact_id, fact_spec, missing_data_item_id_for_fact_id
 from controls_wb.intake import (
     Contact,
     FieldStatus,
@@ -166,71 +167,71 @@ def _questions_from_project_object(obj: object) -> dict[str, IntakeQuestionRespo
 
 def project_object_to_intake(obj: object) -> ProjectIntake:
     fields = {
-        "project.name": IntakeField(
-            "project.name",
-            "Project name",
-            "Project manager",
+        FactIds.PROJECT_NAME: IntakeField(
+            FactIds.PROJECT_NAME,
+            fact_spec(FactIds.PROJECT_NAME).label,
+            fact_spec(FactIds.PROJECT_NAME).stakeholder,
             value=getattr(obj, "ProjectName", ""),
             status=FieldStatus.RECEIVED if getattr(obj, "ProjectName", "") else FieldStatus.UNKNOWN,
         ),
-        "project.customer": IntakeField(
-            "project.customer",
-            "Customer",
-            "Project manager",
+        FactIds.PROJECT_CUSTOMER: IntakeField(
+            FactIds.PROJECT_CUSTOMER,
+            fact_spec(FactIds.PROJECT_CUSTOMER).label,
+            fact_spec(FactIds.PROJECT_CUSTOMER).stakeholder,
             value=getattr(obj, "Customer", ""),
             status=FieldStatus.RECEIVED if getattr(obj, "Customer", "") else FieldStatus.UNKNOWN,
         ),
-        "project.siteLocation": IntakeField(
-            "project.siteLocation",
-            "Site/location",
-            "Project manager",
+        FactIds.PROJECT_SITE_LOCATION: IntakeField(
+            FactIds.PROJECT_SITE_LOCATION,
+            fact_spec(FactIds.PROJECT_SITE_LOCATION).label,
+            fact_spec(FactIds.PROJECT_SITE_LOCATION).stakeholder,
             value=getattr(obj, "SiteLocation", ""),
             status=FieldStatus.RECEIVED if getattr(obj, "SiteLocation", "") else FieldStatus.UNKNOWN,
         ),
-        "powerFeed.nominalVoltage": IntakeField(
-            "powerFeed.nominalVoltage",
-            "Nominal voltage",
-            "Electrical engineering",
+        FactIds.POWER_NOMINAL_VOLTAGE: IntakeField(
+            FactIds.POWER_NOMINAL_VOLTAGE,
+            fact_spec(FactIds.POWER_NOMINAL_VOLTAGE).label,
+            fact_spec(FactIds.POWER_NOMINAL_VOLTAGE).stakeholder,
             value=getattr(obj, "NominalVoltage", ""),
             status=_status_for_value(
                 getattr(obj, "NominalVoltage", ""),
                 getattr(obj, "PowerFeedStatus", ""),
             ),
         ),
-        "powerFeed.phaseCount": IntakeField(
-            "powerFeed.phaseCount",
-            "Phase count",
-            "Electrical engineering",
+        FactIds.POWER_PHASE_COUNT: IntakeField(
+            FactIds.POWER_PHASE_COUNT,
+            fact_spec(FactIds.POWER_PHASE_COUNT).label,
+            fact_spec(FactIds.POWER_PHASE_COUNT).stakeholder,
             value=getattr(obj, "PhaseCount", ""),
             status=_status_for_value(
                 getattr(obj, "PhaseCount", ""),
                 getattr(obj, "PowerFeedStatus", ""),
             ),
         ),
-        "environment.enclosureRating": IntakeField(
-            "environment.enclosureRating",
-            "Enclosure rating",
-            "Operations / maintenance",
+        FactIds.ENCLOSURE_RATING: IntakeField(
+            FactIds.ENCLOSURE_RATING,
+            fact_spec(FactIds.ENCLOSURE_RATING).label,
+            fact_spec(FactIds.ENCLOSURE_RATING).stakeholder,
             value=getattr(obj, "EnclosureRating", ""),
             status=_status_for_value(
                 getattr(obj, "EnclosureRating", ""),
                 getattr(obj, "EnclosureRatingStatus", ""),
             ),
         ),
-        "controls.plcPlatform": IntakeField(
-            "controls.plcPlatform",
-            "PLC platform",
-            "Controls lead",
+        FactIds.PLC_PLATFORM: IntakeField(
+            FactIds.PLC_PLATFORM,
+            fact_spec(FactIds.PLC_PLATFORM).label,
+            fact_spec(FactIds.PLC_PLATFORM).stakeholder,
             value=getattr(obj, "PlcPlatform", ""),
             status=_status_for_value(
                 getattr(obj, "PlcPlatform", ""),
                 getattr(obj, "PlcPlatformStatus", ""),
             ),
         ),
-        "io.sensorCount": IntakeField(
-            "io.sensorCount",
-            "Sensor count or estimate",
-            "Mechanical / materials handling",
+        FactIds.SENSOR_COUNT: IntakeField(
+            FactIds.SENSOR_COUNT,
+            fact_spec(FactIds.SENSOR_COUNT).label,
+            fact_spec(FactIds.SENSOR_COUNT).stakeholder,
             value=getattr(obj, "SensorCount", ""),
             status=_status_for_value(
                 getattr(obj, "SensorCount", ""),
@@ -268,10 +269,6 @@ def _question_for_field(intake: ProjectIntake, field_id: str) -> IntakeQuestionR
         if question.field_id == field_id:
             return question
     return None
-
-
-def _category_for_field(field_id: str) -> str:
-    return field_id.split(".", 1)[0] if "." in field_id else "intake"
 
 
 def _classify_row(
@@ -340,8 +337,8 @@ def missing_data_matrix(project: ProjectIntake | object) -> list[MissingDataRow]
         value = actual.value or (question.response if question else "")
         rows.append(
             MissingDataRow(
-                item_id=f"MD-{field_id.replace('.', '-').upper()}",
-                category=_category_for_field(field_id),
+                item_id=missing_data_item_id_for_fact_id(field_id),
+                category=category_for_fact_id(field_id),
                 question_id=question.question_id if question else "",
                 fact_id=field_id,
                 label=requirement.label,
