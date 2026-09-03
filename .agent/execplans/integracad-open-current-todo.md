@@ -2,6 +2,10 @@
 
 This ExecPlan is a living implementation plan for continuing the existing `Whrsdaparty/CAD` repository on branch `controlforgecad`. It follows the repository's current files and TODO backlog, not a replacement scaffold.
 
+Active local work path: `/home/egrantjr/Dev/CAD`. The similarly named
+`/home/egrantjr/integraCAD_OPEN` path is not the active repository for this
+work unless the user explicitly redirects there.
+
 ## Current State
 
 - Active branch: `controlforgecad`.
@@ -455,8 +459,11 @@ Manual FreeCAD validation steps for this milestone:
 - `python3 -m compileall ControlForgeCAD/controls_wb/fact_ids.py ControlForgeCAD/controls_wb/intake.py ControlForgeCAD/controls_wb/missing_data.py ControlForgeCAD/controls_wb/model/project.py ControlForgeCAD/controls_wb/gui/project_intake.py ControlForgeCAD/tests/test_fact_ids.py` passed.
 - `/usr/bin/python3 -m pytest` passed from the repository root: 108 tests.
 - `python3 -m compileall ControlForgeCAD` passed from the repository root.
+- Added `.agent/handoffs/claude-review-2026-09-03.md` as a ready-to-paste Claude review handoff with the current path, branch, latest commits, validation commands, documentation pointers, known limitations, and likely next milestone.
+- Corrected README validation commands to use `/usr/bin/python3 -m pytest` because this workstation's default `python3` resolves to Homebrew Python without pytest installed.
 
 ## Final Notes
 
 - The project still has intentional naming drift: product docs say IntegraCAB Open, the current folder/package remains `ControlForgeCAD`/`controls_wb`, and command IDs remain `CE_*`.
 - No broad rename was performed because that would be higher risk than the TODO-backed intake MVP increment.
+- Current active local repository path is `/home/egrantjr/Dev/CAD`.

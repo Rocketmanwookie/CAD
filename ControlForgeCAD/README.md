@@ -186,15 +186,19 @@ Automated tests do not import real FreeCAD in this environment. They compile `In
 For pure-Python validation outside FreeCAD, run tests from the repository root:
 
 ```bash
-python3 -m pytest
+/usr/bin/python3 -m pytest
 python3 -m compileall ControlForgeCAD
 ```
 
 or from this directory:
 
 ```bash
-python3 -m pytest
+/usr/bin/python3 -m pytest
 ```
+
+On this workstation, `/usr/bin/python3` has `pytest` available. The default
+`python3` currently resolves to Homebrew Python and may report `No module named
+pytest`.
 
 ## License
 

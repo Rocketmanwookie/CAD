@@ -47,6 +47,7 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - Project Intake dialog button for importing YAML, YML, PUML, PlantUML, UML, or TXT setup files into starter intake fields.
 - Stable pure-Python CEProject fact ID registry for current project, intake, power, PLC/I/O, source, contact, and status facts.
 - Intake requirements, starter question IDs, setup source records, editable project properties, and missing-data row IDs now use the central fact ID registry.
+- Claude review handoff note with current repository path, validation commands, review focus, known limitations, and next-milestone recommendation.
 
 ### Known limitations
 

@@ -37,9 +37,13 @@ In FreeCAD, select **Controls / Automation** from the workbench selector. Confir
 Pure-Python validation from the repository root:
 
 ```bash
-python3 -m pytest
+/usr/bin/python3 -m pytest
 python3 -m compileall ControlForgeCAD
 ```
+
+On this workstation, `/usr/bin/python3` has `pytest` available. The default
+`python3` currently resolves to Homebrew Python and may report `No module named
+pytest`.
 
 Manual FreeCAD validation:
 
