@@ -48,13 +48,15 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - Stable pure-Python CEProject fact ID registry for current project, intake, power, PLC/I/O, source, contact, and status facts.
 - Intake requirements, starter question IDs, setup source records, editable project properties, and missing-data row IDs now use the central fact ID registry.
 - Claude review handoff note with current repository path, validation commands, review focus, known limitations, and next-milestone recommendation.
+- CEProject object-to-intake mapping now carries the richer editable `CE_Project` setup fields into validation and XML export, including customer/site, typed I/O counts, PLC selections, controlled loads, enclosure rating lists, accessories, and communication protocols.
+- CEProject XML import now accepts schema-valid documents without an `Intake` section and restores richer intake facts back into the Project Intake form when those field IDs are present.
 
 ### Known limitations
 
 - Workbench commands are architecture stubs, not production FreeCAD tools yet.
 - FreeCAD command validation for this milestone is documented as a manual step because no usable headless `freecadcmd` CLI is available in the test environment.
 - XML mappings are illustrative and not full certified exports.
-- CEProject XML import currently covers the intake-related XML emitted by the exporter, not future device, signal, circuit, PLC, HMI, or BIM sections.
+- CEProject XML import currently covers the intake-related XML emitted by the exporter and schema-valid metadata-only/demo documents, not future device, signal, circuit, PLC, HMI, or BIM sections.
 - YAML/UML setup import intentionally supports a small key/value and list subset; full YAML and formal UML parsing remain future adapter work.
 - Generated artifact rows are not yet fully trace-linked back to fact IDs beyond existing source record and missing-data references.
 - Safety validation is structural only; it does not certify PL, SIL, or category compliance.

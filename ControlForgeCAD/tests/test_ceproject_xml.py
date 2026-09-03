@@ -1,9 +1,12 @@
 # SPDX-License-Identifier: MIT
 
 from xml.etree import ElementTree as ET
+from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
+from controls_wb.fact_ids import FactIds
 from controls_wb.ceproject_xml import CEPROJECT_NAMESPACE, CEProjectXmlError, ceproject_to_xml, parse_ceproject_xml
 from controls_wb.intake import (
     Contact,
@@ -45,6 +48,72 @@ def test_ceproject_xml_imports_minimal_project():
     assert document.intake.schema_version == "0.1.0"
     assert document.intake.deliverables == set()
     assert document.intake.fields == {}
+
+
+def test_ceproject_xml_imports_schema_valid_project_without_intake():
+    xml_text = (Path(__file__).resolve().parents[1] / "examples" / "conveyor_demo.ceproject.xml").read_text(encoding="utf-8")
+
+    document = parse_ceproject_xml(xml_text)
+
+    assert document.intake.project_id == "CE-DEMO-CONVEYOR-001"
+    assert document.intake.name == "Conveyor Controls Demo"
+    assert document.intake.deliverables == set()
+    assert document.intake.fields == {}
+
+
+def test_ceproject_xml_exports_richer_ce_project_object_fields():
+    project = SimpleNamespace(
+        ProjectId="CE-LIVE-001",
+        ProjectName="Live Project",
+        Customer="Acme",
+        SiteLocation="Cleveland",
+        SchemaVersion="0.1.0",
+        Deliverables=["ioList", "panelLayout"],
+        Contacts=[],
+        SourceRecords=[],
+        IntakeQuestions=[],
+        IOSignals=[],
+        NominalVoltage="480",
+        PhaseCount="3",
+        PowerConfiguration="3PH 480V",
+        ControlledLoads=["motor, Conveyor, 2, 1hp"],
+        EstimatedLoadAmps="2.15",
+        EnclosureRating="",
+        EnclosureRatings=["UL Listed", "NEMA 12"],
+        PlcMake="Siemens",
+        PlcLine="S7-1200",
+        PlcCPU="CPU 1214C DC/DC/DC",
+        PlcPlatform="Siemens S7-1200",
+        SensorCount="",
+        DICount="16",
+        DOCount="8",
+        AICount="2",
+        AOCount="1",
+        IOAccessories=["Remote / modular I/O bank"],
+        EthernetAdapter="Integrated PROFINET interface",
+        ExpansionPowerSupply="External 24 VDC supply required",
+        IOExpansionSuggestion="DI expansion required",
+        CommunicationProtocols=["PROFINET", "Modbus TCP"],
+        PowerFeedStatus="Received",
+        EnclosureRatingStatus="Received",
+        PlcPlatformStatus="Received",
+        SensorCountStatus="Received",
+    )
+
+    parsed = parse_ceproject_xml(ceproject_to_xml(project)).intake
+
+    assert parsed.fields[FactIds.PROJECT_CUSTOMER].value == "Acme"
+    assert parsed.fields[FactIds.PROJECT_SITE_LOCATION].value == "Cleveland"
+    assert parsed.fields[FactIds.PLC_CPU].value == "CPU 1214C DC/DC/DC"
+    assert parsed.fields[FactIds.DI_COUNT].value == "16"
+    assert parsed.fields[FactIds.DO_COUNT].value == "8"
+    assert parsed.fields[FactIds.AI_COUNT].value == "2"
+    assert parsed.fields[FactIds.AO_COUNT].value == "1"
+    assert parsed.fields[FactIds.SENSOR_COUNT].value == "18"
+    assert parsed.fields[FactIds.ENCLOSURE_RATING].value == "UL Listed, NEMA 12"
+    assert parsed.fields[FactIds.ENCLOSURE_RATINGS].value == "UL Listed, NEMA 12"
+    assert parsed.fields[FactIds.CONTROLLED_LOADS].value == "motor, Conveyor, 2, 1hp"
+    assert parsed.fields[FactIds.COMMUNICATION_PROTOCOLS].value == "PROFINET, Modbus TCP"
 
 
 def test_ceproject_xml_exports_contacts_deterministically():

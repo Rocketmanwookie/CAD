@@ -467,3 +467,165 @@ Manual FreeCAD validation steps for this milestone:
 - The project still has intentional naming drift: product docs say IntegraCAB Open, the current folder/package remains `ControlForgeCAD`/`controls_wb`, and command IDs remain `CE_*`.
 - No broad rename was performed because that would be higher risk than the TODO-backed intake MVP increment.
 - Current active local repository path is `/home/egrantjr/Dev/CAD`.
+
+## WIP Checkpoint - 2026-09-03 Slice A Mapper Review
+
+Stopped feature work intentionally after the user asked to preserve usage for
+handoff documentation. Codex usage was 69% of the 5-hour window at checkpoint.
+
+Active repository state:
+
+- Work path: `/home/egrantjr/Dev/CAD`.
+- Branch: `controlforgecad`.
+- Git relation before this checkpoint note: ahead 18, behind 7 versus
+  `origin/controlforgecad`.
+- Untracked `.vscode/` exists and was not touched.
+- Four source files have uncommitted WIP changes:
+  - `ControlForgeCAD/controls_wb/missing_data.py`
+  - `ControlForgeCAD/controls_wb/model/project.py`
+  - `ControlForgeCAD/controls_wb/gui/project_intake.py`
+  - `ControlForgeCAD/controls_wb/ceproject_xml.py`
+
+Why this WIP exists:
+
+- Claude review found that the live editable `CE_Project` object stores richer
+  dialog data than `project_object_to_intake()`, CEProject XML export/import,
+  and validation currently preserve.
+- The next slice should happen before generated artifact traceability, because
+  artifact traceability depends on the live object and XML/validation speaking
+  the same fact surface.
+
+WIP changes already made:
+
+- `project_object_to_intake()` now iterates over `FACT_SPECS` and maps every
+  registered `CE_Project` property into an `IntakeField` instead of only the
+  original starter subset.
+- Added helper functions in `missing_data.py` for text/list/line/count
+  conversion, derived sensor count from `DICount + AICount` when `SensorCount`
+  is blank, enclosure fallback from `EnclosureRatings` when `EnclosureRating`
+  is blank, and status selection for known status-backed facts.
+- `intake_to_project_properties()` now preserves `project.customer` and
+  `project.siteLocation` into `Customer` and `SiteLocation`.
+- `form_values_from_ceproject_xml()` now reads richer fact IDs where present:
+  customer, site, power configuration, controlled loads, enclosure list/string,
+  PLC make/line/CPU, DI/DO/AI/AO, I/O accessories, Ethernet adapter, expansion
+  power supply, and communication protocols. It keeps the old `io.sensorCount`
+  to `DICount` fallback for older XML.
+- CEProject import source records now use the actual parsed field IDs from the
+  imported XML instead of a hardcoded six-field list.
+- `SETUP_SOURCE_FIELDS` now includes the richer dialog-collected setup facts:
+  customer, site, deliverables, power configuration, controlled loads, enclosure
+  list, PLC make/line/CPU, typed I/O counts, accessories, Ethernet/power
+  selections, and protocols.
+- `parse_ceproject_xml()` now accepts schema-valid CEProject XML with no
+  `Intake` element and treats optional XSD attributes on fields, questions, and
+  source records as optional while still failing invalid XML and missing root
+  metadata/project attributes.
+
+Validation at checkpoint:
+
+```bash
+python3 -m compileall ControlForgeCAD/controls_wb/ceproject_xml.py ControlForgeCAD/controls_wb/gui/project_intake.py ControlForgeCAD/controls_wb/missing_data.py ControlForgeCAD/controls_wb/model/project.py
+```
+
+Result: passed.
+
+Not yet done:
+
+- No focused pytest run after these WIP changes.
+- No full `/usr/bin/python3 -m pytest` run after these WIP changes.
+- No tests added yet for the richer mapper behavior.
+- No docs/TODO/CHANGELOG updates for this WIP yet beyond this checkpoint note.
+- No commit made for this WIP.
+
+Smallest safe next action:
+
+1. Add failing-first tests for dialog-filled `CE_Project` object XML export and
+   import/form restoration, including customer, site, PLC CPU, DI/DO/AI/AO,
+   enclosure ratings, controlled loads, protocols, and accessories.
+2. Add tests that `parse_ceproject_xml()` imports
+   `ControlForgeCAD/examples/conveyor_demo.ceproject.xml` as an intake-empty
+   schema-compatible document.
+3. Add tests for `DICount + AICount` satisfying `io.sensorCount` when
+   `SensorCount` is blank, and `EnclosureRatings` satisfying
+   `environment.enclosureRating` when `EnclosureRating` is blank.
+4. Run focused tests, then full `/usr/bin/python3 -m pytest` and
+   `python3 -m compileall ControlForgeCAD`.
+5. Only after tests pass, update README/TODO/CHANGELOG and commit the completed
+   Slice A mapper fix.
+
+## Continuation - 2026-09-03 Slice A Mapper Fix
+
+Manual FreeCAD validation reported by the user after the WIP checkpoint:
+
+- Workbench activated successfully.
+- Project Intake updated `CE_Project`.
+- I/O expansion suggestion behaved correctly for DI, AI, and AO requirements.
+- `io.sensorCount` should be interpreted as input points only, derived from
+  `DICount + AICount`; output counts still matter for I/O expansion and exports
+  but are not sensors.
+- `IOSignals` remains blank until **Add I/O Signal** creates explicit
+  user-labeled rows.
+- Validation and missing-data preview reached no-crash behavior in FreeCAD.
+- BOM export and CEProject XML export completed to the user's home directory.
+
+Completed after the manual report:
+
+- Updated `test_project_intake_gui.py` so setup source-record expectations match
+  the expanded setup-source field coverage.
+- Added tests proving schema-valid conveyor demo XML imports without an
+  `Intake` section.
+- Added tests proving a dialog-filled `CE_Project` object exports richer
+  CEProject intake fields, including customer, site, PLC CPU, DI/DO/AI/AO,
+  derived input sensor count, enclosure ratings, controlled loads, and
+  communication protocols.
+- Added tests proving CEProject XML import restores richer setup fields back
+  into the Project Intake form.
+- Added missing-data tests proving `DICount + AICount` satisfies
+  `io.sensorCount` when `SensorCount` is blank and `EnclosureRatings` satisfies
+  `environment.enclosureRating` when the joined string field is blank.
+- Updated root and workbench README validation notes so `io.sensorCount` is
+  documented as input count only and `IOSignals` is documented as blank until
+  **Add I/O Signal** is used.
+- Cleaned TODO identity/intake checkboxes that were already true and clarified
+  that CEProject is currently the source-of-truth model for supported
+  intake-related facts.
+
+Focused validation run:
+
+```bash
+/usr/bin/python3 -m pytest ControlForgeCAD/tests/test_ceproject_xml.py ControlForgeCAD/tests/test_project_intake_gui.py ControlForgeCAD/tests/test_missing_data.py ControlForgeCAD/tests/test_project_model.py -q
+```
+
+Result: passed, 48 tests.
+
+Focused compile run:
+
+```bash
+python3 -m compileall ControlForgeCAD/controls_wb/ceproject_xml.py ControlForgeCAD/controls_wb/gui/project_intake.py ControlForgeCAD/controls_wb/missing_data.py ControlForgeCAD/controls_wb/model/project.py ControlForgeCAD/tests/test_ceproject_xml.py ControlForgeCAD/tests/test_project_intake_gui.py ControlForgeCAD/tests/test_missing_data.py
+```
+
+Result: passed.
+
+Full validation run:
+
+```bash
+/usr/bin/python3 -m pytest
+```
+
+Result: passed, 113 tests.
+
+Full compile run:
+
+```bash
+python3 -m compileall ControlForgeCAD
+```
+
+Result: passed.
+
+Commit readiness:
+
+- Full validation is green.
+- The only unrelated working-tree item observed is untouched untracked
+  `.vscode/`.
+- Commit the Slice A mapper fix if `git diff --check` is clean.

@@ -252,6 +252,70 @@ def test_missing_data_matrix_recognizes_filled_editable_project_values():
     assert rows["io.sensorCount"].status == "missing_source"
 
 
+def test_typed_input_counts_satisfy_sensor_count_when_sensor_count_blank():
+    obj = SimpleNamespace(
+        ProjectId="CE-PROJECT-001",
+        ProjectName="Line 7",
+        SchemaVersion="0.1.0",
+        Deliverables=["ioList"],
+        PlcPlatform="Siemens S7-1200",
+        SensorCount="",
+        DICount="16",
+        DOCount="8",
+        AICount="2",
+        AOCount="1",
+        PlcPlatformStatus="Received",
+        SensorCountStatus="Received",
+        SourceRecords=[
+            json.dumps(
+                {
+                    "id": "SRC-IO",
+                    "type": "meeting_note",
+                    "title": "I/O review",
+                    "stakeholder": "Controls lead",
+                    "fieldIds": ["io.sensorCount"],
+                }
+            )
+        ],
+    )
+
+    rows = {row.fact_id: row for row in missing_data_matrix(obj)}
+
+    assert rows["io.sensorCount"].value == "18"
+    assert rows["io.sensorCount"].status == "needs_verification"
+
+
+def test_enclosure_ratings_list_satisfies_enclosure_requirement():
+    obj = SimpleNamespace(
+        ProjectId="CE-PROJECT-001",
+        ProjectName="Line 7",
+        SchemaVersion="0.1.0",
+        Deliverables=["panelLayout"],
+        NominalVoltage="480",
+        PhaseCount="3",
+        EnclosureRating="",
+        EnclosureRatings=["UL Listed", "NEMA 12"],
+        PowerFeedStatus="Received",
+        EnclosureRatingStatus="Received",
+        SourceRecords=[
+            json.dumps(
+                {
+                    "id": "SRC-ENCLOSURE",
+                    "type": "meeting_note",
+                    "title": "Panel review",
+                    "stakeholder": "Operations / maintenance",
+                    "fieldIds": ["environment.enclosureRating"],
+                }
+            )
+        ],
+    )
+
+    rows = {row.fact_id: row for row in missing_data_matrix(obj)}
+
+    assert rows["environment.enclosureRating"].value == "UL Listed, NEMA 12"
+    assert rows["environment.enclosureRating"].status == "needs_verification"
+
+
 def test_missing_data_csv_uses_stable_headers_and_source_joining():
     intake = _intake_for(
         IntakeField(

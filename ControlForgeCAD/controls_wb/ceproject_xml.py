@@ -113,16 +113,15 @@ def parse_ceproject_xml(xml_text: str | bytes) -> CEProjectXmlDocument:
     metadata = _required_child(root, "Metadata", "CEProject")
     name = _required_text(metadata, "Name", "Metadata")
 
-    intake_element = _required_child(root, "Intake", "CEProject")
     intake = ProjectIntake(
         project_id=project_id,
         name=name,
         schema_version=schema_version,
-        deliverables=_parse_deliverables(intake_element),
-        fields=_parse_fields(intake_element),
+        deliverables=_parse_deliverables(_child_or_none(root, "Intake")),
+        fields=_parse_fields(_child_or_none(root, "Intake")),
         contacts=_parse_contacts(root),
         source_records=_parse_source_records(root),
-        questions=_parse_questions(intake_element),
+        questions=_parse_questions(_child_or_none(root, "Intake")),
     )
     return CEProjectXmlDocument(
         intake=intake,
@@ -341,7 +340,9 @@ def _int_attr(element: ET.Element, attr: str, context: str) -> int:
         raise CEProjectXmlError(f"Invalid integer value {value!r} for {context}@{attr}.") from exc
 
 
-def _parse_deliverables(intake_element: ET.Element) -> set[str]:
+def _parse_deliverables(intake_element: ET.Element | None) -> set[str]:
+    if intake_element is None:
+        return set()
     deliverables = _child_or_none(intake_element, "Deliverables")
     if deliverables is None:
         return set()
@@ -351,7 +352,9 @@ def _parse_deliverables(intake_element: ET.Element) -> set[str]:
     }
 
 
-def _parse_fields(intake_element: ET.Element) -> dict[str, IntakeField]:
+def _parse_fields(intake_element: ET.Element | None) -> dict[str, IntakeField]:
+    if intake_element is None:
+        return {}
     fields = _child_or_none(intake_element, "Fields")
     if fields is None:
         return {}
@@ -360,9 +363,9 @@ def _parse_fields(intake_element: ET.Element) -> dict[str, IntakeField]:
         field_id = _required_attr(field, "fieldId", "Field")
         parsed[field_id] = IntakeField(
             field_id=field_id,
-            label=_required_attr(field, "label", f"Field {field_id}"),
-            stakeholder=_required_attr(field, "stakeholder", f"Field {field_id}"),
-            status=_status(_required_attr(field, "status", f"Field {field_id}"), f"Field {field_id}"),
+            label=field.attrib.get("label", field_id),
+            stakeholder=field.attrib.get("stakeholder", ""),
+            status=_status(field.attrib.get("status", FieldStatus.UNKNOWN.value), f"Field {field_id}"),
             value=field.attrib.get("value", ""),
         )
     return parsed
@@ -385,7 +388,9 @@ def _parse_contacts(root: ET.Element) -> dict[str, Contact]:
     return parsed
 
 
-def _parse_questions(intake_element: ET.Element) -> dict[str, IntakeQuestionResponse]:
+def _parse_questions(intake_element: ET.Element | None) -> dict[str, IntakeQuestionResponse]:
+    if intake_element is None:
+        return {}
     questions = _child_or_none(intake_element, "Questions")
     if questions is None:
         return {}
@@ -397,9 +402,9 @@ def _parse_questions(intake_element: ET.Element) -> dict[str, IntakeQuestionResp
             question_id=question_id,
             field_id=_required_attr(question, "fieldId", f"Question {question_id}"),
             prompt=_required_text(question, "Prompt", f"Question {question_id}"),
-            ask=_required_attr(question, "ask", f"Question {question_id}"),
+            ask=question.attrib.get("ask", ""),
             status=_status(
-                _required_attr(question, "status", f"Question {question_id}"),
+                question.attrib.get("status", FieldStatus.UNKNOWN.value),
                 f"Question {question_id}",
             ),
             response=(_child_or_none(question, "Response").text or "") if _child_or_none(question, "Response") is not None else "",
@@ -427,8 +432,8 @@ def _parse_source_records(root: ET.Element) -> dict[str, SourceRecord]:
                 _required_attr(source, "type", f"SourceRecord {source_id}"),
                 f"SourceRecord {source_id}",
             ),
-            title=_required_attr(source, "title", f"SourceRecord {source_id}"),
-            stakeholder=_required_attr(source, "stakeholder", f"SourceRecord {source_id}"),
+            title=source.attrib.get("title", ""),
+            stakeholder=source.attrib.get("stakeholder", ""),
             field_ids=tuple(
                 _required_attr(field_ref, "fieldId", f"SourceRecord {source_id} FieldRef")
                 for field_ref in _children(field_refs, "FieldRef")

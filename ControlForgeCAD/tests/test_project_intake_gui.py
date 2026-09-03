@@ -2,6 +2,7 @@
 
 import json
 
+from controls_wb.fact_ids import FactIds
 from controls_wb.gui.project_intake import (
     COMMUNICATION_PROTOCOL_OPTIONS,
     ENCLOSURE_RATING_OPTIONS,
@@ -312,12 +313,24 @@ def test_setup_source_record_from_form_attaches_filled_setup_fields():
     assert record["stakeholder"] == "Controls lead"
     assert record["reference"] == "Meeting notes 2026-08-03"
     assert record["fieldIds"] == [
-        "project.name",
-        "powerFeed.nominalVoltage",
-        "powerFeed.phaseCount",
-        "environment.enclosureRating",
-        "controls.plcPlatform",
-        "io.sensorCount",
+        FactIds.PROJECT_NAME,
+        FactIds.DELIVERABLES,
+        FactIds.POWER_NOMINAL_VOLTAGE,
+        FactIds.POWER_PHASE_COUNT,
+        FactIds.POWER_CONFIGURATION,
+        FactIds.ENCLOSURE_RATING,
+        FactIds.ENCLOSURE_RATINGS,
+        FactIds.PLC_MAKE,
+        FactIds.PLC_LINE,
+        FactIds.PLC_CPU,
+        FactIds.PLC_PLATFORM,
+        FactIds.SENSOR_COUNT,
+        FactIds.DI_COUNT,
+        FactIds.DO_COUNT,
+        FactIds.AI_COUNT,
+        FactIds.AO_COUNT,
+        FactIds.ETHERNET_ADAPTER,
+        FactIds.EXPANSION_POWER_SUPPLY,
     ]
 
 
@@ -489,6 +502,46 @@ def test_ceproject_xml_import_record_maps_to_project_setup_form_values():
     assert values["PlcLine"] == "S7-1200"
     assert values["DICount"] == "30"
     assert values["SourceType"] == "Uploaded file / reference"
+
+
+def test_ceproject_xml_import_restores_richer_project_setup_form_values():
+    intake = ProjectIntake(
+        project_id="CE-RICH-001",
+        name="Rich XML",
+        deliverables={"ioList", "panelLayout"},
+        fields={
+            FactIds.PROJECT_CUSTOMER: IntakeField(FactIds.PROJECT_CUSTOMER, "Customer", "Project manager", value="Acme", status=FieldStatus.RECEIVED),
+            FactIds.PROJECT_SITE_LOCATION: IntakeField(FactIds.PROJECT_SITE_LOCATION, "Site/location", "Project manager", value="Cleveland", status=FieldStatus.RECEIVED),
+            FactIds.POWER_CONFIGURATION: IntakeField(FactIds.POWER_CONFIGURATION, "Power configuration", "Electrical engineering", value="3PH 480V", status=FieldStatus.RECEIVED),
+            FactIds.CONTROLLED_LOADS: IntakeField(FactIds.CONTROLLED_LOADS, "Controlled loads", "Electrical engineering", value="motor, Conveyor, 2, 1hp", status=FieldStatus.RECEIVED),
+            FactIds.ENCLOSURE_RATINGS: IntakeField(FactIds.ENCLOSURE_RATINGS, "Enclosure ratings", "Operations / maintenance", value="UL Listed, NEMA 12", status=FieldStatus.RECEIVED),
+            FactIds.PLC_MAKE: IntakeField(FactIds.PLC_MAKE, "PLC make", "Controls lead", value="Siemens", status=FieldStatus.RECEIVED),
+            FactIds.PLC_LINE: IntakeField(FactIds.PLC_LINE, "PLC line", "Controls lead", value="S7-1200", status=FieldStatus.RECEIVED),
+            FactIds.PLC_CPU: IntakeField(FactIds.PLC_CPU, "PLC CPU", "Controls lead", value="CPU 1214C DC/DC/DC", status=FieldStatus.RECEIVED),
+            FactIds.DI_COUNT: IntakeField(FactIds.DI_COUNT, "Digital input count", "Controls lead", value="16", status=FieldStatus.RECEIVED),
+            FactIds.DO_COUNT: IntakeField(FactIds.DO_COUNT, "Digital output count", "Controls lead", value="8", status=FieldStatus.RECEIVED),
+            FactIds.AI_COUNT: IntakeField(FactIds.AI_COUNT, "Analog input count", "Controls lead", value="2", status=FieldStatus.RECEIVED),
+            FactIds.AO_COUNT: IntakeField(FactIds.AO_COUNT, "Analog output count", "Controls lead", value="1", status=FieldStatus.RECEIVED),
+            FactIds.IO_ACCESSORIES: IntakeField(FactIds.IO_ACCESSORIES, "I/O accessories", "Controls lead", value="Remote / modular I/O bank", status=FieldStatus.RECEIVED),
+            FactIds.ETHERNET_ADAPTER: IntakeField(FactIds.ETHERNET_ADAPTER, "Ethernet adapter", "Controls lead", value="Integrated PROFINET interface", status=FieldStatus.RECEIVED),
+            FactIds.EXPANSION_POWER_SUPPLY: IntakeField(FactIds.EXPANSION_POWER_SUPPLY, "Expansion power supply", "Controls lead", value="External 24 VDC supply required", status=FieldStatus.RECEIVED),
+            FactIds.COMMUNICATION_PROTOCOLS: IntakeField(FactIds.COMMUNICATION_PROTOCOLS, "Communication protocols", "Controls lead", value="PROFINET, Modbus TCP", status=FieldStatus.RECEIVED),
+        },
+    )
+
+    values = form_values_from_ceproject_xml(ceproject_to_xml(intake))
+
+    assert values["Customer"] == "Acme"
+    assert values["SiteLocation"] == "Cleveland"
+    assert values["PlcCPU"] == "CPU 1214C DC/DC/DC"
+    assert values["DICount"] == "16"
+    assert values["DOCount"] == "8"
+    assert values["AICount"] == "2"
+    assert values["AOCount"] == "1"
+    assert values["ControlledLoads"] == "motor, Conveyor, 2, 1hp"
+    assert values["EnclosureRatings"] == "UL Listed, NEMA 12"
+    assert values["IOAccessories"] == "Remote / modular I/O bank"
+    assert values["CommunicationProtocols"] == "PROFINET, Modbus TCP"
 
 
 def test_project_setup_text_import_maps_to_normalized_form_values():

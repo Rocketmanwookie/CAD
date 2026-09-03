@@ -27,12 +27,14 @@ cp -R /home/egrantjr/Dev/CAD/ControlForgeCAD ~/.local/share/FreeCAD/Mod/ControlF
 In FreeCAD, select **Controls / Automation** from the workbench selector. Confirm these commands appear in the toolbar or menu:
 
 - `CE_NewProject` - New Controls Project
+- `CE_AddIOSignal` - Add I/O Signal
 - `CE_CreatePanel` - Create Control Panel
 - `CE_ValidateProject` - Validate Controls Project
 - `CE_PreviewMissingData` - Preview Missing Data
 - `CE_ExportBOM` - Export BOM
 - `CE_ExportCEProjectXML` - Export CEProject XML
 - `CE_ExportIOList` - Export I/O List
+- `CE_ExportMissingDataCSV` - Export Missing Data CSV
 
 Pure-Python validation from the repository root:
 
@@ -54,10 +56,10 @@ Manual FreeCAD validation:
 5. Enter core intake values, submit the dialog, and confirm a `CE_Project` object appears in the model tree.
 6. Select `CE_Project` and confirm the Property View exposes editable CEProject and Intake properties including project name, customer, site/location, deliverables, PLC platform, voltage, phase count, enclosure rating, and sensor count.
 7. Save the document as `.FCStd`, close it, reopen it, and confirm the basic editable `CE_Project` properties are retained.
-8. Clear `SensorCount`, run **Preview Missing Data**, and confirm `io.sensorCount` is reported as missing.
-9. Fill `SensorCount`, rerun **Preview Missing Data**, and confirm the value is shown as a response rather than missing.
+8. Clear `SensorCount`, `DICount`, and `AICount`, run **Preview Missing Data**, and confirm `io.sensorCount` is reported as missing.
+9. Fill `SensorCount`, or fill DI and AI counts, rerun **Preview Missing Data**, and confirm `io.sensorCount` is shown as an input-count response rather than missing.
 10. Run **Create Control Panel** and confirm starter placeholder layout objects appear for panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module.
 11. Run **Validate Controls Project** and confirm validation reads the edited project and starter layout metadata.
 12. Run **Export BOM** and confirm `~/controlforgecad_bom.csv` includes starter layout objects where manufacturer/part-number/description data is assigned.
 13. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
-14. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written from the current starter intake data.
+14. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written from explicit `IOSignals` plus the current starter intake data. `IOSignals` remains blank until **Add I/O Signal** is used.

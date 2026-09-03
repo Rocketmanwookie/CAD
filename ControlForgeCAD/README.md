@@ -42,6 +42,8 @@ The pure-Python `controls_wb.ceproject_xml.ceproject_to_xml()` helper exports a 
 
 The pure-Python `controls_wb.io_list` module provides the first starter I/O list model. It generates deterministic CSV rows with tag, address, description, signal type, device, PLC rack/slot/channel placeholders, terminal placeholder, source record IDs, and mapping status. Project setup captures XML-backed PLC make/line/CPU, DI/DO/AI/AO counts, compatible Ethernet and power-supply selections, communication protocols, enclosure ratings, and optional modular I/O accessories. Explicit user-labeled I/O signals can be added through the dialog and reduce the remaining starter placeholders.
 
+For intake validation, `io.sensorCount` means input points only. The Project Intake dialog derives it from `DICount + AICount`; output counts still drive I/O list and expansion planning, but they are not treated as sensors. The `IOSignals` property remains blank until **Add I/O Signal** records explicit user-labeled signal rows.
+
 The PLC hardware catalog lives at `controls_wb/resources/hardware/plc_catalog.xml` and is shaped by `schemas/plc_hardware_catalog_v0_1.xsd`. Starter panel hardware placeholder metadata lives at `controls_wb/resources/hardware/panel_catalog.xml` and is shaped by `schemas/panel_hardware_catalog_v0_1.xsd`. The first source-backed PLC seed is Siemens S7-1200; see [`docs/project-setup-hardware-catalog.md`](docs/project-setup-hardware-catalog.md) for the verified starter parts, panel placeholder seed, update rules, and amperage-calculation roadmap.
 
 Project setup records a setup source record for filled starter facts. The source can be a manual entry, customer email, meeting note, phone call, field note, vendor quote, or uploaded file/reference. That source is attached to project name, voltage, phase, enclosure rating, PLC platform, and sensor/input-count facts where values are present.
@@ -170,8 +172,8 @@ Manual smoke validation:
 8. Reopen **New Controls Project**, import a CEProject XML file, submit, reopen the dialog, and confirm the imported XML appears in **Saved CEProject XML** and can be applied again.
 9. Import a supported YAML, YML, PUML, PlantUML, UML, or TXT setup file and confirm matching form fields are populated before submit.
 10. Edit one basic property, save the document as `.FCStd`, close it, reopen it, and confirm the property value is retained.
-11. Clear all input counts, run **Preview Missing Data**, and confirm `io.sensorCount` is reported as missing.
-12. Fill DI or AI count, rerun **Preview Missing Data**, and confirm the value is shown as a response rather than missing.
+11. Clear `SensorCount`, `DICount`, and `AICount`, run **Preview Missing Data**, and confirm `io.sensorCount` is reported as missing.
+12. Fill `SensorCount`, or fill DI and AI counts, rerun **Preview Missing Data**, and confirm the value is shown as an input-count response rather than missing.
 13. Run **Validate Controls Project** and confirm validation messages print to the FreeCAD console from the edited object values. Filled setup fields with source metadata should not report `missing_source`; they may still need verification or approval.
 14. Run **Add I/O Signal**, choose an I/O type, enter a label, and confirm Report View prints the generated tag and address.
 15. Run **Create Control Panel** and confirm `CE_Backplate`, `CE_DIN_Rail`, `CE_Wire_Duct`, `CE_Terminal_Strip`, and `CE_PLC_Rack` appear in the model tree with editable controls metadata.

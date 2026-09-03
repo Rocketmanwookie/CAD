@@ -79,11 +79,28 @@ SETUP_SOURCE_ID = "SRC-PROJECT-SETUP-001"
 CEPROJECT_IMPORT_SOURCE_ID_PREFIX = "SRC-CEPROJECT-IMPORT-"
 SETUP_SOURCE_FIELDS = (
     ("ProjectName", FactIds.PROJECT_NAME),
+    ("Customer", FactIds.PROJECT_CUSTOMER),
+    ("SiteLocation", FactIds.PROJECT_SITE_LOCATION),
+    ("Deliverables", FactIds.DELIVERABLES),
     ("NominalVoltage", FactIds.POWER_NOMINAL_VOLTAGE),
     ("PhaseCount", FactIds.POWER_PHASE_COUNT),
+    ("PowerConfiguration", FactIds.POWER_CONFIGURATION),
+    ("ControlledLoads", FactIds.CONTROLLED_LOADS),
     ("EnclosureRating", FactIds.ENCLOSURE_RATING),
+    ("EnclosureRatings", FactIds.ENCLOSURE_RATINGS),
+    ("PlcMake", FactIds.PLC_MAKE),
+    ("PlcLine", FactIds.PLC_LINE),
+    ("PlcCPU", FactIds.PLC_CPU),
     ("PlcPlatform", FactIds.PLC_PLATFORM),
     ("SensorCount", FactIds.SENSOR_COUNT),
+    ("DICount", FactIds.DI_COUNT),
+    ("DOCount", FactIds.DO_COUNT),
+    ("AICount", FactIds.AI_COUNT),
+    ("AOCount", FactIds.AO_COUNT),
+    ("IOAccessories", FactIds.IO_ACCESSORIES),
+    ("EthernetAdapter", FactIds.ETHERNET_ADAPTER),
+    ("ExpansionPowerSupply", FactIds.EXPANSION_POWER_SUPPLY),
+    ("CommunicationProtocols", FactIds.COMMUNICATION_PROTOCOLS),
 )
 
 CEPROJECT_IMPORT_REQUIRED_KEYS = ("id", "projectId", "projectName", "xmlText")
@@ -281,35 +298,44 @@ def _plc_make_line_from_platform(platform: str) -> tuple[str, str]:
 def form_values_from_ceproject_xml(xml_text: str | bytes) -> dict[str, str]:
     """Return project-intake form values from supported CEProject XML."""
     document = parse_ceproject_xml(xml_text)
-    nominal_voltage = _field_value(document, "powerFeed.nominalVoltage")
-    phase_count = _field_value(document, "powerFeed.phaseCount")
-    enclosure_rating = _field_value(document, "environment.enclosureRating")
-    plc_platform = _field_value(document, "controls.plcPlatform")
-    sensor_count = _field_value(document, "io.sensorCount")
-    plc_make, plc_line = _plc_make_line_from_platform(plc_platform)
+    nominal_voltage = _field_value(document, FactIds.POWER_NOMINAL_VOLTAGE)
+    phase_count = _field_value(document, FactIds.POWER_PHASE_COUNT)
+    enclosure_ratings = (
+        _field_value(document, FactIds.ENCLOSURE_RATINGS)
+        or _field_value(document, FactIds.ENCLOSURE_RATING)
+    )
+    plc_platform = _field_value(document, FactIds.PLC_PLATFORM)
+    plc_make = _field_value(document, FactIds.PLC_MAKE)
+    plc_line = _field_value(document, FactIds.PLC_LINE)
+    if not plc_make or not plc_line:
+        plc_make, plc_line = _plc_make_line_from_platform(plc_platform)
     cpu_options = plc_cpu_options(plc_make, plc_line)
     ethernet_options = hardware_dropdown_options(plc_make, plc_line, "ethernet")
     power_options = hardware_dropdown_options(plc_make, plc_line, "power")
+    plc_cpu = _field_value(document, FactIds.PLC_CPU)
+    ethernet_adapter = _field_value(document, FactIds.ETHERNET_ADAPTER)
+    expansion_power = _field_value(document, FactIds.EXPANSION_POWER_SUPPLY)
+    sensor_count = _field_value(document, FactIds.SENSOR_COUNT)
 
     return {
         "ProjectName": document.intake.name,
-        "Customer": "",
-        "SiteLocation": "",
+        "Customer": _field_value(document, FactIds.PROJECT_CUSTOMER),
+        "SiteLocation": _field_value(document, FactIds.PROJECT_SITE_LOCATION),
         "Deliverables": format_deliverables(document.intake.deliverables),
-        "PowerConfiguration": power_configuration_from_values(nominal_voltage, phase_count),
-        "ControlledLoads": "",
-        "EnclosureRatings": enclosure_rating,
+        "PowerConfiguration": _field_value(document, FactIds.POWER_CONFIGURATION) or power_configuration_from_values(nominal_voltage, phase_count),
+        "ControlledLoads": _field_value(document, FactIds.CONTROLLED_LOADS),
+        "EnclosureRatings": enclosure_ratings,
         "PlcMake": plc_make,
         "PlcLine": plc_line,
-        "PlcCPU": cpu_options[0] if cpu_options else "",
-        "DICount": _safe_count(sensor_count),
-        "DOCount": "",
-        "AICount": "",
-        "AOCount": "",
-        "IOAccessories": "",
-        "EthernetAdapter": ethernet_options[0] if ethernet_options else "",
-        "ExpansionPowerSupply": power_options[0] if power_options else "",
-        "CommunicationProtocols": "",
+        "PlcCPU": plc_cpu if plc_cpu in cpu_options else (cpu_options[0] if cpu_options else ""),
+        "DICount": _field_value(document, FactIds.DI_COUNT) or _safe_count(sensor_count),
+        "DOCount": _field_value(document, FactIds.DO_COUNT),
+        "AICount": _field_value(document, FactIds.AI_COUNT),
+        "AOCount": _field_value(document, FactIds.AO_COUNT),
+        "IOAccessories": _field_value(document, FactIds.IO_ACCESSORIES),
+        "EthernetAdapter": ethernet_adapter if ethernet_adapter in ethernet_options else (ethernet_options[0] if ethernet_options else ""),
+        "ExpansionPowerSupply": expansion_power if expansion_power in power_options else (power_options[0] if power_options else ""),
+        "CommunicationProtocols": _field_value(document, FactIds.COMMUNICATION_PROTOCOLS),
         "SourceType": "Uploaded file / reference",
         "SourceTitle": f"Imported CEProject XML: {document.intake.name}",
         "SourceStakeholder": "Project manager",
@@ -400,20 +426,14 @@ def _source_records_by_id(raw_records: object) -> dict[str, str]:
 
 def _ceproject_import_source_record(record: dict[str, str]) -> str:
     import_id = record.get("id", "")
+    document = parse_ceproject_xml(record.get("xmlText", ""))
     return json.dumps(
         {
             "id": f"{CEPROJECT_IMPORT_SOURCE_ID_PREFIX}{import_id}",
             "type": SourceRecordType.UPLOADED_FILE.value,
             "title": f"Imported CEProject XML: {record.get('projectName', 'CEProject XML')}",
             "stakeholder": "Project manager",
-            "fieldIds": [
-                "project.name",
-                "powerFeed.nominalVoltage",
-                "powerFeed.phaseCount",
-                "environment.enclosureRating",
-                "controls.plcPlatform",
-                "io.sensorCount",
-            ],
+            "fieldIds": sorted(document.intake.fields),
             "reference": record.get("sourcePath", "") or record.get("projectId", ""),
             "receivedOn": "",
         },

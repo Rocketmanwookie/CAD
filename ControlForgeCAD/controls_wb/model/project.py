@@ -114,8 +114,8 @@ def intake_to_project_properties(intake: ProjectIntake) -> dict[str, object]:
     return {
         "ProjectId": intake.project_id,
         "ProjectName": intake.name,
-        "Customer": "",
-        "SiteLocation": "",
+        "Customer": _intake_field_value(intake, FactIds.PROJECT_CUSTOMER),
+        "SiteLocation": _intake_field_value(intake, FactIds.PROJECT_SITE_LOCATION),
         "SchemaVersion": intake.schema_version,
         "CEProjectImports": [],
         "Deliverables": sorted(intake.deliverables),
@@ -159,6 +159,11 @@ def intake_to_project_properties(intake: ProjectIntake) -> dict[str, object]:
         "PlcPlatformStatus": "Requested",
         "SensorCountStatus": "Requested",
     }
+
+
+def _intake_field_value(intake: ProjectIntake, fact_id: str) -> str:
+    field = intake.fields.get(fact_id)
+    return field.value if field is not None else ""
 
 
 def ensure_project_properties(obj) -> None:

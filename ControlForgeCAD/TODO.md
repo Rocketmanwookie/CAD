@@ -9,8 +9,8 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Use repository/folder slug: `integracab-open` where practical.
 - [ ] Use Python package name: `integracab`.
 - [x] Use FreeCAD workbench/menu label: `Controls / Automation`.
-- [ ] Keep XML project format name: `CEProject`.
-- [ ] Keep tagline: `The open-source FreeCAD workbench that unites PLC controls with CAD.`
+- [x] Keep XML project format name: `CEProject`.
+- [x] Keep tagline: `The open-source FreeCAD workbench that unites PLC controls with CAD.`
 - [ ] Avoid the trademark symbol in filenames, Python imports, XML namespaces, or package identifiers.
 
 ## 1. Product philosophy
@@ -24,10 +24,10 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 
 ## 2. Core workbench responsibilities
 
-- [ ] Structured project intake.
+- [x] Structured project intake.
 - [x] Missing-data tracking.
 - [ ] Role-based request templates.
-- [x] CEProject XML source-of-truth model.
+- [x] CEProject XML source-of-truth model for the currently supported intake-related fact surface.
 - [ ] Validation of missing, contradictory, assumed, estimated, and unapproved values.
 - [ ] Traceability between requirements, devices, signals, terminals, circuits, CADbase parts, cost records, and exports.
 - [ ] Adapter layer to CADbase, BOM tools, BIM/openBIM tools, spreadsheets, TechDraw, and future PLC/HMI/digital-twin tools.

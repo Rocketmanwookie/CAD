@@ -9,7 +9,7 @@ from dataclasses import asdict, dataclass
 from io import StringIO
 from typing import Any
 
-from controls_wb.fact_ids import FactIds, category_for_fact_id, fact_spec, missing_data_item_id_for_fact_id
+from controls_wb.fact_ids import FACT_SPECS, FactIds, category_for_fact_id, fact_spec, missing_data_item_id_for_fact_id
 from controls_wb.intake import (
     Contact,
     FieldStatus,
@@ -100,6 +100,74 @@ def _status_for_value(value: str, status_value: str) -> FieldStatus:
     return status
 
 
+def _text_value(value: object) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, (list, tuple, set)):
+        return ", ".join(str(item).strip() for item in value if str(item).strip())
+    return str(value).strip()
+
+
+def _line_value(value: object) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, str):
+        return value.strip()
+    if isinstance(value, (list, tuple, set)):
+        return "\n".join(str(item).strip() for item in value if str(item).strip())
+    return str(value).strip()
+
+
+def _count_text(value: object) -> str:
+    try:
+        count = int(str(value).strip() or "0")
+    except (TypeError, ValueError):
+        return ""
+    return str(max(count, 0)) if count else ""
+
+
+def _sensor_count_value(obj: object) -> str:
+    sensor_count = _count_text(getattr(obj, "SensorCount", ""))
+    if sensor_count:
+        return sensor_count
+    di_count = _count_text(getattr(obj, "DICount", ""))
+    ai_count = _count_text(getattr(obj, "AICount", ""))
+    total = int(di_count or "0") + int(ai_count or "0")
+    return str(total) if total else ""
+
+
+def _enclosure_rating_value(obj: object) -> str:
+    rating = _text_value(getattr(obj, "EnclosureRating", ""))
+    if rating:
+        return rating
+    return _text_value(getattr(obj, "EnclosureRatings", ""))
+
+
+def _field_status(obj: object, fact_id: str, value: str) -> FieldStatus:
+    status_by_fact_id = {
+        FactIds.POWER_NOMINAL_VOLTAGE: getattr(obj, "PowerFeedStatus", ""),
+        FactIds.POWER_PHASE_COUNT: getattr(obj, "PowerFeedStatus", ""),
+        FactIds.POWER_CONFIGURATION: getattr(obj, "PowerFeedStatus", ""),
+        FactIds.ENCLOSURE_RATING: getattr(obj, "EnclosureRatingStatus", ""),
+        FactIds.ENCLOSURE_RATINGS: getattr(obj, "EnclosureRatingStatus", ""),
+        FactIds.PLC_PLATFORM: getattr(obj, "PlcPlatformStatus", ""),
+        FactIds.SENSOR_COUNT: getattr(obj, "SensorCountStatus", ""),
+        FactIds.DI_COUNT: getattr(obj, "SensorCountStatus", ""),
+        FactIds.AI_COUNT: getattr(obj, "SensorCountStatus", ""),
+    }
+    return _status_for_value(value, status_by_fact_id.get(fact_id, ""))
+
+
+def _project_fact_value(obj: object, property_name: str, fact_id: str) -> str:
+    if fact_id == FactIds.SENSOR_COUNT:
+        return _sensor_count_value(obj)
+    if fact_id == FactIds.ENCLOSURE_RATING:
+        return _enclosure_rating_value(obj)
+    if fact_id == FactIds.CONTROLLED_LOADS:
+        return _line_value(getattr(obj, property_name, ""))
+    return _text_value(getattr(obj, property_name, ""))
+
+
 def _json_records(obj: object, attribute: str) -> list[dict[str, Any]]:
     records = []
     for item in getattr(obj, attribute, []) or []:
@@ -166,79 +234,18 @@ def _questions_from_project_object(obj: object) -> dict[str, IntakeQuestionRespo
 
 
 def project_object_to_intake(obj: object) -> ProjectIntake:
-    fields = {
-        FactIds.PROJECT_NAME: IntakeField(
-            FactIds.PROJECT_NAME,
-            fact_spec(FactIds.PROJECT_NAME).label,
-            fact_spec(FactIds.PROJECT_NAME).stakeholder,
-            value=getattr(obj, "ProjectName", ""),
-            status=FieldStatus.RECEIVED if getattr(obj, "ProjectName", "") else FieldStatus.UNKNOWN,
-        ),
-        FactIds.PROJECT_CUSTOMER: IntakeField(
-            FactIds.PROJECT_CUSTOMER,
-            fact_spec(FactIds.PROJECT_CUSTOMER).label,
-            fact_spec(FactIds.PROJECT_CUSTOMER).stakeholder,
-            value=getattr(obj, "Customer", ""),
-            status=FieldStatus.RECEIVED if getattr(obj, "Customer", "") else FieldStatus.UNKNOWN,
-        ),
-        FactIds.PROJECT_SITE_LOCATION: IntakeField(
-            FactIds.PROJECT_SITE_LOCATION,
-            fact_spec(FactIds.PROJECT_SITE_LOCATION).label,
-            fact_spec(FactIds.PROJECT_SITE_LOCATION).stakeholder,
-            value=getattr(obj, "SiteLocation", ""),
-            status=FieldStatus.RECEIVED if getattr(obj, "SiteLocation", "") else FieldStatus.UNKNOWN,
-        ),
-        FactIds.POWER_NOMINAL_VOLTAGE: IntakeField(
-            FactIds.POWER_NOMINAL_VOLTAGE,
-            fact_spec(FactIds.POWER_NOMINAL_VOLTAGE).label,
-            fact_spec(FactIds.POWER_NOMINAL_VOLTAGE).stakeholder,
-            value=getattr(obj, "NominalVoltage", ""),
-            status=_status_for_value(
-                getattr(obj, "NominalVoltage", ""),
-                getattr(obj, "PowerFeedStatus", ""),
-            ),
-        ),
-        FactIds.POWER_PHASE_COUNT: IntakeField(
-            FactIds.POWER_PHASE_COUNT,
-            fact_spec(FactIds.POWER_PHASE_COUNT).label,
-            fact_spec(FactIds.POWER_PHASE_COUNT).stakeholder,
-            value=getattr(obj, "PhaseCount", ""),
-            status=_status_for_value(
-                getattr(obj, "PhaseCount", ""),
-                getattr(obj, "PowerFeedStatus", ""),
-            ),
-        ),
-        FactIds.ENCLOSURE_RATING: IntakeField(
-            FactIds.ENCLOSURE_RATING,
-            fact_spec(FactIds.ENCLOSURE_RATING).label,
-            fact_spec(FactIds.ENCLOSURE_RATING).stakeholder,
-            value=getattr(obj, "EnclosureRating", ""),
-            status=_status_for_value(
-                getattr(obj, "EnclosureRating", ""),
-                getattr(obj, "EnclosureRatingStatus", ""),
-            ),
-        ),
-        FactIds.PLC_PLATFORM: IntakeField(
-            FactIds.PLC_PLATFORM,
-            fact_spec(FactIds.PLC_PLATFORM).label,
-            fact_spec(FactIds.PLC_PLATFORM).stakeholder,
-            value=getattr(obj, "PlcPlatform", ""),
-            status=_status_for_value(
-                getattr(obj, "PlcPlatform", ""),
-                getattr(obj, "PlcPlatformStatus", ""),
-            ),
-        ),
-        FactIds.SENSOR_COUNT: IntakeField(
-            FactIds.SENSOR_COUNT,
-            fact_spec(FactIds.SENSOR_COUNT).label,
-            fact_spec(FactIds.SENSOR_COUNT).stakeholder,
-            value=getattr(obj, "SensorCount", ""),
-            status=_status_for_value(
-                getattr(obj, "SensorCount", ""),
-                getattr(obj, "SensorCountStatus", ""),
-            ),
-        ),
-    }
+    fields = {}
+    for spec in FACT_SPECS:
+        if not spec.property_name:
+            continue
+        value = _project_fact_value(obj, spec.property_name, spec.fact_id)
+        fields[spec.fact_id] = IntakeField(
+            field_id=spec.fact_id,
+            label=spec.label,
+            stakeholder=spec.stakeholder,
+            value=value,
+            status=_field_status(obj, spec.fact_id, value),
+        )
     return ProjectIntake(
         project_id=getattr(obj, "ProjectId", "CE-PROJECT-001"),
         name=getattr(obj, "ProjectName", "Controls Project"),
