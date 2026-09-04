@@ -31,6 +31,7 @@ class FactIds:
     SOURCE_RECORDS = "sourceRecords"
     INTAKE_QUESTIONS = "intake.questions"
     IO_SIGNALS = "signals.io"
+    CONNECTION_RECORDS = "connections.records"
     POWER_NOMINAL_VOLTAGE = "powerFeed.nominalVoltage"
     POWER_PHASE_COUNT = "powerFeed.phaseCount"
     POWER_CONFIGURATION = "powerFeed.configuration"
@@ -72,6 +73,7 @@ FACT_SPECS: tuple[FactSpec, ...] = (
     FactSpec(FactIds.SOURCE_RECORDS, "Source records", "sourceRecords", "Project manager", "SourceRecords"),
     FactSpec(FactIds.INTAKE_QUESTIONS, "Intake questions", "intake", "Project manager", "IntakeQuestions"),
     FactSpec(FactIds.IO_SIGNALS, "I/O signals", "signals", "Controls lead", "IOSignals"),
+    FactSpec(FactIds.CONNECTION_RECORDS, "Connection records", "connections", "Controls lead", "ConnectionRecords"),
     FactSpec(FactIds.POWER_NOMINAL_VOLTAGE, "Nominal voltage", "powerFeed", "Electrical engineering", "NominalVoltage"),
     FactSpec(FactIds.POWER_PHASE_COUNT, "Phase count", "powerFeed", "Electrical engineering", "PhaseCount"),
     FactSpec(FactIds.POWER_CONFIGURATION, "Power configuration", "powerFeed", "Electrical engineering", "PowerConfiguration"),

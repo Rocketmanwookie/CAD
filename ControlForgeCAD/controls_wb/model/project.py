@@ -33,6 +33,7 @@ PROJECT_PROPERTY_SPECS = (
     ProjectPropertySpec("App::PropertyStringList", "SourceRecords", "Intake", "Source records as JSON lines"),
     ProjectPropertySpec("App::PropertyStringList", "IntakeQuestions", "Intake", "Question and response records as JSON lines"),
     ProjectPropertySpec("App::PropertyStringList", "IOSignals", "I/O", "Explicit I/O signal records as JSON lines"),
+    ProjectPropertySpec("App::PropertyStringList", "ConnectionRecords", "Wiring", "Signal-to-terminal-to-wire connection records as JSON lines"),
     ProjectPropertySpec("App::PropertyString", "NominalVoltage", "Intake", "Nominal voltage response"),
     ProjectPropertySpec("App::PropertyString", "PhaseCount", "Intake", "Phase count response"),
     ProjectPropertySpec("App::PropertyString", "PowerConfiguration", "Power", "Combined phase and voltage"),
@@ -123,6 +124,7 @@ def intake_to_project_properties(intake: ProjectIntake) -> dict[str, object]:
         "SourceRecords": sources,
         "IntakeQuestions": questions,
         "IOSignals": [],
+        "ConnectionRecords": [],
         "NominalVoltage": intake.fields.get(FactIds.POWER_NOMINAL_VOLTAGE, "").value
         if FactIds.POWER_NOMINAL_VOLTAGE in intake.fields
         else "",

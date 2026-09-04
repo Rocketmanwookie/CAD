@@ -142,6 +142,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 ### Phase 7 - Wiring, terminals, and cabinet-side power
 
 - [x] Add starter terminal strip reference model.
+- [x] Add a persisted, deterministic signal-to-terminal-to-wire connection-record foundation; it is not a schematic netlist or compliance engine.
 - [ ] Add wire/from-to reference model.
 - [ ] Add internal cabinet power circuits.
 - [ ] Add control power distribution.
