@@ -1,6 +1,38 @@
-# CAD
+# integraCAD Open
 
-This repository currently contains the IntegraCAB Open / ControlForgeCAD FreeCAD workbench under `ControlForgeCAD/`.
+This repository contains **integraCAD Open**, an open-source controls-engineering CAD project. Its current FreeCAD implementation is the **ControlForgeCAD** workbench under `ControlForgeCAD/`.
+
+## Project documentation
+
+- [Architecture overview](docs/ARCHITECTURE.md) — architectural source of truth for system boundaries, layers, component contracts, data flows, dependencies, extension strategy, and implementation status.
+- [Contributing](CONTRIBUTING.md) — development workflow, testing expectations, architecture rules, and documentation requirements.
+- [Changelog](CHANGELOG.md) — implemented milestones, unreleased changes, and contributor-facing change history.
+
+## Architecture summary
+
+ControlForgeCAD uses a layered design:
+
+1. **FreeCAD UI** — workbench registration, commands, menus, toolbars, and dialogs.
+2. **FreeCAD adapters** — `CE_Project` properties, document-object creation, persistence, and translation into backend inputs.
+3. **Application services** — project intake, validation, missing-data, layout, and export orchestration.
+4. **Domain contracts** — controls-project, intake, I/O, hardware/layout, and validation models.
+5. **Boundary services** — deterministic CEProject XML, BOM CSV, and I/O-list CSV serialization.
+
+FreeCAD-specific code should remain thin. Controls-domain rules and serializers should be testable without launching the FreeCAD GUI wherever practical. See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) before changing system boundaries or adding integrations.
+
+## Current capability status
+
+Implemented starter capabilities include:
+
+- editable `CE_Project` project and intake properties;
+- a Project Intake dialog with safe GUI fallback;
+- missing-data preview and starter project validation;
+- starter panel/backplate, DIN rail, wire duct, terminal strip, PLC rack, and PLC module objects;
+- CEProject XML export;
+- BOM CSV export; and
+- deterministic starter I/O-list CSV export.
+
+These are foundation contracts, not yet a complete electrical schematic, automatic hardware-selection, terminal/wire-schedule, or vendor project-generation system. Manufacturer catalog adapters and richer engineering automation remain planned.
 
 ## FreeCAD development install
 
@@ -36,7 +68,20 @@ In FreeCAD, select **Controls / Automation** from the workbench selector. Confir
 - `CE_ExportIOList` - Export I/O List
 - `CE_ExportMissingDataCSV` - Export Missing Data CSV
 
-Pure-Python validation from the repository root:
+## Generated artifacts
+
+The current command defaults are:
+
+- CEProject XML: `~/integracab_ceproject.xml`
+- BOM CSV: `~/controlforgecad_bom.csv`
+- I/O-list CSV: `~/integracab_io_list.csv`
+- Missing-data CSV: `~/integracab_missing_data.csv`
+
+These output contracts are starter implementations. Changes to their schemas, ordering, naming, or overwrite behavior must be documented in the architecture and changelog.
+
+## Automated validation
+
+Run from the repository root:
 
 ```bash
 /usr/bin/python3 -m pytest
@@ -47,7 +92,9 @@ On this workstation, `/usr/bin/python3` has `pytest` available. The default
 `python3` currently resolves to Homebrew Python and may report `No module named
 pytest`.
 
-Manual FreeCAD validation:
+Pure controls-domain behavior should have automated tests that do not require FreeCAD when practical. FreeCAD-dependent changes should retain import safety and GUI fallback behavior.
+
+## Manual FreeCAD validation
 
 1. Start or restart FreeCAD after linking or copying the workbench.
 2. Select **Controls / Automation** from the workbench selector.
@@ -63,3 +110,11 @@ Manual FreeCAD validation:
 12. Run **Export BOM** and confirm `~/controlforgecad_bom.csv` includes starter layout objects where manufacturer/part-number/description data is assigned.
 13. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
 14. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written from explicit `IOSignals` plus the current starter intake data. `IOSignals` remains blank until **Add I/O Signal** is used.
+
+## Extending the system
+
+Before adding a command, project property, export format, or vendor integration, follow the extension checklists in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md). New features must preserve dependency direction: GUI code may call domain/application services, but domain logic must not depend on FreeCAD GUI widgets.
+
+## Contribution traceability
+
+Every material contribution must update the relevant documentation and add an entry under **Unreleased** in [`CHANGELOG.md`](CHANGELOG.md). See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the required validation, architecture-review, and changelog workflow.

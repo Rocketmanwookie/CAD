@@ -1,13 +1,13 @@
-# IntegraCAB Open Master TODO
+# integraCAD Open Master TODO
 
-This file tracks the project scope, roadmap, interoperability commitments, documentation obligations, and companion workbench ideas for IntegraCAB Open.
+This file tracks the project scope, roadmap, interoperability commitments, documentation obligations, and companion workbench ideas for integraCAD Open. ControlForgeCAD remains the current FreeCAD workbench/module name.
 
 ## 0. Working identity
 
-- [ ] Rename working-title references from `ControlForgeCAD` to `IntegraCAB Open`.
-- [ ] Use display name: `IntegraCAB™ Open`.
-- [ ] Use repository/folder slug: `integracab-open` where practical.
-- [ ] Use Python package name: `integracab`.
+- [x] Use `integraCAD Open` as the project-facing name.
+- [x] Keep `ControlForgeCAD` as the current FreeCAD workbench/module name.
+- [ ] Decide whether a repository/folder rename is warranted; do not rename generated-artifact paths without a migration plan.
+- [ ] Decide whether a Python package rename is warranted; preserve import compatibility if it is.
 - [x] Use FreeCAD workbench/menu label: `Controls / Automation`.
 - [x] Keep XML project format name: `CEProject`.
 - [x] Keep tagline: `The open-source FreeCAD workbench that unites PLC controls with CAD.`
@@ -18,7 +18,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Keep the core workbench light, integration-first, and useful before it is polished.
 - [ ] Avoid brand-heavy engineering behavior; let open-source contributors improve packaging, themes, icons, installers, docs, and distribution when the structure is easy to work with.
 - [ ] Prefer adapters into existing FreeCAD/openBIM resources instead of recreating mature tools.
-- [ ] Treat IntegraCAB Open as a controls-engineering orchestration layer: intake, validation, traceability, and handoff.
+- [x] Treat integraCAD Open as a controls-engineering orchestration layer: intake, validation, traceability, and handoff.
 - [ ] Do not replace CADbase, BOM workbenches, BIM tools, TechDraw, Spreadsheet, PLC IDEs, HMI platforms, ERP systems, or vendor catalogs.
 - [ ] Reduce project havoc: missing data, duplicate entry, stale assumptions, rework, quoting churn, procurement mistakes, and field surprises.
 
@@ -40,8 +40,8 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Do not build a full CAD component-library manager if CADbase can handle it.
 - [ ] Do not build a full BIM/MEP electrical design platform.
 - [ ] Do not build a proprietary PLC IDE.
-- [ ] Do not build a full HMI editor inside the first IntegraCAB workbench.
-- [ ] Do not build a digital twin simulator inside the first IntegraCAB workbench.
+- [x] Do not build a full HMI editor inside the first integraCAD workbench.
+- [x] Do not build a digital twin simulator inside the first integraCAD workbench.
 - [ ] Do not redistribute vendor CAD files, datasheets, or catalog data without clear rights.
 - [ ] Do not claim automatic code, panel, or installation compliance.
 
@@ -49,8 +49,8 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 
 ### Phase 0 - Repository and governance
 
-- [ ] Rename docs and metadata to IntegraCAB Open.
-- [ ] Add contributor guide.
+- [x] Establish integraCAD Open as the project-facing documentation name while retaining ControlForgeCAD for the current workbench/module.
+- [x] Add contributor guide.
 - [ ] Add issue templates.
 - [ ] Add pull request template.
 - [ ] Add coding style guide.
@@ -68,8 +68,8 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [x] Add missing-data matrix.
 - [x] Add field status model: `Unknown`, `Requested`, `Received`, `Assumed`, `Estimated`, `Verified`, `Approved`, `Rejected`, `Superseded`.
 - [x] Add source record model for email, meeting note, uploaded file, phone call, field note, vendor quote, CADbase asset, BIM object, or manual entry.
-- [ ] Add form templates for project managers, sales, utility company, electrical engineering, building superintendent, safety/EHS, operations, purchasing, maintenance, controls lead, mechanical/materials handling, IT/OT, and customer stakeholders.
-- [ ] Add email templates that map every requested fact to a CEProject field.
+- [x] Add starter role-based request templates for the project-manager, electrical-feed, environmental, safety, controls-platform, and sensor/I/O workflows.
+- [ ] Complete template coverage for sales, utility, operations, purchasing, maintenance, IT/OT, and customer stakeholders, and map every requested fact to CEProject fields.
 - [x] Add validation output that tells the user who to ask for missing information.
 - [x] Add CSV export for the missing-data matrix.
 - [x] Expose starter intake validation and missing-data preview through FreeCAD workbench commands.
@@ -102,7 +102,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Integrate with IFC/ifcXML references where available.
 - [ ] Export unresolved coordination items as BCF-style issues later.
 - [ ] Do not duplicate the full building electrical model.
-- [ ] Define the boundary: BIM/MEP owns distribution up to the cabinet; IntegraCAB owns cabinet-side controls package from main disconnect inward.
+- [x] Define the boundary: BIM/MEP owns distribution up to the cabinet; integraCAD Open owns the cabinet-side controls package from the main disconnect inward.
 
 ### Phase 4 - CADbase integration
 
@@ -172,8 +172,8 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 
 ### Phase 10 - Education docs for new controls engineers
 
-- [ ] Add `docs/learning-path.md`.
-- [ ] Add `docs/glossary.md`.
+- [x] Add `docs/learning-path.md`.
+- [x] Add `docs/glossary.md`.
 - [ ] Add `docs/resources.md`.
 - [ ] Explain the interdisciplinary map: electrical power, controls, PLCs, CAD, sensors, pneumatics/hydraulics, motion, motor control, industrial networks, machine safety, HMI/SCADA, data/historians, cybersecurity, BIM/openBIM, costing, documentation, project management, commissioning, and maintenance.
 - [ ] Link official resources where possible.

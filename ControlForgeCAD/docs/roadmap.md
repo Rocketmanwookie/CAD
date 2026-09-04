@@ -1,6 +1,10 @@
-# IntegraCAB Open Roadmap
+# integraCAD Open Roadmap
 
-IntegraCAB Open is an integration-first FreeCAD workbench for controls-engineering intake, validation, traceability, and handoff.
+integraCAD Open is an integration-first FreeCAD workbench for controls-engineering intake, validation, traceability, and handoff. **ControlForgeCAD** remains the name of its current FreeCAD workbench implementation.
+
+## Current position
+
+The seed, intake/validation, and early controls-package milestones are underway rather than merely aspirational. The current workbench includes editable project intake, missing-data validation and CSV export, CEProject XML import/export, explicit starter I/O signals and CSV export, XML-backed PLC/panel planning metadata, starter load estimates, and placeholder panel objects. The next engineering milestone is to turn those planning records into traceable device, terminal, wire, and connection relationships; it is not yet a schematic-generation or vendor-project-generation tool.
 
 ## North star
 
@@ -82,4 +86,4 @@ The project should reduce costly controls-engineering rework by making missing d
 
 ## Development rule
 
-If a mature tool already does the job, IntegraCAB should integrate with it. Native generation belongs only where controls-specific traceability or validation is missing.
+If a mature tool already does the job, integraCAD Open should integrate with it. Native generation belongs only where controls-specific traceability or validation is missing.
