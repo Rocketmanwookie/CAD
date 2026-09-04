@@ -9,7 +9,9 @@ manufacturer's permitted portal and attach a local, checksummed reference.
 from __future__ import annotations
 
 import json
+import csv
 from dataclasses import asdict, dataclass
+from io import StringIO
 
 from controls_wb.hardware_catalog import HardwareCatalog, HardwarePart, line_catalog, part_by_name
 
@@ -64,3 +66,18 @@ def selected_siemens_asset_requests(
 
 def vendor_asset_manifest_json(requests: list[VendorAssetRequest]) -> str:
     return json.dumps([request.to_dict() for request in requests], indent=2, sort_keys=True) + "\n"
+
+
+def vendor_part_numbers_csv(requests: list[VendorAssetRequest]) -> str:
+    """Return a deterministic vendor-neutral part-number/quantity import list."""
+    quantities: dict[tuple[str, str], int] = {}
+    for request in requests:
+        if request.part_number:
+            key = (request.manufacturer, request.part_number)
+            quantities[key] = quantities.get(key, 0) + 1
+    output = StringIO()
+    writer = csv.DictWriter(output, fieldnames=("Manufacturer", "PartNumber", "Quantity"), lineterminator="\n")
+    writer.writeheader()
+    for (manufacturer, part_number), quantity in sorted(quantities.items()):
+        writer.writerow({"Manufacturer": manufacturer, "PartNumber": part_number, "Quantity": quantity})
+    return output.getvalue()

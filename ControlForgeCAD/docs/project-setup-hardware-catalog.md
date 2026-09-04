@@ -40,6 +40,8 @@ Always verify final part selections against current Siemens catalog data and pro
 
 The workbench can build an approval-gated request manifest for selected seeded Siemens parts. It records the official source, requested formats, and part number, but it does not scrape, log into, or bulk-download from Siemens portals. Obtain CAD and documentation assets through the permitted Siemens CAx/SiePortal workflow, then record the approved local path, checksum, revision, and source before using the asset in a cabinet model.
 
+The same selected-part requests can be reduced to a deterministic CSV with `Manufacturer`, `PartNumber`, and `Quantity`. This is the minimal handoff list for a CAx selection workflow. Confirm any portal-specific column names or upload format before treating it as a direct import file.
+
 ## Panel hardware starter seed
 
 The panel hardware catalog currently includes unverified generic placeholder parts for:
