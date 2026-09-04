@@ -25,6 +25,7 @@ integraCAD Open is the integration-first controls-engineering project; ControlFo
 |---|---|---|
 | `CE_NewProject` | New Controls Project | Opens a project intake dialog for core project/customer/site/deliverable fields, combined phase/voltage selection, starter controlled-load lines for current estimating, enclosure rating checkboxes, XML-backed PLC make/line/CPU selection, typed DI/DO/AI/AO counts, compatible Ethernet/power dropdowns, communication protocol checkboxes, optional I/O accessories, setup source metadata, a remembered CEProject XML import selector, YAML/UML-derived setup import, and a link to the project setup hardware catalog guide. It creates or updates an editable `CE_Project` object and shows an I/O expansion planning popup. If Qt/PySide is unavailable, it creates the starter object and prints a warning. |
 | `CE_AddIOSignal` | Add I/O Signal | Opens an I/O signal dialog with selectable digital input, digital output, analog input, analog output, and relay types; user labels are stored as explicit signal rows with auto-generated tags and addresses. |
+| `CE_AddConnection` | Add Connection Record | Stores a traceable signal-to-terminal-to-wire record with field-device and PLC endpoint references. |
 | `CE_CreatePanel` | Create Control Panel | Creates starter placeholder layout objects for a panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module. |
 | `CE_ExportBOM` | Export BOM | Exports controls metadata rows from the active FreeCAD document to CSV. |
 | `CE_ValidateProject` | Validate Controls Project | Reports duplicate tags, missing controls metadata, starter intake missing-data findings, and verified/approved intake facts without source records. |
@@ -32,6 +33,7 @@ integraCAD Open is the integration-first controls-engineering project; ControlFo
 | `CE_ExportCEProjectXML` | Export CEProject XML | Exports the first controls project intake object in the active document to `~/integracab_ceproject.xml`. |
 | `CE_ExportIOList` | Export I/O List | Exports a deterministic starter I/O list CSV to `~/integracab_io_list.csv` from explicit user-labeled signals plus the current project DI/DO/AI/AO counts. |
 | `CE_ExportMissingDataCSV` | Export Missing Data CSV | Exports the active controls project missing-data matrix to `~/integracab_missing_data.csv`. |
+| `CE_ExportConnectionSchedule` | Export Connection Schedule | Exports persisted connection records to `~/integracad_connection_schedule.csv`. |
 
 The pure-Python `controls_wb.missing_data.missing_data_matrix()` helper can build a structured missing-data matrix from a `ProjectIntake` payload or a `CE_Project`-style object without FreeCAD installed. Matrix rows include the required fact, current value, question ID, source records, verification/approval booleans, status, severity, finding, and recommended next action.
 The companion `controls_wb.missing_data.missing_data_csv()` helper serializes those rows to a deterministic CSV export for spreadsheet review.

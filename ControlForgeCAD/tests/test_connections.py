@@ -11,6 +11,8 @@ from controls_wb.connections import (
     deserialize_connection,
     serialize_connection,
 )
+from controls_wb.commands.export_connection_schedule import connection_schedule_csv_for_objects
+from controls_wb.gui.connection import add_connection_from_form
 
 
 def test_connection_round_trip_and_project_storage():
@@ -44,3 +46,23 @@ def test_connection_findings_cover_incomplete_and_duplicate_terminal_records():
     findings = connection_findings([first, duplicate, incomplete])
     assert "ERROR: CONN-002 and CONN-001 use TB-001:1." in findings
     assert "WARNING: CONN-003 is missing wire tag." in findings
+
+
+def test_connection_form_persists_record_and_export_reads_project_objects():
+    project = SimpleNamespace(ProjectId="CE-PROJECT-001", Deliverables=[], ConnectionRecords=[])
+    document = SimpleNamespace(Objects=[project])
+    connection = add_connection_from_form(
+        document,
+        {
+            "signal_tag": "DI-0001",
+            "field_device": "PE-101",
+            "terminal_strip": "TB-001",
+            "terminal": "1",
+            "wire_tag": "W-1001",
+            "plc_rack": "PLC-001",
+            "plc_slot": "0",
+            "plc_channel": "0",
+        },
+    )
+    assert connection.connection_id == "CONN-0001"
+    assert "CONN-0001,DI-0001,PE-101,TB-001,1,W-1001,PLC-001,0,0,planned" in connection_schedule_csv_for_objects([project])

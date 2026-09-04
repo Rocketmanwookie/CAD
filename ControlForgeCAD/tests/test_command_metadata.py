@@ -21,6 +21,7 @@ def test_command_metadata_matches_expected_workbench_commands():
     assert all_command_ids() == (
         "CE_NewProject",
         "CE_AddIOSignal",
+        "CE_AddConnection",
         "CE_CreatePanel",
         "CE_ValidateProject",
         "CE_PreviewMissingData",
@@ -28,8 +29,9 @@ def test_command_metadata_matches_expected_workbench_commands():
         "CE_ExportCEProjectXML",
         "CE_ExportIOList",
         "CE_ExportMissingDataCSV",
+        "CE_ExportConnectionSchedule",
     )
-    assert PROJECT_COMMANDS == ("CE_NewProject", "CE_AddIOSignal")
+    assert PROJECT_COMMANDS == ("CE_NewProject", "CE_AddIOSignal", "CE_AddConnection")
     assert LAYOUT_COMMANDS == ("CE_CreatePanel",)
     assert VALIDATION_COMMANDS == ("CE_ValidateProject", "CE_PreviewMissingData")
     assert EXPORT_COMMANDS == (
@@ -37,16 +39,19 @@ def test_command_metadata_matches_expected_workbench_commands():
         "CE_ExportCEProjectXML",
         "CE_ExportIOList",
         "CE_ExportMissingDataCSV",
+        "CE_ExportConnectionSchedule",
     )
 
 
 def test_command_metadata_exposes_menu_text_for_manual_validation_docs():
     assert command_menu_text("CE_NewProject") == "New Controls Project"
     assert command_menu_text("CE_AddIOSignal") == "Add I/O Signal"
+    assert command_menu_text("CE_AddConnection") == "Add Connection Record"
     assert command_menu_text("CE_PreviewMissingData") == "Preview Missing Data"
     assert command_menu_text("CE_ExportCEProjectXML") == "Export CEProject XML"
     assert command_menu_text("CE_ExportIOList") == "Export I/O List"
     assert command_menu_text("CE_ExportMissingDataCSV") == "Export Missing Data CSV"
+    assert command_menu_text("CE_ExportConnectionSchedule") == "Export Connection Schedule"
 
 
 def test_command_modules_are_import_safe_without_freecad():

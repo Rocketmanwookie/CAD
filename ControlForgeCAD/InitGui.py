@@ -88,10 +88,12 @@ if Gui is not None:
             from controls_wb.commands import (  # noqa: F401
                 create_panel,
                 add_io_signal,
+                add_connection,
                 export_bom,
                 export_ceproject_xml,
                 export_io_list,
                 export_missing_data_csv,
+                export_connection_schedule,
                 missing_data,
                 new_project,
                 validate_project,

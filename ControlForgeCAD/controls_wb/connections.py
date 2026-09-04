@@ -88,6 +88,40 @@ def connections_from_project(project: object) -> list[SignalConnection]:
     return connections
 
 
+def next_connection_id(connections: list[SignalConnection]) -> str:
+    indexes = []
+    for connection in connections:
+        if connection.connection_id.startswith("CONN-"):
+            try:
+                indexes.append(int(connection.connection_id.removeprefix("CONN-")))
+            except ValueError:
+                pass
+    return f"CONN-{max(indexes, default=0) + 1:04d}"
+
+
+def append_connection_to_project(project: object, values: dict[str, object]) -> SignalConnection:
+    """Persist one normalized connection record on an editable CE_Project."""
+    existing = connections_from_project(project)
+    connection = SignalConnection(
+        connection_id=str(values.get("connection_id", "")).strip() or next_connection_id(existing),
+        signal_tag=str(values.get("signal_tag", "")).strip(),
+        field_device=str(values.get("field_device", "")).strip(),
+        terminal_strip=str(values.get("terminal_strip", "")).strip(),
+        terminal=str(values.get("terminal", "")).strip(),
+        wire_tag=str(values.get("wire_tag", "")).strip(),
+        plc_rack=str(values.get("plc_rack", "")).strip(),
+        plc_slot=str(values.get("plc_slot", "")).strip(),
+        plc_channel=str(values.get("plc_channel", "")).strip(),
+        status=str(values.get("status", "planned")).strip() or "planned",
+    )
+    if not connection.signal_tag:
+        raise ValueError("A signal tag is required for a connection record.")
+    records = list(getattr(project, "ConnectionRecords", []) or [])
+    records.append(serialize_connection(connection))
+    setattr(project, "ConnectionRecords", records)
+    return connection
+
+
 def connection_schedule_csv(connections: list[SignalConnection]) -> str:
     output = StringIO()
     writer = csv.DictWriter(output, fieldnames=CONNECTION_SCHEDULE_HEADERS, lineterminator="\n")
