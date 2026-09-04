@@ -1,6 +1,6 @@
 # Companion Workbenches
 
-IntegraCAB Open should remain focused on controls-engineering intake, validation, traceability, and integration with existing FreeCAD resources. HMI design and digital twin simulation are important enough to become companion workbenches later.
+integraCAD Open should remain focused on controls-engineering intake, validation, traceability, and integration with existing FreeCAD resources. HMI design and digital twin simulation are important enough to become companion workbenches later.
 
 ## Product family concept
 

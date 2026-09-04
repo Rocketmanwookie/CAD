@@ -1,6 +1,6 @@
 # Integration-First Policy
 
-IntegraCAB Open should integrate with existing FreeCAD, openBIM, CADbase, BOM, spreadsheet, drawing, PLC, and future HMI/digital-twin resources instead of replacing them.
+integraCAD Open should integrate with existing FreeCAD, openBIM, CADbase, BOM, spreadsheet, drawing, PLC, and future HMI/digital-twin resources instead of replacing them. ControlForgeCAD is the current FreeCAD workbench implementation.
 
 ## Principle
 

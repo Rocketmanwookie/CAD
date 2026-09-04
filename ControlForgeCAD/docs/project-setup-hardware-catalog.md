@@ -1,6 +1,6 @@
 # Project Setup Hardware Catalog
 
-IntegraCAB Open loads PLC hardware planning data from
+integraCAD Open loads PLC hardware planning data from
 [`controls_wb/resources/hardware/plc_catalog.xml`](../controls_wb/resources/hardware/plc_catalog.xml).
 
 The PLC XML schema is

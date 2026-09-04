@@ -1,10 +1,10 @@
-# IntegraCAB™ Open
+# integraCAD Open / ControlForgeCAD
 
 **The open-source FreeCAD workbench that unites PLC controls with CAD.**
 
-IntegraCAB Open is an integration-first FreeCAD workbench concept for controls engineering. Its primary job is not to replace CADbase, BOM workbenches, BIM tools, PLC IDEs, HMI platforms, or digital-twin simulators. Its job is to collect controls-engineering requirements once, validate missing or contradictory information, maintain traceability, and feed existing tools from one structured source of truth.
+integraCAD Open is the integration-first controls-engineering project; ControlForgeCAD is its current FreeCAD workbench. Its primary job is not to replace CADbase, BOM workbenches, BIM tools, PLC IDEs, HMI platforms, or digital-twin simulators. Its job is to collect controls-engineering requirements once, validate missing or contradictory information, maintain traceability, and feed existing tools from one structured source of truth.
 
-> Working branch note: this repository seed still lives under `ControlForgeCAD/` until the rename task is completed.
+> Naming note: `ControlForgeCAD/` is the current workbench/module path. Older documents may use the former IntegraCAB working name; new project-facing material uses integraCAD Open.
 
 ## Project status
 

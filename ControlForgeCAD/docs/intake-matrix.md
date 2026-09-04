@@ -1,6 +1,6 @@
 # Project Intake Matrix
 
-IntegraCAB Open should make missing controls-engineering information visible and actionable. This matrix maps project facts to likely stakeholders, request templates, XML sections, and downstream consumers.
+integraCAD Open should make missing controls-engineering information visible and actionable. This matrix maps project facts to likely stakeholders, request templates, XML sections, and downstream consumers.
 
 ## Status values
 
