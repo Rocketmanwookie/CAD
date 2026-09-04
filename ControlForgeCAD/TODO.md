@@ -111,6 +111,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Track CADbase part ID, model asset ID, datasheet asset ID, revision, source URL, local path, checksum, approval status, and last verified date.
 - [x] Seed hardware catalog CADbase references for Siemens S7-1200 CPU STEP/SLDPRT files with local path and checksum metadata.
 - [x] Apply selected PLC CPU catalog metadata to the starter PLC layout placeholder.
+- [x] Add an approval-gated Siemens CAx asset-request manifest for selected seeded PLC parts; it records official sources but does not automate portal downloads.
 - [ ] Add adapter for selected device to CADbase part reference.
 - [ ] Add policy for official manufacturer sources and redistribution limits.
 - [ ] Add manual upload path when download is unavailable or restricted.

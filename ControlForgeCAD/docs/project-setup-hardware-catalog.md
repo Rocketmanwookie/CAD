@@ -36,6 +36,10 @@ CPU entries can include local CAD references. The current Siemens S7-1200 CPU en
 
 Always verify final part selections against current Siemens catalog data and project electrical requirements before procurement.
 
+## Siemens CAx asset acquisition
+
+The workbench can build an approval-gated request manifest for selected seeded Siemens parts. It records the official source, requested formats, and part number, but it does not scrape, log into, or bulk-download from Siemens portals. Obtain CAD and documentation assets through the permitted Siemens CAx/SiePortal workflow, then record the approved local path, checksum, revision, and source before using the asset in a cabinet model.
+
 ## Panel hardware starter seed
 
 The panel hardware catalog currently includes unverified generic placeholder parts for:
