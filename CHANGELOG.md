@@ -16,6 +16,8 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Added
 
+- Added a page-indexed Siemens workshop reference map connecting historical hardware observations to catalog, layout, and parts-export work; distinguishes applied rules from pending validation and unread sections.
+
 - Runnable selected-Siemens-parts exporter with CSV, unique part-number-only, and JSON manifest output. Repeated module selections carry quantity; invalid selections fail without partial output.
 
 ### Added

@@ -106,6 +106,8 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 
 ### Phase 4 - CADbase integration
 
+- [ ] Implement [workshop-derived hardware requirements](docs/siemens-workshop-reference.md): separate board/module allowances, electrical signal types, mounting side, onboard-versus-purchased interfaces, and exact-part CAD matching.
+
 - [ ] Treat CADbase as the preferred local component/CAD/datasheet library.
 - [ ] Store CADbase references in CEProject rather than duplicating library content.
 - [ ] Track CADbase part ID, model asset ID, datasheet asset ID, revision, source URL, local path, checksum, approval status, and last verified date.
