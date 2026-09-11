@@ -8,6 +8,8 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Fixed
 
+- Resolved the CPU 1214C signal-module limit as eight using the user-supplied Siemens workshop, PDF page 23. Recorded the local source and checksum and tested acceptance at eight modules and rejection at nine.
+
 - Added the source-backed CPU 1212C two-signal-module limit to the catalog and XSD. Planning reports excess modules across all I/O types; selected-parts export rejects excess or unknown limits when modules are requested.
 
 - Siemens asset manifests now reject unknown line, CPU, and module selections and missing order numbers instead of silently omitting hardware. Parts CSV rejects incomplete rows and aggregates normalized manufacturer/part numbers. Manifests explicitly label CAD matches unverified; existing CPU CAD references do not prove exact-part compatibility.

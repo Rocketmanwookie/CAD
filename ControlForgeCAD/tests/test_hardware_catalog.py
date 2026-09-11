@@ -68,4 +68,5 @@ def test_expansion_limit_counts_all_io_types_and_unknown_limits():
     catalog = load_hardware_catalog()
     assert "exceed CPU limit 2" in io_expansion_suggestion(catalog, "Siemens", "S7-1200", "CPU 1212C DC/DC/DC", 100, 0, 0, 0)
     assert "exceed" not in io_expansion_suggestion(catalog, "Siemens", "S7-1200", "CPU 1212C DC/DC/DC", 20, 0, 0, 0)
-    assert "limit is unknown" in io_expansion_suggestion(catalog, "Siemens", "S7-1200", "CPU 1214C DC/DC/DC", 100, 0, 0, 0)
+    assert "exceed" not in io_expansion_suggestion(catalog, "Siemens", "S7-1200", "CPU 1214C DC/DC/DC", 100, 0, 0, 0)
+    assert "exceed CPU limit 8" in io_expansion_suggestion(catalog, "Siemens", "S7-1200", "CPU 1214C DC/DC/DC", 140, 0, 0, 0)

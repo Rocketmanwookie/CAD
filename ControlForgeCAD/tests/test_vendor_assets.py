@@ -80,5 +80,12 @@ def test_manifest_rejects_excess_and_unknown_module_limits():
     module = "SM 1221 DI 16x24 V DC"
     with pytest.raises(ValueError, match="exceed CPU limit 2"):
         selected_siemens_asset_requests(catalog, "S7-1200", "CPU 1212C DC/DC/DC", (module,) * 3)
+    requests = selected_siemens_asset_requests(catalog, "S7-1200", "CPU 1214C DC/DC/DC", (module,) * 8)
+    assert len(requests) == 9
+    with pytest.raises(ValueError, match="exceed CPU limit 8"):
+        selected_siemens_asset_requests(catalog, "S7-1200", "CPU 1214C DC/DC/DC", (module,) * 9)
+    line = catalog.lines[0]
+    cpu = replace(line.cpus[0], max_signal_modules=None)
+    unknown_catalog = replace(catalog, lines=(replace(line, cpus=(cpu,)),))
     with pytest.raises(ValueError, match="limit is unknown"):
-        selected_siemens_asset_requests(catalog, "S7-1200", "CPU 1214C DC/DC/DC", (module,))
+        selected_siemens_asset_requests(unknown_catalog, "S7-1200", cpu.name, (module,))

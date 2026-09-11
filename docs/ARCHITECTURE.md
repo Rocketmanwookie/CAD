@@ -412,7 +412,7 @@ The backend Siemens asset-request builder accepts explicit CPU and I/O module se
 
 The two seeded CPUs currently share local CAD references. Exact-part CAD mapping and CPU expansion limits must be verified before automatic cabinet hardware selection can be treated as complete.
 
-Hardware catalog records optionally carry `maxSignalModules`. Absence means unknown. Planning reports over-limit or unknown configurations; asset-request export rejects these when modules are selected. The 1212C seed has a source-backed limit of two. The 1214C is pending verification. These checks do not establish power or signal electrical compatibility.
+Hardware catalog records optionally carry `maxSignalModules`. Absence means unknown. Planning reports over-limit or unknown configurations; asset-request export rejects these when modules are selected. The 1212C limit is two and the 1214C limit is eight. PDF page 23 of the user-supplied Siemens workshop corroborates both family limits; its local path and checksum are registered as `siemens-workshop-expansion`. These checks do not establish power or signal electrical compatibility.
 
 `python -m controls_wb.vendor_assets` exposes explicit selections as stdout CSV, unique part numbers, or a JSON manifest. It completes selection validation before emitting output and exits with status 2 on invalid selections. It performs no file writes, network requests, or FreeCAD mutations.
 

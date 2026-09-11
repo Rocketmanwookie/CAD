@@ -38,7 +38,9 @@ Always verify final part selections against current Siemens catalog data and pro
 
 ## Siemens CAx asset acquisition
 
-The CPU 1212C seed now records a maximum of two signal modules, as specified in its linked Siemens datasheet (checked September 11, 2026). Planning totals modules across I/O types and reports excess capacity. Export rejects module selections exceeding that limit. The 1214C limit remains unknown in this catalog pending source verification; its module selections cannot yet be exported. CPU-only exports remain available. Slot count checks do not validate electrical compatibility, bus power, or a complete cabinet.
+The CPU 1212C seed records a maximum of two signal modules; the 1214C records eight. PDF page 23 of the user-supplied SIMATIC S7-1200 Workshop corroborates these family limits and distinguishes the separate one-signal-board limit. The registered workshop source includes its local path and checksum. The PDF was created in 2016 and these slides carry a 2013 copyright; this reference does not establish current firmware or order-number revisions. Planning totals modules across I/O types, and export rejects selections exceeding known limits. Slot count checks do not validate electrical compatibility, bus power, or a complete cabinet.
+
+Follow-up: review the remaining workshop pages for source-linked hardware-selection, communication, installation, and training requirements. Only pages 23-24 have been fully reviewed so far; broader extraction is pending the user's usage reserve.
 
 Unknown product lines, CPUs, modules, and missing part numbers now raise explicit errors. CSV generation also rejects blank manufacturer/part-number fields. Both seeded CPUs share the same local CAD files; these references have not been verified against each exact order number. Asset manifests therefore mark CAD matches `unverified`. The backend helpers require explicit selections and are not yet wired to a workbench export or a complete cabinet-selection workflow.
 
