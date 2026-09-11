@@ -35,6 +35,7 @@ class HardwarePart:
     verified: bool = False
     source_id: str = ""
     cad_refs: tuple[HardwareCadRef, ...] = ()
+    max_signal_modules: int | None = None
 
 
 @dataclass(frozen=True)
@@ -108,6 +109,7 @@ def _part(item: ET.Element) -> HardwarePart:
         ao=_int_attr(item, "ao"),
         verified=item.get("verified", "false").lower() == "true",
         source_id=item.get("sourceId", ""),
+        max_signal_modules=int(item.get("maxSignalModules")) if item.get("maxSignalModules") is not None else None,
         cad_refs=tuple(
             HardwareCadRef(
                 format=cad_ref.get("format", ""),
@@ -176,6 +178,7 @@ def io_expansion_suggestion(
         "ao": _count_int(ao_count),
     }
     suggestions = []
+    total_modules = 0
     for io_key, requested_count in requested.items():
         target = int(requested_count * 1.2 + 0.9999)
         available_on_cpu = int(getattr(cpu, io_key))
@@ -194,12 +197,17 @@ def io_expansion_suggestion(
             ),
         )
         module_count = _module_count_for(extra_needed, int(getattr(best, io_key)))
+        total_modules += module_count
         verification = "vendor-verified" if best.verified else "catalog-unverified"
         suggestions.append(
             f"{io_key.upper()}: target {target}, CPU {available_on_cpu}, add {module_count} x {best.name} ({best.part_number}, {verification})"
         )
     if not suggestions:
         return "CPU I/O covers requested counts with 20% spare."
+    if total_modules and cpu.max_signal_modules is None:
+        suggestions.insert(0, "WARNING: CPU signal-module limit is unknown; configuration is not validated.")
+    elif cpu.max_signal_modules is not None and total_modules > cpu.max_signal_modules:
+        suggestions.insert(0, f"ERROR: Proposed {total_modules} signal modules exceed CPU limit {cpu.max_signal_modules}; revise the hardware configuration.")
     return "; ".join(suggestions)
 
 

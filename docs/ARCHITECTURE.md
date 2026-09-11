@@ -406,6 +406,16 @@ A controls-domain behavior that can be expressed without FreeCAD geometry or UI 
 
 ## 14. Documentation governance
 
+### Vendor asset request contract
+
+The backend Siemens asset-request builder accepts explicit CPU and I/O module selections. Unknown selections or missing order numbers raise `ValueError`; callers must present these errors before writing an export. Repeated requests aggregate into quantities after whitespace normalization. The manifest includes `cad_match_status`, currently `unverified`: a catalog source or local checksum does not establish exact-part geometry compatibility. The CSV helper is not yet a FreeCAD export command or an I/O-to-hardware configuration validator.
+
+The two seeded CPUs currently share local CAD references. Exact-part CAD mapping and CPU expansion limits must be verified before automatic cabinet hardware selection can be treated as complete.
+
+Hardware catalog records optionally carry `maxSignalModules`. Absence means unknown. Planning reports over-limit or unknown configurations; asset-request export rejects these when modules are selected. The 1212C seed has a source-backed limit of two. The 1214C is pending verification. These checks do not establish power or signal electrical compatibility.
+
+`python -m controls_wb.vendor_assets` exposes explicit selections as stdout CSV, unique part numbers, or a JSON manifest. It completes selection validation before emitting output and exits with status 2 on invalid selections. It performs no file writes, network requests, or FreeCAD mutations.
+
 This document should be updated when a contribution changes a system boundary, component responsibility, dependency direction, object contract, data flow, export contract, extension point, or implementation-status claim.
 
 Material changes must also update [`CHANGELOG.md`](../CHANGELOG.md). Contribution requirements are defined in [`CONTRIBUTING.md`](../CONTRIBUTING.md). Installation and user-facing validation remain in [`README.md`](../README.md).

@@ -70,6 +70,16 @@ In FreeCAD, select **Controls / Automation** from the workbench selector. Confir
 
 ## Generated artifacts
 
+### Selected Siemens parts handoff
+
+From the repository root, export an explicit selection to standard output:
+
+```bash
+PYTHONPATH=ControlForgeCAD python3 -m controls_wb.vendor_assets --cpu 'CPU 1212C DC/DC/DC' --module 'SM 1221 DI 16x24 V DC'
+```
+
+Repeat `--module` for multiple units. Default output is `Manufacturer,PartNumber,Quantity` CSV; `--format part-numbers` emits unique part numbers without a header, and `--format manifest` emits source metadata. Unknown selections fail with no CSV output. This command does not calculate a complete cabinet or confirm the Siemens portal's import format. See [hardware catalog guidance](ControlForgeCAD/docs/project-setup-hardware-catalog.md).
+
 The current command defaults are:
 
 - CEProject XML: `~/integracab_ceproject.xml`

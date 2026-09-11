@@ -6,6 +6,16 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ## [Unreleased]
 
+### Fixed
+
+- Added the source-backed CPU 1212C two-signal-module limit to the catalog and XSD. Planning reports excess modules across all I/O types; selected-parts export rejects excess or unknown limits when modules are requested.
+
+- Siemens asset manifests now reject unknown line, CPU, and module selections and missing order numbers instead of silently omitting hardware. Parts CSV rejects incomplete rows and aggregates normalized manufacturer/part numbers. Manifests explicitly label CAD matches unverified; existing CPU CAD references do not prove exact-part compatibility.
+
+### Added
+
+- Runnable selected-Siemens-parts exporter with CSV, unique part-number-only, and JSON manifest output. Repeated module selections carry quantity; invalid selections fail without partial output.
+
 ### Added
 
 - Established [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) as the architectural source of truth for integraCAD Open, covering system context, layered architecture, component responsibilities, dependency boundaries, object contracts, data flows, extension strategy, testing, operational considerations, and current-versus-planned capabilities. Commit: `6dfeb12`.

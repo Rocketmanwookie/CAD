@@ -61,3 +61,11 @@ def test_io_expansion_suggestion_uses_verified_catalog_parts():
     assert "SM 1222 DQ 16x24 VDC (6ES7222-1BH32-0XB0, vendor-verified)" in suggestion
     assert "SM 1231 AI 8 (6ES7231-4HF32-0XB0, vendor-verified)" in suggestion
     assert "SM 1232 AQ 4 (6ES7232-4HD32-0XB0, vendor-verified)" in suggestion
+    assert suggestion.startswith("ERROR: Proposed 4 signal modules exceed CPU limit 2")
+
+
+def test_expansion_limit_counts_all_io_types_and_unknown_limits():
+    catalog = load_hardware_catalog()
+    assert "exceed CPU limit 2" in io_expansion_suggestion(catalog, "Siemens", "S7-1200", "CPU 1212C DC/DC/DC", 100, 0, 0, 0)
+    assert "exceed" not in io_expansion_suggestion(catalog, "Siemens", "S7-1200", "CPU 1212C DC/DC/DC", 20, 0, 0, 0)
+    assert "limit is unknown" in io_expansion_suggestion(catalog, "Siemens", "S7-1200", "CPU 1214C DC/DC/DC", 100, 0, 0, 0)

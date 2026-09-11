@@ -58,6 +58,7 @@
     </xs:sequence>
     <xs:attribute name="name" type="xs:string" use="required"/>
     <xs:attribute name="partNumber" type="xs:string"/>
+    <xs:attribute name="maxSignalModules" type="xs:nonNegativeInteger"/>
     <xs:attribute name="di" type="xs:nonNegativeInteger" default="0"/>
     <xs:attribute name="do" type="xs:nonNegativeInteger" default="0"/>
     <xs:attribute name="ai" type="xs:nonNegativeInteger" default="0"/>
