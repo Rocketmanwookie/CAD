@@ -54,16 +54,19 @@ their owner identity, role, and designation; wire objects link directly to their
 endpoint terminals and persist route points, calculated length, conductor size,
 color, circuit function, and conduit identity. Form normalization is tested
 outside FreeCAD, and the FreeCAD command wraps all mutations in one abortable
-document transaction. Interactive editing of an existing path and 3D route-point
-capture remain future increments.
+document transaction. Each segment also accepts ordered `x,y,z` millimetre route
+coordinates; when present, their polyline length is authoritative in the wiring
+and I/O schedules, while a separate specified length remains preserved for
+traceability. Interactive editing of an existing path and graphical route
+selection remain future increments.
 
 `CE_Project` now owns typed `ElectricalSignals`, `ElectricalPaths`, and
 `ElectricalDevices` link collections with canonical fact IDs. Materializing a
 path creates or safely reuses its signal object, registers the signal and path on
 the project, and permits reconstruction of the validated domain path from direct
 FreeCAD links. **Validate Controls Project** reports broken typed links and
-whole-project electrical graph findings. Editing existing paths and capturing
-their 3D route points remain the next user-facing increments.
+whole-project electrical graph findings. Editing existing paths and selecting
+routes directly from 3D geometry remain the next user-facing increments.
 
 Typed field devices can now be created with an immutable identity and
 `electrical.field_device` role before any terminal refers to them. Starter panel
@@ -225,7 +228,7 @@ Manual smoke validation:
 13. Run **Validate Controls Project** and confirm validation messages print to the FreeCAD console from the edited object values. Filled setup fields with source metadata should not report `missing_source`; they may still need verification or approval.
 14. Run **Add I/O Signal**, choose an I/O type, enter a label, and confirm Report View prints the generated tag and address.
 15. Run **Create Control Panel** and confirm `CE_Backplate`, `CE_DIN_Rail`, `CE_Wire_Duct`, `CE_Terminal_Strip`, and `CE_PLC_Rack` appear in the model tree with editable controls metadata.
-16. Run **Add Electrical Path**, select the registered PLC and terminal strip, select an existing field device or enter a new device tag, and submit the terminal/wire chain. Confirm one typed path, four typed terminals, three typed wires, and a signal appear with immutable identities and assigned roles.
+16. Run **Add Electrical Path**, select the registered PLC and terminal strip, select an existing field device or enter a new device tag, and submit the terminal/wire chain. Optionally enter each route as semicolon-separated `x,y,z` millimetre coordinates. Confirm one typed path, four typed terminals, three typed wires, and a signal appear with immutable identities and assigned roles; routed wires should display as polylines.
 17. Run **Validate Controls Project** and confirm validation reads the project, starter layout metadata, and typed graph without dangling-owner or path-continuity findings.
 18. Run **Export Electrical Schedules** and confirm `~/integracad_wiring_schedule.csv` has three wire rows while `~/integracad_io_path_schedule.csv` has one signal-path row.
 19. Run **Export BOM** and confirm `~/controlforgecad_bom.csv` includes starter layout objects with tag/description/manufacturer/part-number data where assigned.

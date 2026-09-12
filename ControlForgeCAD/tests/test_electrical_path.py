@@ -87,6 +87,16 @@ def test_connection_path_rejects_a_wire_that_skips_ordered_terminal():
         replace(path, wires=(broken_wire,) + path.wires[1:]).validate()
 
 
+def test_wire_route_requires_two_finite_points():
+    path = _path()
+    with pytest.raises(ValueError, match="at least two"):
+        replace(path.wires[0], route=(RoutePoint(0, 0, 0),)).validate()
+    with pytest.raises(ValueError, match="finite"):
+        replace(path.wires[0], route=(RoutePoint(0, 0, 0), RoutePoint(float("inf"), 0, 0))).validate()
+    with pytest.raises(ValueError, match="positive polyline"):
+        replace(path.wires[0], route=(RoutePoint(0, 0, 0), RoutePoint(0, 0, 0))).validate()
+
+
 def test_connection_path_requires_plc_to_device_direction():
     path = _path()
 

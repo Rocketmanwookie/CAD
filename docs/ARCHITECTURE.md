@@ -156,8 +156,13 @@ identity set so collisions fail before document mutation begins.
 registered PLC, terminal-strip, and field-device owners; creates a field-device
 identity before any terminal is materialized when requested; builds and
 validates one fixed three-segment chain outside the FreeCAD API; and commits the
-objects inside one FreeCAD transaction. Existing-path editing and interactive
-3D route capture remain application-layer work.
+objects inside one FreeCAD transaction. Each form segment may carry ordered
+`x,y,z` millimetre coordinates. The domain rejects one-point and non-finite
+routes, the FreeCAD wire renders a route polyline when Part is available, and
+schedule length uses that route in preference to the fallback specified length.
+`HasSpecifiedLength` and `SpecifiedLength` preserve the original estimate even
+when a calculated route length also exists. Existing-path editing and graphical
+3D route selection remain application-layer work.
 
 ### 5.3 Application service layer
 

@@ -2,7 +2,11 @@
 
 import pytest
 
-from controls_wb.gui.electrical_path import add_electrical_path_from_form, build_electrical_path
+from controls_wb.gui.electrical_path import (
+    add_electrical_path_from_form,
+    build_electrical_path,
+    parse_route_points,
+)
 from controls_wb.identity import CERoles
 from controls_wb.model.electrical import materialize_electrical_device
 from controls_wb.model.layout import create_starter_layout_objects
@@ -126,3 +130,33 @@ def test_invalid_form_does_not_create_requested_field_device():
         add_electrical_path_from_form(document, values)
 
     assert document.Objects == initial_objects
+
+
+def test_form_route_points_override_specified_length_in_schedule_graph():
+    _, project, values = _setup()
+    values["wire_1_route_mm"] = "0,0,0; 30,40,0; 30,40,100"
+    values["wire_1_length_mm"] = "999"
+
+    path = build_electrical_path(project, values)
+
+    assert path.wires[0].specified_length_mm == 999.0
+    assert path.wires[0].routed_length_mm == 150.0
+    assert path.wires[0].effective_length_mm == 150.0
+    assert path.total_length_mm == 1175.0
+
+
+def test_route_can_supply_length_without_manual_fallback():
+    _, project, values = _setup()
+    values["wire_3_route_mm"] = "0,0,0;0,0,1000"
+    values["wire_3_length_mm"] = ""
+
+    path = build_electrical_path(project, values)
+
+    assert path.wires[2].specified_length_mm is None
+    assert path.wires[2].effective_length_mm == 1000.0
+
+
+@pytest.mark.parametrize("route", ["0,0,0", "0,0;1,1,1", "0,0,0;nan,1,1"])
+def test_route_parser_rejects_incomplete_or_nonfinite_routes(route):
+    with pytest.raises(ValueError):
+        parse_route_points(route, "Wire route")

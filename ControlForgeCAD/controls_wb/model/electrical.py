@@ -188,6 +188,8 @@ def materialize_electrical_path(document, path: ElectricalConnectionPath) -> Mat
             ("App::PropertyString", "CircuitFunction", "Circuit function"),
             ("App::PropertyString", "ConduitIdentity", "Conduit or raceway CE identity"),
             ("App::PropertyStringList", "RoutePoints", "Ordered 3D route points in millimetres"),
+            ("App::PropertyBool", "HasSpecifiedLength", "Whether a separate specified wire length was provided"),
+            ("App::PropertyLength", "SpecifiedLength", "Specified wire length before route calculation"),
             ("App::PropertyLength", "CalculatedLength", "Calculated or specified wire length"),
         ):
             _add_property(obj, property_type, name, "Electrical Wire", description)
@@ -201,6 +203,8 @@ def materialize_electrical_path(document, path: ElectricalConnectionPath) -> Mat
         obj.CircuitFunction = wire.circuit_function
         obj.ConduitIdentity = wire.conduit_identity
         obj.RoutePoints = _route_json(wire.route)
+        obj.HasSpecifiedLength = wire.specified_length_mm is not None
+        obj.SpecifiedLength = f"{wire.specified_length_mm or 0.0} mm"
         obj.CalculatedLength = f"{wire.effective_length_mm or 0.0} mm"
         wire_objects.append(obj)
 
@@ -349,7 +353,15 @@ def _wire_from_object(obj):
     from controls_wb.electrical_path import WireSegment
 
     route = _route_from_object(obj)
-    specified_length = None if route else _length_mm(getattr(obj, "CalculatedLength", None))
+    if hasattr(obj, "HasSpecifiedLength"):
+        specified_length = (
+            _length_mm(getattr(obj, "SpecifiedLength", None))
+            if getattr(obj, "HasSpecifiedLength", False)
+            else None
+        )
+    else:
+        # Compatibility with path objects created before separate length storage.
+        specified_length = None if route else _length_mm(getattr(obj, "CalculatedLength", None))
     return WireSegment(
         identity=str(getattr(obj, "CEIdentity", "") or ""),
         from_terminal_identity=str(getattr(obj, "FromTerminalIdentity", "") or ""),

@@ -179,7 +179,10 @@ starting digital-twin runtime work.
   selection, optional immediately identified field-device creation, a fixed
   PLC-terminal/terminal-strip/device-terminal chain, conductor metadata, and
   transaction-safe materialization.
-- [ ] Add user-facing editing and 3D route-point capture for existing paths.
+- [x] Accept ordered 3D route coordinates during path creation, validate finite
+  point sequences, persist them on typed wires, and derive schedule length from
+  the routed polyline while retaining a separate specified-length input.
+- [ ] Add user-facing editing and graphical 3D route selection for existing paths.
 - [x] Add a workbench command that exports canonical wiring and I/O path CSV
   schedules from the typed electrical graph.
 - [x] Add a standalone namespace-correct, XSD-validated connection-path XML

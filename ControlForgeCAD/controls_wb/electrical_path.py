@@ -76,6 +76,16 @@ class WireSegment:
             raise ValueError(f"Wire {self.identity} requires a wire tag.")
         if self.specified_length_mm is not None and self.specified_length_mm < 0:
             raise ValueError(f"Wire {self.identity} cannot have a negative length.")
+        if self.route and len(self.route) < 2:
+            raise ValueError(f"Wire {self.identity} route requires at least two points.")
+        if any(
+            not math.isfinite(coordinate)
+            for point in self.route
+            for coordinate in (point.x_mm, point.y_mm, point.z_mm)
+        ):
+            raise ValueError(f"Wire {self.identity} route coordinates must be finite.")
+        if self.route and self.routed_length_mm <= 0:
+            raise ValueError(f"Wire {self.identity} route must have a positive polyline length.")
 
     @property
     def routed_length_mm(self) -> float | None:

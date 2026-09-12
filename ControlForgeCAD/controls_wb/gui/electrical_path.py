@@ -3,7 +3,9 @@
 
 from __future__ import annotations
 
-from controls_wb.electrical_path import ElectricalConnectionPath, TerminalEndpoint, WireSegment
+import math
+
+from controls_wb.electrical_path import ElectricalConnectionPath, RoutePoint, TerminalEndpoint, WireSegment
 from controls_wb.gui.io_signal import _qt_widgets
 from controls_wb.gui.project_intake import existing_project_object
 from controls_wb.identity import CERoles, new_ce_identity
@@ -34,6 +36,37 @@ def _positive_length(value: object, label: str) -> float:
     if length <= 0:
         raise ValueError(f"{label} must be greater than zero.")
     return length
+
+
+def parse_route_points(value: object, label: str) -> tuple[RoutePoint, ...]:
+    """Parse ``x,y,z; x,y,z`` millimetre coordinates from a form field."""
+
+    text = str(value or "").strip()
+    if not text:
+        return ()
+    points = []
+    for position, record in enumerate(text.split(";"), start=1):
+        coordinates = [item.strip() for item in record.split(",")]
+        if len(coordinates) != 3:
+            raise ValueError(f"{label} point {position} must contain x,y,z coordinates.")
+        try:
+            x_mm, y_mm, z_mm = (float(item) for item in coordinates)
+        except ValueError as exc:
+            raise ValueError(f"{label} point {position} coordinates must be numeric.") from exc
+        if not all(math.isfinite(item) for item in (x_mm, y_mm, z_mm)):
+            raise ValueError(f"{label} point {position} coordinates must be finite.")
+        points.append(RoutePoint(x_mm, y_mm, z_mm))
+    if len(points) < 2:
+        raise ValueError(f"{label} requires at least two route points when provided.")
+    return tuple(points)
+
+
+def _specified_length(value: object, label: str, route: tuple[RoutePoint, ...]) -> float | None:
+    if str(value or "").strip():
+        return _positive_length(value, label)
+    if not route:
+        raise ValueError(f"{label} is required when no 3D route is provided.")
+    return None
 
 
 def _build_electrical_path(
@@ -71,13 +104,25 @@ def _build_electrical_path(
     wire_tags = [str(values.get(f"wire_{index}_tag", "")).strip() for index in range(1, 4)]
     if any(not tag for tag in wire_tags):
         raise ValueError("All three wire/jumper tags are required.")
-    lengths = [_positive_length(values.get(f"wire_{index}_length_mm", ""), f"Wire {index} length") for index in range(1, 4)]
+    routes = [
+        parse_route_points(values.get(f"wire_{index}_route_mm", ""), f"Wire {index} route")
+        for index in range(1, 4)
+    ]
+    lengths = [
+        _specified_length(
+            values.get(f"wire_{index}_length_mm", ""),
+            f"Wire {index} length",
+            routes[index - 1],
+        )
+        for index in range(1, 4)
+    ]
     wires = tuple(
         WireSegment(
             new_ce_identity(), terminals[index].identity, terminals[index + 1].identity, wire_tags[index],
             conductor_size=conductor_size,
             color=color,
             circuit_function=circuit_function,
+            route=routes[index],
             specified_length_mm=lengths[index],
         )
         for index in range(3)
@@ -178,10 +223,13 @@ def show_electrical_path_dialog(document, parent=None, console=None):
         ("circuit_function", "Circuit function", "dc_control"),
         ("wire_1_tag", "PLC-to-terminal wire", "W-001"),
         ("wire_1_length_mm", "PLC wire length (mm)", "100"),
+        ("wire_1_route_mm", "PLC wire 3D route (x,y,z; … mm)", ""),
         ("wire_2_tag", "Terminal bridge/jumper", "JMP-001"),
         ("wire_2_length_mm", "Jumper length (mm)", "25"),
+        ("wire_2_route_mm", "Jumper 3D route (x,y,z; … mm)", ""),
         ("wire_3_tag", "Terminal-to-device wire", "W-002"),
         ("wire_3_length_mm", "Field wire length (mm)", "1000"),
+        ("wire_3_route_mm", "Field wire 3D route (x,y,z; … mm)", ""),
     ):
         editor = QtWidgets.QLineEdit()
         editor.setText(default)

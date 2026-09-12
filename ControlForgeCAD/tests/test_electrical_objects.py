@@ -42,6 +42,7 @@ def _path():
         new_ce_identity(), plc.identity, cabinet.identity, "W-001",
         conductor_size="18 AWG", color="blue", circuit_function="dc_control",
         route=(RoutePoint(0, 0, 0), RoutePoint(0, 100, 0)),
+        specified_length_mm=110,
     )
     second = WireSegment(
         new_ce_identity(), cabinet.identity, device.identity, "W-002",
@@ -71,7 +72,10 @@ def test_materialized_path_creates_typed_identity_safe_linked_objects():
     assert result.wire_objects[0].FromTerminal is result.terminal_objects[0]
     assert result.wire_objects[0].ToTerminal is result.terminal_objects[1]
     assert result.wire_objects[0].CalculatedLength == "100.0 mm"
+    assert result.wire_objects[0].HasSpecifiedLength is True
+    assert result.wire_objects[0].SpecifiedLength == "110 mm"
     assert result.wire_objects[1].CalculatedLength == "250.0 mm"
+    assert result.wire_objects[1].HasSpecifiedLength is False
     assert electrical_path_from_object(result.path_object) == path
 
 
