@@ -8,6 +8,11 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Added
 
+- Added a 285-row CAD-library download manifest covering the requested Siemens
+  PLC, panel, safety, operator, HMI, instrumentation, wiring, connector, and
+  vendor-neutral accessory scope. Exact source-backed MLFBs are distinguished
+  from configuration-required search keys, and every applicable row identifies
+  required 3D, 2D, schematic, terminal-map, macro, and Cables-workbench assets.
 - Added `CE_AddElectricalPath`, a transaction-safe FreeCAD workflow that creates
   the canonical PLC-channel → cabinet-terminal pair → field-device terminal
   chain, assigns immutable identities and roles at creation, registers an
