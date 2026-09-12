@@ -166,8 +166,10 @@ starting digital-twin runtime work.
   properties, and preflight duplicate-identity rejection.
 - [x] Embed continuous paths in CEProject through an explicit namespace/XSD
   import with typed round trips and duplicate path-identity validation.
-- [ ] Add whole-project duplicate/dangling-reference validation across devices,
-  owners, signals, terminal endpoints, wires, and paths as those collections land.
+- [x] Add whole-project duplicate/dangling-reference validation across current
+  paths, terminal owners, signals, terminal endpoints, and wires.
+- [ ] Connect whole-project electrical findings to the FreeCAD validation command
+  once device/signal/path collections are persisted on the project aggregate.
 - [x] Add a standalone namespace-correct, XSD-validated connection-path XML
   contract with deterministic round trips and semantic continuity validation.
 - [x] Add route-derived wire length, conductor size/color/function/conduit fields

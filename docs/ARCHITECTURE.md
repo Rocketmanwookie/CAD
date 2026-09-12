@@ -213,7 +213,11 @@ semantic continuity and duplicate-identity validation that XSD alone cannot
 express. CEProject imports the path vocabulary explicitly and embeds path
 instances without flattening or discarding their namespace. Typed FreeCAD path,
 terminal, and wire objects implement the persistence projection. A user-facing
-editor and whole-project reference validation remain pending.
+editor remains pending. Pure-domain whole-project validation now detects
+duplicate identities, dangling signal and terminal-owner references, terminal
+reuse across different signals, conflicting tags for one signal identity, and
+missing wire size, color, or length data. Wiring that validator into the existing
+FreeCAD validation command awaits project-level typed collections.
 
 ## 6. Principal object contracts
 

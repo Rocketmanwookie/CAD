@@ -37,6 +37,9 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - CEProject XML now imports the connection-path XSD namespace and embeds typed
   paths with deterministic ordering, round trips, semantic validation, and
   duplicate path-identity rejection.
+- Whole-project electrical graph validation for duplicate identities, dangling
+  signals/terminal owners, cross-signal terminal conflicts, inconsistent signal
+  tags, and missing wire size/color/length schedule data.
 - Initial repository seed.
 - FreeCAD external workbench bootstrap files: `Init.py` and `InitGui.py`.
 - Draft controls-project data model.
