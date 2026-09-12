@@ -8,6 +8,11 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 
 ### Added
 
+- Addon Manager metadata, SVG branding, document transaction boundaries, and an
+  Addon Academy release checklist.
+- Evidence-based AutoCAD Electrical PLC parity audit, target electrical-graph
+  architecture, delivery gates, and strict parity definition.
+- Working-MVP fast lane and deferred ROS/ROS 2 digital-twin integration boundary.
 - Initial repository seed.
 - FreeCAD external workbench bootstrap files: `Init.py` and `InitGui.py`.
 - Draft controls-project data model.

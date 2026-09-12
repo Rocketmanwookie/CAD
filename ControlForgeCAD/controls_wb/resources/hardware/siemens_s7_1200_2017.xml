@@ -1,0 +1,924 @@
+<?xml version='1.0' encoding='utf-8'?>
+<equipmentRecords schemaVersion="0.1.0" catalogId="catalog-siemens-simatic-s7-1200-2017-brochure-snapshot" manufacturer="Siemens" family="SIMATIC S7-1200" edition="2017 brochure snapshot" recordCount="104">
+  <sources>
+    <source id="source-siemens-s7-1200-2017-brochure-catalog" title="SIMATIC S7-1200 Basic Controller brochure, Siemens AG 2017" sourceType="normalized-json-catalog" localPath="/home/egrantjr/Documents/plc-hardware-builder/data/catalogs/siemens_s7_1200_2017.json" sha256="1568aac3e3c771b0962abb439ea6dc2aaf6ef01f589512be377317d47ce649da">
+      <alias localPath="/home/egrantjr/Documents/Industrial-Robot-DigitalTwin/XML_Schema_siemens/siemens_s7_1200_plcopen_builder_v0.2.0/catalog/siemens_s7_1200_2017.json" sha256="1568aac3e3c771b0962abb439ea6dc2aaf6ef01f589512be377317d47ce649da" />
+      <alias localPath="/home/egrantjr/Documents/plc-hardware-builder/src/plc_hardware_builder/data/catalogs/siemens_s7_1200_2017.json" sha256="1568aac3e3c771b0962abb439ea6dc2aaf6ef01f589512be377317d47ce649da" />
+    </source>
+    <source id="source-siemens-s7-1200-datatypes-v20" title="STEP 7 V20 - Overview of the valid data types" sourceType="normalized-json-profile" localPath="/home/egrantjr/Documents/plc-hardware-builder/data/catalogs/siemens_s7_1200_datatypes_v20.json" url="https://docs.tia.siemens.cloud/r/en-us/v20/data-types/overview-of-the-valid-data-types" sha256="2e4f4dfc4f59374691bb49c3f1414d1d8f3466961c87a50cddeeff612c15ac5e" checkedDate="2026-07-18" />
+    <source id="source-siemens_s7_1200_hardware_v1-1a917d90e4" title="siemens s7 1200 hardware v1" sourceType="reference-schema" localPath="/home/egrantjr/Documents/Industrial-Robot-DigitalTwin/XML_Schema_siemens/siemens_s7_1200_plcopen_builder_v0.2.0/schemas/siemens_s7_1200_hardware_v1.xsd" sha256="1a917d90e4ef7ec71e7fdb8a4c01bd9f007994ca2cee1ce8127f3f56c65e5151" />
+    <source id="source-81318674_programming_guideline_doc_v16_en-fed04eaddb" title="81318674 Programming guideline DOC v16 en" sourceType="reference-pdf" localPath="/home/egrantjr/Documents/Reference Library/Books/81318674_Programming_guideline_DOC_v16_en.pdf" sha256="fed04eaddbee2cd3139d4bf62ef310c28c9cb42cfbc5c8381185a0b3b9ee60f0" />
+    <source id="source-s71200_easy_book_en-us_en-us-ce2f5a5d7f" title="s71200 easy book en-US en-US" sourceType="reference-pdf" localPath="/home/egrantjr/Documents/Reference Library/Books/s71200_easy_book_en-US_en-US.pdf" sha256="ce2f5a5d7f8d9c1410b3e5718230eb5c6b975c9a8a0be2b5bc9977f9d299694f" />
+    <source id="source-329495256-simatic-s7-1200-workshop-2016-a625b7a11c" title="329495256-SIMATIC-S7-1200-Workshop-2016" sourceType="reference-pdf" localPath="/home/egrantjr/Documents/Reference Library/Engineering &amp; Technical References/329495256-SIMATIC-S7-1200-Workshop-2016.pdf" sha256="a625b7a11cb4c9c6a4fc0ab2f2da6389eee3fd3300da70ec5794447b924b1023" />
+    <source id="source-749152257-s7-1200-g2-7a5f00a4e7" title="749152257-S7-1200-G2" sourceType="reference-pdf" localPath="/home/egrantjr/Documents/Reference Library/Engineering &amp; Technical References/749152257-S7-1200-G2.pdf" sha256="7a5f00a4e79d53be32a4fdb33431c6d2ec31c740fa49b5326b846f0dcd3019da" />
+    <source id="source-simatic-s7-1200-basic-controller--be-flexible-tha--brochure-2017-3e892145fc" title="simatic-s7-1200-basic-controller--be-flexible-tha--brochure-2017" sourceType="reference-pdf" localPath="/home/egrantjr/Documents/Reference Library/Engineering &amp; Technical References/simatic-s7-1200-basic-controller--be-flexible-tha--brochure-2017.pdf" sha256="3e892145fc030054f65435d33192fa66745a0b3f1089f798613c981f21ca66ec" />
+    <source id="source-6es72111ae400xb0_datasheet_en-e686c94968" title="6ES72111AE400XB0 datasheet en" sourceType="reference-pdf" localPath="/home/egrantjr/Documents/Reference Library/Manuals &amp; Datasheets/6ES72111AE400XB0_datasheet_en.pdf" sha256="e686c949682e23cb17e732671d975d875e18c1bf0597cb98bf3ef3cce7c01b9e" />
+    <source id="source-6es72121ae400xb0_datasheet_en-99153e5bfe" title="6ES72121AE400XB0 datasheet en" sourceType="reference-pdf" localPath="/home/egrantjr/Documents/Reference Library/Manuals &amp; Datasheets/6ES72121AE400XB0_datasheet_en.pdf" sha256="99153e5bfee30d1e5853bd23595554f4080ae79223638fd46ecf11d57e3e655c" />
+    <source id="source-siemens.advancedamlimporter_v1.1.0.0_manual_en-153e49851a" title="Siemens.AdvancedAmlImporter V1.1.0.0 Manual en" sourceType="reference-pdf" localPath="/home/egrantjr/Documents/Reference Library/Manuals &amp; Datasheets/Siemens.AdvancedAmlImporter_V1.1.0.0_Manual_en.pdf" sha256="153e49851a5eb735d5161a10bf692a2e4dec55fd40f8be9acc5dac0e22ab6e87" />
+    <source id="source-s7awl__b-af069e5160" title="s7awl  b" sourceType="reference-pdf" localPath="/home/egrantjr/Documents/Reference Library/Manuals &amp; Datasheets/s7awl__b.pdf" sha256="af069e5160939d6f28032e165fb48407e713312923646b6a5702434652e6fade" />
+    <source id="source-109804620_docu_machine_template_for_production_machines_v1_1_1_en-fc11c304f1" title="109804620 Docu Machine Template for Production Machines V1 1 1 en" sourceType="reference-pdf" localPath="/home/egrantjr/Documents/Reference Library/Manufacture Papers/109804620_Docu_Machine_Template_for_Production_Machines_V1_1_1_en.pdf" sha256="fc11c304f1f2e30502bde0c288c30fc36b4a3fcc6f90239b25a73ca6b50f2251" />
+    <source id="source-kg_stpcs7_en_2024_web-76418a6ff3" title="KG STPCS7 en 2024 Web" sourceType="reference-pdf" localPath="/home/egrantjr/Documents/Reference Library/Personal Documents/KG_STPCS7_en_2024_Web.pdf" sha256="76418a6ff3287ed5221b4857a08d39d96b9aa70dba2c5cb8bbf83579f1b67980" />
+    <source id="source-s71200_f_user_manual_en-us_en-us-797d1f7920" title="s71200 f user manual en-US en-US" sourceType="reference-pdf" localPath="/home/egrantjr/Documents/Reference Library/Personal Documents/s71200_f_user_manual_en-US_en-US.pdf" sha256="797d1f79208b4e68c19c7c30a83edb78b5a6c2fe943451a2e625c98613e48f05" />
+    <source id="source-s71200_system_manual_en-us_en-us-9aa568de73" title="s71200 system manual en-US en-US" sourceType="reference-pdf" localPath="/home/egrantjr/Documents/Reference Library/Personal Documents/s71200_system_manual_en-US_en-US.pdf" sha256="9aa568de736e0f6bfcc8f6dbee101ce7c4f30b7f05aa82a08f405a045510cdde" />
+    <source id="source-simatic-st70-complete-english-2025_1-2545be4f1f" title="simatic-st70-complete-english-2025 1" sourceType="reference-pdf" localPath="/home/egrantjr/Documents/Reference Library/Personal Documents/simatic-st70-complete-english-2025_1.pdf" sha256="2545be4f1ffd00e1f6fadad438b14aa1407aa7a6a81843a2d9c239ab96290913" />
+    <source id="source-plc_workbench_spec-4e11aabe7c" title="PLC Workbench Spec" sourceType="reference-file" localPath="/home/egrantjr/Documents/Reference Library/Unsorted - Review Needed/PLC_Workbench_Spec.docx" sha256="4e11aabe7c22358e74eabde3bef894822f506352818b569bda1c207d727fa4d0" />
+    <source id="source-project-setup-hardware-catalog-b423ebad9d" title="project-setup-hardware-catalog" sourceType="reference-documentation" localPath="/home/egrantjr/Documents/Repositories/controlforgecad/ControlForgeCAD/docs/project-setup-hardware-catalog.md" sha256="b423ebad9d584b8b00f3f028b31b41c01c003486b1c503341b646e35b20af322" />
+    <source id="source-siemens_component_library-b8c5842ef2" title="siemens component library" sourceType="reference-json" localPath="/home/egrantjr/Documents/Repositories/plantuml/iTwinUI/skills/controls-expert-vscode/templates/siemens_component_library.json" sha256="b8c5842ef2e09d8c00ca9d659b12a93ac0052f1756c0d466131eb15c3255ad3e" />
+    <source id="source-siemens_s71200-582903524b" title="siemens s71200" sourceType="reference-adapter" localPath="/home/egrantjr/Documents/plc-hardware-builder/src/plc_hardware_builder/vendors/siemens_s71200.py" sha256="582903524b84aa52e21b6bbb8caada37df17857147366caa305e052057be036c" />
+  </sources>
+  <assets>
+    <asset id="asset-siemens-s7-1200.sldprt" kind="cad-model" format="SLDPRT" localPath="/home/egrantjr/Documents/CADBaseLibrary/siemens-plc-s7-1200-1.snapshot.7/Siemens S7-1200.SLDPRT" sha256="2d9780d278d44cf3a07a73600924ec7c72ad4c9573dd535dda6877770206860c" applicability="family-reference-unverified" verified="false" />
+    <asset id="asset-siemens-s7-1200.step" kind="cad-model" format="STEP" localPath="/home/egrantjr/Documents/CADBaseLibrary/siemens-plc-s7-1200-1.snapshot.7/Siemens S7-1200.STEP" sha256="e5cdccde78115ef54856dfedc8705b5fc3031057e5db17068369b92e33a7e3b8" applicability="family-reference-unverified" verified="false" />
+  </assets>
+  <profiles>
+    <profile id="profile-s7-1200-datatypes-v20" profileType="programming-data-types" title="STEP 7 V20 - Overview of the valid data types" basis="V20" published="2024-11" sourceId="source-siemens-s7-1200-datatypes-v20">
+      <note>Classic S7-1200. Excludes S7-1200 G2 and S7-1500-only 64-bit bit-string, integer, and long-time types.</note>
+      <value>Bool</value>
+      <value>Byte</value>
+      <value>Word</value>
+      <value>DWord</value>
+      <value>SInt</value>
+      <value>USInt</value>
+      <value>Int</value>
+      <value>UInt</value>
+      <value>DInt</value>
+      <value>UDInt</value>
+      <value>Real</value>
+      <value>LReal</value>
+      <value>Time</value>
+      <value>Date</value>
+      <value>Time_Of_Day</value>
+      <value>DTL</value>
+      <value>Char</value>
+      <value>WChar</value>
+      <value>String</value>
+      <value>WString</value>
+    </profile>
+  </profiles>
+  <records>
+    <record id="part-6es7231-4hd32-0xb0" category="Analog Signal Module" productName="SM 1231 AI 4 13-bit" partNumber="6ES7231-4HD32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>4 analog inputs, 13-bit; voltage or 4-20 mA</summary>
+      <properties>
+        <property name="analog_inputs" valueType="integer">4</property>
+        <property name="analog_outputs" valueType="integer">0</property>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7231-4hf32-0xb0" category="Analog Signal Module" productName="SM 1231 AI 8 13-bit" partNumber="6ES7231-4HF32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>8 analog inputs, 13-bit; voltage or 4-20 mA</summary>
+      <properties>
+        <property name="analog_inputs" valueType="integer">8</property>
+        <property name="analog_outputs" valueType="integer">0</property>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7231-5nd32-0xb0" category="Analog Signal Module" productName="SM 1231 AI 4 16-bit" partNumber="6ES7231-5ND32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>4 analog inputs, 16-bit; voltage or 4-20 mA</summary>
+      <properties>
+        <property name="analog_inputs" valueType="integer">4</property>
+        <property name="analog_outputs" valueType="integer">0</property>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7231-5pd32-0xb0" category="Analog Signal Module" productName="SM 1231 RTD AI 4" partNumber="6ES7231-5PD32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>4 RTD inputs, 16-bit</summary>
+      <properties>
+        <property name="analog_inputs" valueType="integer">4</property>
+        <property name="analog_outputs" valueType="integer">0</property>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7231-5pf32-0xb0" category="Analog Signal Module" productName="SM 1231 RTD AI 8" partNumber="6ES7231-5PF32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>8 RTD inputs, 16-bit</summary>
+      <properties>
+        <property name="analog_inputs" valueType="integer">8</property>
+        <property name="analog_outputs" valueType="integer">0</property>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7231-5qd32-0xb0" category="Analog Signal Module" productName="SM 1231 TC AI 4" partNumber="6ES7231-5QD32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>4 thermocouple inputs, 16-bit</summary>
+      <properties>
+        <property name="analog_inputs" valueType="integer">4</property>
+        <property name="analog_outputs" valueType="integer">0</property>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7231-5qf32-0xb0" category="Analog Signal Module" productName="SM 1231 TC AI 8" partNumber="6ES7231-5QF32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>8 thermocouple inputs, 16-bit</summary>
+      <properties>
+        <property name="analog_inputs" valueType="integer">8</property>
+        <property name="analog_outputs" valueType="integer">0</property>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7232-4hb32-0xb0" category="Analog Signal Module" productName="SM 1232 AQ 2" partNumber="6ES7232-4HB32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>2 analog outputs, 14-bit; ±10 V or 4-20 mA</summary>
+      <properties>
+        <property name="analog_inputs" valueType="integer">0</property>
+        <property name="analog_outputs" valueType="integer">2</property>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7232-4hd32-0xb0" category="Analog Signal Module" productName="SM 1232 AQ 4" partNumber="6ES7232-4HD32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>4 analog outputs, 14-bit; ±10 V or 4-20 mA</summary>
+      <properties>
+        <property name="analog_inputs" valueType="integer">0</property>
+        <property name="analog_outputs" valueType="integer">4</property>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7234-4he32-0xb0" category="Analog Signal Module" productName="SM 1234 AI4/AQ2" partNumber="6ES7234-4HE32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>4 analog inputs, 13-bit and 2 analog outputs, 14-bit</summary>
+      <properties>
+        <property name="analog_inputs" valueType="integer">4</property>
+        <property name="analog_outputs" valueType="integer">2</property>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7211-1ae40-0xb0" category="CPU" productName="CPU 1211C DC/DC/DC" partNumber="6ES7211-1AE40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>50 KB program memory; 6 DI 24 V DC; 4 DQ 24 V DC; 2 AI 0-10 V DC</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">false</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">0</property>
+        <property name="onboard_di" valueType="integer">6</property>
+        <property name="onboard_dq" valueType="integer">4</property>
+        <property name="profinet_ports" valueType="integer">1</property>
+        <property name="program_memory_kb" valueType="integer">50</property>
+        <property name="variant" valueType="string">DC/DC/DC</property>
+      </properties>
+    </record>
+    <record id="part-6es7211-1be40-0xb0" category="CPU" productName="CPU 1211C AC/DC/RLY" partNumber="6ES7211-1BE40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>50 KB program memory; 6 DI 24 V DC; 4 relay DQ; 2 AI 0-10 V DC</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">false</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">0</property>
+        <property name="onboard_di" valueType="integer">6</property>
+        <property name="onboard_dq" valueType="integer">4</property>
+        <property name="profinet_ports" valueType="integer">1</property>
+        <property name="program_memory_kb" valueType="integer">50</property>
+        <property name="variant" valueType="string">AC/DC/RLY</property>
+      </properties>
+    </record>
+    <record id="part-6es7211-1he40-0xb0" category="CPU" productName="CPU 1211C DC/DC/RLY" partNumber="6ES7211-1HE40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>50 KB program memory; 6 DI 24 V DC; 4 relay DQ; 2 AI 0-10 V DC</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">false</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">0</property>
+        <property name="onboard_di" valueType="integer">6</property>
+        <property name="onboard_dq" valueType="integer">4</property>
+        <property name="profinet_ports" valueType="integer">1</property>
+        <property name="program_memory_kb" valueType="integer">50</property>
+        <property name="variant" valueType="string">DC/DC/RLY</property>
+      </properties>
+    </record>
+    <record id="part-6es7212-1ae40-0xb0" category="CPU" productName="CPU 1212C DC/DC/DC" partNumber="6ES7212-1AE40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>75 KB program memory; 8 DI 24 V DC; 6 DQ 24 V DC; 2 AI 10-bit 0-10 V DC</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">false</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">0</property>
+        <property name="onboard_di" valueType="integer">8</property>
+        <property name="onboard_dq" valueType="integer">6</property>
+        <property name="profinet_ports" valueType="integer">1</property>
+        <property name="program_memory_kb" valueType="integer">75</property>
+        <property name="variant" valueType="string">DC/DC/DC</property>
+      </properties>
+    </record>
+    <record id="part-6es7212-1af40-0xb0" category="CPU" productName="CPU 1212FC DC/DC/DC" partNumber="6ES7212-1AF40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>Fail-safe CPU; 100 KB program memory; 8 DI; 6 DQ 24 V DC; 2 AI</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">true</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">0</property>
+        <property name="onboard_di" valueType="integer">8</property>
+        <property name="onboard_dq" valueType="integer">6</property>
+        <property name="profinet_ports" valueType="integer">1</property>
+        <property name="program_memory_kb" valueType="integer">100</property>
+        <property name="variant" valueType="string">DC/DC/DC</property>
+      </properties>
+    </record>
+    <record id="part-6es7212-1be40-0xb0" category="CPU" productName="CPU 1212C AC/DC/RLY" partNumber="6ES7212-1BE40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>75 KB program memory; 8 DI 24 V DC; 6 relay DQ; 2 AI 10-bit 0-10 V DC</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">false</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">0</property>
+        <property name="onboard_di" valueType="integer">8</property>
+        <property name="onboard_dq" valueType="integer">6</property>
+        <property name="profinet_ports" valueType="integer">1</property>
+        <property name="program_memory_kb" valueType="integer">75</property>
+        <property name="variant" valueType="string">AC/DC/RLY</property>
+      </properties>
+    </record>
+    <record id="part-6es7212-1he40-0xb0" category="CPU" productName="CPU 1212C DC/DC/RLY" partNumber="6ES7212-1HE40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>75 KB program memory; 8 DI 24 V DC; 6 relay DQ; 2 AI 10-bit 0-10 V DC</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">false</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">0</property>
+        <property name="onboard_di" valueType="integer">8</property>
+        <property name="onboard_dq" valueType="integer">6</property>
+        <property name="profinet_ports" valueType="integer">1</property>
+        <property name="program_memory_kb" valueType="integer">75</property>
+        <property name="variant" valueType="string">DC/DC/RLY</property>
+      </properties>
+    </record>
+    <record id="part-6es7212-1hf40-0xb0" category="CPU" productName="CPU 1212FC DC/DC/RLY" partNumber="6ES7212-1HF40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>Fail-safe CPU; 100 KB program memory; 8 DI; 6 relay DQ; 2 AI</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">true</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">0</property>
+        <property name="onboard_di" valueType="integer">8</property>
+        <property name="onboard_dq" valueType="integer">6</property>
+        <property name="profinet_ports" valueType="integer">1</property>
+        <property name="program_memory_kb" valueType="integer">100</property>
+        <property name="variant" valueType="string">DC/DC/RLY</property>
+      </properties>
+    </record>
+    <record id="part-6es7214-1af40-0xb0" category="CPU" productName="CPU 1214FC DC/DC/DC" partNumber="6ES7214-1AF40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>Fail-safe CPU; 125 KB program memory; 14 DI; 10 DQ 24 V DC; 2 AI</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">true</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">0</property>
+        <property name="onboard_di" valueType="integer">14</property>
+        <property name="onboard_dq" valueType="integer">10</property>
+        <property name="profinet_ports" valueType="integer">1</property>
+        <property name="program_memory_kb" valueType="integer">125</property>
+        <property name="variant" valueType="string">DC/DC/DC</property>
+      </properties>
+    </record>
+    <record id="part-6es7214-1ag40-0xb0" category="CPU" productName="CPU 1214C DC/DC/DC" partNumber="6ES7214-1AG40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>100 KB program memory; 14 DI 24 V DC; 10 DQ 24 V DC; 2 AI 0-10 V DC</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">false</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">0</property>
+        <property name="onboard_di" valueType="integer">14</property>
+        <property name="onboard_dq" valueType="integer">10</property>
+        <property name="profinet_ports" valueType="integer">1</property>
+        <property name="program_memory_kb" valueType="integer">100</property>
+        <property name="variant" valueType="string">DC/DC/DC</property>
+      </properties>
+    </record>
+    <record id="part-6es7214-1bg40-0xb0" category="CPU" productName="CPU 1214C AC/DC/RLY" partNumber="6ES7214-1BG40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>100 KB program memory; 14 DI 24 V DC; 10 relay DQ; 2 AI 0-10 V DC</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">false</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">0</property>
+        <property name="onboard_di" valueType="integer">14</property>
+        <property name="onboard_dq" valueType="integer">10</property>
+        <property name="profinet_ports" valueType="integer">1</property>
+        <property name="program_memory_kb" valueType="integer">100</property>
+        <property name="variant" valueType="string">AC/DC/RLY</property>
+      </properties>
+    </record>
+    <record id="part-6es7214-1hf40-0xb0" category="CPU" productName="CPU 1214FC DC/DC/RLY" partNumber="6ES7214-1HF40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>Fail-safe CPU; 125 KB program memory; 14 DI; 10 relay DQ; 2 AI</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">true</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">0</property>
+        <property name="onboard_di" valueType="integer">14</property>
+        <property name="onboard_dq" valueType="integer">10</property>
+        <property name="profinet_ports" valueType="integer">1</property>
+        <property name="program_memory_kb" valueType="integer">125</property>
+        <property name="variant" valueType="string">DC/DC/RLY</property>
+      </properties>
+    </record>
+    <record id="part-6es7214-1hg40-0xb0" category="CPU" productName="CPU 1214C DC/DC/RLY" partNumber="6ES7214-1HG40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>100 KB program memory; 14 DI 24 V DC; 10 relay DQ; 2 AI 0-10 V DC</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">false</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">0</property>
+        <property name="onboard_di" valueType="integer">14</property>
+        <property name="onboard_dq" valueType="integer">10</property>
+        <property name="profinet_ports" valueType="integer">1</property>
+        <property name="program_memory_kb" valueType="integer">100</property>
+        <property name="variant" valueType="string">DC/DC/RLY</property>
+      </properties>
+    </record>
+    <record id="part-6es7215-1af40-0xb0" category="CPU" productName="CPU 1215FC DC/DC/DC" partNumber="6ES7215-1AF40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>Fail-safe CPU; 150 KB program memory; 14 DI; 10 DQ; 2 AI; 2 AQ; 2 PROFINET ports</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">true</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">2</property>
+        <property name="onboard_di" valueType="integer">14</property>
+        <property name="onboard_dq" valueType="integer">10</property>
+        <property name="profinet_ports" valueType="integer">2</property>
+        <property name="program_memory_kb" valueType="integer">150</property>
+        <property name="variant" valueType="string">DC/DC/DC</property>
+      </properties>
+    </record>
+    <record id="part-6es7215-1ag40-0xb0" category="CPU" productName="CPU 1215C DC/DC/DC" partNumber="6ES7215-1AG40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>125 KB program memory; 14 DI; 10 DQ; 2 AI; 2 AQ 0-20 mA; 2 PROFINET ports</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">false</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">2</property>
+        <property name="onboard_di" valueType="integer">14</property>
+        <property name="onboard_dq" valueType="integer">10</property>
+        <property name="profinet_ports" valueType="integer">2</property>
+        <property name="program_memory_kb" valueType="integer">125</property>
+        <property name="variant" valueType="string">DC/DC/DC</property>
+      </properties>
+    </record>
+    <record id="part-6es7215-1bg40-0xb0" category="CPU" productName="CPU 1215C AC/DC/RLY" partNumber="6ES7215-1BG40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>125 KB program memory; 14 DI; 10 relay DQ; 2 AI; 2 AQ 0-20 mA; 2 PROFINET ports</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">false</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">2</property>
+        <property name="onboard_di" valueType="integer">14</property>
+        <property name="onboard_dq" valueType="integer">10</property>
+        <property name="profinet_ports" valueType="integer">2</property>
+        <property name="program_memory_kb" valueType="integer">125</property>
+        <property name="variant" valueType="string">AC/DC/RLY</property>
+      </properties>
+    </record>
+    <record id="part-6es7215-1hf40-0xb0" category="CPU" productName="CPU 1215FC DC/DC/RLY" partNumber="6ES7215-1HF40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>Fail-safe CPU; 150 KB program memory; 14 DI; 10 relay DQ; 2 AI; 2 AQ; 2 PROFINET ports</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">true</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">2</property>
+        <property name="onboard_di" valueType="integer">14</property>
+        <property name="onboard_dq" valueType="integer">10</property>
+        <property name="profinet_ports" valueType="integer">2</property>
+        <property name="program_memory_kb" valueType="integer">150</property>
+        <property name="variant" valueType="string">DC/DC/RLY</property>
+      </properties>
+    </record>
+    <record id="part-6es7215-1hg40-0xb0" category="CPU" productName="CPU 1215C DC/DC/RLY" partNumber="6ES7215-1HG40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>125 KB program memory; 14 DI; 10 relay DQ; 2 AI; 2 AQ 0-20 mA; 2 PROFINET ports</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">false</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">2</property>
+        <property name="onboard_di" valueType="integer">14</property>
+        <property name="onboard_dq" valueType="integer">10</property>
+        <property name="profinet_ports" valueType="integer">2</property>
+        <property name="program_memory_kb" valueType="integer">125</property>
+        <property name="variant" valueType="string">DC/DC/RLY</property>
+      </properties>
+    </record>
+    <record id="part-6es7217-1ag40-0xb0" category="CPU" productName="CPU 1217C DC/DC/DC" partNumber="6ES7217-1AG40-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 3" verified="false">
+      <summary>150 KB program memory; 10 DI 24 V DC; 4 DI RS422/485; 6 DQ 24 V DC; 4 DQ RS422/485; 2 AI; 2 AQ; 2 PROFINET ports</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">false</property>
+        <property name="onboard_ai" valueType="integer">2</property>
+        <property name="onboard_aq" valueType="integer">2</property>
+        <property name="onboard_di" valueType="integer">14</property>
+        <property name="onboard_dq" valueType="integer">10</property>
+        <property name="profinet_ports" valueType="integer">2</property>
+        <property name="program_memory_kb" valueType="integer">150</property>
+        <property name="variant" valueType="string">DC/DC/DC</property>
+      </properties>
+    </record>
+    <record id="part-3rk7243-2aa30-0xb0" category="Communication Module" productName="CM 1243-2 AS-i Master" partNumber="3RK7243-2AA30-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>AS-Interface master communication module</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="protocol" valueType="string">AS-i</property>
+      </properties>
+    </record>
+    <record id="part-3rk7271-1aa30-0aa0" category="Communication Module" productName="DCM 1271 AS-i Data Coupler" partNumber="3RK7271-1AA30-0AA0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>AS-Interface data coupler</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="protocol" valueType="string">AS-i</property>
+      </properties>
+    </record>
+    <record id="part-6es7241-1ah32-0xb0" category="Communication Module" productName="CM 1241 RS232" partNumber="6ES7241-1AH32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>Serial RS-232 communication module</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="protocol" valueType="string">Serial</property>
+      </properties>
+    </record>
+    <record id="part-6es7241-1ch30-1xb0" category="Communication Module" productName="CB 1241 RS485" partNumber="6ES7241-1CH30-1XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>RS-485 communication board</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="protocol" valueType="string">Serial</property>
+      </properties>
+    </record>
+    <record id="part-6es7241-1ch32-0xb0" category="Communication Module" productName="CM 1241 RS422/485" partNumber="6ES7241-1CH32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>Serial RS-422/485 communication module</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="protocol" valueType="string">Serial</property>
+      </properties>
+    </record>
+    <record id="part-6gk7242-5dx30-0xe0" category="Communication Module" productName="CM 1242-5 PROFIBUS DP-Slave" partNumber="6GK7242-5DX30-0XE0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>PROFIBUS DP slave communication module</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="protocol" valueType="string">PROFIBUS</property>
+      </properties>
+    </record>
+    <record id="part-6gk7242-7kx31-0xe0" category="Communication Module" productName="CP 1242-7 GPRS" partNumber="6GK7242-7KX31-0XE0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>GPRS mobile wireless communication processor</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="protocol" valueType="string">Cellular</property>
+      </properties>
+    </record>
+    <record id="part-6gk7243-1bx30-0xe0" category="Communication Module" productName="CP 1243-1 Security" partNumber="6GK7243-1BX30-0XE0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>Firewall, VPN, DNP3, IEC 60870-5-104, and Telecontrol Basic</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="protocol" valueType="string">Ethernet/Telecontrol</property>
+      </properties>
+    </record>
+    <record id="part-6gk7243-5dx30-0xe0" category="Communication Module" productName="CM 1243-5 PROFIBUS DP-Master" partNumber="6GK7243-5DX30-0XE0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>PROFIBUS DP master communication module</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="protocol" valueType="string">PROFIBUS</property>
+      </properties>
+    </record>
+    <record id="part-6gk7243-7kx30-0xe0" category="Communication Module" productName="CP 1243-7 LTE EU" partNumber="6GK7243-7KX30-0XE0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>LTE communication processor, EU version</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="protocol" valueType="string">Cellular</property>
+      </properties>
+    </record>
+    <record id="part-6gk7243-7sx30-0xe0" category="Communication Module" productName="CP 1243-7 LTE US" partNumber="6GK7243-7SX30-0XE0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>LTE communication processor, US version</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="protocol" valueType="string">Cellular</property>
+      </properties>
+    </record>
+    <record id="part-6gk7243-8rx30-0xe0" category="Communication Module" productName="CP 1243-8 IRC" partNumber="6GK7243-8RX30-0XE0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>SINAUT ST7, DNP3, and IEC 60870-5-104 telecontrol</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="protocol" valueType="string">Ethernet/Telecontrol</property>
+      </properties>
+    </record>
+    <record id="part-6gt2002-0la00" category="Communication Module" productName="RF120C" partNumber="6GT2002-0LA00" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>RFID identification communication module</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="protocol" valueType="string">Identification</property>
+      </properties>
+    </record>
+    <record id="part-6es7221-1bf32-0xb0" category="Digital Signal Module" productName="SM 1221 DI 8" partNumber="6ES7221-1BF32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>8 digital inputs, 24 V DC</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="digital_inputs" valueType="integer">8</property>
+        <property name="digital_outputs" valueType="integer">0</property>
+      </properties>
+    </record>
+    <record id="part-6es7221-1bh32-0xb0" category="Digital Signal Module" productName="SM 1221 DI 16" partNumber="6ES7221-1BH32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>16 digital inputs, 24 V DC</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="digital_inputs" valueType="integer">16</property>
+        <property name="digital_outputs" valueType="integer">0</property>
+      </properties>
+    </record>
+    <record id="part-6es7222-1bf32-0xb0" category="Digital Signal Module" productName="SM 1222 DQ 8 transistor" partNumber="6ES7222-1BF32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>8 digital outputs, 24 V DC, 0.5 A</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="digital_inputs" valueType="integer">0</property>
+        <property name="digital_outputs" valueType="integer">8</property>
+      </properties>
+    </record>
+    <record id="part-6es7222-1bh32-0xb0" category="Digital Signal Module" productName="SM 1222 DQ 16 transistor" partNumber="6ES7222-1BH32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>16 digital outputs, 24 V DC, 0.5 A</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="digital_inputs" valueType="integer">0</property>
+        <property name="digital_outputs" valueType="integer">16</property>
+      </properties>
+    </record>
+    <record id="part-6es7222-1hf32-0xb0" category="Digital Signal Module" productName="SM 1222 DQ 8 relay" partNumber="6ES7222-1HF32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>8 relay outputs, 30 V DC/250 V AC, 2 A</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="digital_inputs" valueType="integer">0</property>
+        <property name="digital_outputs" valueType="integer">8</property>
+      </properties>
+    </record>
+    <record id="part-6es7222-1hh32-0xb0" category="Digital Signal Module" productName="SM 1222 DQ 16 relay" partNumber="6ES7222-1HH32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>16 relay outputs, 30 V DC/250 V AC, 2 A</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="digital_inputs" valueType="integer">0</property>
+        <property name="digital_outputs" valueType="integer">16</property>
+      </properties>
+    </record>
+    <record id="part-6es7222-1xf32-0xb0" category="Digital Signal Module" productName="SM 1222 DQ 8 switchable relay" partNumber="6ES7222-1XF32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>8 switchable relay outputs, 30 V DC/250 V AC, 2 A</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="digital_inputs" valueType="integer">0</property>
+        <property name="digital_outputs" valueType="integer">8</property>
+      </properties>
+    </record>
+    <record id="part-6es7223-1bh32-0xb0" category="Digital Signal Module" productName="SM 1223 DI8/DQ8 transistor" partNumber="6ES7223-1BH32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>8 DI 24 V DC and 8 DQ 24 V DC, 0.5 A</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="digital_inputs" valueType="integer">8</property>
+        <property name="digital_outputs" valueType="integer">8</property>
+      </properties>
+    </record>
+    <record id="part-6es7223-1bl32-0xb0" category="Digital Signal Module" productName="SM 1223 DI16/DQ16 transistor" partNumber="6ES7223-1BL32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>16 DI 24 V DC and 16 DQ 24 V DC, 0.5 A</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="digital_inputs" valueType="integer">16</property>
+        <property name="digital_outputs" valueType="integer">16</property>
+      </properties>
+    </record>
+    <record id="part-6es7223-1ph32-0xb0" category="Digital Signal Module" productName="SM 1223 DI8/DQ8 relay" partNumber="6ES7223-1PH32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>8 DI 24 V DC and 8 relay DQ, 2 A</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="digital_inputs" valueType="integer">8</property>
+        <property name="digital_outputs" valueType="integer">8</property>
+      </properties>
+    </record>
+    <record id="part-6es7223-1pl32-0xb0" category="Digital Signal Module" productName="SM 1223 DI16/DQ16 relay" partNumber="6ES7223-1PL32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>16 DI 24 V DC and 16 relay DQ, 2 A</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="digital_inputs" valueType="integer">16</property>
+        <property name="digital_outputs" valueType="integer">16</property>
+      </properties>
+    </record>
+    <record id="part-6es7223-1qh32-0xb0" category="Digital Signal Module" productName="SM 1223 DI8 AC/DQ8 relay" partNumber="6ES7223-1QH32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>8 DI 120/250 V AC and 8 relay DQ, 2 A</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="digital_inputs" valueType="integer">8</property>
+        <property name="digital_outputs" valueType="integer">8</property>
+      </properties>
+    </record>
+    <record id="part-6es7822-0aa00-0yl0" category="Engineering Software" productName="STEP 7 Basic Software Update Service DVD" partNumber="6ES7822-0AA00-0YL0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>Software Update Service, DVD.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7822-0aa05-0ya5" category="Engineering Software" productName="STEP 7 Basic V15 DVD" partNumber="6ES7822-0AA05-0YA5" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>TIA Portal STEP 7 Basic V15 DVD license.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7822-0aa05-0ye5" category="Engineering Software" productName="STEP 7 Basic V11-V14 to V15 Upgrade DVD" partNumber="6ES7822-0AA05-0YE5" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>Upgrade license, DVD.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7822-0ae00-0yy0" category="Engineering Software" productName="STEP 7 Basic Software Update Service Download" partNumber="6ES7822-0AE00-0YY0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>Software Update Service, download.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7822-0ae05-0ya5" category="Engineering Software" productName="STEP 7 Basic V15 Download" partNumber="6ES7822-0AE05-0YA5" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>TIA Portal STEP 7 Basic V15 download license.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7822-0ae05-0ye5" category="Engineering Software" productName="STEP 7 Basic V11-V14 to V15 Upgrade Download" partNumber="6ES7822-0AE05-0YE5" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>Upgrade license, download.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7833-1fb15-0ya5" category="Engineering Software" productName="STEP 7 Safety Basic V15 DVD" partNumber="6ES7833-1FB15-0YA5" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>Safety engineering software, DVD.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7833-1fb15-0ye5" category="Engineering Software" productName="STEP 7 Safety Basic V13 SP1-V14 to V15 Upgrade DVD" partNumber="6ES7833-1FB15-0YE5" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>Safety software upgrade, DVD.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7833-1fb15-0yh5" category="Engineering Software" productName="STEP 7 Safety Basic V15 Download" partNumber="6ES7833-1FB15-0YH5" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>Safety engineering software, download.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7833-1fb15-0yk5" category="Engineering Software" productName="STEP 7 Safety Basic V13 SP1-V14 to V15 Upgrade Download" partNumber="6ES7833-1FB15-0YK5" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>Safety software upgrade, download.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7226-6ba32-0xb0" category="Fail-safe Signal Module" productName="SM 1226 F-DI 16" partNumber="6ES7226-6BA32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>16 fail-safe digital inputs, 24 V DC</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">true</property>
+        <property name="fail_safe_inputs" valueType="integer">16</property>
+        <property name="fail_safe_outputs" valueType="integer">0</property>
+      </properties>
+    </record>
+    <record id="part-6es7226-6da32-0xb0" category="Fail-safe Signal Module" productName="SM 1226 F-DQ 4" partNumber="6ES7226-6DA32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>4 fail-safe digital outputs, 2 A, 24 V DC</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">true</property>
+        <property name="fail_safe_inputs" valueType="integer">0</property>
+        <property name="fail_safe_outputs" valueType="integer">4</property>
+      </properties>
+    </record>
+    <record id="part-6es7226-6ra32-0xb0" category="Fail-safe Signal Module" productName="SM 1226 F-DQ relay 2" partNumber="6ES7226-6RA32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>2 fail-safe relay outputs, 5 A, 30 V DC/250 V AC</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="fail_safe" valueType="boolean">true</property>
+        <property name="fail_safe_inputs" valueType="integer">0</property>
+        <property name="fail_safe_outputs" valueType="integer">2</property>
+      </properties>
+    </record>
+    <record id="part-6av2123-2db03-0ax0" category="HMI" productName="KTP400 Basic Color" partNumber="6AV2123-2DB03-0AX0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 6" verified="false">
+      <summary>4-inch widescreen TFT touch HMI with push buttons, 65,536 colors.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="display_size" valueType="string">4 in</property>
+      </properties>
+    </record>
+    <record id="part-6av2123-2gb03-0ax0" category="HMI" productName="KTP700 Basic Color" partNumber="6AV2123-2GB03-0AX0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 6" verified="false">
+      <summary>7-inch widescreen TFT touch HMI with push buttons, 65,536 colors.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="display_size" valueType="string">7 in</property>
+      </properties>
+    </record>
+    <record id="part-6av2123-2jb03-0ax0" category="HMI" productName="KTP900 Basic Color" partNumber="6AV2123-2JB03-0AX0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 6" verified="false">
+      <summary>9-inch widescreen TFT touch HMI with push buttons, 65,536 colors.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="display_size" valueType="string">9 in</property>
+      </properties>
+    </record>
+    <record id="part-6av2123-2mb03-0ax0" category="HMI" productName="KTP1200 Basic Color" partNumber="6AV2123-2MB03-0AX0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 6" verified="false">
+      <summary>12-inch widescreen TFT touch HMI with push buttons, 65,536 colors.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="display_size" valueType="string">12 in</property>
+      </properties>
+    </record>
+    <record id="part-6av6647-0ah11-3ax0" category="HMI" productName="KP300 Basic Mono" partNumber="6AV6647-0AH11-3AX0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 6" verified="false">
+      <summary>3-inch FSTN monochrome HMI with push buttons and four-color backlight.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="display_size" valueType="string">3 in</property>
+      </properties>
+    </record>
+    <record id="part-6es7954-8lc02-0aa0" category="Memory Card" productName="SIMATIC Memory Card 4 MB" partNumber="6ES7954-8LC02-0AA0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 6" verified="false">
+      <summary>SIMATIC memory card, 4 MB.</summary>
+      <properties>
+        <property name="capacity" valueType="string">4 MB</property>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7954-8le03-0aa0" category="Memory Card" productName="SIMATIC Memory Card 12 MB" partNumber="6ES7954-8LE03-0AA0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 6" verified="false">
+      <summary>SIMATIC memory card, 12 MB.</summary>
+      <properties>
+        <property name="capacity" valueType="string">12 MB</property>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7954-8lf03-0aa0" category="Memory Card" productName="SIMATIC Memory Card 24 MB" partNumber="6ES7954-8LF03-0AA0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 6" verified="false">
+      <summary>SIMATIC memory card, 24 MB.</summary>
+      <properties>
+        <property name="capacity" valueType="string">24 MB</property>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7954-8ll03-0aa0" category="Memory Card" productName="SIMATIC Memory Card 256 MB" partNumber="6ES7954-8LL03-0AA0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 6" verified="false">
+      <summary>SIMATIC memory card, 256 MB.</summary>
+      <properties>
+        <property name="capacity" valueType="string">256 MB</property>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7954-8lp02-0aa0" category="Memory Card" productName="SIMATIC Memory Card 2 GB" partNumber="6ES7954-8LP02-0AA0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 6" verified="false">
+      <summary>SIMATIC memory card, 2 GB.</summary>
+      <properties>
+        <property name="capacity" valueType="string">2 GB</property>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7954-8lt03-0aa0" category="Memory Card" productName="SIMATIC Memory Card 32 GB" partNumber="6ES7954-8LT03-0AA0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 6" verified="false">
+      <summary>SIMATIC memory card, 32 GB.</summary>
+      <properties>
+        <property name="capacity" valueType="string">32 GB</property>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6ep1332-1sh71" category="Power Supply" productName="PM 1207" partNumber="6EP1332-1SH71" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 6" verified="false">
+      <summary>SIMATIC S7-1200 PM 1207 power supply.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7221-3ad30-0xb0" category="Signal Board" productName="SB 1221 DI 4 5 V high speed" partNumber="6ES7221-3AD30-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>4 digital inputs, 5 V DC, 200 kHz</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="signal_type" valueType="string">Digital</property>
+      </properties>
+    </record>
+    <record id="part-6es7221-3bd30-0xb0" category="Signal Board" productName="SB 1221 DI 4 24 V high speed" partNumber="6ES7221-3BD30-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>4 digital inputs, 24 V DC, 200 kHz</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="signal_type" valueType="string">Digital</property>
+      </properties>
+    </record>
+    <record id="part-6es7222-1ad30-0xb0" category="Signal Board" productName="SB 1222 DQ 4 5 V high speed" partNumber="6ES7222-1AD30-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>4 digital outputs, 5 V DC, 0.1 A, 200 kHz</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="signal_type" valueType="string">Digital</property>
+      </properties>
+    </record>
+    <record id="part-6es7222-1bd30-0xb0" category="Signal Board" productName="SB 1222 DQ 4 24 V high speed" partNumber="6ES7222-1BD30-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>4 digital outputs, 24 V DC, 0.1 A, 200 kHz</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="signal_type" valueType="string">Digital</property>
+      </properties>
+    </record>
+    <record id="part-6es7223-0bd30-0xb0" category="Signal Board" productName="SB 1223 DI2/DQ2 24 V" partNumber="6ES7223-0BD30-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>2 DI and 2 DQ, 24 V DC, 0.5 A</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="signal_type" valueType="string">Digital</property>
+      </properties>
+    </record>
+    <record id="part-6es7223-3ad30-0xb0" category="Signal Board" productName="SB 1223 DI2/DQ2 5 V high speed" partNumber="6ES7223-3AD30-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>2 DI and 2 DQ, 5 V DC, 0.1 A, 200 kHz</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="signal_type" valueType="string">Digital</property>
+      </properties>
+    </record>
+    <record id="part-6es7223-3bd30-0xb0" category="Signal Board" productName="SB 1223 DI2/DQ2 24 V high speed" partNumber="6ES7223-3BD30-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>2 DI and 2 DQ, 24 V DC, 0.1 A, 200 kHz</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="signal_type" valueType="string">Digital</property>
+      </properties>
+    </record>
+    <record id="part-6es7231-4ha30-0xb0" category="Signal Board" productName="SB 1231 AI 1" partNumber="6ES7231-4HA30-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>1 analog input, 12-bit; voltage or 0-20 mA</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="signal_type" valueType="string">Analog</property>
+      </properties>
+    </record>
+    <record id="part-6es7231-5pa30-0xb0" category="Signal Board" productName="SB 1231 RTD AI 1" partNumber="6ES7231-5PA30-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>1 RTD input, 16-bit, platinum</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="signal_type" valueType="string">Analog</property>
+      </properties>
+    </record>
+    <record id="part-6es7231-5qa30-0xb0" category="Signal Board" productName="SB 1231 TC AI 1" partNumber="6ES7231-5QA30-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>1 thermocouple input, 16-bit, J/K, ±80 mV</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="signal_type" valueType="string">Analog</property>
+      </properties>
+    </record>
+    <record id="part-6es7232-4ha30-0xb0" category="Signal Board" productName="SB 1232 AQ 1" partNumber="6ES7232-4HA30-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>1 analog output, 12-bit; ±10 V or 0-20 mA</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+        <property name="signal_type" valueType="string">Analog</property>
+      </properties>
+    </record>
+    <record id="part-6av6651-7da01-3aa4" category="Starter Kit" productName="S7-1200 + KTP700 Basic Panel Starter Kit" partNumber="6AV6651-7DA01-3AA4" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>Starter package with S7-1200 and KTP700 Basic panel.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6av6651-7ha01-3aa4" category="Starter Kit" productName="S7-1200 + KP300 Basic Panel Starter Kit" partNumber="6AV6651-7HA01-3AA4" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>Starter package with S7-1200 and KP300 Basic panel.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6av6651-7ka01-3aa4" category="Starter Kit" productName="S7-1200 + KTP400 Basic Panel Starter Kit" partNumber="6AV6651-7KA01-3AA4" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>Starter package with S7-1200 and KTP400 Basic panel.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7212-1bd34-4yb0" category="Starter Kit" productName="SIMATIC S7-1200 Starter Kit" partNumber="6ES7212-1BD34-4YB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>STEP 7 Basic in TIA Portal with CPU 1212C AC/DC/RLY.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7212-1hf41-4yb0" category="Starter Kit" productName="S7-1200 F-CPU Starter Kit" partNumber="6ES7212-1HF41-4YB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 4" verified="false">
+      <summary>Fail-safe starter kit with CPU 1212FC, F-DI, and F-DQ signal module.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7290-6aa30-0xa0" category="System Accessory" productName="Signal Module Extension Cable 2 m" partNumber="6ES7290-6AA30-0XA0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 6" verified="false">
+      <summary>2 m extension cable for signal modules.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7297-0ax30-0xa0" category="System Accessory" productName="Battery Board" partNumber="6ES7297-0AX30-0XA0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 6" verified="false">
+      <summary>Long-term backup of the real-time clock.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6gk7277-1aa10-0aa0" category="System Accessory" productName="CSM 1277 Unmanaged Switch" partNumber="6GK7277-1AA10-0AA0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 6" verified="false">
+      <summary>4-port unmanaged Ethernet switch, 4 RJ45, 10/100 Mbit/s.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6at8007-1aa10-0aa0" category="Technology Module" productName="SM 1281 Condition Monitoring" partNumber="6AT8007-1AA10-0AA0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>Condition-monitoring technology module.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7238-5xa32-0xb0" category="Technology Module" productName="SM 1238 Energy Meter 480 V AC" partNumber="6ES7238-5XA32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>Energy metering technology module for up to 480 V AC.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-6es7278-4bd32-0xb0" category="Technology Module" productName="SM 1278 IO-Link Master" partNumber="6ES7278-4BD32-0XB0" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>IO-Link master technology module.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-7mh4960-2aa01" category="Technology Module" productName="SIWAREX WP231" partNumber="7MH4960-2AA01" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>Platform or hopper scale weighing module.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-7mh4960-4aa01" category="Technology Module" productName="SIWAREX WP241" partNumber="7MH4960-4AA01" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>Belt scale weighing module.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+    <record id="part-7mh4960-6aa01" category="Technology Module" productName="SIWAREX WP251" partNumber="7MH4960-6AA01" sourceId="source-siemens-s7-1200-2017-brochure-catalog" sourceLocator="page 5" verified="false">
+      <summary>Dosing and batching scale weighing module.</summary>
+      <properties>
+        <property name="catalog_year" valueType="integer">2017</property>
+      </properties>
+    </record>
+  </records>
+</equipmentRecords>

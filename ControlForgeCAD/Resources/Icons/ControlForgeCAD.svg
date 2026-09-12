@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <title>ControlForgeCAD</title>
+  <rect x="7" y="7" width="50" height="50" rx="8" fill="#263238" stroke="#90a4ae" stroke-width="3"/>
+  <path d="M18 20h28v24H18z" fill="#eceff1" stroke="#29b6f6" stroke-width="3"/>
+  <path d="M24 16v8m8-8v8m8-8v8M24 40v8m8-8v8m8-8v8" stroke="#ffb300" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="25" cy="32" r="3" fill="#66bb6a"/>
+  <circle cx="39" cy="32" r="3" fill="#ef5350"/>
+</svg>

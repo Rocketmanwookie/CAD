@@ -30,7 +30,8 @@ Implemented starter capabilities include:
 - starter panel/backplate, DIN rail, wire duct, terminal strip, PLC rack, and PLC module objects;
 - CEProject XML export;
 - BOM CSV export; and
-- deterministic starter I/O-list CSV export.
+- deterministic starter I/O-list CSV export; and
+- a neutral XML equipment taxonomy and an explorable 104-record Siemens S7-1200 XML seed.
 
 These are foundation contracts, not yet a complete electrical schematic, automatic hardware-selection, terminal/wire-schedule, or vendor project-generation system. Manufacturer catalog adapters and richer engineering automation remain planned.
 

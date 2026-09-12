@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<equipmentCatalog schemaVersion="0.1.0" catalogId="integracad-equipment">
+  <sources>
+    <source
+      id="plc-workbench-spec-2026-07-23"
+      title="PLC Control Systems Workbench for FreeCAD Project Specification and Documentation Packet"
+      sourceType="project-specification"
+      localPath="/home/egrantjr/Documents/Reference Library/Unsorted - Review Needed/PLC_Workbench_Spec.docx"
+      revision="Draft - Early Planning"
+      retrievedOn="2026-09-11"/>
+  </sources>
+  <equipmentClasses>
+    <equipmentClass id="panel-enclosure" name="Panel or enclosure" category="enclosure" implementationPhase="1-MVP" recordStatus="seed" sourceId="plc-workbench-spec-2026-07-23" sourceLocator="Section 3 - Panel / enclosure layout">
+      <description>Boundary that contains placed controls equipment and supports clearance checking.</description>
+      <capabilities>
+        <capability>Contain components in a parametric panel layout.</capability>
+        <capability>Participate in clearance checking.</capability>
+        <capability>Contribute placed equipment to the bill of materials.</capability>
+      </capabilities>
+      <requiredData>
+        <field name="manufacturer" valueType="string"/>
+        <field name="partNumber" valueType="string"/>
+        <field name="width" valueType="length"/>
+        <field name="height" valueType="length"/>
+        <field name="depth" valueType="length"/>
+        <field name="clearanceEnvelope" valueType="geometry"/>
+      </requiredData>
+      <assets>
+        <asset kind="cad-model" format="STEP or IGES" reviewRequired="true"/>
+        <asset kind="datasheet" format="PDF" reviewRequired="true"/>
+      </assets>
+    </equipmentClass>
+    <equipmentClass id="circuit-breaker" name="Circuit breaker" category="protection" implementationPhase="1-MVP" recordStatus="seed" sourceId="plc-workbench-spec-2026-07-23" sourceLocator="Section 3 - Panel / enclosure layout">
+      <description>Protective component placed inside a panel or enclosure.</description>
+      <capabilities>
+        <capability>Participate in panel layout and clearance checking.</capability>
+        <capability>Appear in schematics and the generated bill of materials.</capability>
+      </capabilities>
+      <requiredData>
+        <field name="manufacturer" valueType="string"/>
+        <field name="partNumber" valueType="string"/>
+        <field name="poles" valueType="integer"/>
+        <field name="currentRating" valueType="current"/>
+        <field name="voltageRating" valueType="voltage"/>
+      </requiredData>
+      <assets>
+        <asset kind="cad-model" format="STEP or IGES" reviewRequired="true"/>
+        <asset kind="datasheet" format="PDF" reviewRequired="true"/>
+      </assets>
+    </equipmentClass>
+    <equipmentClass id="terminal-block" name="Terminal block" category="wiring" implementationPhase="1-MVP" recordStatus="seed" sourceId="plc-workbench-spec-2026-07-23" sourceLocator="Section 3 - Panel / enclosure layout and I/O mapping">
+      <description>Panel component that connects PLC points and field wiring to physical terminals.</description>
+      <capabilities>
+        <capability>Link an I/O point to a physical terminal.</capability>
+        <capability>Link physical wiring to schematic symbols.</capability>
+        <capability>Participate in panel layout and the bill of materials.</capability>
+      </capabilities>
+      <requiredData>
+        <field name="manufacturer" valueType="string"/>
+        <field name="partNumber" valueType="string"/>
+        <field name="terminalCount" valueType="integer"/>
+        <field name="wireRange" valueType="string"/>
+      </requiredData>
+      <assets>
+        <asset kind="cad-model" format="STEP or IGES" reviewRequired="true"/>
+        <asset kind="datasheet" format="PDF" reviewRequired="true"/>
+      </assets>
+    </equipmentClass>
+    <equipmentClass id="plc-chassis" name="PLC chassis" category="plc" implementationPhase="1-MVP" recordStatus="seed" sourceId="plc-workbench-spec-2026-07-23" sourceLocator="Section 3 - Panel / enclosure layout">
+      <description>Physical PLC mounting assembly placed in the panel model.</description>
+      <capabilities>
+        <capability>Contain or mount PLC modules.</capability>
+        <capability>Participate in panel layout and clearance checking.</capability>
+        <capability>Contribute placed hardware to the bill of materials.</capability>
+      </capabilities>
+      <requiredData>
+        <field name="manufacturer" valueType="string"/>
+        <field name="productLine" valueType="string"/>
+        <field name="partNumber" valueType="string"/>
+        <field name="slotCount" valueType="integer"/>
+      </requiredData>
+      <assets>
+        <asset kind="cad-model" format="STEP or IGES" reviewRequired="true"/>
+        <asset kind="datasheet" format="PDF" reviewRequired="true"/>
+      </assets>
+    </equipmentClass>
+    <equipmentClass id="plc-module" name="PLC module" category="plc" implementationPhase="1-MVP" recordStatus="seed" sourceId="plc-workbench-spec-2026-07-23" sourceLocator="Sections 3 and 6 - PLC modules and bundled part library">
+      <description>PLC CPU, I/O, communications, or power module represented in the panel, I/O map, schematic, and bill of materials.</description>
+      <capabilities>
+        <capability>Expose PLC tag and address points for I/O mapping.</capability>
+        <capability>Link I/O points to terminals and schematic symbols.</capability>
+        <capability>Participate in panel layout and the bill of materials.</capability>
+      </capabilities>
+      <requiredData>
+        <field name="manufacturer" valueType="string" required="true"/>
+        <field name="productLine" valueType="string" required="true"/>
+        <field name="partNumber" valueType="string" required="true"/>
+        <field name="moduleType" valueType="enum" required="true"/>
+        <field name="ioPoints" valueType="list"/>
+      </requiredData>
+      <assets>
+        <asset kind="cad-model" format="STEP or IGES" reviewRequired="true"/>
+        <asset kind="datasheet" format="PDF" reviewRequired="true"/>
+      </assets>
+    </equipmentClass>
+    <equipmentClass id="control-relay" name="Control relay" category="control" implementationPhase="1-MVP" recordStatus="seed" sourceId="plc-workbench-spec-2026-07-23" sourceLocator="Section 3 - Panel / enclosure layout">
+      <description>Control component placed in the panel and represented in the schematic.</description>
+      <capabilities>
+        <capability>Participate in panel layout and clearance checking.</capability>
+        <capability>Appear in control-circuit schematics and the bill of materials.</capability>
+      </capabilities>
+      <requiredData>
+        <field name="manufacturer" valueType="string"/>
+        <field name="partNumber" valueType="string"/>
+        <field name="coilVoltage" valueType="voltage"/>
+        <field name="contactConfiguration" valueType="string"/>
+      </requiredData>
+      <assets>
+        <asset kind="cad-model" format="STEP or IGES" reviewRequired="true"/>
+        <asset kind="datasheet" format="PDF" reviewRequired="true"/>
+      </assets>
+    </equipmentClass>
+    <equipmentClass id="cable-conduit" name="Cable or conduit" category="routing" implementationPhase="2" recordStatus="concept" sourceId="plc-workbench-spec-2026-07-23" sourceLocator="Section 3 - 3D cable routing / conduit design">
+      <description>Parametric route between components with planned length and fill calculations.</description>
+      <capabilities>
+        <capability>Route between equipment connection points.</capability>
+        <capability>Calculate route length.</capability>
+        <capability>Support future conduit fill calculations.</capability>
+      </capabilities>
+      <requiredData>
+        <field name="route" valueType="geometry"/>
+        <field name="length" valueType="length"/>
+        <field name="crossSection" valueType="area"/>
+        <field name="fillLimit" valueType="percentage"/>
+      </requiredData>
+    </equipmentClass>
+  </equipmentClasses>
+  <linkedCatalogs>
+    <catalog id="siemens-s7-1200-records" kind="equipment-records" path="siemens_s7_1200_2017.xml" schemaPath="../../../schemas/equipment_records_v0_1.xsd"/>
+    <catalog id="plc-hardware-catalog" kind="plc-hardware" path="plc_catalog.xml" schemaPath="../../../schemas/plc_hardware_catalog_v0_1.xsd"/>
+    <catalog id="panel-hardware-catalog" kind="panel-hardware" path="panel_catalog.xml" schemaPath="../../../schemas/panel_hardware_catalog_v0_1.xsd"/>
+  </linkedCatalogs>
+</equipmentCatalog>

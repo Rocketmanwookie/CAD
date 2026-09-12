@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="equipmentCatalog">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="sources" type="sourcesType"/>
+        <xs:element name="equipmentClasses" type="equipmentClassesType"/>
+        <xs:element name="linkedCatalogs" type="linkedCatalogsType" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="schemaVersion" type="xs:string" use="required"/>
+      <xs:attribute name="catalogId" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="sourcesType">
+    <xs:sequence>
+      <xs:element name="source" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="id" type="xs:ID" use="required"/>
+          <xs:attribute name="title" type="xs:string" use="required"/>
+          <xs:attribute name="sourceType" type="xs:string" use="required"/>
+          <xs:attribute name="localPath" type="xs:string"/>
+          <xs:attribute name="url" type="xs:anyURI"/>
+          <xs:attribute name="revision" type="xs:string"/>
+          <xs:attribute name="retrievedOn" type="xs:date"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="equipmentClassesType">
+    <xs:sequence>
+      <xs:element name="equipmentClass" type="equipmentClassType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="equipmentClassType">
+    <xs:sequence>
+      <xs:element name="description" type="xs:string"/>
+      <xs:element name="capabilities" type="capabilitiesType" minOccurs="0"/>
+      <xs:element name="requiredData" type="fieldListType" minOccurs="0"/>
+      <xs:element name="assets" type="assetListType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="category" type="xs:string" use="required"/>
+    <xs:attribute name="implementationPhase" type="xs:string" use="required"/>
+    <xs:attribute name="recordStatus" type="recordStatusType" use="required"/>
+    <xs:attribute name="sourceId" type="xs:IDREF" use="required"/>
+    <xs:attribute name="sourceLocator" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="capabilitiesType">
+    <xs:sequence>
+      <xs:element name="capability" type="xs:string" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="fieldListType">
+    <xs:sequence>
+      <xs:element name="field" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="name" type="xs:string" use="required"/>
+          <xs:attribute name="valueType" type="xs:string" use="required"/>
+          <xs:attribute name="required" type="xs:boolean" default="false"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="assetListType">
+    <xs:sequence>
+      <xs:element name="asset" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="kind" type="xs:string" use="required"/>
+          <xs:attribute name="format" type="xs:string"/>
+          <xs:attribute name="reviewRequired" type="xs:boolean" default="true"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="linkedCatalogsType">
+    <xs:sequence>
+      <xs:element name="catalog" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="id" type="xs:ID" use="required"/>
+          <xs:attribute name="kind" type="xs:string" use="required"/>
+          <xs:attribute name="path" type="xs:string" use="required"/>
+          <xs:attribute name="schemaPath" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="recordStatusType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="concept"/>
+      <xs:enumeration value="seed"/>
+      <xs:enumeration value="verified"/>
+      <xs:enumeration value="deprecated"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

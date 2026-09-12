@@ -9,6 +9,7 @@ except Exception:  # pragma: no cover
     Gui = None
 
 from controls_wb.gui.io_signal import show_io_signal_dialog
+from controls_wb.freecad_transactions import document_transaction
 
 
 class AddIOSignalCommand:
@@ -23,11 +24,12 @@ class AddIOSignalCommand:
             App.newDocument("ControlsProject")
         try:
             parent = Gui.getMainWindow() if Gui is not None and hasattr(Gui, "getMainWindow") else None
-            show_io_signal_dialog(App.ActiveDocument, parent=parent, console=App.Console)
+            with document_transaction(App.ActiveDocument, "Add I/O signal"):
+                show_io_signal_dialog(App.ActiveDocument, parent=parent, console=App.Console)
+                App.ActiveDocument.recompute()
         except RuntimeError as exc:
             App.Console.PrintWarning(f"{exc} I/O signal was not added.\n")
             return
-        App.ActiveDocument.recompute()
 
     def IsActive(self):
         return App is not None

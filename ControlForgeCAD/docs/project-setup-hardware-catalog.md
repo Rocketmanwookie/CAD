@@ -12,6 +12,50 @@ Starter panel hardware placeholder data is loaded from
 The panel hardware XML schema is
 [`schemas/panel_hardware_catalog_v0_1.xsd`](../schemas/panel_hardware_catalog_v0_1.xsd).
 
+## Neutral equipment catalog and Siemens record database
+
+The extensible equipment entry point is
+[`controls_wb/resources/hardware/equipment_catalog.xml`](../controls_wb/resources/hardware/equipment_catalog.xml),
+validated by
+[`schemas/equipment_catalog_v0_1.xsd`](../schemas/equipment_catalog_v0_1.xsd).
+It defines stable equipment classes, the data expected for future manufacturer
+records, source locators, asset requirements, implementation phase, and record
+status. The seed classes come from the PLC Control Systems Workbench planning
+specification and include panels/enclosures, circuit breakers, terminal blocks,
+PLC chassis, PLC modules, control relays, and cable/conduit routes.
+
+The first normalized vendor record database is
+[`controls_wb/resources/hardware/siemens_s7_1200_2017.xml`](../controls_wb/resources/hardware/siemens_s7_1200_2017.xml),
+validated by
+[`schemas/equipment_records_v0_1.xsd`](../schemas/equipment_records_v0_1.xsd).
+It contains 104 Siemens SIMATIC S7-1200 records across 13 categories from the
+available 2017 brochure-derived JSON snapshot. It also records 20 TIA Portal V20
+data types, checksummed family-level STEP and SLDPRT assets, duplicate source
+aliases, and a checksummed inventory of the supplied Siemens manuals, datasheets,
+schemas, adapter code, and reference files.
+
+Records imported from the brochure snapshot remain `verified="false"` until an
+engineer audits the normalized value against its cited source page or a current
+manufacturer document. A file's presence in the source inventory is provenance,
+not proof that every claim in the file has been incorporated or independently
+verified.
+
+Explore the database from the repository root:
+
+```bash
+python3 scripts/explore_equipment_catalog.py
+python3 scripts/explore_equipment_catalog.py --categories
+python3 scripts/explore_equipment_catalog.py --search "fail-safe"
+python3 scripts/explore_equipment_catalog.py --part 6ES7211-1AE40-0XB0
+```
+
+Regenerate normalized vendor XML with
+[`scripts/import_equipment_json.py`](../../scripts/import_equipment_json.py).
+The importer preserves otherwise unknown vendor fields as typed property records,
+sorts output deterministically, rejects duplicate part numbers, hashes every
+source and asset, and supports additional reference files without changing the
+record schema.
+
 The Project Intake dialog uses this catalog for PLC make, line, CPU, compatible Ethernet/power choices, and the I/O expansion planning popup.
 
 ## Siemens S7-1200 verified seed

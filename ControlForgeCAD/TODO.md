@@ -112,6 +112,8 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [x] Seed hardware catalog CADbase references for Siemens S7-1200 CPU STEP/SLDPRT files with local path and checksum metadata.
 - [x] Apply selected PLC CPU catalog metadata to the starter PLC layout placeholder.
 - [x] Add an approval-gated Siemens CAx asset-request manifest for selected seeded PLC parts; it records official sources but does not automate portal downloads.
+- [x] Add a neutral XML equipment taxonomy and a source-traceable Siemens S7-1200 record seed that can grow without making vendor fields mandatory in the core domain.
+- [ ] Audit the imported Siemens S7-1200 record seed against current manufacturer documents and mark individual records verified only after review.
 - [ ] Add adapter for selected device to CADbase part reference.
 - [ ] Add policy for official manufacturer sources and redistribution limits.
 - [ ] Add manual upload path when download is unavailable or restricted.
@@ -128,6 +130,10 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Support estimated, quoted, approved, and superseded cost statuses.
 
 ### Phase 6 - PLC/I/O controls package
+
+**Immediate MVP path:** finish the rack/module/channel model, typed terminal and
+wire graph, persistent 3D connection ports, and coordinated exports before
+starting digital-twin runtime work.
 
 - [x] Add PLC platform requirement fields.
 - [ ] Add rack/slot/module/channel model.
@@ -169,8 +175,14 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Create companion concept: `IntegraTwin Open` or `Digital Twin / Simulation`.
 - [ ] Keep digital twin simulation out of the initial core workbench.
 - [ ] Define links from CEProject to geometry, I/O state, simulated sensors, actuators, states, sequences, faults, and HMI behavior.
-- [ ] Research AutomationML, OPC UA NodeSet2, FMI/FMU, ROS 2, Gazebo/Ignition, and discrete-event simulation interfaces.
-- [ ] Add a future simulator boundary document.
+- [x] Select ROS/ROS 2 integration as the future digital-twin runtime boundary.
+- [ ] Define CEProject-to-ROS 2 identity mapping for devices, I/O, terminals,
+  geometry, state, commands, alarms, and simulation time.
+- [ ] Define ROS 2 messages, services, actions, or adapters without making ROS a
+  dependency of the core FreeCAD workbench.
+- [ ] Evaluate Gazebo and other ROS-compatible simulators after the electrical
+  graph and working MVP are stable.
+- [ ] Add a future ROS/ROS 2 simulator boundary document.
 
 ### Phase 10 - Education docs for new controls engineers
 

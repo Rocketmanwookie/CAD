@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package format="1">
+<package format="1" xmlns="https://wiki.freecad.org/Package_Metadata">
   <name>ControlForgeCAD</name>
-  <description>FreeCAD controls engineering workbench seed.</description>
+  <description>Controls-engineering intake, validation, traceability, and CAD handoff tools.</description>
   <version>0.1.0-dev</version>
-  <date>2026-06-21</date>
+  <date>2026-09-12</date>
   <maintainer>Elliott Grant</maintainer>
   <license file="LICENSE">MIT</license>
+  <icon>Resources/Icons/ControlForgeCAD.svg</icon>
+  <url type="repository" branch="controlforgecad">https://github.com/Rocketmanwookie/CAD</url>
+  <url type="bugtracker">https://github.com/Rocketmanwookie/CAD/issues</url>
+  <url type="readme">https://github.com/Rocketmanwookie/CAD/blob/controlforgecad/ControlForgeCAD/README.md</url>
+  <freecadmin>1.0.0</freecadmin>
+  <tag>automation</tag>
+  <tag>controls</tag>
+  <tag>plc</tag>
+  <tag>electrical</tag>
+  <tag>xml</tag>
   <content>
     <workbench>
       <classname>ControlsEngineeringWorkbench</classname>

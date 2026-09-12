@@ -64,6 +64,14 @@ Documentation distinguishes:
 
 Higher-level user-interface code may depend on application and domain services. Domain modules must not depend on GUI widgets. Exporters may depend on domain contracts but should not own project-state mutation.
 
+### 4.6 Working-first and deferred ROS boundary
+
+The near-term product is a usable electrical/PLC engineering workflow. Digital
+twin execution is deliberately deferred. ROS/ROS 2 is the selected future
+runtime integration boundary, but ROS packages must not become dependencies of
+the core domain, FreeCAD document model, or ordinary exports. A versioned adapter
+will later map stable CEProject identities to ROS interfaces and simulation state.
+
 ## 5. Layered architecture
 
 ```mermaid
@@ -386,6 +394,8 @@ A controls-domain behavior that can be expressed without FreeCAD geometry or UI 
 | CEProject XML export | Implemented, starter scope | Current project/intake representation |
 | I/O-list CSV export | Implemented, starter scope | Deterministic starter records |
 | Missing-data CSV export | Implemented, starter scope | One row per required intake fact |
+| Neutral equipment catalog | Implemented, starter scope | XML taxonomy, provenance, required-data contracts, and links to specialized catalogs |
+| Siemens equipment records | Implemented, imported seed | 104 normalized S7-1200 records, typed properties, source-page locators, checksummed references, and read-only exploration CLI |
 | PLC hardware catalog | Implemented, starter scope | XML-backed Siemens S7-1200 planning seed and panel-placeholder metadata |
 | Explicit I/O signal registry | Implemented, starter scope | User-labeled signals with starter tags and addresses |
 | Manufacturer catalog adapters | Planned | Neutral adapter boundary required |
@@ -401,7 +411,7 @@ A controls-domain behavior that can be expressed without FreeCAD geometry or UI 
 2. Formalize neutral hardware, device, signal, terminal, and connection identifiers.
 3. Separate normalized domain snapshots from FreeCAD property-storage details.
 4. Expand deterministic I/O addressing and terminal mapping.
-5. Introduce vendor catalog adapters behind neutral interfaces.
+5. Audit imported Siemens records against current manufacturer sources and introduce additional vendor adapters behind neutral interfaces.
 6. Add architecture decision records for consequential schema, persistence, and integration choices.
 
 ## 14. Documentation governance

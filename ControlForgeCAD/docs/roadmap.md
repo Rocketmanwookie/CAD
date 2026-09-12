@@ -8,11 +8,33 @@ The seed, intake/validation, and early controls-package milestones are underway 
 
 ## North star
 
+The detailed AutoCAD Electrical comparison and acceptance gates for true
+feature parity are maintained in
+[`autocad-electrical-plc-parity-audit.md`](autocad-electrical-plc-parity-audit.md).
+Until those gates pass, project material must describe the workbench as a
+controls data/workflow foundation rather than an AutoCAD Electrical replacement
+or a complete digital twin.
+
 Less havoc = more money.
 
 The project should reduce costly controls-engineering rework by making missing data visible, capturing facts once, validating assumptions early, and feeding existing CAD/BOM/BIM/PLC resources instead of duplicating them.
 
 ## Release direction
+
+### Working MVP fast lane
+
+The immediate objective is one end-to-end usable controls workflow, not broad
+feature parity. The MVP is complete when a user can:
+
+1. select a catalog-backed PLC and modules;
+2. create/edit labeled I/O with rack, slot, channel, and address assignments;
+3. map each I/O point through a typed terminal and wire to a field device;
+4. see those devices and connection points as persistent FreeCAD objects; and
+5. export a validated I/O list, terminal plan, connection schedule, and BOM from
+   the same project state.
+
+Ladder drawing generation follows this vertical slice. HMI authoring, automatic
+3D routing, broad vendor coverage, and runtime simulation do not block the MVP.
 
 ### 0.1 - Seed architecture
 
@@ -69,7 +91,10 @@ The project should reduce costly controls-engineering rework by making missing d
 ## Companion workbench roadmap
 
 - HMI / SCADA Design: future workbench for screen requirements, tag dictionaries, alarms, trends, modes, states, and operator interface traceability.
-- Digital Twin / Simulation: future workbench for CAD-to-I/O simulation, process states, sensor behavior, actuator behavior, and runtime data model links.
+- Digital Twin / Simulation: later ROS/ROS 2 integration for CAD-to-I/O
+  simulation, process states, sensor/actuator behavior, faults, and runtime data
+  links. It consumes the stable electrical graph and does not block the working
+  electrical-design MVP.
 
 ## Adapter roadmap
 
@@ -82,7 +107,7 @@ The project should reduce costly controls-engineering rework by making missing d
 | AutomationML / CAEX | automation topology exchange | Medium |
 | OPC UA NodeSet2 | runtime information model | Medium |
 | HMI requirements | future HMI companion input | Medium |
-| Digital twin seed | future simulation companion input | Medium |
+| ROS/ROS 2 digital-twin adapter | future simulation companion input/runtime boundary | Deferred |
 
 ## Development rule
 

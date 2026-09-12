@@ -4,6 +4,7 @@ import importlib
 import sys
 import types
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 from controls_wb.commands.metadata import (
     COMMAND_SPECS,
@@ -68,6 +69,26 @@ def test_freecad_init_files_import_without_freecad():
     assert init_gui_module.Gui is None
 
 
+def test_package_manifest_has_addon_manager_metadata():
+    root = Path(__file__).resolve().parents[1]
+    package = ET.parse(root / "package.xml").getroot()
+    namespace = {"fc": "https://wiki.freecad.org/Package_Metadata"}
+
+    assert package.tag == "{https://wiki.freecad.org/Package_Metadata}package"
+    assert package.findtext("fc:name", namespaces=namespace) == "ControlForgeCAD"
+    assert package.findtext("fc:freecadmin", namespaces=namespace) == "1.0.0"
+    assert package.findtext("fc:content/fc:workbench/fc:classname", namespaces=namespace) == (
+        "ControlsEngineeringWorkbench"
+    )
+    icon = package.findtext("fc:icon", namespaces=namespace)
+    assert icon == "Resources/Icons/ControlForgeCAD.svg"
+    assert (root / icon).is_file()
+
+    repository = package.find("fc:url[@type='repository']", namespace)
+    assert repository is not None
+    assert repository.get("branch") == "controlforgecad"
+
+
 def test_workbench_root_helper_falls_back_to_controls_package_without_file():
     root = workbench_root_from_module_globals({"__spec__": types.SimpleNamespace(origin=None)})
 
@@ -111,6 +132,4 @@ def test_init_gui_initialize_without_file_uses_safe_workbench_root(monkeypatch):
     exec(compile(init_gui_path.read_text(), str(init_gui_path), "exec"), module_globals)
     workbenches[0].Initialize()
 
-    assert icon_paths == [
-        str(init_gui_path.parent / "controls_wb" / "resources" / "icons")
-    ]
+    assert icon_paths == [str(init_gui_path.parent / "Resources" / "Icons")]

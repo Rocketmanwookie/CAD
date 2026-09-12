@@ -8,6 +8,10 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Added
 
+- Added a schema-versioned neutral equipment catalog with source-traceable equipment classes and links to specialized PLC, panel, and vendor-record catalogs.
+- Added a normalized Siemens SIMATIC S7-1200 XML record database containing 104 brochure-derived products across 13 categories, 20 TIA V20 data types, checksummed source aliases, CAD assets, and supplied reference files. Imported claims remain explicitly unverified pending source audit.
+- Added deterministic JSON-to-equipment-XML import and read-only catalog exploration CLIs with category, search, and exact part-number views.
+- Added pure-Python tests for equipment taxonomy loading, linked-catalog resolution, normalized record lookup/search, duplicate rejection, typed property preservation, and source hashing.
 - Established [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) as the architectural source of truth for integraCAD Open, covering system context, layered architecture, component responsibilities, dependency boundaries, object contracts, data flows, extension strategy, testing, operational considerations, and current-versus-planned capabilities. Commit: `6dfeb12`.
 - Added contributor-facing architecture checklists for project fields, FreeCAD document objects, exports, and vendor adapters in [`CONTRIBUTING.md`](CONTRIBUTING.md). Commit: `1a0c985`.
 - Added a README architecture summary, current-capability statement, generated-artifact contract summary, and extension guidance. Commit: `b4c70c0`.
