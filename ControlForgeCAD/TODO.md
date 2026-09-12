@@ -163,6 +163,8 @@ starting digital-twin runtime work.
   schedule projections.
 - [ ] Persist continuous paths on typed FreeCAD objects and in namespace-correct
   CEProject XML with identity/reference validation.
+- [x] Add a standalone namespace-correct, XSD-validated connection-path XML
+  contract with deterministic round trips and semantic continuity validation.
 - [x] Add route-derived wire length, conductor size/color/function/conduit fields
   to the canonical path and wiring-schedule projection.
 - [x] Add profile-driven raceway fill calculation using NEC Chapter 9 Table 1

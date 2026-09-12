@@ -31,6 +31,11 @@ CEProject is not intended to replace existing open standards. It should hold con
 ## Repo tools
 
 - `schemas/ce_project_v0_1.xsd` defines the first draft schema.
+- `schemas/connection_path_v1.xsd` defines the dedicated
+  `https://whrsdaparty.github.io/ceproject/connection-path/1.0` vocabulary for
+  ordered PLC-terminal-to-device-terminal paths, wire metadata, and 3D route
+  points. XSD validates structure; the Python importer additionally validates
+  continuity, roles, identities, and references.
 - `examples/conveyor_demo.ceproject.xml` is the initial demo project.
 - `templates/email/` contains stakeholder request templates.
 - `templates/forms/` contains structured form schema seeds.

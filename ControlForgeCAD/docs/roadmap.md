@@ -70,6 +70,7 @@ Ladder drawing generation follows this vertical slice. HMI authoring, automatic
 - Power interface reference.
 - Terminal/wire source model.
 - Cabinet-side power model.
+- XSD-validated continuous connection-path XML boundary.
 
 ### 0.5 - Documentation and education release
 

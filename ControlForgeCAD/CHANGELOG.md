@@ -28,6 +28,9 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - Profile-driven preliminary raceway sizing with NEC Chapter 9 fill percentages
   and explicit code edition, raceway type, supplied internal areas, and
   unverified status; reserved colors are separated from project conventions.
+- Namespace-correct `ceproject.connection-path/1.0` XML serialization and XSD for
+  continuous terminal/wire paths, including identities, roles, routing points,
+  length fields, conductor data, ordered sequences, and deterministic round trips.
 - Initial repository seed.
 - FreeCAD external workbench bootstrap files: `Init.py` and `InitGui.py`.
 - Draft controls-project data model.

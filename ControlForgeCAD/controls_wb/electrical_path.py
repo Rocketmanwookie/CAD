@@ -6,11 +6,14 @@ from __future__ import annotations
 import json
 import math
 from dataclasses import dataclass
+from xml.etree import ElementTree as ET
 
 from controls_wb.identity import CERoles, is_ce_identity, validate_ce_role
 
 
 PATH_FORMAT = "ceproject.connection-path/1.0"
+PATH_XML_NAMESPACE = "https://whrsdaparty.github.io/ceproject/connection-path/1.0"
+ET.register_namespace("cepath", PATH_XML_NAMESPACE)
 TERMINAL_ROLES = frozenset(
     {
         CERoles.PLC_CHANNEL_TERMINAL,
@@ -224,7 +227,7 @@ def deserialize_connection_path(serialized: str) -> ElectricalConnectionPath:
                     for point in item.get("route", [])
                 ),
                 specified_length_mm=(
-                    float(item["specifiedLengthMm"])
+                    float(_required_xml_attr(item, "specifiedLengthMm", "Wire"))
                     if item.get("specifiedLengthMm") is not None
                     else None
                 ),
@@ -277,3 +280,157 @@ def io_schedule_row(path: ElectricalConnectionPath) -> dict[str, object]:
         "WireTags": ";".join(wire.wire_tag for wire in path.wires),
         "TotalLengthMm": path.total_length_mm,
     }
+
+
+def _xml_tag(name: str) -> str:
+    return f"{{{PATH_XML_NAMESPACE}}}{name}"
+
+
+def connection_path_to_xml(path: ElectricalConnectionPath) -> str:
+    """Serialize one path as deterministic, namespace-correct XML."""
+
+    path.validate()
+    root = ET.Element(
+        _xml_tag("ConnectionPath"),
+        {
+            "format": PATH_FORMAT,
+            "identity": path.identity,
+            "signalIdentity": path.signal_identity,
+            "signalTag": path.signal_tag,
+        },
+    )
+    terminals = ET.SubElement(root, _xml_tag("Terminals"))
+    for sequence, terminal in enumerate(path.terminals):
+        ET.SubElement(
+            terminals,
+            _xml_tag("Terminal"),
+            {
+                "sequence": str(sequence),
+                "identity": terminal.identity,
+                "role": terminal.role,
+                "ownerIdentity": terminal.owner_identity,
+                "designation": terminal.designation,
+                "label": terminal.label,
+            },
+        )
+    wires = ET.SubElement(root, _xml_tag("Wires"))
+    for sequence, wire in enumerate(path.wires):
+        attributes = {
+            "sequence": str(sequence),
+            "identity": wire.identity,
+            "role": CERoles.WIRE,
+            "fromTerminalIdentity": wire.from_terminal_identity,
+            "toTerminalIdentity": wire.to_terminal_identity,
+            "wireTag": wire.wire_tag,
+            "conductorSize": wire.conductor_size,
+            "color": wire.color,
+            "circuitFunction": wire.circuit_function,
+            "conduitIdentity": wire.conduit_identity,
+        }
+        if wire.specified_length_mm is not None:
+            attributes["specifiedLengthMm"] = str(float(wire.specified_length_mm))
+        if wire.routed_length_mm is not None:
+            attributes["routedLengthMm"] = str(float(wire.routed_length_mm))
+        wire_element = ET.SubElement(wires, _xml_tag("Wire"), attributes)
+        if wire.route:
+            route = ET.SubElement(wire_element, _xml_tag("Route"))
+            for sequence_index, point in enumerate(wire.route):
+                ET.SubElement(
+                    route,
+                    _xml_tag("Point"),
+                    {
+                        "sequence": str(sequence_index),
+                        "xMm": str(float(point.x_mm)),
+                        "yMm": str(float(point.y_mm)),
+                        "zMm": str(float(point.z_mm)),
+                    },
+                )
+    tree = ET.ElementTree(root)
+    ET.indent(tree, space="  ")
+    return ET.tostring(root, encoding="unicode", xml_declaration=True, short_empty_elements=True)
+
+
+def connection_path_from_xml(xml_text: str | bytes) -> ElectricalConnectionPath:
+    """Parse the supported namespaced XML contract and validate graph semantics."""
+
+    try:
+        root = ET.fromstring(xml_text)
+    except ET.ParseError as exc:
+        raise ValueError(f"Invalid connection-path XML: {exc}") from exc
+    if root.tag != _xml_tag("ConnectionPath"):
+        raise ValueError(f"Expected namespaced ConnectionPath root, found {root.tag}.")
+    if root.get("format") != PATH_FORMAT:
+        raise ValueError(f"Unsupported connection-path format: {root.get('format')}")
+    terminals_parent = root.find(_xml_tag("Terminals"))
+    wires_parent = root.find(_xml_tag("Wires"))
+    if terminals_parent is None or wires_parent is None:
+        raise ValueError("Connection-path XML requires Terminals and Wires.")
+
+    terminal_elements = list(terminals_parent.findall(_xml_tag("Terminal")))
+    wire_elements = list(wires_parent.findall(_xml_tag("Wire")))
+    _require_contiguous_sequence(terminal_elements, "Terminal")
+    _require_contiguous_sequence(wire_elements, "Wire")
+    terminals = tuple(
+        TerminalEndpoint(
+            identity=_required_xml_attr(item, "identity", "Terminal"),
+            role=_required_xml_attr(item, "role", "Terminal"),
+            owner_identity=_required_xml_attr(item, "ownerIdentity", "Terminal"),
+            designation=_required_xml_attr(item, "designation", "Terminal"),
+            label=item.get("label", ""),
+        )
+        for item in terminal_elements
+    )
+    wires = []
+    for item in wire_elements:
+        if item.get("role") != CERoles.WIRE:
+            raise ValueError(f"Wire requires role {CERoles.WIRE}.")
+        route_element = item.find(_xml_tag("Route"))
+        point_elements = [] if route_element is None else list(route_element.findall(_xml_tag("Point")))
+        _require_contiguous_sequence(point_elements, "Point")
+        wires.append(
+            WireSegment(
+                identity=_required_xml_attr(item, "identity", "Wire"),
+                from_terminal_identity=_required_xml_attr(item, "fromTerminalIdentity", "Wire"),
+                to_terminal_identity=_required_xml_attr(item, "toTerminalIdentity", "Wire"),
+                wire_tag=_required_xml_attr(item, "wireTag", "Wire"),
+                conductor_size=item.get("conductorSize", ""),
+                color=item.get("color", ""),
+                circuit_function=item.get("circuitFunction", ""),
+                conduit_identity=item.get("conduitIdentity", ""),
+                route=tuple(
+                    RoutePoint(
+                        float(_required_xml_attr(point, "xMm", "Point")),
+                        float(_required_xml_attr(point, "yMm", "Point")),
+                        float(_required_xml_attr(point, "zMm", "Point")),
+                    )
+                    for point in point_elements
+                ),
+                specified_length_mm=(
+                    float(_required_xml_attr(item, "specifiedLengthMm", "Wire"))
+                    if item.get("specifiedLengthMm") is not None
+                    else None
+                ),
+            )
+        )
+    path = ElectricalConnectionPath(
+        identity=_required_xml_attr(root, "identity", "ConnectionPath"),
+        signal_identity=_required_xml_attr(root, "signalIdentity", "ConnectionPath"),
+        signal_tag=_required_xml_attr(root, "signalTag", "ConnectionPath"),
+        terminals=terminals,
+        wires=tuple(wires),
+    )
+    path.validate()
+    return path
+
+
+def _required_xml_attr(element: ET.Element, name: str, context: str) -> str:
+    value = element.get(name, "")
+    if not value:
+        raise ValueError(f"{context} requires {name}.")
+    return value
+
+
+def _require_contiguous_sequence(elements: list[ET.Element], context: str) -> None:
+    for expected, element in enumerate(elements):
+        if element.get("sequence") != str(expected):
+            raise ValueError(f"{context} sequence must be contiguous from zero.")

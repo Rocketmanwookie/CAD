@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="https://whrsdaparty.github.io/ceproject/connection-path/1.0"
+           xmlns="https://whrsdaparty.github.io/ceproject/connection-path/1.0"
+           elementFormDefault="qualified">
+  <xs:simpleType name="IdentityType">
+    <xs:restriction base="xs:anyURI">
+      <xs:pattern value="urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="TerminalRoleType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="plc.channel_terminal"/>
+      <xs:enumeration value="electrical.cabinet_terminal"/>
+      <xs:enumeration value="electrical.device_terminal"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="NonNegativeDoubleType">
+    <xs:restriction base="xs:double"><xs:minInclusive value="0"/></xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="PointType">
+    <xs:attribute name="sequence" type="xs:nonNegativeInteger" use="required"/>
+    <xs:attribute name="xMm" type="xs:double" use="required"/>
+    <xs:attribute name="yMm" type="xs:double" use="required"/>
+    <xs:attribute name="zMm" type="xs:double" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="TerminalType">
+    <xs:attribute name="sequence" type="xs:nonNegativeInteger" use="required"/>
+    <xs:attribute name="identity" type="IdentityType" use="required"/>
+    <xs:attribute name="role" type="TerminalRoleType" use="required"/>
+    <xs:attribute name="ownerIdentity" type="IdentityType" use="required"/>
+    <xs:attribute name="designation" type="xs:string" use="required"/>
+    <xs:attribute name="label" type="xs:string"/>
+  </xs:complexType>
+  <xs:complexType name="WireType">
+    <xs:sequence>
+      <xs:element name="Route" minOccurs="0">
+        <xs:complexType><xs:sequence>
+          <xs:element name="Point" type="PointType" minOccurs="2" maxOccurs="unbounded"/>
+        </xs:sequence></xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="sequence" type="xs:nonNegativeInteger" use="required"/>
+    <xs:attribute name="identity" type="IdentityType" use="required"/>
+    <xs:attribute name="role" type="xs:string" use="required" fixed="electrical.wire"/>
+    <xs:attribute name="fromTerminalIdentity" type="IdentityType" use="required"/>
+    <xs:attribute name="toTerminalIdentity" type="IdentityType" use="required"/>
+    <xs:attribute name="wireTag" type="xs:string" use="required"/>
+    <xs:attribute name="conductorSize" type="xs:string"/>
+    <xs:attribute name="color" type="xs:string"/>
+    <xs:attribute name="circuitFunction" type="xs:string"/>
+    <xs:attribute name="conduitIdentity" type="xs:anyURI"/>
+    <xs:attribute name="specifiedLengthMm" type="NonNegativeDoubleType"/>
+    <xs:attribute name="routedLengthMm" type="NonNegativeDoubleType"/>
+  </xs:complexType>
+  <xs:element name="ConnectionPath">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Terminals"><xs:complexType><xs:sequence>
+          <xs:element name="Terminal" type="TerminalType" minOccurs="2" maxOccurs="unbounded"/>
+        </xs:sequence></xs:complexType></xs:element>
+        <xs:element name="Wires"><xs:complexType><xs:sequence>
+          <xs:element name="Wire" type="WireType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence></xs:complexType></xs:element>
+      </xs:sequence>
+      <xs:attribute name="format" type="xs:string" use="required" fixed="ceproject.connection-path/1.0"/>
+      <xs:attribute name="identity" type="IdentityType" use="required"/>
+      <xs:attribute name="signalIdentity" type="IdentityType" use="required"/>
+      <xs:attribute name="signalTag" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

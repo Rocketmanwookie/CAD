@@ -13,6 +13,8 @@ from controls_wb.electrical_path import (
     io_schedule_row,
     serialize_connection_path,
     wiring_schedule_rows,
+    connection_path_from_xml,
+    connection_path_to_xml,
 )
 from controls_wb.identity import CERoles, new_ce_identity
 
@@ -49,6 +51,30 @@ def test_connection_path_is_continuous_and_round_trips_deterministically():
     assert restored == path
     assert serialize_connection_path(restored) == serialized
     assert path.total_length_mm == 155.0
+
+
+def test_connection_path_xml_is_namespace_correct_schema_valid_and_deterministic():
+    lxml = pytest.importorskip("lxml.etree")
+    path = _path()
+    xml_text = connection_path_to_xml(path)
+    schema_path = __import__("pathlib").Path(__file__).resolve().parents[1] / "schemas" / "connection_path_v1.xsd"
+    schema = lxml.XMLSchema(lxml.parse(str(schema_path)))
+
+    schema.assertValid(lxml.fromstring(xml_text.encode("utf-8")))
+    restored = connection_path_from_xml(xml_text)
+
+    assert restored == path
+    assert connection_path_to_xml(restored) == xml_text
+
+
+def test_connection_path_xml_rejects_missing_namespace():
+    xml_text = connection_path_to_xml(_path()).replace(
+        "https://whrsdaparty.github.io/ceproject/connection-path/1.0",
+        "https://example.invalid/not-ceproject",
+    )
+
+    with pytest.raises(ValueError, match="namespaced ConnectionPath"):
+        connection_path_from_xml(xml_text)
 
 
 def test_connection_path_rejects_a_wire_that_skips_ordered_terminal():

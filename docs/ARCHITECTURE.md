@@ -193,6 +193,18 @@ The current BOM is not a complete procurement or ERP integration. Future work ma
 
 Future work may add channel allocation, rack/slot addressing, signal typing, terminal mapping, device associations, safety classification, and vendor-specific import/export formats.
 
+#### Continuous connection-path XML
+
+**Implemented as a standalone boundary contract.** The
+`ceproject.connection-path/1.0` vocabulary serializes the ordered path from a PLC
+channel terminal through wire segments and cabinet terminal levels to a device
+terminal. Its dedicated namespace and XSD cover immutable identities, controlled
+roles, sequence positions, conductor metadata, conduit identity, optional
+specified length, and 3D route points in millimetres. Import additionally applies
+semantic continuity and duplicate-identity validation that XSD alone cannot
+express. Embedding these paths into the next CEProject schema revision and typed
+FreeCAD objects remains pending.
+
 ## 6. Principal object contracts
 
 ### 6.1 `CE_Project`
