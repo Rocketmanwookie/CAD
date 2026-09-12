@@ -18,6 +18,10 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
   Routes are validated as finite polylines, persisted on typed FreeCAD wire
   objects, rendered when Part geometry is available, and used to derive wiring
   and I/O schedule lengths without discarding a separately specified estimate.
+- Added `CE_EditElectricalPath` for transaction-safe correction of a selected
+  path's signal tag, terminal designations, wire metadata, specified lengths,
+  and route geometry. The update boundary rejects identity changes and duplicate
+  signal tags before mutating persisted objects.
 - Added a schema-versioned neutral equipment catalog with source-traceable equipment classes and links to specialized PLC, panel, and vendor-record catalogs.
 - Added a normalized Siemens SIMATIC S7-1200 XML record database containing 104 brochure-derived products across 13 categories, 20 TIA V20 data types, checksummed source aliases, CAD assets, and supplied reference files. Imported claims remain explicitly unverified pending source audit.
 - Added deterministic JSON-to-equipment-XML import and read-only catalog exploration CLIs with category, search, and exact part-number views.
@@ -29,6 +33,9 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Changed
 
+- Defined the FreeCAD Cables workbench as the target physical routing engine;
+  ControlForgeCAD owns electrical semantics and schedules and will link them to
+  Cables route objects, retaining its current Part polyline only as a fallback.
 - Standardized project terminology so **integraCAD Open** identifies the overall project and **ControlForgeCAD** identifies the FreeCAD workbench implementation.
 - Defined the supported dependency direction from FreeCAD UI and adapters toward application services, domain contracts, and deterministic serializers.
 - Documented `CE_Project` as the authoritative interactive project aggregate stored in the FreeCAD document.

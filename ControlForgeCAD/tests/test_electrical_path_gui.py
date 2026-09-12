@@ -5,10 +5,12 @@ import pytest
 from controls_wb.gui.electrical_path import (
     add_electrical_path_from_form,
     build_electrical_path,
+    edit_electrical_path_from_form,
     parse_route_points,
+    update_electrical_path_from_form,
 )
 from controls_wb.identity import CERoles
-from controls_wb.model.electrical import materialize_electrical_device
+from controls_wb.model.electrical import electrical_path_from_object, materialize_electrical_device
 from controls_wb.model.layout import create_starter_layout_objects
 from controls_wb.model.project import create_or_update_project
 
@@ -160,3 +162,22 @@ def test_route_can_supply_length_without_manual_fallback():
 def test_route_parser_rejects_incomplete_or_nonfinite_routes(route):
     with pytest.raises(ValueError):
         parse_route_points(route, "Wire route")
+
+
+def test_edit_preserves_all_identities_and_updates_route_length():
+    document, _, values = _setup()
+    result = add_electrical_path_from_form(document, values)
+    original = electrical_path_from_object(result.path_object)
+    values.update(signal_tag="DI-ESTOP", wire_1_route_mm="0,0,0;0,300,0", wire_1_length_mm="350")
+
+    updated = update_electrical_path_from_form(original, values)
+    edit_electrical_path_from_form(result.path_object, values)
+
+    assert updated.identity == original.identity
+    assert updated.signal_identity == original.signal_identity
+    assert [item.identity for item in updated.terminals] == [item.identity for item in original.terminals]
+    assert [item.identity for item in updated.wires] == [item.identity for item in original.wires]
+    assert result.path_object.SignalTag == "DI-ESTOP"
+    assert result.signal_object.SignalTag == "DI-ESTOP"
+    assert result.wire_objects[0].CalculatedLength == "300.0 mm"
+    assert result.wire_objects[0].SpecifiedLength == "350.0 mm"

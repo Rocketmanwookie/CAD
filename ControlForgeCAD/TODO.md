@@ -182,7 +182,12 @@ starting digital-twin runtime work.
 - [x] Accept ordered 3D route coordinates during path creation, validate finite
   point sequences, persist them on typed wires, and derive schedule length from
   the routed polyline while retaining a separate specified-length input.
-- [ ] Add user-facing editing and graphical 3D route selection for existing paths.
+- [x] Add identity-preserving editing of signal tags, terminal designations,
+  conductor metadata, specified lengths, and 3D routes for a selected path.
+- [ ] Add graphical 3D route selection for existing paths.
+- [ ] Integrate the FreeCAD Cables workbench as the physical wire/cable routing
+  engine, with identity-safe links from each `CE_Wire` to its Cables route object;
+  retain the current Part polyline only as a dependency-free fallback.
 - [x] Add a workbench command that exports canonical wiring and I/O path CSV
   schedules from the typed electrical graph.
 - [x] Add a standalone namespace-correct, XSD-validated connection-path XML

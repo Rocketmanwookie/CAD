@@ -130,6 +130,10 @@ Implement a pure-Python domain graph independent of FreeCAD and GUI libraries:
 - signals and signal types;
 - terminal strips, multilevel terminals, sides, jumpers, bridges, and accessories;
 - nets, wires, cables, and cores;
+- physical wire/cable routes are created and maintained through the FreeCAD
+  Cables workbench; ControlForgeCAD links its immutable electrical identities,
+  endpoint semantics, and schedule data to those route objects rather than
+  creating a competing routing engine;
 - 2D symbol and 3D occurrence mappings;
 - source/provenance, approval, revision, and validation state.
 

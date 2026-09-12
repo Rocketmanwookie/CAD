@@ -110,6 +110,7 @@ flowchart TB
 - `CE_AddIOSignal`
 - `CE_AddConnection`
 - `CE_AddElectricalPath`
+- `CE_EditElectricalPath`
 - `CE_CreatePanel`
 - `CE_ValidateProject`
 - `CE_PreviewMissingData`
@@ -161,8 +162,18 @@ objects inside one FreeCAD transaction. Each form segment may carry ordered
 routes, the FreeCAD wire renders a route polyline when Part is available, and
 schedule length uses that route in preference to the fallback specified length.
 `HasSpecifiedLength` and `SpecifiedLength` preserve the original estimate even
-when a calculated route length also exists. Existing-path editing and graphical
-3D route selection remain application-layer work.
+when a calculated route length also exists. `CE_EditElectricalPath` applies
+validated engineering-field changes to one selected path but refuses any change
+to path, signal, terminal, or wire identities; a signal-tag edit is propagated
+to every path linked to that signal identity. Graphical 3D route selection
+remains application-layer work.
+
+The target geometry boundary delegates physical wire and cable routing to the
+FreeCAD Cables workbench. ControlForgeCAD remains authoritative for immutable
+electrical identities, semantic endpoints, conductor/cable attributes, and
+schedule projections, and will link those records to Cables route objects
+through an adapter. The current `Part.makePolygon` representation is a
+dependency-free fallback, not a competing production routing engine.
 
 ### 5.3 Application service layer
 

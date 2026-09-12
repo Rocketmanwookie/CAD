@@ -4,12 +4,18 @@
 from __future__ import annotations
 
 import math
+from dataclasses import replace
 
 from controls_wb.electrical_path import ElectricalConnectionPath, RoutePoint, TerminalEndpoint, WireSegment
 from controls_wb.gui.io_signal import _qt_widgets
 from controls_wb.gui.project_intake import existing_project_object
 from controls_wb.identity import CERoles, new_ce_identity
-from controls_wb.model.electrical import materialize_electrical_device, materialize_electrical_path
+from controls_wb.model.electrical import (
+    electrical_path_from_object,
+    materialize_electrical_device,
+    materialize_electrical_path,
+    update_electrical_path_object,
+)
 from controls_wb.model.project import create_or_update_project
 from controls_wb.wire_engineering import standardized_wire_color
 
@@ -179,6 +185,61 @@ def add_electrical_path_from_form(document, values: dict[str, str]):
     return materialize_electrical_path(document, path)
 
 
+def update_electrical_path_from_form(path: ElectricalConnectionPath, values: dict[str, str]):
+    """Build an edited path while preserving every graph identity and topology link."""
+
+    if len(path.terminals) != 4 or len(path.wires) != 3:
+        raise ValueError("The current path editor supports the fixed four-terminal, three-wire topology.")
+    signal_tag = str(values.get("signal_tag", "")).strip()
+    if not signal_tag:
+        raise ValueError("Signal tag is required.")
+    conductor_size = str(values.get("conductor_size", "")).strip()
+    if not conductor_size:
+        raise ValueError("Conductor size is required.")
+    circuit_function = str(values.get("circuit_function", "")).strip().lower()
+    requested_color = str(values.get("color", "")).strip()
+    color = standardized_wire_color(
+        circuit_function,
+        {circuit_function: requested_color} if requested_color else None,
+    )
+    designations = [
+        str(values.get(name, "")).strip()
+        for name in ("plc_terminal", "terminal_in", "terminal_out", "device_terminal")
+    ]
+    terminals = tuple(
+        replace(terminal, designation=designation)
+        for terminal, designation in zip(path.terminals, designations)
+    )
+    wires = []
+    for index, wire in enumerate(path.wires, start=1):
+        route = parse_route_points(values.get(f"wire_{index}_route_mm", ""), f"Wire {index} route")
+        wires.append(
+            replace(
+                wire,
+                wire_tag=str(values.get(f"wire_{index}_tag", "")).strip(),
+                conductor_size=conductor_size,
+                color=color,
+                circuit_function=circuit_function,
+                route=route,
+                specified_length_mm=_specified_length(
+                    values.get(f"wire_{index}_length_mm", ""), f"Wire {index} length", route
+                ),
+            )
+        )
+    updated = replace(path, signal_tag=signal_tag, terminals=terminals, wires=tuple(wires))
+    updated.validate()
+    return updated
+
+
+def _route_text(route: tuple[RoutePoint, ...]) -> str:
+    return "; ".join(f"{point.x_mm:g},{point.y_mm:g},{point.z_mm:g}" for point in route)
+
+
+def edit_electrical_path_from_form(path_obj, values: dict[str, str]):
+    current = electrical_path_from_object(path_obj)
+    return update_electrical_path_object(path_obj, update_electrical_path_from_form(current, values))
+
+
 def _add_device_items(combo, devices: list[object]) -> None:
     for device in devices:
         label = f"{getattr(device, 'Tag', getattr(device, 'Name', 'Device'))} — {getattr(device, 'CERole', '')}"
@@ -252,4 +313,67 @@ def show_electrical_path_dialog(document, parent=None, console=None):
     result = add_electrical_path_from_form(document, values)
     if console is not None:
         console.PrintMessage(f"Electrical path added: {result.path_object.SignalTag}\n")
+    return result
+
+
+def show_edit_electrical_path_dialog(path_obj, parent=None, console=None):
+    """Edit engineering fields on the selected fixed-topology path."""
+
+    QtWidgets = _qt_widgets()
+    path = electrical_path_from_object(path_obj)
+    if len(path.terminals) != 4 or len(path.wires) != 3:
+        raise ValueError("The current path editor supports the fixed four-terminal, three-wire topology.")
+    defaults = {
+        "signal_tag": path.signal_tag,
+        "plc_terminal": path.terminals[0].designation,
+        "terminal_in": path.terminals[1].designation,
+        "terminal_out": path.terminals[2].designation,
+        "device_terminal": path.terminals[3].designation,
+        "conductor_size": path.wires[0].conductor_size,
+        "color": path.wires[0].color,
+        "circuit_function": path.wires[0].circuit_function,
+    }
+    for index, wire in enumerate(path.wires, start=1):
+        defaults[f"wire_{index}_tag"] = wire.wire_tag
+        defaults[f"wire_{index}_length_mm"] = (
+            "" if wire.specified_length_mm is None else f"{wire.specified_length_mm:g}"
+        )
+        defaults[f"wire_{index}_route_mm"] = _route_text(wire.route)
+    labels = {
+        "signal_tag": "Signal tag",
+        "plc_terminal": "PLC channel terminal",
+        "terminal_in": "Cabinet terminal input",
+        "terminal_out": "Cabinet terminal output",
+        "device_terminal": "Device terminal",
+        "conductor_size": "Conductor size",
+        "color": "Approved wire color",
+        "circuit_function": "Circuit function",
+    }
+    for index, segment in enumerate(("PLC wire", "Jumper", "Field wire"), start=1):
+        labels[f"wire_{index}_tag"] = f"{segment} tag"
+        labels[f"wire_{index}_length_mm"] = f"{segment} specified length (mm)"
+        labels[f"wire_{index}_route_mm"] = f"{segment} 3D route (x,y,z; … mm)"
+    dialog = QtWidgets.QDialog(parent)
+    dialog.setWindowTitle(f"Edit Electrical Path — {path.signal_tag}")
+    layout = QtWidgets.QVBoxLayout(dialog)
+    form = QtWidgets.QFormLayout()
+    editors = {}
+    for key, value in defaults.items():
+        editor = QtWidgets.QLineEdit()
+        editor.setText(value)
+        editors[key] = editor
+        form.addRow(labels[key], editor)
+    layout.addLayout(form)
+    buttons = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)
+    buttons.accepted.connect(dialog.accept)
+    buttons.rejected.connect(dialog.reject)
+    layout.addWidget(buttons)
+    execute = getattr(dialog, "exec_", None) or getattr(dialog, "exec")
+    if execute() != QtWidgets.QDialog.Accepted:
+        return None
+    result = edit_electrical_path_from_form(
+        path_obj, {key: editor.text() for key, editor in editors.items()}
+    )
+    if console is not None:
+        console.PrintMessage(f"Electrical path updated: {result.SignalTag}\n")
     return result

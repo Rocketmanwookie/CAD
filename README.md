@@ -63,6 +63,7 @@ In FreeCAD, select **Controls / Automation** from the workbench selector. Confir
 - `CE_AddIOSignal` - Add I/O Signal
 - `CE_AddConnection` - Add Connection Record
 - `CE_AddElectricalPath` - Add Electrical Path
+- `CE_EditElectricalPath` - Edit Electrical Path
 - `CE_CreatePanel` - Create Control Panel
 - `CE_ValidateProject` - Validate Controls Project
 - `CE_PreviewMissingData` - Preview Missing Data
@@ -115,11 +116,12 @@ Pure controls-domain behavior should have automated tests that do not require Fr
 9. Fill `SensorCount`, or fill DI and AI counts, rerun **Preview Missing Data**, and confirm `io.sensorCount` is shown as an input-count response rather than missing.
 10. Run **Create Control Panel** and confirm starter placeholder layout objects appear for panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module.
 11. Run **Add Electrical Path**, select the registered PLC and terminal strip, select an existing field device or enter a new device tag, and submit the terminal/wire chain. Optionally enter semicolon-separated `x,y,z` millimetre route coordinates for each wire. Confirm one typed path, four typed terminals, three typed wires, and a signal appear with `CEIdentity` and `CERole` properties; routed wires should display as polylines.
-12. Run **Validate Controls Project** and confirm validation reads the edited project, starter layout metadata, and typed electrical graph without dangling-owner or continuity findings.
-13. Run **Export Electrical Schedules** and confirm `~/integracad_wiring_schedule.csv` has three rows for the path while `~/integracad_io_path_schedule.csv` has one row for its signal path.
-14. Run **Export BOM** and confirm `~/controlforgecad_bom.csv` includes starter layout objects where manufacturer/part-number/description data is assigned.
-15. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
-16. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written from explicit `IOSignals` plus the current starter intake data. `IOSignals` remains blank until **Add I/O Signal** is used.
+12. Select the typed path, run **Edit Electrical Path**, change a route or terminal designation, and confirm its path, signal, terminal, and wire identities remain unchanged.
+13. Run **Validate Controls Project** and confirm validation reads the edited project, starter layout metadata, and typed electrical graph without dangling-owner or continuity findings.
+14. Run **Export Electrical Schedules** and confirm `~/integracad_wiring_schedule.csv` has three rows for the path while `~/integracad_io_path_schedule.csv` has one row containing its edited signal path.
+15. Run **Export BOM** and confirm `~/controlforgecad_bom.csv` includes starter layout objects where manufacturer/part-number/description data is assigned.
+16. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
+17. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written from explicit `IOSignals` plus the current starter intake data. `IOSignals` remains blank until **Add I/O Signal** is used.
 
 ## Extending the system
 

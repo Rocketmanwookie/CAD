@@ -6,7 +6,9 @@ from controls_wb.model.electrical import (
     electrical_path_from_object,
     materialize_electrical_device,
     materialize_electrical_path,
+    update_electrical_path_object,
 )
+from dataclasses import replace
 from controls_wb.model.project import create_or_update_project
 
 
@@ -30,6 +32,7 @@ class FakeDocument:
     def addObject(self, object_type, name):
         obj = FakeObject(name)
         obj.ObjectType = object_type
+        obj.Document = self
         self.Objects.append(obj)
         return obj
 
@@ -120,3 +123,41 @@ def test_materialized_device_receives_identity_role_and_project_registration_imm
     assert device.CERole == CERoles.FIELD_DEVICE
     assert device.Tag == "LS-001"
     assert device in project.ElectricalDevices
+
+
+def test_object_update_rejects_any_identity_change_before_mutation():
+    document = FakeDocument()
+    result = materialize_electrical_path(document, _path())
+    current = electrical_path_from_object(result.path_object)
+    changed = replace(current, identity=new_ce_identity(), signal_tag="SHOULD-NOT-APPLY")
+
+    try:
+        update_electrical_path_object(result.path_object, changed)
+    except ValueError as exc:
+        assert "cannot change" in str(exc)
+    else:
+        raise AssertionError("Expected immutable identity rejection")
+
+    assert result.path_object.SignalTag == current.signal_tag
+
+
+def test_object_update_rejects_duplicate_signal_tag_before_mutation():
+    document = FakeDocument()
+    result = materialize_electrical_path(document, _path())
+    current = electrical_path_from_object(result.path_object)
+    other_signal = document.addObject("App::FeaturePython", "OtherSignal")
+    other_signal.CERole = CERoles.SIGNAL
+    other_signal.SignalTag = "DI-EXISTING"
+    other_signal.CEIdentity = new_ce_identity()
+
+    try:
+        update_electrical_path_object(
+            result.path_object, replace(current, signal_tag="DI-EXISTING")
+        )
+    except ValueError as exc:
+        assert "already uses tag" in str(exc)
+    else:
+        raise AssertionError("Expected duplicate signal-tag rejection")
+
+    assert result.path_object.SignalTag == current.signal_tag
+    assert result.signal_object.SignalTag == current.signal_tag

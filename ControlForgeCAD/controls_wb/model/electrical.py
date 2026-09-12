@@ -337,6 +337,57 @@ def electrical_paths_from_project(project) -> tuple[ElectricalConnectionPath, ..
     )
 
 
+def update_electrical_path_object(path_obj, updated: ElectricalConnectionPath):
+    """Apply editable path fields while requiring every persisted identity to remain fixed."""
+
+    current = electrical_path_from_object(path_obj)
+    current_identities = (
+        current.identity,
+        current.signal_identity,
+        *(terminal.identity for terminal in current.terminals),
+        *(wire.identity for wire in current.wires),
+    )
+    updated_identities = (
+        updated.identity,
+        updated.signal_identity,
+        *(terminal.identity for terminal in updated.terminals),
+        *(wire.identity for wire in updated.wires),
+    )
+    if current_identities != updated_identities:
+        raise ValueError("Electrical path editing cannot change path, signal, terminal, or wire identities.")
+    updated.validate()
+    signal_obj = path_obj.SignalObject
+    document = getattr(path_obj, "Document", None)
+    for obj in getattr(document, "Objects", []) or []:
+        if (
+            obj is not signal_obj
+            and getattr(obj, "CERole", "") == CERoles.SIGNAL
+            and getattr(obj, "SignalTag", "") == updated.signal_tag
+        ):
+            raise ValueError(f"Another signal already uses tag {updated.signal_tag}.")
+    signal_obj.SignalTag = updated.signal_tag
+    for linked_path in getattr(signal_obj, "ConnectionPaths", []) or []:
+        if getattr(linked_path, "SignalIdentity", "") == updated.signal_identity:
+            linked_path.SignalTag = updated.signal_tag
+    for obj, terminal in zip(path_obj.TerminalObjects, updated.terminals):
+        obj.Designation = terminal.designation
+        obj.TerminalLabel = terminal.label
+    for obj, wire in zip(path_obj.WireObjects, updated.wires):
+        obj.WireTag = wire.wire_tag
+        obj.ConductorSize = wire.conductor_size
+        obj.Color = wire.color
+        obj.CircuitFunction = wire.circuit_function
+        obj.ConduitIdentity = wire.conduit_identity
+        obj.RoutePoints = _route_json(wire.route)
+        obj.HasSpecifiedLength = wire.specified_length_mm is not None
+        obj.SpecifiedLength = f"{wire.specified_length_mm or 0.0} mm"
+        obj.CalculatedLength = f"{wire.effective_length_mm or 0.0} mm"
+        execute = getattr(getattr(obj, "Proxy", None), "execute", None)
+        if callable(execute):
+            execute(obj)
+    return path_obj
+
+
 def _terminal_from_object(obj):
     from controls_wb.electrical_path import TerminalEndpoint
 
