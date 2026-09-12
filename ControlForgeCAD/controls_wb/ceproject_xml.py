@@ -18,6 +18,7 @@ from controls_wb.intake import (
     validate_intake,
 )
 from controls_wb.missing_data import MissingDataRow, missing_data_matrix, project_object_to_intake
+from controls_wb.identity import CERoles, imported_ce_identity, is_ce_identity, validate_ce_role
 
 
 CEPROJECT_NAMESPACE = "https://whrsdaparty.github.io/ceproject/0.1"
@@ -78,6 +79,8 @@ def ceproject_element(project: ProjectIntake | object) -> ET.Element:
         {
             "schemaVersion": intake.schema_version,
             "projectId": intake.project_id,
+            "ceIdentity": intake.ce_identity,
+            "ceRole": intake.ce_role,
         },
     )
 
@@ -110,6 +113,14 @@ def parse_ceproject_xml(xml_text: str | bytes) -> CEProjectXmlDocument:
     _require_tag(root, "CEProject")
     project_id = _required_attr(root, "projectId", "CEProject")
     schema_version = _required_attr(root, "schemaVersion", "CEProject")
+    ce_identity = root.attrib.get("ceIdentity", "") or imported_ce_identity("ceproject", project_id)
+    ce_role = root.attrib.get("ceRole", CERoles.PROJECT)
+    if not is_ce_identity(ce_identity):
+        raise CEProjectXmlError(f"Invalid CEProject identity {ce_identity!r} on CEProject.")
+    try:
+        validate_ce_role(ce_role)
+    except ValueError as exc:
+        raise CEProjectXmlError(str(exc)) from exc
     metadata = _required_child(root, "Metadata", "CEProject")
     name = _required_text(metadata, "Name", "Metadata")
 
@@ -117,6 +128,8 @@ def parse_ceproject_xml(xml_text: str | bytes) -> CEProjectXmlDocument:
         project_id=project_id,
         name=name,
         schema_version=schema_version,
+        ce_identity=ce_identity,
+        ce_role=ce_role,
         deliverables=_parse_deliverables(_child_or_none(root, "Intake")),
         fields=_parse_fields(_child_or_none(root, "Intake")),
         contacts=_parse_contacts(root),
@@ -274,7 +287,8 @@ def _local_name(element: ET.Element) -> str:
 
 
 def _children(parent: ET.Element, name: str) -> list[ET.Element]:
-    return [child for child in list(parent) if _local_name(child) == name]
+    qualified_name = f"{{{CEPROJECT_NAMESPACE}}}{name}"
+    return [child for child in list(parent) if child.tag == qualified_name]
 
 
 def _child_or_none(parent: ET.Element, name: str) -> ET.Element | None:
@@ -283,8 +297,9 @@ def _child_or_none(parent: ET.Element, name: str) -> ET.Element | None:
 
 
 def _require_tag(element: ET.Element, name: str) -> None:
-    if _local_name(element) != name:
-        raise CEProjectXmlError(f"Expected root element {name}, found {_local_name(element)}.")
+    expected = f"{{{CEPROJECT_NAMESPACE}}}{name}"
+    if element.tag != expected:
+        raise CEProjectXmlError(f"Expected root element {expected}, found {element.tag}.")
 
 
 def _required_child(parent: ET.Element, name: str, context: str) -> ET.Element:

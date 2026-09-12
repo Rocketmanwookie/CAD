@@ -7,6 +7,7 @@ from types import SimpleNamespace
 import pytest
 
 from controls_wb.fact_ids import FactIds
+from controls_wb.identity import imported_ce_identity
 from controls_wb.ceproject_xml import CEPROJECT_NAMESPACE, CEProjectXmlError, ceproject_to_xml, parse_ceproject_xml
 from controls_wb.intake import (
     Contact,
@@ -35,7 +36,12 @@ def test_ceproject_xml_exports_minimal_project():
 
     assert xml_text == ceproject_to_xml(intake)
     assert root.tag == f"{{{CEPROJECT_NAMESPACE}}}CEProject"
-    assert root.attrib == {"schemaVersion": "0.1.0", "projectId": "CE-MIN"}
+    assert root.attrib == {
+        "schemaVersion": "0.1.0",
+        "projectId": "CE-MIN",
+        "ceIdentity": intake.ce_identity,
+        "ceRole": "project.root",
+    }
     assert root.findtext("ce:Metadata/ce:Name", namespaces=NS) == "Minimal"
     assert root.find("ce:Intake", namespaces=NS) is not None
 
@@ -44,6 +50,8 @@ def test_ceproject_xml_imports_minimal_project():
     document = parse_ceproject_xml(ceproject_to_xml(ProjectIntake(project_id="CE-MIN", name="Minimal")))
 
     assert document.intake.project_id == "CE-MIN"
+    assert document.intake.ce_identity == imported_ce_identity("ceproject", "CE-MIN")
+    assert document.intake.ce_role == "project.root"
     assert document.intake.name == "Minimal"
     assert document.intake.schema_version == "0.1.0"
     assert document.intake.deliverables == set()

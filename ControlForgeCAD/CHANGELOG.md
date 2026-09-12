@@ -17,6 +17,8 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
   project/layout object creation and restored for legacy document objects.
 - Repository-level master completion prompt with XML conformance, identity,
   working-MVP, FreeCAD, adapter, validation, and completion gates.
+- CEProject root identity and role now round-trip through namespace-aware XML;
+  legacy XML without identity attributes receives a deterministic imported ID.
 - Initial repository seed.
 - FreeCAD external workbench bootstrap files: `Init.py` and `InitGui.py`.
 - Draft controls-project data model.

@@ -187,7 +187,7 @@ def initialize_project_object(obj, intake: ProjectIntake) -> object:
     ensure_object_identity(
         obj,
         CERoles.PROJECT,
-        imported_ce_identity("ceproject", intake.project_id),
+        intake.ce_identity,
     )
     apply_project_properties(obj, intake_to_project_properties(intake))
     return obj
