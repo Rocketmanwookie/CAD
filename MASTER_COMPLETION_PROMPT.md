@@ -184,6 +184,12 @@ this graph. They must not become competing sources of truth.
 Do not build digital-twin execution until the MVP electrical graph is stable.
 ROS/ROS 2 is the selected future runtime boundary.
 
+Version 1.0 must be **digital-twin ready**, not digital-twin initialized: its
+identities, roles, continuous connection graph, units, geometry bindings,
+commands, state concepts, and adapter contracts must support later ROS 2 mapping,
+but ROS 2 installation, nodes, launch files, simulation, and live runtime
+connectivity are not v1.0 acceptance requirements.
+
 - Keep ROS optional and outside the core workbench dependency graph.
 - Later map CE identities to ROS nodes/components, topics, services, actions,
   parameters, frames, simulation time, commands, state, alarms, and telemetry.

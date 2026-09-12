@@ -19,6 +19,10 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
   working-MVP, FreeCAD, adapter, validation, and completion gates.
 - CEProject root identity and role now round-trip through namespace-aware XML;
   legacy XML without identity attributes receives a deterministic imported ID.
+- Fixed, deterministic continuous electrical-path contract spanning PLC channel
+  terminal, wire segments, cabinet terminal levels, and device terminal, with
+  physical route lengths and common wiring/I/O schedule projections.
+- Version 1.0 clarified as ROS/ROS 2 digital-twin ready, not runtime initialized.
 - Initial repository seed.
 - FreeCAD external workbench bootstrap files: `Init.py` and `InitGui.py`.
 - Draft controls-project data model.

@@ -87,6 +87,9 @@ Ladder drawing generation follows this vertical slice. HMI authoring, automatic
 - Validation engine usable on real projects.
 - Packaging path ready for FreeCAD Addon Manager consideration.
 - Companion workbench interfaces documented for HMI and digital twin projects.
+- Digital-twin ready for later ROS/ROS 2 integration through stable identities,
+  roles, units, continuous electrical paths, geometry bindings, and adapter
+  contracts; ROS runtime initialization is not required.
 
 ## Companion workbench roadmap
 
