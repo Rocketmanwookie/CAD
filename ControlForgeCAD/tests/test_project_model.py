@@ -2,6 +2,8 @@
 
 import json
 
+from controls_wb.identity import CERoles, imported_ce_identity
+
 from controls_wb.intake import default_project_intake
 from controls_wb.model.project import (
     PROJECT_PROPERTY_SPECS,
@@ -106,9 +108,13 @@ def test_initialize_project_object_adds_properties_and_proxy():
     assert isinstance(obj.Proxy, ControlsProject)
     assert obj.Proxy.Type == "ControlsProject"
     assert obj.ProjectId == "CE-PROJECT-001"
+    assert obj.CEIdentity == imported_ce_identity("ceproject", "CE-PROJECT-001")
+    assert obj.CERole == CERoles.PROJECT
     assert obj.ProjectName == "Controls Project"
     assert obj.Deliverables == ["ioList", "panelLayout"]
     assert "ProjectName" in obj.PropertiesList
+    assert "CEIdentity" in obj.PropertiesList
+    assert "CERole" in obj.PropertiesList
     assert "Customer" in obj.PropertiesList
     assert "SiteLocation" in obj.PropertiesList
     assert "CEProjectImports" in obj.PropertiesList

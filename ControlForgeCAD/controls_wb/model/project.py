@@ -11,6 +11,7 @@ except Exception:  # pragma: no cover
 
 from controls_wb.fact_ids import FactIds
 from controls_wb.intake import SCHEMA_VERSION, ProjectIntake, default_project_intake
+from controls_wb.identity import CERoles, ensure_object_identity, imported_ce_identity
 
 
 @dataclass(frozen=True)
@@ -183,6 +184,11 @@ def apply_project_properties(obj, properties: dict[str, object]) -> None:
 
 def initialize_project_object(obj, intake: ProjectIntake) -> object:
     ControlsProject(obj)
+    ensure_object_identity(
+        obj,
+        CERoles.PROJECT,
+        imported_ce_identity("ceproject", intake.project_id),
+    )
     apply_project_properties(obj, intake_to_project_properties(intake))
     return obj
 
@@ -218,6 +224,15 @@ class ControlsProject:
 
     def execute(self, obj):
         return None
+
+    def onDocumentRestored(self, obj):
+        ensure_project_properties(obj)
+        project_id = str(getattr(obj, "ProjectId", "") or getattr(obj, "Name", "CE_Project"))
+        ensure_object_identity(
+            obj,
+            CERoles.PROJECT,
+            imported_ce_identity("ceproject", project_id),
+        )
 
     def __getstate__(self):
         return {"Type": self.Type}

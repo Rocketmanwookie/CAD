@@ -212,6 +212,13 @@ Future work may add channel allocation, rack/slot addressing, signal typing, ter
 
 Layout objects represent physical or logical panel components in the FreeCAD model tree.
 
+Every project and layout object receives an immutable `CEIdentity` and a
+controlled `CERole` when it is created or restored. Business tags, FreeCAD names,
+part numbers, and geometry are mutable and must never substitute for identity.
+Imported project roots derive a stable identity from their source project ID when
+the source does not yet carry a native CE identity; new physical occurrences use
+new UUID identities.
+
 **Contract expectations**
 
 - stable object type or role identification;

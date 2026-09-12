@@ -6,6 +6,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 
 from controls_wb.hardware_catalog import default_catalog_path, line_catalog, load_hardware_catalog, part_by_name
+from controls_wb.identity import CERoles, ensure_object_identity
 from controls_wb.panel_hardware_catalog import (
     default_panel_catalog_path,
     load_panel_hardware_catalog,
@@ -23,6 +24,7 @@ except Exception:  # pragma: no cover
 @dataclass(frozen=True)
 class LayoutObjectSpec:
     name: str
+    role: str
     tag: str
     description: str
     panel_name: str
@@ -45,6 +47,7 @@ class LayoutObjectSpec:
 STARTER_LAYOUT_SPECS = (
     LayoutObjectSpec(
         name="CE_Backplate",
+        role=CERoles.PANEL,
         tag="PANEL-001",
         description="Control panel enclosure/backplate placeholder",
         panel_name="PANEL-001",
@@ -54,6 +57,7 @@ STARTER_LAYOUT_SPECS = (
     ),
     LayoutObjectSpec(
         name="CE_DIN_Rail",
+        role=CERoles.MOUNTING_RAIL,
         tag="DIN-001",
         description="DIN rail placeholder",
         panel_name="PANEL-001",
@@ -63,6 +67,7 @@ STARTER_LAYOUT_SPECS = (
     ),
     LayoutObjectSpec(
         name="CE_Wire_Duct",
+        role=CERoles.WIRE_DUCT,
         tag="DUCT-001",
         description="Wire duct placeholder",
         panel_name="PANEL-001",
@@ -72,6 +77,7 @@ STARTER_LAYOUT_SPECS = (
     ),
     LayoutObjectSpec(
         name="CE_Terminal_Strip",
+        role=CERoles.TERMINAL_STRIP,
         tag="TB-001",
         description="Terminal strip placeholder",
         panel_name="PANEL-001",
@@ -82,6 +88,7 @@ STARTER_LAYOUT_SPECS = (
     ),
     LayoutObjectSpec(
         name="CE_PLC_Rack",
+        role=CERoles.PLC_CONTROLLER,
         tag="PLC-001",
         description="PLC rack/module placeholder",
         panel_name="PANEL-001",
@@ -148,6 +155,8 @@ def apply_layout_spec(obj, spec: LayoutObjectSpec):
 
 def layout_object_metadata(obj) -> dict[str, object]:
     return {
+        "CEIdentity": getattr(obj, "CEIdentity", ""),
+        "CERole": getattr(obj, "CERole", ""),
         "Tag": getattr(obj, "Tag", ""),
         "Manufacturer": getattr(obj, "Manufacturer", ""),
         "PartNumber": getattr(obj, "PartNumber", ""),
@@ -236,7 +245,7 @@ def _starter_layout_specs_with_panel_catalog() -> tuple[LayoutObjectSpec, ...]:
 
 def create_layout_object(document, spec: LayoutObjectSpec):
     obj = document.addObject("Part::FeaturePython", spec.name)
-    ControlsLayoutObject(obj)
+    ControlsLayoutObject(obj, spec.role)
     return apply_layout_spec(obj, spec)
 
 
@@ -248,17 +257,33 @@ def create_starter_layout_objects(document=None) -> list[object]:
 
 
 class ControlsLayoutObject:
-    def __init__(self, obj):
+    def __init__(self, obj, role: str):
         obj.Proxy = self
         self.Type = "ControlsLayoutObject"
+        self.Role = role
         ensure_layout_properties(obj)
+        ensure_object_identity(obj, role)
 
     def execute(self, obj):
         if Part is not None:
             obj.Shape = Part.makeBox(obj.Width, obj.Depth, obj.Height)
 
+    def onDocumentRestored(self, obj):
+        ensure_layout_properties(obj)
+        role = getattr(self, "Role", "") or role_for_layout_name(getattr(obj, "Name", ""))
+        self.Role = role
+        ensure_object_identity(obj, role)
+
     def __getstate__(self):
-        return {"Type": self.Type}
+        return {"Type": self.Type, "Role": self.Role}
 
     def __setstate__(self, state):
         self.Type = state.get("Type", "ControlsLayoutObject")
+        self.Role = state.get("Role", "")
+
+
+def role_for_layout_name(name: str) -> str:
+    for spec in STARTER_LAYOUT_SPECS:
+        if spec.name == name:
+            return spec.role
+    raise ValueError(f"Cannot restore CEProject role for layout object: {name}")

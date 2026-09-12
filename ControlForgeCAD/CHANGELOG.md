@@ -13,6 +13,10 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - Evidence-based AutoCAD Electrical PLC parity audit, target electrical-graph
   architecture, delivery gates, and strict parity definition.
 - Working-MVP fast lane and deferred ROS/ROS 2 digital-twin integration boundary.
+- Immutable CEProject UUID identities and controlled semantic roles assigned at
+  project/layout object creation and restored for legacy document objects.
+- Repository-level master completion prompt with XML conformance, identity,
+  working-MVP, FreeCAD, adapter, validation, and completion gates.
 - Initial repository seed.
 - FreeCAD external workbench bootstrap files: `Init.py` and `InitGui.py`.
 - Draft controls-project data model.
