@@ -139,5 +139,6 @@
     <catalog id="siemens-s7-1200-records" kind="equipment-records" path="siemens_s7_1200_2017.xml" schemaPath="../../../schemas/equipment_records_v0_1.xsd"/>
     <catalog id="plc-hardware-catalog" kind="plc-hardware" path="plc_catalog.xml" schemaPath="../../../schemas/plc_hardware_catalog_v0_1.xsd"/>
     <catalog id="panel-hardware-catalog" kind="panel-hardware" path="panel_catalog.xml" schemaPath="../../../schemas/panel_hardware_catalog_v0_1.xsd"/>
+    <catalog id="technical-document-registry" kind="technical-documents" path="technical_document_registry.xml" schemaPath="../../../schemas/technical_document_registry_v0_1.xsd"/>
   </linkedCatalogs>
 </equipmentCatalog>

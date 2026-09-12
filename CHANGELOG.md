@@ -8,6 +8,12 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Added
 
+- Added an XSD-validated technical-document registry linked from the master
+  equipment catalog, deterministic datasheet-link and acceptance-test CSV
+  exports, and a regeneration script. The registry currently covers all 285 CAD
+  requests, links the supplied CPU 1212C datasheet with its SHA-256 checksum,
+  records unresolved acquisition states honestly, and emits 2,656 tailored test
+  instructions with required evidence.
 - Added a 285-row CAD-library download manifest covering the requested Siemens
   PLC, panel, safety, operator, HMI, instrumentation, wiring, connector, and
   vendor-neutral accessory scope. Exact source-backed MLFBs are distinguished

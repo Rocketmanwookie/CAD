@@ -269,6 +269,19 @@ I/O path schedule with one row per signal path. Both include stable identities
 and derive endpoint/terminal/length data from the same canonical graph. The
 legacy connection-record export remains available during migration.
 
+#### Technical-document registry and library acceptance tests
+
+**Implemented, acquisition scope.** The master equipment catalog links an
+XSD-validated technical-document registry keyed to the CAD acquisition request
+IDs. Each requested part has one datasheet record whose state distinguishes a
+checksummed local file, an exact part pending download, and a family that still
+requires exact configuration. The deterministic CSV projections expose those
+links for review and provide category-aware acceptance instructions for part
+identity, provenance, geometry, mounting, terminal maps, IEC and NFPA/JIC
+symbols, ratings, safety evidence, I/O mapping, termination treatment, and
+FreeCAD Cables-workbench connectivity. `scripts/build_technical_document_registry.py`
+regenerates the XML and both CSV projections from the CAD manifest.
+
 ## 6. Principal object contracts
 
 ### 6.1 `CE_Project`

@@ -40,6 +40,7 @@ def test_linked_equipment_catalogs_and_schemas_exist():
         "equipment-records",
         "panel-hardware",
         "plc-hardware",
+        "technical-documents",
     }
     for linked in catalog.linked_catalogs:
         assert linked_catalog_path(path, linked).is_file()
@@ -86,5 +87,9 @@ def test_siemens_equipment_records_are_complete_and_deterministic():
 def test_equipment_xml_schemas_are_parseable():
     schema_dir = Path(__file__).resolve().parents[1] / "schemas"
 
-    for name in ("equipment_catalog_v0_1.xsd", "equipment_records_v0_1.xsd"):
+    for name in (
+        "equipment_catalog_v0_1.xsd",
+        "equipment_records_v0_1.xsd",
+        "technical_document_registry_v0_1.xsd",
+    ):
         assert ET.parse(schema_dir / name).getroot().tag.endswith("schema")

@@ -8,6 +8,8 @@ This repository contains **integraCAD Open**, an open-source controls-engineerin
 - [Contributing](CONTRIBUTING.md) — development workflow, testing expectations, architecture rules, and documentation requirements.
 - [Changelog](CHANGELOG.md) — implemented milestones, unreleased changes, and contributor-facing change history.
 - [CAD library download manifest](exports/siemens_cad_library_download_manifest.csv) — requested Siemens and supporting panel/safety/instrumentation CAD assets, exact MLFBs or search keys, required schematic companions, and acquisition status.
+- [Datasheet link export](exports/equipment_datasheet_links.csv) — one document-registry row per requested manufactured part, including exact/pending state, official lookup, local path, checksum, and document metadata.
+- [Equipment library acceptance tests](exports/equipment_library_acceptance_tests.csv) — category-aware test instructions and required evidence for CAD, schematic, terminal, safety, I/O, termination, and Cables-workbench integration.
 
 ## Architecture summary
 

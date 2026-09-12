@@ -292,6 +292,11 @@ starting digital-twin runtime work.
 - [ ] Link every placed symbol occurrence to the same equipment occurrence and
   `CEIdentity` used by the 3D object, electrical path, BOM, and schedules.
 - [ ] Add deterministic schematic-sheet and ladder/rung rendering from smart nets.
+- [x] Link every CAD acquisition request to an XSD-validated datasheet registry
+  with local/checksummed, pending-download, or pending-part-selection state and
+  export category-aware library acceptance-test instructions to CSV.
+- [ ] Download and verify the outstanding official datasheets, populate revision
+  and document-date metadata, and resolve exact MLFBs before marking tests passed.
 
 - [ ] FreeCAD workbench/addon architecture.
 - [ ] FreeCAD BIM and IFC workflows.
