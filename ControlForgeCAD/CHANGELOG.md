@@ -34,6 +34,9 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - Typed FreeCAD path, terminal, and wire objects that preserve CE identities and
   roles, own ordered object links, bind each wire to its terminal endpoints, keep
   route and conductor metadata, and reject identity collisions before placement.
+- CEProject XML now imports the connection-path XSD namespace and embeds typed
+  paths with deterministic ordering, round trips, semantic validation, and
+  duplicate path-identity rejection.
 - Initial repository seed.
 - FreeCAD external workbench bootstrap files: `Init.py` and `InitGui.py`.
 - Draft controls-project data model.

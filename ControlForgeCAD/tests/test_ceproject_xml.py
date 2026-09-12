@@ -8,6 +8,8 @@ import pytest
 
 from controls_wb.fact_ids import FactIds
 from controls_wb.identity import imported_ce_identity
+from controls_wb.identity import CERoles, new_ce_identity
+from controls_wb.electrical_path import ElectricalConnectionPath, TerminalEndpoint, WireSegment
 from controls_wb.ceproject_xml import CEPROJECT_NAMESPACE, CEProjectXmlError, ceproject_to_xml, parse_ceproject_xml
 from controls_wb.intake import (
     Contact,
@@ -56,6 +58,33 @@ def test_ceproject_xml_imports_minimal_project():
     assert document.intake.schema_version == "0.1.0"
     assert document.intake.deliverables == set()
     assert document.intake.fields == {}
+
+
+def test_ceproject_xml_round_trips_embedded_namespaced_connection_path():
+    lxml = pytest.importorskip("lxml.etree")
+    plc = TerminalEndpoint(new_ce_identity(), CERoles.PLC_CHANNEL_TERMINAL, new_ce_identity(), "PLC1:X1.0")
+    device = TerminalEndpoint(new_ce_identity(), CERoles.DEVICE_TERMINAL, new_ce_identity(), "LS1:1")
+    wire = WireSegment(new_ce_identity(), plc.identity, device.identity, "W-001", conductor_size="18 AWG")
+    path = ElectricalConnectionPath(new_ce_identity(), new_ce_identity(), "DI-0001", (plc, device), (wire,))
+    intake = ProjectIntake(project_id="CE-PATH", name="Path Project")
+
+    xml_text = ceproject_to_xml(intake, (path,))
+    schema_path = Path(__file__).resolve().parents[1] / "schemas" / "ce_project_v0_1.xsd"
+    lxml.XMLSchema(lxml.parse(str(schema_path))).assertValid(lxml.fromstring(xml_text.encode("utf-8")))
+    parsed = parse_ceproject_xml(xml_text)
+
+    assert parsed.connection_paths == (path,)
+    assert "cepath:ConnectionPath" in xml_text
+
+
+def test_ceproject_xml_rejects_duplicate_embedded_path_identity():
+    plc = TerminalEndpoint(new_ce_identity(), CERoles.PLC_CHANNEL_TERMINAL, new_ce_identity(), "PLC1:X1.0")
+    device = TerminalEndpoint(new_ce_identity(), CERoles.DEVICE_TERMINAL, new_ce_identity(), "LS1:1")
+    wire = WireSegment(new_ce_identity(), plc.identity, device.identity, "W-001")
+    path = ElectricalConnectionPath(new_ce_identity(), new_ce_identity(), "DI-0001", (plc, device), (wire,))
+
+    with pytest.raises(ValueError, match="duplicate connection-path"):
+        ceproject_to_xml(ProjectIntake(project_id="CE-DUP", name="Duplicate"), (path, path))
 
 
 def test_ceproject_xml_imports_schema_valid_project_without_intake():

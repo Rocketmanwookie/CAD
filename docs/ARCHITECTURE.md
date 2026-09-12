@@ -210,8 +210,10 @@ terminal. Its dedicated namespace and XSD cover immutable identities, controlled
 roles, sequence positions, conductor metadata, conduit identity, optional
 specified length, and 3D route points in millimetres. Import additionally applies
 semantic continuity and duplicate-identity validation that XSD alone cannot
-express. Embedding these paths into the next CEProject schema revision and typed
-FreeCAD objects remains pending.
+express. CEProject imports the path vocabulary explicitly and embeds path
+instances without flattening or discarding their namespace. Typed FreeCAD path,
+terminal, and wire objects implement the persistence projection. A user-facing
+editor and whole-project reference validation remain pending.
 
 ## 6. Principal object contracts
 
