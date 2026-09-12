@@ -54,6 +54,10 @@ class WireSegment:
     from_terminal_identity: str
     to_terminal_identity: str
     wire_tag: str
+    conductor_size: str = ""
+    color: str = ""
+    circuit_function: str = ""
+    conduit_identity: str = ""
     route: tuple[RoutePoint, ...] = ()
     specified_length_mm: float | None = None
 
@@ -156,6 +160,10 @@ def serialize_connection_path(path: ElectricalConnectionPath) -> str:
                 "fromTerminalIdentity": wire.from_terminal_identity,
                 "toTerminalIdentity": wire.to_terminal_identity,
                 "wireTag": wire.wire_tag,
+                "conductorSize": wire.conductor_size,
+                "color": wire.color,
+                "circuitFunction": wire.circuit_function,
+                "conduitIdentity": wire.conduit_identity,
                 "route": [
                     {
                         "x_mm": float(point.x_mm),
@@ -203,6 +211,10 @@ def deserialize_connection_path(serialized: str) -> ElectricalConnectionPath:
                 from_terminal_identity=str(item.get("fromTerminalIdentity", "")),
                 to_terminal_identity=str(item.get("toTerminalIdentity", "")),
                 wire_tag=str(item.get("wireTag", "")),
+                conductor_size=str(item.get("conductorSize", "")),
+                color=str(item.get("color", "")),
+                circuit_function=str(item.get("circuitFunction", "")),
+                conduit_identity=str(item.get("conduitIdentity", "")),
                 route=tuple(
                     RoutePoint(
                         x_mm=float(point["x_mm"]),
@@ -237,6 +249,10 @@ def wiring_schedule_rows(path: ElectricalConnectionPath) -> list[dict[str, objec
                 "SignalTag": path.signal_tag,
                 "WireIdentity": wire.identity,
                 "WireTag": wire.wire_tag,
+                "ConductorSize": wire.conductor_size,
+                "Color": wire.color,
+                "CircuitFunction": wire.circuit_function,
+                "ConduitIdentity": wire.conduit_identity,
                 "FromTerminalIdentity": start.identity,
                 "FromTerminal": start.designation,
                 "ToTerminalIdentity": end.identity,

@@ -163,6 +163,16 @@ starting digital-twin runtime work.
   schedule projections.
 - [ ] Persist continuous paths on typed FreeCAD objects and in namespace-correct
   CEProject XML with identity/reference validation.
+- [x] Add route-derived wire length, conductor size/color/function/conduit fields
+  to the canonical path and wiring-schedule projection.
+- [x] Add profile-driven raceway fill calculation using NEC Chapter 9 Table 1
+  fill percentages and caller-supplied edition/raceway/conductor areas.
+- [ ] Add licensed/verified edition-specific conductor and raceway dimension data.
+- [ ] Add complete conductor ampacity, correction/adjustment, terminal-rating,
+  voltage-drop, protection, and project/AHJ sizing inputs before recommending a
+  conductor size.
+- [ ] Add project wire-color profiles that distinguish required/reserved
+  identification from documented plant conventions.
 - [ ] Add wire/from-to reference model.
 - [ ] Add internal cabinet power circuits.
 - [ ] Add control power distribution.

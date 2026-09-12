@@ -23,6 +23,11 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
   terminal, wire segments, cabinet terminal levels, and device terminal, with
   physical route lengths and common wiring/I/O schedule projections.
 - Version 1.0 clarified as ROS/ROS 2 digital-twin ready, not runtime initialized.
+- Wiring schedules now carry routed length, conductor size, color, circuit
+  function, and conduit identity from the canonical wire segment.
+- Profile-driven preliminary raceway sizing with NEC Chapter 9 fill percentages
+  and explicit code edition, raceway type, supplied internal areas, and
+  unverified status; reserved colors are separated from project conventions.
 - Initial repository seed.
 - FreeCAD external workbench bootstrap files: `Init.py` and `InitGui.py`.
 - Draft controls-project data model.

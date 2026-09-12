@@ -178,6 +178,20 @@ this graph. They must not become competing sources of truth.
   duplicate identities/tags/addresses, voltage/potential conflicts, terminal
   capacity, and other rules supported by authoritative inputs.
 - Do not claim code, safety, or regulatory compliance from incomplete rules.
+- Wiring schedules include calculated routed length, selected conductor size,
+  insulation/conductor basis, color, circuit function, conduit/raceway identity,
+  calculation status, governing code/profile, edition, and assumptions.
+- Conductor sizing must account for load and protection, conductor material,
+  insulation/rating, ambient correction, current-carrying conductor adjustment,
+  terminal temperature limits, voltage drop, fault-duty constraints where
+  applicable, and project/AHJ requirements. Missing inputs produce an unresolved
+  result, never a guessed size.
+- Raceway/conduit sizing uses actual conductor or cable area including insulation,
+  the selected raceway type, and an edition-specific code profile. Record fill
+  percentage, used/permitted area, trade size, nipple treatment, and status.
+- Separate mandated/reserved conductor identification from plant conventions.
+  Store the approved project color profile and never present customary phase or
+  control colors as universally code-mandated.
 
 ## Digital twin — deferred ROS/ROS 2 boundary
 

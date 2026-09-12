@@ -27,12 +27,12 @@ def _path():
     wires = (
         WireSegment(
             new_ce_identity(), plc.identity, terminal_in.identity, "W-001",
-            (RoutePoint(0, 0, 0), RoutePoint(30, 40, 0)),
+            route=(RoutePoint(0, 0, 0), RoutePoint(30, 40, 0)),
         ),
         WireSegment(new_ce_identity(), terminal_in.identity, terminal_out.identity, "JMP-001", specified_length_mm=5),
         WireSegment(
             new_ce_identity(), terminal_out.identity, device.identity, "W-002",
-            (RoutePoint(30, 40, 0), RoutePoint(30, 40, 100)),
+            route=(RoutePoint(30, 40, 0), RoutePoint(30, 40, 100)),
         ),
     )
     return ElectricalConnectionPath(
