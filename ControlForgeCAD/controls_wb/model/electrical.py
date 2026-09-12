@@ -7,7 +7,7 @@ import json
 from dataclasses import dataclass
 
 from controls_wb.electrical_path import ElectricalConnectionPath, RoutePoint
-from controls_wb.identity import CERoles, ensure_object_identity
+from controls_wb.identity import CERoles, ensure_object_identity, is_ce_identity, new_ce_identity
 
 try:
     import FreeCAD as App
@@ -65,6 +65,53 @@ def _append_unique_link(obj, property_name: str, linked_obj) -> None:
     if linked_obj not in links:
         links.append(linked_obj)
         setattr(obj, property_name, links)
+
+
+def register_electrical_device(project, device) -> None:
+    """Register one already-identified physical occurrence on a CE project."""
+
+    identity = str(getattr(device, "CEIdentity", "") or "")
+    role = str(getattr(device, "CERole", "") or "")
+    if not is_ce_identity(identity):
+        raise ValueError("Electrical device registration requires a valid CE identity.")
+    if role in {"", CERoles.PROJECT, CERoles.SIGNAL, CERoles.WIRE, CERoles.CONNECTION_PATH}:
+        raise ValueError(f"Role {role!r} is not an electrical device occurrence role.")
+    _add_property(project, "App::PropertyLinkList", "ElectricalDevices", "Electrical Graph", "Typed electrical device occurrences owned by this project")
+    _append_unique_link(project, "ElectricalDevices", device)
+
+
+def materialize_electrical_device(
+    document,
+    tag: str,
+    *,
+    role: str = CERoles.FIELD_DEVICE,
+    identity: str | None = None,
+    manufacturer: str = "",
+    part_number: str = "",
+    description: str = "",
+):
+    """Create and immediately identify/register a typed electrical occurrence."""
+
+    clean_tag = str(tag).strip()
+    if not clean_tag:
+        raise ValueError("Electrical device requires a tag.")
+    candidate_identity = identity or new_ce_identity()
+    if candidate_identity in _identity_index(document):
+        raise ValueError(f"CE identity is already materialized: {candidate_identity}")
+    obj = document.addObject("App::FeaturePython", "CE_Device")
+    ElectricalDeviceObject(obj, role, candidate_identity)
+    for name, value, description_text in (
+        ("Tag", clean_tag, "Device tag"),
+        ("Manufacturer", manufacturer, "Manufacturer"),
+        ("PartNumber", part_number, "Part number"),
+        ("Description", description, "Device description"),
+    ):
+        _add_property(obj, "App::PropertyString", name, "Electrical Device", description_text)
+        setattr(obj, name, value)
+    project = _project_object(document)
+    if project is not None:
+        register_electrical_device(project, obj)
+    return obj
 
 
 def _route_json(route: tuple[RoutePoint, ...]) -> list[str]:
@@ -194,6 +241,20 @@ class ElectricalSignalObject:
 
     def onDocumentRestored(self, obj):
         ensure_object_identity(obj, CERoles.SIGNAL, getattr(obj, "CEIdentity", ""))
+
+
+class ElectricalDeviceObject:
+    def __init__(self, obj, role: str, identity: str):
+        obj.Proxy = self
+        self.Type = "ElectricalDeviceObject"
+        self.Role = role
+        ensure_object_identity(obj, role, identity)
+
+    def execute(self, obj):
+        return None
+
+    def onDocumentRestored(self, obj):
+        ensure_object_identity(obj, self.Role, getattr(obj, "CEIdentity", ""))
 
 
 class ElectricalTerminalObject:

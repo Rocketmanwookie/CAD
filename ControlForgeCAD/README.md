@@ -54,8 +54,14 @@ user-facing creation/edit command and whole-project reference validation.
 path creates or safely reuses its signal object, registers the signal and path on
 the project, and permits reconstruction of the validated domain path from direct
 FreeCAD links. **Validate Controls Project** reports broken typed links and
-whole-project electrical graph findings. Typed device registration and the path
-editor remain the next user-facing increment.
+whole-project electrical graph findings. The path editor remains the next
+user-facing increment.
+
+Typed field devices can now be created with an immutable identity and
+`electrical.field_device` role before any terminal refers to them. Starter panel
+creation automatically registers the PLC controller and terminal strip as
+project electrical-device occurrences. This establishes resolvable owner IDs for
+PLC-channel, cabinet-terminal, and device-terminal objects.
 
 The pure-Python `controls_wb.missing_data.missing_data_matrix()` helper can build a structured missing-data matrix from a `ProjectIntake` payload or a `CE_Project`-style object without FreeCAD installed. Matrix rows include the required fact, current value, question ID, source records, verification/approval booleans, status, severity, finding, and recommended next action.
 The companion `controls_wb.missing_data.missing_data_csv()` helper serializes those rows to a deterministic CSV export for spreadsheet review.

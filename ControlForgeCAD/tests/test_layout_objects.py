@@ -9,6 +9,7 @@ from controls_wb.model.layout import (
     layout_object_metadata,
     starter_layout_specs_for_project,
 )
+from controls_wb.model.project import create_or_update_project
 
 
 class FakeLayoutObject:
@@ -182,3 +183,16 @@ def test_bom_export_includes_starter_layout_objects_with_metadata():
         "PartNumber": "PLC-STARTER",
         "Quantity": 1,
     }
+
+
+def test_starter_plc_and_terminal_strip_register_as_project_devices():
+    document = FakeDocument()
+    project = create_or_update_project(document)
+
+    objects = create_starter_layout_objects(document)
+
+    assert [obj.CERole for obj in project.ElectricalDevices] == [
+        CERoles.TERMINAL_STRIP,
+        CERoles.PLC_CONTROLLER,
+    ]
+    assert project.ElectricalDevices == [objects[3], objects[4]]

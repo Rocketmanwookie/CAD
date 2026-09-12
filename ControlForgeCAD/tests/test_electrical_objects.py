@@ -2,7 +2,11 @@
 
 from controls_wb.electrical_path import ElectricalConnectionPath, RoutePoint, TerminalEndpoint, WireSegment
 from controls_wb.identity import CERoles, new_ce_identity
-from controls_wb.model.electrical import electrical_path_from_object, materialize_electrical_path
+from controls_wb.model.electrical import (
+    electrical_path_from_object,
+    materialize_electrical_device,
+    materialize_electrical_path,
+)
 from controls_wb.model.project import create_or_update_project
 
 
@@ -95,3 +99,20 @@ def test_materialized_signal_and_path_register_on_project_aggregate():
 
     assert project.ElectricalSignals == [result.signal_object]
     assert project.ElectricalPaths == [result.path_object]
+
+
+def test_materialized_device_receives_identity_role_and_project_registration_immediately():
+    document = FakeDocument()
+    project = create_or_update_project(document)
+
+    device = materialize_electrical_device(
+        document,
+        "LS-001",
+        manufacturer="Example",
+        part_number="PROX-1",
+        description="Proximity sensor",
+    )
+
+    assert device.CERole == CERoles.FIELD_DEVICE
+    assert device.Tag == "LS-001"
+    assert device in project.ElectricalDevices

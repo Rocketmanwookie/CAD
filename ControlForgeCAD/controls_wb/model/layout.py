@@ -252,8 +252,16 @@ def create_layout_object(document, spec: LayoutObjectSpec):
 def create_starter_layout_objects(document=None) -> list[object]:
     if document is None:
         document = App.ActiveDocument
-    specs = starter_layout_specs_for_project(_project_object(document))
-    return [create_layout_object(document, spec) for spec in specs]
+    project = _project_object(document)
+    specs = starter_layout_specs_for_project(project)
+    objects = [create_layout_object(document, spec) for spec in specs]
+    if project is not None and (hasattr(project, "addProperty") or hasattr(project, "ElectricalDevices")):
+        from controls_wb.model.electrical import register_electrical_device
+
+        for obj in objects:
+            if obj.CERole in {CERoles.PLC_CONTROLLER, CERoles.TERMINAL_STRIP}:
+                register_electrical_device(project, obj)
+    return objects
 
 
 class ControlsLayoutObject:

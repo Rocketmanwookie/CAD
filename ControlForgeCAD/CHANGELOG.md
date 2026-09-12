@@ -43,6 +43,9 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - Typed signal objects and `CE_Project` signal/path/device link collections with
   canonical fact IDs, automatic path registration, signal reuse/tag conflict
   protection, typed path reconstruction, and FreeCAD validation-command output.
+- Typed field-device occurrence creation and project registration, plus automatic
+  electrical-device registration for placed PLC controller and terminal-strip
+  layout objects so terminal owner identities resolve to project objects.
 - Initial repository seed.
 - FreeCAD external workbench bootstrap files: `Init.py` and `InitGui.py`.
 - Draft controls-project data model.

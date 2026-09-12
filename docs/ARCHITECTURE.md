@@ -225,7 +225,10 @@ the canonical fact registry. Path materialization creates or reuses one typed
 signal, establishes direct signal/path ownership links, and registers both on the
 project. The validation command reconstructs paths from these object links and
 feeds them into whole-project semantic validation. Device registration is the
-remaining owner-reference bridge.
+owner-reference bridge: new field devices receive identity and role before
+registration, and starter PLC-controller and terminal-strip layout occurrences
+register automatically. Terminals can therefore resolve owners through the
+project device collection rather than relying on untracked identifiers.
 
 ## 6. Principal object contracts
 

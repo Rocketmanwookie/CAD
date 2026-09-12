@@ -172,8 +172,10 @@ starting digital-twin runtime work.
   `CE_Project` aggregate; register materialized signals and paths automatically.
 - [x] Connect typed electrical graph reconstruction and whole-project findings to
   the existing FreeCAD validation command.
-- [ ] Register typed device occurrences on `ElectricalDevices` and add the
-  user-facing path create/edit workflow.
+- [x] Add typed field-device creation with immediate identity/role assignment and
+  project registration; automatically register placed PLC controllers and
+  terminal strips as electrical device occurrences.
+- [ ] Add the user-facing path create/edit workflow.
 - [x] Add a standalone namespace-correct, XSD-validated connection-path XML
   contract with deterministic round trips and semantic continuity validation.
 - [x] Add route-derived wire length, conductor size/color/function/conduit fields
