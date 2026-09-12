@@ -142,6 +142,14 @@ Starter layout objects currently include:
 
 These layout objects are **partial engineering models**. They establish object identity and metadata contracts but do not yet constitute a complete electrical-panel design or automated placement engine.
 
+Typed continuous electrical objects now include `ElectricalPathObject`,
+`ElectricalTerminalObject`, and `ElectricalWireObject`. The path owns ordered
+FreeCAD link lists; wires hold direct links plus redundant immutable endpoint IDs
+for validation and interchange. Route points remain ordered millimetre records
+and drive the stored calculated length. Materialization preflights the complete
+identity set so collisions fail before document mutation begins. User-facing
+editing and CEProject aggregate persistence remain application-layer work.
+
 ### 5.3 Application service layer
 
 **Responsibilities**

@@ -161,8 +161,11 @@ starting digital-twin runtime work.
   terminal through ordered cabinet terminal levels and wire segments to the
   field-device terminal, including route-derived length and shared wiring/I/O
   schedule projections.
-- [ ] Persist continuous paths on typed FreeCAD objects and in namespace-correct
-  CEProject XML with identity/reference validation.
+- [x] Materialize continuous paths as typed FreeCAD path, terminal, and wire
+  objects with ordered links, immediate identity/role assignment, route/length
+  properties, and preflight duplicate-identity rejection.
+- [ ] Embed continuous paths in the next namespace-correct CEProject schema
+  revision with cross-document identity/reference validation.
 - [x] Add a standalone namespace-correct, XSD-validated connection-path XML
   contract with deterministic round trips and semantic continuity validation.
 - [x] Add route-derived wire length, conductor size/color/function/conduit fields

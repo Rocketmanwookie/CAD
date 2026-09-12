@@ -42,6 +42,13 @@ same identity-safe path. The standalone connection-path XML vocabulary is
 namespace-correct and XSD validated; persistence in typed FreeCAD terminal/wire
 objects and the next integrated CEProject schema revision are still in progress.
 
+Continuous paths can now be materialized as typed FreeCAD document objects. A
+path object owns ordered terminal and wire link lists; terminal objects retain
+their owner identity, role, and designation; wire objects link directly to their
+endpoint terminals and persist route points, calculated length, conductor size,
+color, circuit function, and conduit identity. The next integration step is the
+user-facing creation/edit command and inclusion in the main CEProject document.
+
 The pure-Python `controls_wb.missing_data.missing_data_matrix()` helper can build a structured missing-data matrix from a `ProjectIntake` payload or a `CE_Project`-style object without FreeCAD installed. Matrix rows include the required fact, current value, question ID, source records, verification/approval booleans, status, severity, finding, and recommended next action.
 The companion `controls_wb.missing_data.missing_data_csv()` helper serializes those rows to a deterministic CSV export for spreadsheet review.
 

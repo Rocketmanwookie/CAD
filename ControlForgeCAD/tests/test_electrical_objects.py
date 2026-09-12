@@ -1,0 +1,81 @@
+# SPDX-License-Identifier: MIT
+
+from controls_wb.electrical_path import ElectricalConnectionPath, RoutePoint, TerminalEndpoint, WireSegment
+from controls_wb.identity import CERoles, new_ce_identity
+from controls_wb.model.electrical import materialize_electrical_path
+
+
+class FakeObject:
+    def __init__(self, name):
+        self.Name = name
+        self.PropertiesList = []
+
+    def addProperty(self, property_type, name, group, description):
+        self.PropertiesList.append(name)
+        return self
+
+    def setEditorMode(self, name, mode):
+        pass
+
+
+class FakeDocument:
+    def __init__(self):
+        self.Objects = []
+
+    def addObject(self, object_type, name):
+        obj = FakeObject(name)
+        obj.ObjectType = object_type
+        self.Objects.append(obj)
+        return obj
+
+
+def _path():
+    plc = TerminalEndpoint(new_ce_identity(), CERoles.PLC_CHANNEL_TERMINAL, new_ce_identity(), "PLC1:X1.0")
+    cabinet = TerminalEndpoint(new_ce_identity(), CERoles.CABINET_TERMINAL, new_ce_identity(), "TB1:1")
+    device = TerminalEndpoint(new_ce_identity(), CERoles.DEVICE_TERMINAL, new_ce_identity(), "LS1:1")
+    first = WireSegment(
+        new_ce_identity(), plc.identity, cabinet.identity, "W-001",
+        conductor_size="18 AWG", color="blue", circuit_function="dc_control",
+        route=(RoutePoint(0, 0, 0), RoutePoint(0, 100, 0)),
+    )
+    second = WireSegment(
+        new_ce_identity(), cabinet.identity, device.identity, "W-002",
+        conductor_size="18 AWG", color="blue", circuit_function="dc_control",
+        route=(RoutePoint(0, 100, 0), RoutePoint(0, 100, 250)),
+    )
+    return ElectricalConnectionPath(new_ce_identity(), new_ce_identity(), "DI-0001", (plc, cabinet, device), (first, second))
+
+
+def test_materialized_path_creates_typed_identity_safe_linked_objects():
+    document = FakeDocument()
+    path = _path()
+
+    result = materialize_electrical_path(document, path)
+
+    assert len(document.Objects) == 6
+    assert result.path_object.CEIdentity == path.identity
+    assert result.path_object.CERole == CERoles.CONNECTION_PATH
+    assert result.path_object.TerminalObjects == list(result.terminal_objects)
+    assert result.path_object.WireObjects == list(result.wire_objects)
+    assert [obj.CEIdentity for obj in result.terminal_objects] == [item.identity for item in path.terminals]
+    assert [obj.CERole for obj in result.terminal_objects] == [item.role for item in path.terminals]
+    assert result.wire_objects[0].FromTerminal is result.terminal_objects[0]
+    assert result.wire_objects[0].ToTerminal is result.terminal_objects[1]
+    assert result.wire_objects[0].CalculatedLength == "100.0 mm"
+    assert result.wire_objects[1].CalculatedLength == "250.0 mm"
+
+
+def test_materialization_rejects_existing_identity_before_adding_objects():
+    document = FakeDocument()
+    path = _path()
+    existing = document.addObject("App::FeaturePython", "Existing")
+    existing.CEIdentity = path.terminals[0].identity
+
+    try:
+        materialize_electrical_path(document, path)
+    except ValueError as exc:
+        assert "already materialized" in str(exc)
+    else:
+        raise AssertionError("Expected duplicate identity rejection")
+
+    assert document.Objects == [existing]

@@ -31,6 +31,9 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - Namespace-correct `ceproject.connection-path/1.0` XML serialization and XSD for
   continuous terminal/wire paths, including identities, roles, routing points,
   length fields, conductor data, ordered sequences, and deterministic round trips.
+- Typed FreeCAD path, terminal, and wire objects that preserve CE identities and
+  roles, own ordered object links, bind each wire to its terminal endpoints, keep
+  route and conductor metadata, and reject identity collisions before placement.
 - Initial repository seed.
 - FreeCAD external workbench bootstrap files: `Init.py` and `InitGui.py`.
 - Draft controls-project data model.

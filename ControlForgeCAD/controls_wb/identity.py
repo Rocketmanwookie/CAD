@@ -21,6 +21,7 @@ class CERoles:
     DEVICE_TERMINAL = "electrical.device_terminal"
     WIRE = "electrical.wire"
     SIGNAL = "electrical.signal"
+    CONNECTION_PATH = "electrical.connection_path"
 
 
 KNOWN_ROLES = frozenset(
@@ -36,6 +37,7 @@ KNOWN_ROLES = frozenset(
         CERoles.DEVICE_TERMINAL,
         CERoles.WIRE,
         CERoles.SIGNAL,
+        CERoles.CONNECTION_PATH,
     }
 )
 
