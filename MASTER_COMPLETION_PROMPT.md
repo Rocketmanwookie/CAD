@@ -171,6 +171,19 @@ this graph. They must not become competing sources of truth.
 ## Schematics, ladders, terminals, and wiring
 
 - Build standards-profiled symbol definitions and intelligent component pins.
+- Treat an applicable equipment-library record as incomplete until it has at
+  least one schematic symbol definition or an explicit documented exception.
+- Provide separate IEC and NFPA/JIC variants where the representations differ;
+  never silently relabel one profile as the other.
+- Map every symbol pin to a stable catalog terminal definition and every placed
+  symbol occurrence to the same device occurrence used by the 3D model, wiring
+  graph, BOM, terminal plan, I/O schedule, and future runtime adapter.
+- Support parent/child symbol families such as contactor coil/contacts,
+  relay coil/contacts, breaker auxiliaries, multisection PLC I/O, safety-device
+  channels, illuminated operators, and stack-light elements.
+- Store connection point, orientation, default tag family, terminal designation,
+  normally-open/normally-closed state, cross-reference key, and source/provenance
+  as structured data rather than inferring them from drawn geometry.
 - Model smart nets rather than drawing disconnected lines.
 - Support deterministic wire/tag/address numbering, junctions, source/destination
   continuation, parent/child cross-reference, and project-wide regeneration.

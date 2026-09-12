@@ -33,6 +33,10 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Changed
 
+- Made intelligent schematic symbols a required companion contract for
+  applicable equipment records, including IEC and NFPA/JIC variants, structured
+  terminal pins, parent/child cross-references, and links to the same device
+  occurrence used by 3D, wiring, BOM, and schedule projections.
 - Defined the FreeCAD Cables workbench as the target physical routing engine;
   ControlForgeCAD owns electrical semantics and schedules and will link them to
   Cables route objects, retaining its current Part polyline only as a fallback.

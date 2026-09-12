@@ -278,6 +278,21 @@ starting digital-twin runtime work.
 
 ## 7. Standards and interoperability watchlist
 
+### Schematic-symbol library
+
+- [ ] Define a namespace-correct, XSD-validated neutral symbol-library contract
+  with immutable definition/occurrence identity separation and structured pins.
+- [ ] Seed IEC and NFPA/JIC variants for PLC CPU and I/O modules, power supplies,
+  terminal blocks, fuses, breakers, contactor coils and contacts, overloads,
+  safety relays, emergency stops, illuminated buttons, pull-rope switches, limit
+  switches, stack-light elements, HMIs, receptacles, and two-wire 4–20 mA
+  temperature/pressure transmitters.
+- [ ] Add parent/child cross-references, terminal/pin maps, insertion points,
+  rotation/mirroring rules, and device-tag propagation.
+- [ ] Link every placed symbol occurrence to the same equipment occurrence and
+  `CEIdentity` used by the 3D object, electrical path, BOM, and schedules.
+- [ ] Add deterministic schematic-sheet and ladder/rung rendering from smart nets.
+
 - [ ] FreeCAD workbench/addon architecture.
 - [ ] FreeCAD BIM and IFC workflows.
 - [ ] FreeCAD Spreadsheet/BOM/TechDraw resources.

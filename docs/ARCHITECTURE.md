@@ -304,7 +304,19 @@ new UUID identities.
 - geometry may be placeholder geometry during starter phases;
 - exporters must ignore unsupported objects rather than infer unreliable part data.
 
-### 6.3 Validation finding
+### 6.3 Schematic symbol definitions and occurrences
+
+Schematic symbols are standards-profiled catalog definitions plus placed
+occurrences, not disconnected drawing blocks. Applicable equipment definitions
+must link to explicit IEC and/or NFPA/JIC variants. Symbol pins map to stable
+catalog terminal definitions, and a placed symbol occurrence maps to the same
+device occurrence referenced by the 3D model, typed electrical graph, BOM, and
+schedules. Parent/child symbols—such as a contactor coil and auxiliary contacts
+or a PLC module split across drawing sections—share the device occurrence while
+retaining distinct symbol-occurrence identities. This symbol-library contract is
+planned; the current typed path graph supplies its future smart-net input.
+
+### 6.4 Validation finding
 
 A validation finding should identify:
 
