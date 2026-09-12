@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import json
 import math
+import csv
 from dataclasses import dataclass
+from io import StringIO
 from xml.etree import ElementTree as ET
 
 from controls_wb.identity import CERoles, is_ce_identity, validate_ce_role
@@ -280,6 +282,37 @@ def io_schedule_row(path: ElectricalConnectionPath) -> dict[str, object]:
         "WireTags": ";".join(wire.wire_tag for wire in path.wires),
         "TotalLengthMm": path.total_length_mm,
     }
+
+
+WIRING_SCHEDULE_HEADERS = (
+    "PathIdentity", "SignalIdentity", "SignalTag", "WireIdentity", "WireTag",
+    "FromTerminalIdentity", "FromTerminal", "ToTerminalIdentity", "ToTerminal",
+    "ConductorSize", "Color", "CircuitFunction", "ConduitIdentity", "LengthMm",
+)
+
+IO_PATH_SCHEDULE_HEADERS = (
+    "PathIdentity", "SignalIdentity", "SignalTag", "PLCTerminalIdentity",
+    "PLCTerminal", "DeviceTerminalIdentity", "DeviceTerminal", "TerminalPath",
+    "WireTags", "TotalLengthMm",
+)
+
+
+def wiring_schedule_csv(paths: tuple[ElectricalConnectionPath, ...]) -> str:
+    output = StringIO()
+    writer = csv.DictWriter(output, fieldnames=WIRING_SCHEDULE_HEADERS, lineterminator="\n")
+    writer.writeheader()
+    for path in sorted(paths, key=lambda item: (item.signal_tag, item.identity)):
+        writer.writerows(wiring_schedule_rows(path))
+    return output.getvalue()
+
+
+def io_path_schedule_csv(paths: tuple[ElectricalConnectionPath, ...]) -> str:
+    output = StringIO()
+    writer = csv.DictWriter(output, fieldnames=IO_PATH_SCHEDULE_HEADERS, lineterminator="\n")
+    writer.writeheader()
+    for path in sorted(paths, key=lambda item: (item.signal_tag, item.identity)):
+        writer.writerow(io_schedule_row(path))
+    return output.getvalue()
 
 
 def _xml_tag(name: str) -> str:

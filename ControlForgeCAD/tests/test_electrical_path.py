@@ -13,6 +13,8 @@ from controls_wb.electrical_path import (
     io_schedule_row,
     serialize_connection_path,
     wiring_schedule_rows,
+    wiring_schedule_csv,
+    io_path_schedule_csv,
     connection_path_from_xml,
     connection_path_to_xml,
 )
@@ -103,3 +105,23 @@ def test_wiring_and_io_schedules_are_projections_of_same_path():
     assert io["SignalIdentity"] == path.signal_identity
     assert io["TerminalPath"] == "PLC1:X1.0 > TB1:1-IN > TB1:1-OUT > LS1:1"
     assert io["TotalLengthMm"] == 155.0
+
+
+def test_canonical_schedule_csv_exports_include_identity_size_color_and_length():
+    path = _path()
+    enriched = replace(
+        path,
+        wires=tuple(
+            replace(wire, conductor_size="18 AWG", color="blue", circuit_function="dc_control")
+            for wire in path.wires
+        ),
+    )
+
+    wiring_csv = wiring_schedule_csv((enriched,))
+    io_csv = io_path_schedule_csv((enriched,))
+
+    assert "PathIdentity,SignalIdentity,SignalTag,WireIdentity" in wiring_csv
+    assert ",18 AWG,blue,dc_control," in wiring_csv
+    assert "W-001" in wiring_csv and ",50.0\n" in wiring_csv
+    assert "PLCTerminalIdentity,PLCTerminal,DeviceTerminalIdentity" in io_csv
+    assert "PLC1:X1.0 > TB1:1-IN > TB1:1-OUT > LS1:1" in io_csv

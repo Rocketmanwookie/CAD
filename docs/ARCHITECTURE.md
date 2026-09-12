@@ -230,6 +230,14 @@ registration, and starter PLC-controller and terminal-strip layout occurrences
 register automatically. Terminals can therefore resolve owners through the
 project device collection rather than relying on untracked identifiers.
 
+#### Typed electrical schedules
+
+**Implemented.** `CE_ExportElectricalSchedules` reconstructs typed paths from the
+active project and writes a wiring schedule with one row per wire segment plus an
+I/O path schedule with one row per signal path. Both include stable identities
+and derive endpoint/terminal/length data from the same canonical graph. The
+legacy connection-record export remains available during migration.
+
 ## 6. Principal object contracts
 
 ### 6.1 `CE_Project`

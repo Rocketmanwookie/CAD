@@ -46,6 +46,9 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - Typed field-device occurrence creation and project registration, plus automatic
   electrical-device registration for placed PLC controller and terminal-strip
   layout objects so terminal owner identities resolve to project objects.
+- `CE_ExportElectricalSchedules` command and deterministic typed-graph wiring/I/O
+  path CSVs containing identities, ordered endpoints, terminal paths, conductor
+  size/color/function, conduit identity, segment length, and total path length.
 - Initial repository seed.
 - FreeCAD external workbench bootstrap files: `Init.py` and `InitGui.py`.
 - Draft controls-project data model.

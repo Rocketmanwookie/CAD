@@ -176,6 +176,8 @@ starting digital-twin runtime work.
   project registration; automatically register placed PLC controllers and
   terminal strips as electrical device occurrences.
 - [ ] Add the user-facing path create/edit workflow.
+- [x] Add a workbench command that exports canonical wiring and I/O path CSV
+  schedules from the typed electrical graph.
 - [x] Add a standalone namespace-correct, XSD-validated connection-path XML
   contract with deterministic round trips and semantic continuity validation.
 - [x] Add route-derived wire length, conductor size/color/function/conduit fields

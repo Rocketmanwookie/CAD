@@ -101,6 +101,7 @@ if Gui is not None:
                 export_io_list,
                 export_missing_data_csv,
                 export_connection_schedule,
+                export_electrical_schedules,
                 missing_data,
                 new_project,
                 validate_project,

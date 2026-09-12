@@ -34,6 +34,7 @@ integraCAD Open is the integration-first controls-engineering project; ControlFo
 | `CE_ExportIOList` | Export I/O List | Exports a deterministic starter I/O list CSV to `~/integracab_io_list.csv` from explicit user-labeled signals plus the current project DI/DO/AI/AO counts. |
 | `CE_ExportMissingDataCSV` | Export Missing Data CSV | Exports the active controls project missing-data matrix to `~/integracab_missing_data.csv`. |
 | `CE_ExportConnectionSchedule` | Export Connection Schedule | Exports persisted connection records to `~/integracad_connection_schedule.csv`. |
+| `CE_ExportElectricalSchedules` | Export Electrical Schedules | Exports canonical typed-graph wiring and I/O path schedules with identities, endpoints, terminal chain, conductor metadata, and calculated length. |
 
 The continuous electrical-path domain contract follows a signal from its PLC
 channel terminal through ordered wire segments and cabinet terminal levels to
@@ -62,6 +63,12 @@ Typed field devices can now be created with an immutable identity and
 creation automatically registers the PLC controller and terminal strip as
 project electrical-device occurrences. This establishes resolvable owner IDs for
 PLC-channel, cabinet-terminal, and device-terminal objects.
+
+**Export Electrical Schedules** writes
+`~/integracad_wiring_schedule.csv` and
+`~/integracad_io_path_schedule.csv`. The wiring file has one row per physical
+wire segment; the I/O path file has one row per signal path. Both are generated
+from the same reconstructed and validated typed graph.
 
 The pure-Python `controls_wb.missing_data.missing_data_matrix()` helper can build a structured missing-data matrix from a `ProjectIntake` payload or a `CE_Project`-style object without FreeCAD installed. Matrix rows include the required fact, current value, question ID, source records, verification/approval booleans, status, severity, finding, and recommended next action.
 The companion `controls_wb.missing_data.missing_data_csv()` helper serializes those rows to a deterministic CSV export for spreadsheet review.
