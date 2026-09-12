@@ -40,6 +40,9 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 - Whole-project electrical graph validation for duplicate identities, dangling
   signals/terminal owners, cross-signal terminal conflicts, inconsistent signal
   tags, and missing wire size/color/length schedule data.
+- Typed signal objects and `CE_Project` signal/path/device link collections with
+  canonical fact IDs, automatic path registration, signal reuse/tag conflict
+  protection, typed path reconstruction, and FreeCAD validation-command output.
 - Initial repository seed.
 - FreeCAD external workbench bootstrap files: `Init.py` and `InitGui.py`.
 - Draft controls-project data model.

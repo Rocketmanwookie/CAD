@@ -20,6 +20,7 @@ except Exception:  # pragma: no cover
 @dataclass(frozen=True)
 class MaterializedElectricalPath:
     path_object: object
+    signal_object: object
     terminal_objects: tuple[object, ...]
     wire_objects: tuple[object, ...]
 
@@ -41,7 +42,7 @@ def _identity_index(document) -> dict[str, object]:
     return index
 
 
-def _assert_identities_available(document, path: ElectricalConnectionPath) -> None:
+def _assert_identities_available(document, path: ElectricalConnectionPath) -> dict[str, object]:
     existing = _identity_index(document)
     requested = [path.identity]
     requested.extend(terminal.identity for terminal in path.terminals)
@@ -49,6 +50,21 @@ def _assert_identities_available(document, path: ElectricalConnectionPath) -> No
     collisions = sorted(identity for identity in requested if identity in existing)
     if collisions:
         raise ValueError(f"CE identities are already materialized: {', '.join(collisions)}")
+    return existing
+
+
+def _project_object(document):
+    for obj in getattr(document, "Objects", []) or []:
+        if getattr(obj, "CERole", "") == CERoles.PROJECT or hasattr(obj, "ProjectId"):
+            return obj
+    return None
+
+
+def _append_unique_link(obj, property_name: str, linked_obj) -> None:
+    links = list(getattr(obj, property_name, []) or [])
+    if linked_obj not in links:
+        links.append(linked_obj)
+        setattr(obj, property_name, links)
 
 
 def _route_json(route: tuple[RoutePoint, ...]) -> list[str]:
@@ -66,18 +82,34 @@ def materialize_electrical_path(document, path: ElectricalConnectionPath) -> Mat
     """Create an ordered path and typed terminal/wire objects atomically at the caller boundary."""
 
     path.validate()
-    _assert_identities_available(document, path)
+    existing = _assert_identities_available(document, path)
+
+    signal_obj = existing.get(path.signal_identity)
+    if signal_obj is not None:
+        if getattr(signal_obj, "CERole", "") != CERoles.SIGNAL:
+            raise ValueError(f"Signal identity {path.signal_identity} belongs to a non-signal object.")
+        existing_tag = str(getattr(signal_obj, "SignalTag", "") or "")
+        if existing_tag and existing_tag != path.signal_tag:
+            raise ValueError(f"Signal identity {path.signal_identity} has conflicting tags.")
+    else:
+        signal_obj = document.addObject("App::FeaturePython", "CE_Signal")
+        ElectricalSignalObject(signal_obj, path.signal_identity)
+        _add_property(signal_obj, "App::PropertyString", "SignalTag", "Electrical Signal", "Signal tag")
+        _add_property(signal_obj, "App::PropertyLinkList", "ConnectionPaths", "Electrical Signal", "Paths carrying this signal")
+        signal_obj.SignalTag = path.signal_tag
 
     path_obj = document.addObject("App::FeaturePython", "CE_ConnectionPath")
     ElectricalPathObject(path_obj, path.identity)
     _add_property(path_obj, "App::PropertyString", "PathFormat", "Electrical Path", "Serialized path contract")
     _add_property(path_obj, "App::PropertyString", "SignalIdentity", "Electrical Path", "CE identity of signal")
     _add_property(path_obj, "App::PropertyString", "SignalTag", "Electrical Path", "Signal tag")
+    _add_property(path_obj, "App::PropertyLink", "SignalObject", "Electrical Path", "Typed signal object")
     _add_property(path_obj, "App::PropertyLinkList", "TerminalObjects", "Electrical Path", "Ordered terminal objects")
     _add_property(path_obj, "App::PropertyLinkList", "WireObjects", "Electrical Path", "Ordered wire objects")
     path_obj.PathFormat = "ceproject.connection-path/1.0"
     path_obj.SignalIdentity = path.signal_identity
     path_obj.SignalTag = path.signal_tag
+    path_obj.SignalObject = signal_obj
 
     terminal_objects = []
     for terminal in path.terminals:
@@ -127,7 +159,15 @@ def materialize_electrical_path(document, path: ElectricalConnectionPath) -> Mat
 
     path_obj.TerminalObjects = terminal_objects
     path_obj.WireObjects = wire_objects
-    return MaterializedElectricalPath(path_obj, tuple(terminal_objects), tuple(wire_objects))
+    _append_unique_link(signal_obj, "ConnectionPaths", path_obj)
+    project = _project_object(document)
+    if project is not None:
+        _add_property(project, "App::PropertyLinkList", "ElectricalSignals", "Electrical Graph", "Typed signal objects owned by this project")
+        _add_property(project, "App::PropertyLinkList", "ElectricalPaths", "Electrical Graph", "Typed continuous connection paths owned by this project")
+        _add_property(project, "App::PropertyLinkList", "ElectricalDevices", "Electrical Graph", "Typed electrical device occurrences owned by this project")
+        _append_unique_link(project, "ElectricalSignals", signal_obj)
+        _append_unique_link(project, "ElectricalPaths", path_obj)
+    return MaterializedElectricalPath(path_obj, signal_obj, tuple(terminal_objects), tuple(wire_objects))
 
 
 class ElectricalPathObject:
@@ -141,6 +181,19 @@ class ElectricalPathObject:
 
     def onDocumentRestored(self, obj):
         ensure_object_identity(obj, CERoles.CONNECTION_PATH, getattr(obj, "CEIdentity", ""))
+
+
+class ElectricalSignalObject:
+    def __init__(self, obj, identity: str):
+        obj.Proxy = self
+        self.Type = "ElectricalSignalObject"
+        ensure_object_identity(obj, CERoles.SIGNAL, identity)
+
+    def execute(self, obj):
+        return None
+
+    def onDocumentRestored(self, obj):
+        ensure_object_identity(obj, CERoles.SIGNAL, getattr(obj, "CEIdentity", ""))
 
 
 class ElectricalTerminalObject:
@@ -183,3 +236,80 @@ def _route_from_object(obj) -> tuple[RoutePoint, ...]:
     if [sequence for sequence, _ in points] != list(range(len(points))):
         raise ValueError("Wire route point sequence must be contiguous from zero.")
     return tuple(point for _, point in points)
+
+
+def electrical_path_from_object(path_obj) -> ElectricalConnectionPath:
+    """Reconstruct and validate a domain path from typed FreeCAD links."""
+
+    signal_obj = getattr(path_obj, "SignalObject", None)
+    signal_identity = str(getattr(path_obj, "SignalIdentity", "") or "")
+    if signal_obj is None or getattr(signal_obj, "CEIdentity", "") != signal_identity:
+        raise ValueError(f"Path {getattr(path_obj, 'CEIdentity', '')} has a broken signal-object link.")
+    terminals = tuple(
+        _terminal_from_object(obj) for obj in (getattr(path_obj, "TerminalObjects", []) or [])
+    )
+    wires = tuple(_wire_from_object(obj) for obj in (getattr(path_obj, "WireObjects", []) or []))
+    path = ElectricalConnectionPath(
+        identity=str(getattr(path_obj, "CEIdentity", "") or ""),
+        signal_identity=signal_identity,
+        signal_tag=str(getattr(path_obj, "SignalTag", "") or ""),
+        terminals=terminals,
+        wires=wires,
+    )
+    path.validate()
+    for wire_obj, wire in zip(getattr(path_obj, "WireObjects", []) or [], wires):
+        if getattr(getattr(wire_obj, "FromTerminal", None), "CEIdentity", "") != wire.from_terminal_identity:
+            raise ValueError(f"Wire {wire.identity} has a broken FromTerminal link.")
+        if getattr(getattr(wire_obj, "ToTerminal", None), "CEIdentity", "") != wire.to_terminal_identity:
+            raise ValueError(f"Wire {wire.identity} has a broken ToTerminal link.")
+    return path
+
+
+def electrical_paths_from_project(project) -> tuple[ElectricalConnectionPath, ...]:
+    return tuple(
+        electrical_path_from_object(obj)
+        for obj in (getattr(project, "ElectricalPaths", []) or [])
+    )
+
+
+def _terminal_from_object(obj):
+    from controls_wb.electrical_path import TerminalEndpoint
+
+    return TerminalEndpoint(
+        identity=str(getattr(obj, "CEIdentity", "") or ""),
+        role=str(getattr(obj, "CERole", "") or ""),
+        owner_identity=str(getattr(obj, "OwnerIdentity", "") or ""),
+        designation=str(getattr(obj, "Designation", "") or ""),
+        label=str(getattr(obj, "TerminalLabel", "") or ""),
+    )
+
+
+def _wire_from_object(obj):
+    from controls_wb.electrical_path import WireSegment
+
+    route = _route_from_object(obj)
+    specified_length = None if route else _length_mm(getattr(obj, "CalculatedLength", None))
+    return WireSegment(
+        identity=str(getattr(obj, "CEIdentity", "") or ""),
+        from_terminal_identity=str(getattr(obj, "FromTerminalIdentity", "") or ""),
+        to_terminal_identity=str(getattr(obj, "ToTerminalIdentity", "") or ""),
+        wire_tag=str(getattr(obj, "WireTag", "") or ""),
+        conductor_size=str(getattr(obj, "ConductorSize", "") or ""),
+        color=str(getattr(obj, "Color", "") or ""),
+        circuit_function=str(getattr(obj, "CircuitFunction", "") or ""),
+        conduit_identity=str(getattr(obj, "ConduitIdentity", "") or ""),
+        route=route,
+        specified_length_mm=specified_length,
+    )
+
+
+def _length_mm(value) -> float | None:
+    if value is None:
+        return None
+    numeric = getattr(value, "Value", value)
+    if isinstance(numeric, str):
+        numeric = numeric.removesuffix(" mm").strip()
+    try:
+        return float(numeric)
+    except (TypeError, ValueError):
+        return None

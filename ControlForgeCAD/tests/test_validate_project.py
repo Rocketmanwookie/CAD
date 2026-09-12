@@ -4,6 +4,7 @@ import json
 from types import SimpleNamespace
 
 from controls_wb.commands.validate_project import validate_document_objects
+from controls_wb.identity import new_ce_identity
 
 
 def test_validate_document_objects_reports_duplicate_tags():
@@ -118,3 +119,29 @@ def test_validate_document_objects_reports_blank_edited_project_property():
         "WARNING",
         "Sensor count or estimate is missing for selected deliverables. Ask: Mechanical / materials handling.",
     ) in messages
+
+
+def test_validate_document_objects_reports_broken_typed_electrical_graph():
+    path = SimpleNamespace(
+        CEIdentity=new_ce_identity(),
+        SignalIdentity=new_ce_identity(),
+        SignalObject=None,
+        TerminalObjects=[],
+        WireObjects=[],
+    )
+    project = SimpleNamespace(
+        ProjectId="CE-PROJECT-001",
+        ProjectName="Controls Project",
+        SchemaVersion="0.1.0",
+        Deliverables=[],
+        ElectricalPaths=[path],
+        ElectricalSignals=[],
+        ElectricalDevices=[],
+    )
+
+    messages = validate_document_objects([project])
+
+    assert any(
+        level == "ERROR" and "Electrical graph could not be reconstructed" in message
+        for level, message in messages
+    )

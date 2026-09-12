@@ -2,7 +2,8 @@
 
 from controls_wb.electrical_path import ElectricalConnectionPath, RoutePoint, TerminalEndpoint, WireSegment
 from controls_wb.identity import CERoles, new_ce_identity
-from controls_wb.model.electrical import materialize_electrical_path
+from controls_wb.model.electrical import electrical_path_from_object, materialize_electrical_path
+from controls_wb.model.project import create_or_update_project
 
 
 class FakeObject:
@@ -52,8 +53,12 @@ def test_materialized_path_creates_typed_identity_safe_linked_objects():
 
     result = materialize_electrical_path(document, path)
 
-    assert len(document.Objects) == 6
+    assert len(document.Objects) == 7
     assert result.path_object.CEIdentity == path.identity
+    assert result.signal_object.CEIdentity == path.signal_identity
+    assert result.signal_object.CERole == CERoles.SIGNAL
+    assert result.path_object.SignalObject is result.signal_object
+    assert result.signal_object.ConnectionPaths == [result.path_object]
     assert result.path_object.CERole == CERoles.CONNECTION_PATH
     assert result.path_object.TerminalObjects == list(result.terminal_objects)
     assert result.path_object.WireObjects == list(result.wire_objects)
@@ -63,6 +68,7 @@ def test_materialized_path_creates_typed_identity_safe_linked_objects():
     assert result.wire_objects[0].ToTerminal is result.terminal_objects[1]
     assert result.wire_objects[0].CalculatedLength == "100.0 mm"
     assert result.wire_objects[1].CalculatedLength == "250.0 mm"
+    assert electrical_path_from_object(result.path_object) == path
 
 
 def test_materialization_rejects_existing_identity_before_adding_objects():
@@ -79,3 +85,13 @@ def test_materialization_rejects_existing_identity_before_adding_objects():
         raise AssertionError("Expected duplicate identity rejection")
 
     assert document.Objects == [existing]
+
+
+def test_materialized_signal_and_path_register_on_project_aggregate():
+    document = FakeDocument()
+    project = create_or_update_project(document)
+
+    result = materialize_electrical_path(document, _path())
+
+    assert project.ElectricalSignals == [result.signal_object]
+    assert project.ElectricalPaths == [result.path_object]

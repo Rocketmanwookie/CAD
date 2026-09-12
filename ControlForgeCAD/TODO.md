@@ -168,8 +168,12 @@ starting digital-twin runtime work.
   import with typed round trips and duplicate path-identity validation.
 - [x] Add whole-project duplicate/dangling-reference validation across current
   paths, terminal owners, signals, terminal endpoints, and wires.
-- [ ] Connect whole-project electrical findings to the FreeCAD validation command
-  once device/signal/path collections are persisted on the project aggregate.
+- [x] Add typed signal/path/device link collections and canonical fact IDs to the
+  `CE_Project` aggregate; register materialized signals and paths automatically.
+- [x] Connect typed electrical graph reconstruction and whole-project findings to
+  the existing FreeCAD validation command.
+- [ ] Register typed device occurrences on `ElectricalDevices` and add the
+  user-facing path create/edit workflow.
 - [x] Add a standalone namespace-correct, XSD-validated connection-path XML
   contract with deterministic round trips and semantic continuity validation.
 - [x] Add route-derived wire length, conductor size/color/function/conduit fields

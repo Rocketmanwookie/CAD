@@ -32,6 +32,9 @@ class FactIds:
     INTAKE_QUESTIONS = "intake.questions"
     IO_SIGNALS = "signals.io"
     CONNECTION_RECORDS = "connections.records"
+    ELECTRICAL_SIGNALS = "electricalGraph.signals"
+    ELECTRICAL_PATHS = "electricalGraph.paths"
+    ELECTRICAL_DEVICES = "electricalGraph.devices"
     POWER_NOMINAL_VOLTAGE = "powerFeed.nominalVoltage"
     POWER_PHASE_COUNT = "powerFeed.phaseCount"
     POWER_CONFIGURATION = "powerFeed.configuration"
@@ -74,6 +77,9 @@ FACT_SPECS: tuple[FactSpec, ...] = (
     FactSpec(FactIds.INTAKE_QUESTIONS, "Intake questions", "intake", "Project manager", "IntakeQuestions"),
     FactSpec(FactIds.IO_SIGNALS, "I/O signals", "signals", "Controls lead", "IOSignals"),
     FactSpec(FactIds.CONNECTION_RECORDS, "Connection records", "connections", "Controls lead", "ConnectionRecords"),
+    FactSpec(FactIds.ELECTRICAL_SIGNALS, "Typed electrical signals", "electricalGraph", "Controls lead", "ElectricalSignals"),
+    FactSpec(FactIds.ELECTRICAL_PATHS, "Continuous electrical paths", "electricalGraph", "Controls lead", "ElectricalPaths"),
+    FactSpec(FactIds.ELECTRICAL_DEVICES, "Electrical device occurrences", "electricalGraph", "Controls lead", "ElectricalDevices"),
     FactSpec(FactIds.POWER_NOMINAL_VOLTAGE, "Nominal voltage", "powerFeed", "Electrical engineering", "NominalVoltage"),
     FactSpec(FactIds.POWER_PHASE_COUNT, "Phase count", "powerFeed", "Electrical engineering", "PhaseCount"),
     FactSpec(FactIds.POWER_CONFIGURATION, "Power configuration", "powerFeed", "Electrical engineering", "PowerConfiguration"),

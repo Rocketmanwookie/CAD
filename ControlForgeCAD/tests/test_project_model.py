@@ -82,6 +82,9 @@ def test_project_property_specs_expose_editable_intake_fields():
     assert specs["ExpansionPowerSupply"].group == "PLC / I/O"
     assert specs["IOExpansionSuggestion"].group == "PLC / I/O"
     assert specs["CommunicationProtocols"].property_type == "App::PropertyStringList"
+    assert specs["ElectricalSignals"].property_type == "App::PropertyLinkList"
+    assert specs["ElectricalPaths"].group == "Electrical Graph"
+    assert specs["ElectricalDevices"].property_type == "App::PropertyLinkList"
 
 
 def test_intake_to_project_properties_maps_starter_payload():

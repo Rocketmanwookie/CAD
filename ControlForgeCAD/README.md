@@ -49,6 +49,14 @@ endpoint terminals and persist route points, calculated length, conductor size,
 color, circuit function, and conduit identity. The next integration step is the
 user-facing creation/edit command and whole-project reference validation.
 
+`CE_Project` now owns typed `ElectricalSignals`, `ElectricalPaths`, and
+`ElectricalDevices` link collections with canonical fact IDs. Materializing a
+path creates or safely reuses its signal object, registers the signal and path on
+the project, and permits reconstruction of the validated domain path from direct
+FreeCAD links. **Validate Controls Project** reports broken typed links and
+whole-project electrical graph findings. Typed device registration and the path
+editor remain the next user-facing increment.
+
 The pure-Python `controls_wb.missing_data.missing_data_matrix()` helper can build a structured missing-data matrix from a `ProjectIntake` payload or a `CE_Project`-style object without FreeCAD installed. Matrix rows include the required fact, current value, question ID, source records, verification/approval booleans, status, severity, finding, and recommended next action.
 The companion `controls_wb.missing_data.missing_data_csv()` helper serializes those rows to a deterministic CSV export for spreadsheet review.
 

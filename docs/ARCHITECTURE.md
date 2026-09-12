@@ -216,8 +216,16 @@ terminal, and wire objects implement the persistence projection. A user-facing
 editor remains pending. Pure-domain whole-project validation now detects
 duplicate identities, dangling signal and terminal-owner references, terminal
 reuse across different signals, conflicting tags for one signal identity, and
-missing wire size, color, or length data. Wiring that validator into the existing
-FreeCAD validation command awaits project-level typed collections.
+missing wire size, color, or length data. The existing FreeCAD validation command
+now invokes this validator through the project-level typed collections.
+
+The `CE_Project` aggregate now provides typed `ElectricalSignals`,
+`ElectricalPaths`, and `ElectricalDevices` link collections, each registered in
+the canonical fact registry. Path materialization creates or reuses one typed
+signal, establishes direct signal/path ownership links, and registers both on the
+project. The validation command reconstructs paths from these object links and
+feeds them into whole-project semantic validation. Device registration is the
+remaining owner-reference bridge.
 
 ## 6. Principal object contracts
 
