@@ -26,6 +26,7 @@ integraCAD Open is the integration-first controls-engineering project; ControlFo
 | `CE_NewProject` | New Controls Project | Opens a project intake dialog for core project/customer/site/deliverable fields, combined phase/voltage selection, starter controlled-load lines for current estimating, enclosure rating checkboxes, XML-backed PLC make/line/CPU selection, typed DI/DO/AI/AO counts, compatible Ethernet/power dropdowns, communication protocol checkboxes, optional I/O accessories, setup source metadata, a remembered CEProject XML import selector, YAML/UML-derived setup import, and a link to the project setup hardware catalog guide. It creates or updates an editable `CE_Project` object and shows an I/O expansion planning popup. If Qt/PySide is unavailable, it creates the starter object and prints a warning. |
 | `CE_AddIOSignal` | Add I/O Signal | Opens an I/O signal dialog with selectable digital input, digital output, analog input, analog output, and relay types; user labels are stored as explicit signal rows with auto-generated tags and addresses. |
 | `CE_AddConnection` | Add Connection Record | Stores a traceable signal-to-terminal-to-wire record with field-device and PLC endpoint references. |
+| `CE_AddElectricalPath` | Add Electrical Path | Creates and registers a typed PLC-channel-to-cabinet-terminal-to-field-device path with immutable identities, three ordered wire segments, conductor metadata, standardized color resolution, and specified millimetre lengths. |
 | `CE_CreatePanel` | Create Control Panel | Creates starter placeholder layout objects for a panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module. |
 | `CE_ExportBOM` | Export BOM | Exports controls metadata rows from the active FreeCAD document to CSV. |
 | `CE_ValidateProject` | Validate Controls Project | Reports duplicate tags, missing controls metadata, starter intake missing-data findings, and verified/approved intake facts without source records. |
@@ -43,20 +44,26 @@ same identity-safe path. The standalone connection-path XML vocabulary is
 namespace-correct and XSD validated; typed FreeCAD persistence and embedding in
 the CEProject XML aggregate are implemented.
 
-Continuous paths can now be materialized as typed FreeCAD document objects. A
+Continuous paths can now be created through **Add Electrical Path** and
+materialized as typed FreeCAD document objects. The dialog selects registered
+PLC and terminal-strip occurrences, selects or creates an immediately identified
+field device through an explicit selector choice, and captures the complete
+three-wire terminal chain. A
 path object owns ordered terminal and wire link lists; terminal objects retain
 their owner identity, role, and designation; wire objects link directly to their
 endpoint terminals and persist route points, calculated length, conductor size,
-color, circuit function, and conduit identity. The next integration step is the
-user-facing creation/edit command and whole-project reference validation.
+color, circuit function, and conduit identity. Form normalization is tested
+outside FreeCAD, and the FreeCAD command wraps all mutations in one abortable
+document transaction. Interactive editing of an existing path and 3D route-point
+capture remain future increments.
 
 `CE_Project` now owns typed `ElectricalSignals`, `ElectricalPaths`, and
 `ElectricalDevices` link collections with canonical fact IDs. Materializing a
 path creates or safely reuses its signal object, registers the signal and path on
 the project, and permits reconstruction of the validated domain path from direct
 FreeCAD links. **Validate Controls Project** reports broken typed links and
-whole-project electrical graph findings. The path editor remains the next
-user-facing increment.
+whole-project electrical graph findings. Editing existing paths and capturing
+their 3D route points remain the next user-facing increments.
 
 Typed field devices can now be created with an immutable identity and
 `electrical.field_device` role before any terminal refers to them. Starter panel
@@ -189,6 +196,8 @@ Restart FreeCAD and select **Controls / Automation** from the workbench selector
 |---|---|
 | `CE_NewProject` | New Controls Project |
 | `CE_AddIOSignal` | Add I/O Signal |
+| `CE_AddConnection` | Add Connection Record |
+| `CE_AddElectricalPath` | Add Electrical Path |
 | `CE_CreatePanel` | Create Control Panel |
 | `CE_ValidateProject` | Validate Controls Project |
 | `CE_PreviewMissingData` | Preview Missing Data |
@@ -196,6 +205,8 @@ Restart FreeCAD and select **Controls / Automation** from the workbench selector
 | `CE_ExportCEProjectXML` | Export CEProject XML |
 | `CE_ExportIOList` | Export I/O List |
 | `CE_ExportMissingDataCSV` | Export Missing Data CSV |
+| `CE_ExportConnectionSchedule` | Export Connection Schedule |
+| `CE_ExportElectricalSchedules` | Export Electrical Schedules |
 
 Manual smoke validation:
 
@@ -214,11 +225,13 @@ Manual smoke validation:
 13. Run **Validate Controls Project** and confirm validation messages print to the FreeCAD console from the edited object values. Filled setup fields with source metadata should not report `missing_source`; they may still need verification or approval.
 14. Run **Add I/O Signal**, choose an I/O type, enter a label, and confirm Report View prints the generated tag and address.
 15. Run **Create Control Panel** and confirm `CE_Backplate`, `CE_DIN_Rail`, `CE_Wire_Duct`, `CE_Terminal_Strip`, and `CE_PLC_Rack` appear in the model tree with editable controls metadata.
-16. Run **Validate Controls Project** and confirm validation reads the project and starter layout metadata.
-17. Run **Export BOM** and confirm `~/controlforgecad_bom.csv` includes starter layout objects with tag/description/manufacturer/part-number data where assigned.
-18. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
-19. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written. If starter I/O remains unmapped, confirm Report View prints a concise summary and the CSV contains the detailed rows.
-20. Run **Export Missing Data CSV** and confirm `~/integracab_missing_data.csv` is written with one row per required intake fact.
+16. Run **Add Electrical Path**, select the registered PLC and terminal strip, select an existing field device or enter a new device tag, and submit the terminal/wire chain. Confirm one typed path, four typed terminals, three typed wires, and a signal appear with immutable identities and assigned roles.
+17. Run **Validate Controls Project** and confirm validation reads the project, starter layout metadata, and typed graph without dangling-owner or path-continuity findings.
+18. Run **Export Electrical Schedules** and confirm `~/integracad_wiring_schedule.csv` has three wire rows while `~/integracad_io_path_schedule.csv` has one signal-path row.
+19. Run **Export BOM** and confirm `~/controlforgecad_bom.csv` includes starter layout objects with tag/description/manufacturer/part-number data where assigned.
+20. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
+21. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written. If starter I/O remains unmapped, confirm Report View prints a concise summary and the CSV contains the detailed rows.
+22. Run **Export Missing Data CSV** and confirm `~/integracab_missing_data.csv` is written with one row per required intake fact.
 
 Automated tests do not import real FreeCAD in this environment. They compile `Init.py` and `InitGui.py`, import both files without FreeCAD installed, and verify import-safe command metadata for the workbench command IDs above.
 

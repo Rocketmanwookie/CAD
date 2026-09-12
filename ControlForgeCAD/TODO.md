@@ -175,7 +175,11 @@ starting digital-twin runtime work.
 - [x] Add typed field-device creation with immediate identity/role assignment and
   project registration; automatically register placed PLC controllers and
   terminal strips as electrical device occurrences.
-- [ ] Add the user-facing path create/edit workflow.
+- [x] Add the first user-facing path creation workflow with registered owner
+  selection, optional immediately identified field-device creation, a fixed
+  PLC-terminal/terminal-strip/device-terminal chain, conductor metadata, and
+  transaction-safe materialization.
+- [ ] Add user-facing editing and 3D route-point capture for existing paths.
 - [x] Add a workbench command that exports canonical wiring and I/O path CSV
   schedules from the typed electrical graph.
 - [x] Add a standalone namespace-correct, XSD-validated connection-path XML

@@ -108,6 +108,8 @@ flowchart TB
 
 - `CE_NewProject`
 - `CE_AddIOSignal`
+- `CE_AddConnection`
+- `CE_AddElectricalPath`
 - `CE_CreatePanel`
 - `CE_ValidateProject`
 - `CE_PreviewMissingData`
@@ -115,6 +117,8 @@ flowchart TB
 - `CE_ExportCEProjectXML`
 - `CE_ExportIOList`
 - `CE_ExportMissingDataCSV`
+- `CE_ExportConnectionSchedule`
+- `CE_ExportElectricalSchedules`
 
 **Boundary rule:** command activation methods should coordinate work, not define validation rules, output schemas, or equipment-selection logic.
 
@@ -147,8 +151,13 @@ Typed continuous electrical objects now include `ElectricalPathObject`,
 FreeCAD link lists; wires hold direct links plus redundant immutable endpoint IDs
 for validation and interchange. Route points remain ordered millimetre records
 and drive the stored calculated length. Materialization preflights the complete
-identity set so collisions fail before document mutation begins. User-facing
-editing and CEProject aggregate persistence remain application-layer work.
+identity set so collisions fail before document mutation begins.
+`CE_AddElectricalPath` supplies the first application/UI workflow: it resolves
+registered PLC, terminal-strip, and field-device owners; creates a field-device
+identity before any terminal is materialized when requested; builds and
+validates one fixed three-segment chain outside the FreeCAD API; and commits the
+objects inside one FreeCAD transaction. Existing-path editing and interactive
+3D route capture remain application-layer work.
 
 ### 5.3 Application service layer
 
@@ -212,8 +221,9 @@ specified length, and 3D route points in millimetres. Import additionally applie
 semantic continuity and duplicate-identity validation that XSD alone cannot
 express. CEProject imports the path vocabulary explicitly and embeds path
 instances without flattening or discarding their namespace. Typed FreeCAD path,
-terminal, and wire objects implement the persistence projection. A user-facing
-editor remains pending. Pure-domain whole-project validation now detects
+terminal, and wire objects implement the persistence projection. The first
+user-facing creation dialog produces this same domain contract; an editor for
+existing paths remains pending. Pure-domain whole-project validation now detects
 duplicate identities, dangling signal and terminal-owner references, terminal
 reuse across different signals, conflicting tags for one signal identity, and
 missing wire size, color, or length data. The existing FreeCAD validation command
@@ -229,6 +239,11 @@ owner-reference bridge: new field devices receive identity and role before
 registration, and starter PLC-controller and terminal-strip layout occurrences
 register automatically. Terminals can therefore resolve owners through the
 project device collection rather than relying on untracked identifiers.
+
+The path-creation service performs form and path validation before creating a
+new field-device occurrence. The command provides the outer document transaction
+boundary, so rejected input or a later materialization error does not leave a
+partial path in a real FreeCAD document.
 
 #### Typed electrical schedules
 

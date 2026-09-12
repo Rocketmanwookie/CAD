@@ -8,6 +8,12 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Added
 
+- Added `CE_AddElectricalPath`, a transaction-safe FreeCAD workflow that creates
+  the canonical PLC-channel → cabinet-terminal pair → field-device terminal
+  chain, assigns immutable identities and roles at creation, registers an
+  optional new field device before terminal ownership is persisted, and captures
+  conductor size, approved color/function, wire tags, and segment lengths for
+  the shared wiring and I/O schedule graph.
 - Added a schema-versioned neutral equipment catalog with source-traceable equipment classes and links to specialized PLC, panel, and vendor-record catalogs.
 - Added a normalized Siemens SIMATIC S7-1200 XML record database containing 104 brochure-derived products across 13 categories, 20 TIA V20 data types, checksummed source aliases, CAD assets, and supplied reference files. Imported claims remain explicitly unverified pending source audit.
 - Added deterministic JSON-to-equipment-XML import and read-only catalog exploration CLIs with category, search, and exact part-number views.

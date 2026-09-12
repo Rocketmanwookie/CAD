@@ -96,6 +96,7 @@ if Gui is not None:
                 create_panel,
                 add_io_signal,
                 add_connection,
+                add_electrical_path,
                 export_bom,
                 export_ceproject_xml,
                 export_io_list,
