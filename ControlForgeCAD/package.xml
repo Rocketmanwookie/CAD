@@ -4,7 +4,7 @@
   <description>Controls-engineering intake, validation, traceability, and CAD handoff tools.</description>
   <version>0.1.0-dev</version>
   <date>2026-09-12</date>
-  <maintainer>Elliott Grant</maintainer>
+  <maintainer email="lgrant@outlook.com">Elliott Grant</maintainer>
   <license file="LICENSE">MIT</license>
   <icon>Resources/Icons/ControlForgeCAD.svg</icon>
   <url type="repository" branch="controlforgecad">https://github.com/Rocketmanwookie/CAD</url>
