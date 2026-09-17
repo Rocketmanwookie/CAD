@@ -155,6 +155,8 @@ starting digital-twin runtime work.
 
 ### Phase 7 - Wiring, terminals, and cabinet-side power
 
+- [x] Export a deterministic, validated terminal plan from the typed electrical graph.
+
 - [x] Add starter terminal strip reference model.
 - [x] Add a persisted, deterministic signal-to-terminal-to-wire connection-record foundation; it is not a schematic netlist or compliance engine.
 - [x] Add the first fixed, deterministic continuous path contract from PLC channel

@@ -28,6 +28,7 @@ integraCAD Open is the integration-first controls-engineering project; ControlFo
 | `CE_AddConnection` | Add Connection Record | Stores a traceable signal-to-terminal-to-wire record with field-device and PLC endpoint references. |
 | `CE_AddElectricalPath` | Add Electrical Path | Creates and registers a typed PLC-channel-to-cabinet-terminal-to-field-device path with immutable identities, three ordered wire segments, conductor metadata, standardized color resolution, and specified millimetre lengths. |
 | `CE_EditElectricalPath` | Edit Electrical Path | Edits the selected path's signal tag, terminal designations, wire metadata, specified lengths, and 3D routes while preserving every graph identity. |
+| `CE_CaptureWireRoute` | Capture Wire Route from Geometry | Captures the ordered vertices from selected geometry onto one typed wire, preserves its identities, and recalculates the canonical route length. |
 | `CE_CreatePanel` | Create Control Panel | Creates starter placeholder layout objects for a panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module. |
 | `CE_ExportBOM` | Export BOM | Exports controls metadata rows from the active FreeCAD document to CSV. |
 | `CE_ValidateProject` | Validate Controls Project | Reports duplicate tags, missing controls metadata, starter intake missing-data findings, and verified/approved intake facts without source records. |
@@ -37,6 +38,7 @@ integraCAD Open is the integration-first controls-engineering project; ControlFo
 | `CE_ExportMissingDataCSV` | Export Missing Data CSV | Exports the active controls project missing-data matrix to `~/integracab_missing_data.csv`. |
 | `CE_ExportConnectionSchedule` | Export Connection Schedule | Exports persisted connection records to `~/integracad_connection_schedule.csv`. |
 | `CE_ExportElectricalSchedules` | Export Electrical Schedules | Exports canonical typed-graph wiring and I/O path schedules with identities, endpoints, terminal chain, conductor metadata, and calculated length. |
+| `CE_ExportTerminalPlan` | Export Terminal Plan | Exports validated cabinet-terminal connections to `~/integracad_terminal_plan.csv`. |
 
 The continuous electrical-path domain contract follows a signal from its PLC
 channel terminal through ordered wire segments and cabinet terminal levels to
@@ -187,6 +189,11 @@ The script creates `~/.local/share/FreeCAD/Mod/ControlForgeCAD` as a symlink to 
 ```bash
 python3 scripts/link_freecad_workbench.py --mod-dir /path/to/FreeCAD/Mod --source /path/to/ControlForgeCAD
 ```
+
+For the Flatpak build, use
+`~/.var/app/org.freecad.FreeCAD/data/FreeCAD/v1-1/Mod` as `--mod-dir`. See
+[`docs/manual-freecad-gui-test-plan.md`](docs/manual-freecad-gui-test-plan.md)
+for the complete future GUI acceptance checklist.
 
 Equivalent manual symlink command:
 

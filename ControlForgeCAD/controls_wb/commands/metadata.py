@@ -24,6 +24,7 @@ EXPORT_COMMANDS = (
     "CE_ExportMissingDataCSV",
     "CE_ExportConnectionSchedule",
     "CE_ExportElectricalSchedules",
+    "CE_ExportTerminalPlan",
 )
 
 COMMAND_SPECS = (
@@ -42,6 +43,7 @@ COMMAND_SPECS = (
     CommandSpec("CE_ExportMissingDataCSV", "Export Missing Data CSV", "export_missing_data_csv"),
     CommandSpec("CE_ExportConnectionSchedule", "Export Connection Schedule", "export_connection_schedule"),
     CommandSpec("CE_ExportElectricalSchedules", "Export Electrical Schedules", "export_electrical_schedules"),
+    CommandSpec("CE_ExportTerminalPlan", "Export Terminal Plan", "export_terminal_plan"),
 )
 
 

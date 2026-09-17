@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added `CE_ExportTerminalPlan`, a validated deterministic CSV projection of
+  cabinet terminals and their connected wire-side endpoints.
+
 - Added `CE_CaptureWireRoute`, which captures ordered vertices from selected
   FreeCAD geometry onto one typed `CE_Wire`, preserves CE identity, validates
   the route, recalculates length, and regenerates the Part-polyline fallback.

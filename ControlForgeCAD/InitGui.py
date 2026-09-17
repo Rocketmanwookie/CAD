@@ -105,6 +105,7 @@ if Gui is not None:
                 export_missing_data_csv,
                 export_connection_schedule,
                 export_electrical_schedules,
+                export_terminal_plan,
                 missing_data,
                 new_project,
                 validate_project,
