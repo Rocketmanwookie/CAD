@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Added `CE_CaptureWireRoute`, which captures ordered vertices from selected
+  FreeCAD geometry onto one typed `CE_Wire`, preserves CE identity, validates
+  the route, recalculates length, and regenerates the Part-polyline fallback.
+
 All notable changes to this project will be documented in this file.
 
 This project follows Semantic Versioning once public APIs stabilize. During `0.y.z`, APIs, XML schemas, and generated output formats may change.

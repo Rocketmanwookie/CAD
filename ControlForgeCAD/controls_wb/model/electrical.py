@@ -6,7 +6,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 
-from controls_wb.electrical_path import ElectricalConnectionPath, RoutePoint
+from controls_wb.electrical_path import ElectricalConnectionPath, RoutePoint, WireSegment
 from controls_wb.identity import CERoles, ensure_object_identity, is_ce_identity, new_ce_identity
 
 try:
@@ -386,6 +386,31 @@ def update_electrical_path_object(path_obj, updated: ElectricalConnectionPath):
         if callable(execute):
             execute(obj)
     return path_obj
+
+
+def update_wire_route_object(wire_obj, route: tuple[RoutePoint, ...]):
+    """Persist a selected geometric route without changing a wire's identity."""
+
+    current = _wire_from_object(wire_obj)
+    updated = WireSegment(
+        identity=current.identity,
+        from_terminal_identity=current.from_terminal_identity,
+        to_terminal_identity=current.to_terminal_identity,
+        wire_tag=current.wire_tag,
+        conductor_size=current.conductor_size,
+        color=current.color,
+        circuit_function=current.circuit_function,
+        conduit_identity=current.conduit_identity,
+        route=route,
+        specified_length_mm=current.specified_length_mm,
+    )
+    updated.validate()
+    wire_obj.RoutePoints = _route_json(route)
+    wire_obj.CalculatedLength = f"{updated.effective_length_mm or 0.0} mm"
+    execute = getattr(getattr(wire_obj, "Proxy", None), "execute", None)
+    if callable(execute):
+        execute(wire_obj)
+    return wire_obj
 
 
 def _terminal_from_object(obj):

@@ -70,6 +70,13 @@ FreeCAD links. **Validate Controls Project** reports broken typed links and
 whole-project electrical graph findings. Selecting routes directly from 3D
 geometry remains the next user-facing increment.
 
+**Capture Wire Route from Geometry** closes that first interactive route-capture
+gap. Select exactly one typed `CE_Wire`, then select visible geometry with two
+or more vertices and run the command. The workbench stores the ordered points,
+validates the resulting route, updates the calculated length, and regenerates
+its dependency-free Part polyline. This remains a controlled fallback until a
+future Cables-workbench adapter is added.
+
 Typed field devices can now be created with an immutable identity and
 `electrical.field_device` role before any terminal refers to them. Starter panel
 creation automatically registers the PLC controller and terminal strip as
