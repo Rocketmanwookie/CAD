@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Added `CE_RouteWireWithCables`, which creates or synchronizes an optional
+  Cables-workbench `WireFlex` physical route for a typed `CE_Wire`.  The link is
+  guarded by the wire's immutable CE identity in both directions, and the
+  dependency-free Part-polyline remains the fallback when Cables is unavailable.
+
 - Added `CE_ExportTerminalPlan`, a validated deterministic CSV projection of
   cabinet terminals and their connected wire-side endpoints.
 

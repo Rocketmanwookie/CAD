@@ -187,9 +187,10 @@ starting digital-twin runtime work.
 - [x] Add identity-preserving editing of signal tags, terminal designations,
   conductor metadata, specified lengths, and 3D routes for a selected path.
 - [x] Add graphical 3D route selection for existing paths through selected-geometry vertex capture and the dependency-free Part-polyline fallback.
-- [ ] Integrate the FreeCAD Cables workbench as the physical wire/cable routing
-  engine, with identity-safe links from each `CE_Wire` to its Cables route object;
-  retain the current Part polyline only as a dependency-free fallback.
+- [x] Integrate the optional FreeCAD Cables workbench as the physical wire/cable
+  routing engine through `WireFlex`, with two-sided identity-safe links from each
+  `CE_Wire` to its Cables route object; retain the Part polyline fallback when
+  Cables is not installed.
 - [x] Add a workbench command that exports canonical wiring and I/O path CSV
   schedules from the typed electrical graph.
 - [x] Add a standalone namespace-correct, XSD-validated connection-path XML

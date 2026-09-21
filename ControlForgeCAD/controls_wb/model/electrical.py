@@ -191,6 +191,7 @@ def materialize_electrical_path(document, path: ElectricalConnectionPath) -> Mat
             ("App::PropertyBool", "HasSpecifiedLength", "Whether a separate specified wire length was provided"),
             ("App::PropertyLength", "SpecifiedLength", "Specified wire length before route calculation"),
             ("App::PropertyLength", "CalculatedLength", "Calculated or specified wire length"),
+            ("App::PropertyLink", "CablesRouteObject", "Optional Cables Workbench WireFlex physical route"),
         ):
             _add_property(obj, property_type, name, "Electrical Wire", description)
         obj.FromTerminal = terminal_by_identity[wire.from_terminal_identity]
@@ -405,8 +406,21 @@ def update_wire_route_object(wire_obj, route: tuple[RoutePoint, ...]):
         specified_length_mm=current.specified_length_mm,
     )
     updated.validate()
+    route_object = getattr(wire_obj, "CablesRouteObject", None)
+    if route_object is not None:
+        from controls_wb.cables_routing import route_link_is_identity_safe
+
+        if not route_link_is_identity_safe(wire_obj, route_object):
+            raise ValueError("CE_Wire has a Cables route link with a mismatched CE wire identity.")
     wire_obj.RoutePoints = _route_json(route)
     wire_obj.CalculatedLength = f"{updated.effective_length_mm or 0.0} mm"
+    if route_object is not None:
+        try:
+            import FreeCAD as route_app
+        except Exception:  # pragma: no cover - Cables routes are FreeCAD-only
+            route_app = None
+        if route_app is not None:
+            route_object.Points = [route_app.Vector(point.x_mm, point.y_mm, point.z_mm) for point in route]
     execute = getattr(getattr(wire_obj, "Proxy", None), "execute", None)
     if callable(execute):
         execute(wire_obj)

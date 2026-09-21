@@ -76,8 +76,11 @@ geometry remains the next user-facing increment.
 gap. Select exactly one typed `CE_Wire`, then select visible geometry with two
 or more vertices and run the command. The workbench stores the ordered points,
 validates the resulting route, updates the calculated length, and regenerates
-its dependency-free Part polyline. This remains a controlled fallback until a
-future Cables-workbench adapter is added.
+its dependency-free Part polyline. **Route CE Wire with Cables** optionally
+creates a Cables-workbench `WireFlex` physical route from that polyline, or
+synchronizes a previously linked route back into the canonical CE wire. The CE
+wire and route retain each other's immutable wire identity; if Cables is not
+installed, the Part polyline remains the controlled fallback.
 
 Typed field devices can now be created with an immutable identity and
 `electrical.field_device` role before any terminal refers to them. Starter panel

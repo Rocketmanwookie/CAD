@@ -13,7 +13,7 @@ class CommandSpec:
 
 PROJECT_COMMANDS = (
     "CE_NewProject", "CE_AddIOSignal", "CE_AddConnection",
-    "CE_AddElectricalPath", "CE_EditElectricalPath", "CE_CaptureWireRoute",
+    "CE_AddElectricalPath", "CE_EditElectricalPath", "CE_CaptureWireRoute", "CE_RouteWireWithCables",
 )
 LAYOUT_COMMANDS = ("CE_CreatePanel",)
 VALIDATION_COMMANDS = ("CE_ValidateProject", "CE_PreviewMissingData")
@@ -34,6 +34,7 @@ COMMAND_SPECS = (
     CommandSpec("CE_AddElectricalPath", "Add Electrical Path", "add_electrical_path"),
     CommandSpec("CE_EditElectricalPath", "Edit Electrical Path", "edit_electrical_path"),
     CommandSpec("CE_CaptureWireRoute", "Capture Wire Route from Geometry", "capture_wire_route"),
+    CommandSpec("CE_RouteWireWithCables", "Route CE Wire with Cables", "route_wire_with_cables"),
     CommandSpec("CE_CreatePanel", "Create Control Panel", "create_panel"),
     CommandSpec("CE_ValidateProject", "Validate Controls Project", "validate_project"),
     CommandSpec("CE_PreviewMissingData", "Preview Missing Data", "missing_data"),

@@ -41,3 +41,16 @@ def selected_wire_and_route_points(selection_ex):
     if len(points) < 2:
         raise ValueError("Select route geometry with at least two distinct vertices.")
     return wire, tuple(points)
+
+
+def selected_ce_wire(selection_ex):
+    """Return exactly one selected typed wire without requiring route geometry."""
+
+    selected_wires = [
+        entry.Object
+        for entry in selection_ex
+        if getattr(entry.Object, "CERole", "") == CERoles.WIRE
+    ]
+    if len(selected_wires) != 1:
+        raise ValueError("Select exactly one typed CE_Wire.")
+    return selected_wires[0]
