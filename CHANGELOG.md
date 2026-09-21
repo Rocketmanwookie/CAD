@@ -22,6 +22,35 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Added
 
+- Added an XSD-validated technical-document registry linked from the master
+  equipment catalog, deterministic datasheet-link and acceptance-test CSV
+  exports, and a regeneration script. The registry currently covers all 285 CAD
+  requests, links the supplied CPU 1212C datasheet with its SHA-256 checksum,
+  records unresolved acquisition states honestly, and emits 2,656 tailored test
+  instructions with required evidence.
+- Added a 285-row CAD-library download manifest covering the requested Siemens
+  PLC, panel, safety, operator, HMI, instrumentation, wiring, connector, and
+  vendor-neutral accessory scope. Exact source-backed MLFBs are distinguished
+  from configuration-required search keys, and every applicable row identifies
+  required 3D, 2D, schematic, terminal-map, macro, and Cables-workbench assets.
+- Added `CE_AddElectricalPath`, a transaction-safe FreeCAD workflow that creates
+  the canonical PLC-channel → cabinet-terminal pair → field-device terminal
+  chain, assigns immutable identities and roles at creation, registers an
+  optional new field device before terminal ownership is persisted, and captures
+  conductor size, approved color/function, wire tags, and segment lengths for
+  the shared wiring and I/O schedule graph.
+- Added optional ordered 3D route-coordinate entry for every created wire.
+  Routes are validated as finite polylines, persisted on typed FreeCAD wire
+  objects, rendered when Part geometry is available, and used to derive wiring
+  and I/O schedule lengths without discarding a separately specified estimate.
+- Added `CE_EditElectricalPath` for transaction-safe correction of a selected
+  path's signal tag, terminal designations, wire metadata, specified lengths,
+  and route geometry. The update boundary rejects identity changes and duplicate
+  signal tags before mutating persisted objects.
+- Added a schema-versioned neutral equipment catalog with source-traceable equipment classes and links to specialized PLC, panel, and vendor-record catalogs.
+- Added a normalized Siemens SIMATIC S7-1200 XML record database containing 104 brochure-derived products across 13 categories, 20 TIA V20 data types, checksummed source aliases, CAD assets, and supplied reference files. Imported claims remain explicitly unverified pending source audit.
+- Added deterministic JSON-to-equipment-XML import and read-only catalog exploration CLIs with category, search, and exact part-number views.
+- Added pure-Python tests for equipment taxonomy loading, linked-catalog resolution, normalized record lookup/search, duplicate rejection, typed property preservation, and source hashing.
 - Established [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) as the architectural source of truth for integraCAD Open, covering system context, layered architecture, component responsibilities, dependency boundaries, object contracts, data flows, extension strategy, testing, operational considerations, and current-versus-planned capabilities. Commit: `6dfeb12`.
 - Added contributor-facing architecture checklists for project fields, FreeCAD document objects, exports, and vendor adapters in [`CONTRIBUTING.md`](CONTRIBUTING.md). Commit: `1a0c985`.
 - Added a README architecture summary, current-capability statement, generated-artifact contract summary, and extension guidance. Commit: `b4c70c0`.
@@ -29,6 +58,13 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Changed
 
+- Made intelligent schematic symbols a required companion contract for
+  applicable equipment records, including IEC and NFPA/JIC variants, structured
+  terminal pins, parent/child cross-references, and links to the same device
+  occurrence used by 3D, wiring, BOM, and schedule projections.
+- Defined the FreeCAD Cables workbench as the target physical routing engine;
+  ControlForgeCAD owns electrical semantics and schedules and will link them to
+  Cables route objects, retaining its current Part polyline only as a fallback.
 - Standardized project terminology so **integraCAD Open** identifies the overall project and **ControlForgeCAD** identifies the FreeCAD workbench implementation.
 - Defined the supported dependency direction from FreeCAD UI and adapters toward application services, domain contracts, and deterministic serializers.
 - Documented `CE_Project` as the authoritative interactive project aggregate stored in the FreeCAD document.

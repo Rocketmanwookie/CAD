@@ -11,6 +11,7 @@ except Exception:  # pragma: no cover
 
 from controls_wb.fact_ids import FactIds
 from controls_wb.intake import SCHEMA_VERSION, ProjectIntake, default_project_intake
+from controls_wb.identity import CERoles, ensure_object_identity, imported_ce_identity
 
 
 @dataclass(frozen=True)
@@ -34,6 +35,9 @@ PROJECT_PROPERTY_SPECS = (
     ProjectPropertySpec("App::PropertyStringList", "IntakeQuestions", "Intake", "Question and response records as JSON lines"),
     ProjectPropertySpec("App::PropertyStringList", "IOSignals", "I/O", "Explicit I/O signal records as JSON lines"),
     ProjectPropertySpec("App::PropertyStringList", "ConnectionRecords", "Wiring", "Signal-to-terminal-to-wire connection records as JSON lines"),
+    ProjectPropertySpec("App::PropertyLinkList", "ElectricalSignals", "Electrical Graph", "Typed signal objects owned by this project"),
+    ProjectPropertySpec("App::PropertyLinkList", "ElectricalPaths", "Electrical Graph", "Typed continuous connection paths owned by this project"),
+    ProjectPropertySpec("App::PropertyLinkList", "ElectricalDevices", "Electrical Graph", "Typed electrical device occurrences owned by this project"),
     ProjectPropertySpec("App::PropertyString", "NominalVoltage", "Intake", "Nominal voltage response"),
     ProjectPropertySpec("App::PropertyString", "PhaseCount", "Intake", "Phase count response"),
     ProjectPropertySpec("App::PropertyString", "PowerConfiguration", "Power", "Combined phase and voltage"),
@@ -183,6 +187,11 @@ def apply_project_properties(obj, properties: dict[str, object]) -> None:
 
 def initialize_project_object(obj, intake: ProjectIntake) -> object:
     ControlsProject(obj)
+    ensure_object_identity(
+        obj,
+        CERoles.PROJECT,
+        intake.ce_identity,
+    )
     apply_project_properties(obj, intake_to_project_properties(intake))
     return obj
 
@@ -218,6 +227,15 @@ class ControlsProject:
 
     def execute(self, obj):
         return None
+
+    def onDocumentRestored(self, obj):
+        ensure_project_properties(obj)
+        project_id = str(getattr(obj, "ProjectId", "") or getattr(obj, "Name", "CE_Project"))
+        ensure_object_identity(
+            obj,
+            CERoles.PROJECT,
+            imported_ce_identity("ceproject", project_id),
+        )
 
     def __getstate__(self):
         return {"Type": self.Type}

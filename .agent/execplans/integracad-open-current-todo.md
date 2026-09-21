@@ -154,6 +154,10 @@ Current milestone: make every currently supported project fact addressable throu
 - [x] Add XML-backed generic panel hardware placeholders for backplate, DIN rail, wire duct, and terminal strip so starter BOM/validation output has part metadata for those objects.
 - [x] Add tests for layout metadata, fake FreeCAD object creation, proxy persistence hooks, and BOM extraction from starter layout objects.
 - [x] Add starter controlled-load lines and `EstimatedLoadAmps` on `CE_Project` so Project Intake can estimate load current from phase/voltage with 20 percent spare capacity.
+- [x] Integrate 22 newer `origin/controlforgecad` commits with the three local Siemens workshop/catalog commits using a non-rewriting merge.
+- [x] Preserve the newer typed electrical path, cable routing, equipment catalog, terminal planning, package, and test changes as the integration baseline.
+- [x] Fold in only the compatible local workshop source map, CPU signal-module limits, strict selected-parts export validation, tests, and supporting documentation.
+- [x] Validate the integrated tree with the full 193-test suite and `compileall` before committing the merge.
 
 ## Surprises & Discoveries
 
@@ -645,3 +649,53 @@ Next recommended milestone:
   when `SensorCount` is blank).
 - Do not pull/rebase/push until the user decides how to handle the branch being
   ahead 19 and behind 7 versus `origin/controlforgecad`.
+
+## Continuation - 2026-09-21 Newer Upstream Integration
+
+The user directed that the newer remote commits remain authoritative and that
+local work be folded in only where it does not disrupt those updates.
+
+State after fetching:
+
+- Local `controlforgecad` was three commits ahead and 22 commits behind
+  `origin/controlforgecad`.
+- The remote series added typed electrical paths, continuous wiring identity,
+  route capture and editing, cable routing, equipment catalogs, terminal-plan
+  export, FreeCAD object materialization, validation, schemas, and tests.
+- The local series added Siemens workshop traceability, corrected CPU 1212C and
+  1214C signal-module limits, strict selected-parts export validation, and
+  focused tests/documentation.
+
+Integration decision:
+
+- Used `git merge --no-commit --no-ff origin/controlforgecad` rather than a
+  rebase so neither side's published history was rewritten.
+- The merge completed without textual conflicts.
+- Compared the staged result directly with `origin/controlforgecad`. Only 12
+  targeted workshop/catalog files differ from the newer remote baseline; no
+  newer electrical-path, routing, equipment, terminal-plan, or package
+  implementation file is replaced by local work.
+- Left the pre-existing untracked `.vscode/` directory and
+  `integracab-open-controlforgecad.zip` untouched.
+
+Validation:
+
+```bash
+cd /home/egrantjr/Documents/Repositories/Dev/CAD
+/usr/bin/python3 -m pytest
+python3 -m compileall ControlForgeCAD
+```
+
+Results:
+
+- Pytest passed: 193 tests.
+- Compileall passed.
+- `git diff --cached --check` passed.
+
+Next recommended milestone:
+
+- Continue from the newer roadmap baseline. The current roadmap identifies
+  tying continuous connection records to device, terminal, and wire objects as
+  the next engineering increment. The local workshop queue remains available
+  for a later focused hardware milestone, starting with explicit hardware roles
+  and independent signal-board versus signal-module allowances.

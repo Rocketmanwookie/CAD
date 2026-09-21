@@ -8,6 +8,7 @@ from enum import Enum
 from typing import Iterable
 
 from controls_wb.fact_ids import FactIds, fact_spec, question_id_for_fact_id
+from controls_wb.identity import CERoles, imported_ce_identity, is_ce_identity, validate_ce_role
 
 
 SCHEMA_VERSION = "0.1.0"
@@ -90,11 +91,22 @@ class ProjectIntake:
     project_id: str
     name: str
     schema_version: str = SCHEMA_VERSION
+    ce_identity: str = ""
+    ce_role: str = CERoles.PROJECT
     fields: dict[str, IntakeField] = field(default_factory=dict)
     deliverables: set[str] = field(default_factory=set)
     contacts: dict[str, Contact] = field(default_factory=dict)
     source_records: dict[str, SourceRecord] = field(default_factory=dict)
     questions: dict[str, IntakeQuestionResponse] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        if not self.ce_identity:
+            self.ce_identity = imported_ce_identity("ceproject", self.project_id)
+        if not is_ce_identity(self.ce_identity):
+            raise ValueError(f"Invalid CEProject identity: {self.ce_identity}")
+        self.ce_role = validate_ce_role(self.ce_role)
+        if self.ce_role != CERoles.PROJECT:
+            raise ValueError(f"ProjectIntake requires role {CERoles.PROJECT}, found {self.ce_role}")
 
 
 def _required_field(fact_id: str, status: FieldStatus = FieldStatus.UNKNOWN) -> IntakeField:

@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MIT
 
 from controls_wb.commands.export_bom import collect_bom_rows
+from controls_wb.identity import CERoles, is_ce_identity
 from controls_wb.model.layout import (
     STARTER_LAYOUT_SPECS,
     ControlsLayoutObject,
@@ -8,6 +9,7 @@ from controls_wb.model.layout import (
     layout_object_metadata,
     starter_layout_specs_for_project,
 )
+from controls_wb.model.project import create_or_update_project
 
 
 class FakeLayoutObject:
@@ -60,6 +62,9 @@ def test_create_starter_layout_objects_adds_editable_properties():
     assert isinstance(plc_rack.Proxy, ControlsLayoutObject)
     assert plc_rack.ObjectType == "Part::FeaturePython"
     assert "Tag" in plc_rack.PropertiesList
+    assert is_ce_identity(plc_rack.CEIdentity)
+    assert plc_rack.CERole == CERoles.PLC_CONTROLLER
+    assert terminal_strip.CERole == CERoles.TERMINAL_STRIP
     assert "PanelName" in plc_rack.PropertiesList
     assert "TerminalCount" in plc_rack.PropertiesList
     assert "SlotNumber" in plc_rack.PropertiesList
@@ -79,6 +84,8 @@ def test_layout_object_metadata_is_pure_python():
     plc_rack = create_starter_layout_objects(document)[4]
 
     assert layout_object_metadata(plc_rack) == {
+        "CEIdentity": plc_rack.CEIdentity,
+        "CERole": CERoles.PLC_CONTROLLER,
         "Tag": "PLC-001",
         "Manufacturer": "",
         "PartNumber": "",
@@ -150,6 +157,7 @@ def test_layout_proxy_round_trips_persistent_state():
     restored.__setstate__(state)
 
     assert restored.Type == "ControlsLayoutObject"
+    assert restored.Role == CERoles.PANEL
 
 
 def test_bom_export_includes_starter_layout_objects_with_metadata():
@@ -175,3 +183,16 @@ def test_bom_export_includes_starter_layout_objects_with_metadata():
         "PartNumber": "PLC-STARTER",
         "Quantity": 1,
     }
+
+
+def test_starter_plc_and_terminal_strip_register_as_project_devices():
+    document = FakeDocument()
+    project = create_or_update_project(document)
+
+    objects = create_starter_layout_objects(document)
+
+    assert [obj.CERole for obj in project.ElectricalDevices] == [
+        CERoles.TERMINAL_STRIP,
+        CERoles.PLC_CONTROLLER,
+    ]
+    assert project.ElectricalDevices == [objects[3], objects[4]]

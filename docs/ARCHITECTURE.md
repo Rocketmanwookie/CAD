@@ -64,6 +64,14 @@ Documentation distinguishes:
 
 Higher-level user-interface code may depend on application and domain services. Domain modules must not depend on GUI widgets. Exporters may depend on domain contracts but should not own project-state mutation.
 
+### 4.6 Working-first and deferred ROS boundary
+
+The near-term product is a usable electrical/PLC engineering workflow. Digital
+twin execution is deliberately deferred. ROS/ROS 2 is the selected future
+runtime integration boundary, but ROS packages must not become dependencies of
+the core domain, FreeCAD document model, or ordinary exports. A versioned adapter
+will later map stable CEProject identities to ROS interfaces and simulation state.
+
 ## 5. Layered architecture
 
 ```mermaid
@@ -100,6 +108,9 @@ flowchart TB
 
 - `CE_NewProject`
 - `CE_AddIOSignal`
+- `CE_AddConnection`
+- `CE_AddElectricalPath`
+- `CE_EditElectricalPath`
 - `CE_CreatePanel`
 - `CE_ValidateProject`
 - `CE_PreviewMissingData`
@@ -107,6 +118,8 @@ flowchart TB
 - `CE_ExportCEProjectXML`
 - `CE_ExportIOList`
 - `CE_ExportMissingDataCSV`
+- `CE_ExportConnectionSchedule`
+- `CE_ExportElectricalSchedules`
 
 **Boundary rule:** command activation methods should coordinate work, not define validation rules, output schemas, or equipment-selection logic.
 
@@ -133,6 +146,34 @@ Starter layout objects currently include:
 - PLC module.
 
 These layout objects are **partial engineering models**. They establish object identity and metadata contracts but do not yet constitute a complete electrical-panel design or automated placement engine.
+
+Typed continuous electrical objects now include `ElectricalPathObject`,
+`ElectricalTerminalObject`, and `ElectricalWireObject`. The path owns ordered
+FreeCAD link lists; wires hold direct links plus redundant immutable endpoint IDs
+for validation and interchange. Route points remain ordered millimetre records
+and drive the stored calculated length. Materialization preflights the complete
+identity set so collisions fail before document mutation begins.
+`CE_AddElectricalPath` supplies the first application/UI workflow: it resolves
+registered PLC, terminal-strip, and field-device owners; creates a field-device
+identity before any terminal is materialized when requested; builds and
+validates one fixed three-segment chain outside the FreeCAD API; and commits the
+objects inside one FreeCAD transaction. Each form segment may carry ordered
+`x,y,z` millimetre coordinates. The domain rejects one-point and non-finite
+routes, the FreeCAD wire renders a route polyline when Part is available, and
+schedule length uses that route in preference to the fallback specified length.
+`HasSpecifiedLength` and `SpecifiedLength` preserve the original estimate even
+when a calculated route length also exists. `CE_EditElectricalPath` applies
+validated engineering-field changes to one selected path but refuses any change
+to path, signal, terminal, or wire identities; a signal-tag edit is propagated
+to every path linked to that signal identity. Graphical 3D route selection
+remains application-layer work.
+
+The target geometry boundary delegates physical wire and cable routing to the
+FreeCAD Cables workbench. ControlForgeCAD remains authoritative for immutable
+electrical identities, semantic endpoints, conductor/cable attributes, and
+schedule projections, and will link those records to Cables route objects
+through an adapter. The current `Part.makePolygon` representation is a
+dependency-free fallback, not a competing production routing engine.
 
 ### 5.3 Application service layer
 
@@ -185,6 +226,62 @@ The current BOM is not a complete procurement or ERP integration. Future work ma
 
 Future work may add channel allocation, rack/slot addressing, signal typing, terminal mapping, device associations, safety classification, and vendor-specific import/export formats.
 
+#### Continuous connection-path XML
+
+**Implemented as a standalone boundary contract.** The
+`ceproject.connection-path/1.0` vocabulary serializes the ordered path from a PLC
+channel terminal through wire segments and cabinet terminal levels to a device
+terminal. Its dedicated namespace and XSD cover immutable identities, controlled
+roles, sequence positions, conductor metadata, conduit identity, optional
+specified length, and 3D route points in millimetres. Import additionally applies
+semantic continuity and duplicate-identity validation that XSD alone cannot
+express. CEProject imports the path vocabulary explicitly and embeds path
+instances without flattening or discarding their namespace. Typed FreeCAD path,
+terminal, and wire objects implement the persistence projection. The first
+user-facing creation dialog produces this same domain contract; an editor for
+existing paths remains pending. Pure-domain whole-project validation now detects
+duplicate identities, dangling signal and terminal-owner references, terminal
+reuse across different signals, conflicting tags for one signal identity, and
+missing wire size, color, or length data. The existing FreeCAD validation command
+now invokes this validator through the project-level typed collections.
+
+The `CE_Project` aggregate now provides typed `ElectricalSignals`,
+`ElectricalPaths`, and `ElectricalDevices` link collections, each registered in
+the canonical fact registry. Path materialization creates or reuses one typed
+signal, establishes direct signal/path ownership links, and registers both on the
+project. The validation command reconstructs paths from these object links and
+feeds them into whole-project semantic validation. Device registration is the
+owner-reference bridge: new field devices receive identity and role before
+registration, and starter PLC-controller and terminal-strip layout occurrences
+register automatically. Terminals can therefore resolve owners through the
+project device collection rather than relying on untracked identifiers.
+
+The path-creation service performs form and path validation before creating a
+new field-device occurrence. The command provides the outer document transaction
+boundary, so rejected input or a later materialization error does not leave a
+partial path in a real FreeCAD document.
+
+#### Typed electrical schedules
+
+**Implemented.** `CE_ExportElectricalSchedules` reconstructs typed paths from the
+active project and writes a wiring schedule with one row per wire segment plus an
+I/O path schedule with one row per signal path. Both include stable identities
+and derive endpoint/terminal/length data from the same canonical graph. The
+legacy connection-record export remains available during migration.
+
+#### Technical-document registry and library acceptance tests
+
+**Implemented, acquisition scope.** The master equipment catalog links an
+XSD-validated technical-document registry keyed to the CAD acquisition request
+IDs. Each requested part has one datasheet record whose state distinguishes a
+checksummed local file, an exact part pending download, and a family that still
+requires exact configuration. The deterministic CSV projections expose those
+links for review and provide category-aware acceptance instructions for part
+identity, provenance, geometry, mounting, terminal maps, IEC and NFPA/JIC
+symbols, ratings, safety evidence, I/O mapping, termination treatment, and
+FreeCAD Cables-workbench connectivity. `scripts/build_technical_document_registry.py`
+regenerates the XML and both CSV projections from the CAD manifest.
+
 ## 6. Principal object contracts
 
 ### 6.1 `CE_Project`
@@ -204,6 +301,13 @@ Future work may add channel allocation, rack/slot addressing, signal typing, ter
 
 Layout objects represent physical or logical panel components in the FreeCAD model tree.
 
+Every project and layout object receives an immutable `CEIdentity` and a
+controlled `CERole` when it is created or restored. Business tags, FreeCAD names,
+part numbers, and geometry are mutable and must never substitute for identity.
+Imported project roots derive a stable identity from their source project ID when
+the source does not yet carry a native CE identity; new physical occurrences use
+new UUID identities.
+
 **Contract expectations**
 
 - stable object type or role identification;
@@ -213,7 +317,19 @@ Layout objects represent physical or logical panel components in the FreeCAD mod
 - geometry may be placeholder geometry during starter phases;
 - exporters must ignore unsupported objects rather than infer unreliable part data.
 
-### 6.3 Validation finding
+### 6.3 Schematic symbol definitions and occurrences
+
+Schematic symbols are standards-profiled catalog definitions plus placed
+occurrences, not disconnected drawing blocks. Applicable equipment definitions
+must link to explicit IEC and/or NFPA/JIC variants. Symbol pins map to stable
+catalog terminal definitions, and a placed symbol occurrence maps to the same
+device occurrence referenced by the 3D model, typed electrical graph, BOM, and
+schedules. Parent/child symbols—such as a contactor coil and auxiliary contacts
+or a PLC module split across drawing sections—share the device occurrence while
+retaining distinct symbol-occurrence identities. This symbol-library contract is
+planned; the current typed path graph supplies its future smart-net input.
+
+### 6.4 Validation finding
 
 A validation finding should identify:
 
@@ -386,6 +502,8 @@ A controls-domain behavior that can be expressed without FreeCAD geometry or UI 
 | CEProject XML export | Implemented, starter scope | Current project/intake representation |
 | I/O-list CSV export | Implemented, starter scope | Deterministic starter records |
 | Missing-data CSV export | Implemented, starter scope | One row per required intake fact |
+| Neutral equipment catalog | Implemented, starter scope | XML taxonomy, provenance, required-data contracts, and links to specialized catalogs |
+| Siemens equipment records | Implemented, imported seed | 104 normalized S7-1200 records, typed properties, source-page locators, checksummed references, and read-only exploration CLI |
 | PLC hardware catalog | Implemented, starter scope | XML-backed Siemens S7-1200 planning seed and panel-placeholder metadata |
 | Explicit I/O signal registry | Implemented, starter scope | User-labeled signals with starter tags and addresses |
 | Manufacturer catalog adapters | Planned | Neutral adapter boundary required |
@@ -401,7 +519,7 @@ A controls-domain behavior that can be expressed without FreeCAD geometry or UI 
 2. Formalize neutral hardware, device, signal, terminal, and connection identifiers.
 3. Separate normalized domain snapshots from FreeCAD property-storage details.
 4. Expand deterministic I/O addressing and terminal mapping.
-5. Introduce vendor catalog adapters behind neutral interfaces.
+5. Audit imported Siemens records against current manufacturer sources and introduce additional vendor adapters behind neutral interfaces.
 6. Add architecture decision records for consequential schema, persistence, and integration choices.
 
 ## 14. Documentation governance

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="equipmentRecords">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="sources" type="recordSourcesType"/>
+        <xs:element name="assets" type="recordAssetsType" minOccurs="0"/>
+        <xs:element name="profiles" type="profilesType" minOccurs="0"/>
+        <xs:element name="records" type="recordsType"/>
+      </xs:sequence>
+      <xs:attribute name="schemaVersion" type="xs:string" use="required"/>
+      <xs:attribute name="catalogId" type="xs:string" use="required"/>
+      <xs:attribute name="manufacturer" type="xs:string" use="required"/>
+      <xs:attribute name="family" type="xs:string" use="required"/>
+      <xs:attribute name="edition" type="xs:string"/>
+      <xs:attribute name="recordCount" type="xs:nonNegativeInteger" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="recordSourcesType">
+    <xs:sequence>
+      <xs:element name="source" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="alias" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:attribute name="localPath" type="xs:string" use="required"/>
+                <xs:attribute name="sha256" type="xs:string"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="id" type="xs:ID" use="required"/>
+          <xs:attribute name="title" type="xs:string" use="required"/>
+          <xs:attribute name="sourceType" type="xs:string" use="required"/>
+          <xs:attribute name="localPath" type="xs:string"/>
+          <xs:attribute name="url" type="xs:anyURI"/>
+          <xs:attribute name="sha256" type="xs:string"/>
+          <xs:attribute name="checkedDate" type="xs:date"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="recordAssetsType">
+    <xs:sequence>
+      <xs:element name="asset" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="id" type="xs:ID" use="required"/>
+          <xs:attribute name="kind" type="xs:string" use="required"/>
+          <xs:attribute name="format" type="xs:string"/>
+          <xs:attribute name="localPath" type="xs:string" use="required"/>
+          <xs:attribute name="sha256" type="xs:string"/>
+          <xs:attribute name="applicability" type="xs:string" use="required"/>
+          <xs:attribute name="verified" type="xs:boolean" default="false"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="profilesType">
+    <xs:sequence>
+      <xs:element name="profile" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="note" type="xs:string" minOccurs="0"/>
+            <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:attribute name="id" type="xs:ID" use="required"/>
+          <xs:attribute name="profileType" type="xs:string" use="required"/>
+          <xs:attribute name="title" type="xs:string" use="required"/>
+          <xs:attribute name="basis" type="xs:string"/>
+          <xs:attribute name="published" type="xs:string"/>
+          <xs:attribute name="sourceId" type="xs:IDREF" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="recordsType">
+    <xs:sequence>
+      <xs:element name="record" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="summary" type="xs:string" minOccurs="0"/>
+            <xs:element name="properties" type="propertiesType" minOccurs="0"/>
+          </xs:sequence>
+          <xs:attribute name="id" type="xs:ID" use="required"/>
+          <xs:attribute name="category" type="xs:string" use="required"/>
+          <xs:attribute name="productName" type="xs:string" use="required"/>
+          <xs:attribute name="partNumber" type="xs:string" use="required"/>
+          <xs:attribute name="sourceId" type="xs:IDREF" use="required"/>
+          <xs:attribute name="sourceLocator" type="xs:string"/>
+          <xs:attribute name="verified" type="xs:boolean" default="false"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="propertiesType">
+    <xs:sequence>
+      <xs:element name="property" maxOccurs="unbounded">
+        <xs:complexType mixed="true">
+          <xs:attribute name="name" type="xs:string" use="required"/>
+          <xs:attribute name="valueType" type="xs:string" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

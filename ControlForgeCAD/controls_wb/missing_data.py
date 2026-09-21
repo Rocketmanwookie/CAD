@@ -250,6 +250,8 @@ def project_object_to_intake(obj: object) -> ProjectIntake:
         project_id=getattr(obj, "ProjectId", "CE-PROJECT-001"),
         name=getattr(obj, "ProjectName", "Controls Project"),
         schema_version=getattr(obj, "SchemaVersion", "0.1.0"),
+        ce_identity=getattr(obj, "CEIdentity", ""),
+        ce_role=getattr(obj, "CERole", "project.root"),
         fields=fields,
         deliverables=set(getattr(obj, "Deliverables", [])),
         contacts=_contacts_from_project_object(obj),

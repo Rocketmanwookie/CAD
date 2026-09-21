@@ -23,6 +23,13 @@ if Gui is not None:
             "BOMs, safety circuits, and XML interchange."
         )
 
+        # FreeCAD requires an absolute workbench icon path at class definition
+        # time. InitGui.py is a supported legacy entry point for existing addons.
+        Icon = str(
+            (__import__("pathlib").Path(globals().get("__file__", "InitGui.py")).resolve().parent
+             / "Resources" / "Icons" / "ControlForgeCAD.svg")
+        )
+
         def _workbench_root(self):
             """Return the ControlForgeCAD workbench root without relying on module globals."""
 
@@ -83,17 +90,23 @@ if Gui is not None:
             )
 
             base_dir = self._workbench_root()
-            Gui.addIconPath(os.path.join(base_dir, "controls_wb", "resources", "icons"))
+            Gui.addIconPath(os.path.join(base_dir, "Resources", "Icons"))
 
             from controls_wb.commands import (  # noqa: F401
                 create_panel,
                 add_io_signal,
                 add_connection,
+                add_electrical_path,
+                edit_electrical_path,
+                capture_wire_route,
+                route_wire_with_cables,
                 export_bom,
                 export_ceproject_xml,
                 export_io_list,
                 export_missing_data_csv,
                 export_connection_schedule,
+                export_electrical_schedules,
+                export_terminal_plan,
                 missing_data,
                 new_project,
                 validate_project,

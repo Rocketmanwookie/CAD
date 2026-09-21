@@ -10,6 +10,8 @@ except Exception:  # pragma: no cover
 
 from controls_wb.intake import validate_intake
 from controls_wb.missing_data import project_object_to_intake
+from controls_wb.electrical_validation import validate_connection_graph
+from controls_wb.model.electrical import electrical_paths_from_project
 
 
 def validate_project_objects(objects):
@@ -37,6 +39,30 @@ def validate_document_objects(objects):
                 messages.append(("WARNING", f"{tag} has no part number assigned."))
             if not description:
                 messages.append(("WARNING", f"{tag} has no description assigned."))
+    for project in objects:
+        if not hasattr(project, "ElectricalPaths"):
+            continue
+        try:
+            paths = electrical_paths_from_project(project)
+        except ValueError as exc:
+            messages.append(("ERROR", f"Electrical graph could not be reconstructed: {exc}"))
+            continue
+        signal_ids = {
+            str(getattr(signal, "CEIdentity", "") or "")
+            for signal in (getattr(project, "ElectricalSignals", []) or [])
+            if getattr(signal, "CEIdentity", "")
+        }
+        owner_ids = {
+            str(getattr(device, "CEIdentity", "") or "")
+            for device in (getattr(project, "ElectricalDevices", []) or [])
+            if getattr(device, "CEIdentity", "")
+        }
+        for finding in validate_connection_graph(
+            paths,
+            known_owner_identities=owner_ids,
+            known_signal_identities=signal_ids,
+        ):
+            messages.append((finding.severity, f"{finding.code}: {finding.message}"))
     if not messages:
         messages.append(("INFO", "No validation messages."))
     return messages

@@ -18,6 +18,13 @@ from controls_wb.intake import (
     validate_intake,
 )
 from controls_wb.missing_data import MissingDataRow, missing_data_matrix, project_object_to_intake
+from controls_wb.identity import CERoles, imported_ce_identity, is_ce_identity, validate_ce_role
+from controls_wb.electrical_path import (
+    PATH_XML_NAMESPACE,
+    ElectricalConnectionPath,
+    connection_path_from_xml,
+    connection_path_to_xml,
+)
 
 
 CEPROJECT_NAMESPACE = "https://whrsdaparty.github.io/ceproject/0.1"
@@ -46,6 +53,7 @@ class CEProjectXmlDocument:
     intake: ProjectIntake
     validation_findings: tuple[CEProjectXmlValidationFinding, ...] = ()
     missing_data_rows: tuple[MissingDataRow, ...] = ()
+    connection_paths: tuple[ElectricalConnectionPath, ...] = ()
 
 
 def _element(name: str, attrib: dict[str, str] | None = None) -> ET.Element:
@@ -70,7 +78,10 @@ def _intake(project: ProjectIntake | object) -> ProjectIntake:
     return project if isinstance(project, ProjectIntake) else project_object_to_intake(project)
 
 
-def ceproject_element(project: ProjectIntake | object) -> ET.Element:
+def ceproject_element(
+    project: ProjectIntake | object,
+    connection_paths: tuple[ElectricalConnectionPath, ...] = (),
+) -> ET.Element:
     """Build a deterministic CEProject XML element for an intake project."""
     intake = _intake(project)
     root = _element(
@@ -78,6 +89,8 @@ def ceproject_element(project: ProjectIntake | object) -> ET.Element:
         {
             "schemaVersion": intake.schema_version,
             "projectId": intake.project_id,
+            "ceIdentity": intake.ce_identity,
+            "ceRole": intake.ce_role,
         },
     )
 
@@ -89,12 +102,16 @@ def ceproject_element(project: ProjectIntake | object) -> ET.Element:
     _append_source_records(root, intake)
     _append_validation_findings(root, intake)
     _append_missing_data_matrix(root, intake)
+    _append_connection_paths(root, connection_paths)
     return root
 
 
-def ceproject_to_xml(project: ProjectIntake | object) -> str:
+def ceproject_to_xml(
+    project: ProjectIntake | object,
+    connection_paths: tuple[ElectricalConnectionPath, ...] = (),
+) -> str:
     """Serialize a project intake to deterministic CEProject XML text."""
-    root = ceproject_element(project)
+    root = ceproject_element(project, connection_paths)
     tree = ET.ElementTree(root)
     ET.indent(tree, space="  ")
     return ET.tostring(root, encoding="unicode", xml_declaration=True, short_empty_elements=True)
@@ -110,6 +127,14 @@ def parse_ceproject_xml(xml_text: str | bytes) -> CEProjectXmlDocument:
     _require_tag(root, "CEProject")
     project_id = _required_attr(root, "projectId", "CEProject")
     schema_version = _required_attr(root, "schemaVersion", "CEProject")
+    ce_identity = root.attrib.get("ceIdentity", "") or imported_ce_identity("ceproject", project_id)
+    ce_role = root.attrib.get("ceRole", CERoles.PROJECT)
+    if not is_ce_identity(ce_identity):
+        raise CEProjectXmlError(f"Invalid CEProject identity {ce_identity!r} on CEProject.")
+    try:
+        validate_ce_role(ce_role)
+    except ValueError as exc:
+        raise CEProjectXmlError(str(exc)) from exc
     metadata = _required_child(root, "Metadata", "CEProject")
     name = _required_text(metadata, "Name", "Metadata")
 
@@ -117,6 +142,8 @@ def parse_ceproject_xml(xml_text: str | bytes) -> CEProjectXmlDocument:
         project_id=project_id,
         name=name,
         schema_version=schema_version,
+        ce_identity=ce_identity,
+        ce_role=ce_role,
         deliverables=_parse_deliverables(_child_or_none(root, "Intake")),
         fields=_parse_fields(_child_or_none(root, "Intake")),
         contacts=_parse_contacts(root),
@@ -127,7 +154,40 @@ def parse_ceproject_xml(xml_text: str | bytes) -> CEProjectXmlDocument:
         intake=intake,
         validation_findings=_parse_validation_findings(root),
         missing_data_rows=_parse_missing_data_rows(root),
+        connection_paths=_parse_connection_paths(root),
     )
+
+
+def _append_connection_paths(
+    root: ET.Element,
+    connection_paths: tuple[ElectricalConnectionPath, ...],
+) -> None:
+    if not connection_paths:
+        return
+    identities = [path.identity for path in connection_paths]
+    if len(identities) != len(set(identities)):
+        raise ValueError("CEProject cannot contain duplicate connection-path identities.")
+    parent = _child(root, "ConnectionPaths")
+    for path in sorted(connection_paths, key=lambda item: item.identity):
+        parent.append(ET.fromstring(connection_path_to_xml(path)))
+
+
+def _parse_connection_paths(root: ET.Element) -> tuple[ElectricalConnectionPath, ...]:
+    parent = _child_or_none(root, "ConnectionPaths")
+    if parent is None:
+        return ()
+    expected_tag = f"{{{PATH_XML_NAMESPACE}}}ConnectionPath"
+    elements = list(parent)
+    if any(element.tag != expected_tag for element in elements):
+        raise CEProjectXmlError("ConnectionPaths contains an unsupported namespace or element.")
+    try:
+        paths = tuple(connection_path_from_xml(ET.tostring(element)) for element in elements)
+    except ValueError as exc:
+        raise CEProjectXmlError(f"Invalid CEProject connection path: {exc}") from exc
+    identities = [path.identity for path in paths]
+    if len(identities) != len(set(identities)):
+        raise CEProjectXmlError("CEProject contains duplicate connection-path identities.")
+    return paths
 
 
 def _append_contacts(root: ET.Element, intake: ProjectIntake) -> None:
@@ -274,7 +334,8 @@ def _local_name(element: ET.Element) -> str:
 
 
 def _children(parent: ET.Element, name: str) -> list[ET.Element]:
-    return [child for child in list(parent) if _local_name(child) == name]
+    qualified_name = f"{{{CEPROJECT_NAMESPACE}}}{name}"
+    return [child for child in list(parent) if child.tag == qualified_name]
 
 
 def _child_or_none(parent: ET.Element, name: str) -> ET.Element | None:
@@ -283,8 +344,9 @@ def _child_or_none(parent: ET.Element, name: str) -> ET.Element | None:
 
 
 def _require_tag(element: ET.Element, name: str) -> None:
-    if _local_name(element) != name:
-        raise CEProjectXmlError(f"Expected root element {name}, found {_local_name(element)}.")
+    expected = f"{{{CEPROJECT_NAMESPACE}}}{name}"
+    if element.tag != expected:
+        raise CEProjectXmlError(f"Expected root element {expected}, found {element.tag}.")
 
 
 def _required_child(parent: ET.Element, name: str, context: str) -> ET.Element:

@@ -2,7 +2,11 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            targetNamespace="https://whrsdaparty.github.io/ceproject/0.1"
            xmlns="https://whrsdaparty.github.io/ceproject/0.1"
+           xmlns:cepath="https://whrsdaparty.github.io/ceproject/connection-path/1.0"
            elementFormDefault="qualified">
+
+  <xs:import namespace="https://whrsdaparty.github.io/ceproject/connection-path/1.0"
+             schemaLocation="connection_path_v1.xsd"/>
 
   <xs:element name="CEProject">
     <xs:complexType>
@@ -16,9 +20,16 @@
         <xs:element name="Devices" type="DevicesType" minOccurs="0"/>
         <xs:element name="Signals" type="SignalsType" minOccurs="0"/>
         <xs:element name="Connections" type="ConnectionsType" minOccurs="0"/>
+        <xs:element name="ConnectionPaths" minOccurs="0">
+          <xs:complexType><xs:sequence>
+            <xs:element ref="cepath:ConnectionPath" maxOccurs="unbounded"/>
+          </xs:sequence></xs:complexType>
+        </xs:element>
       </xs:sequence>
       <xs:attribute name="schemaVersion" type="xs:string" use="required"/>
       <xs:attribute name="projectId" type="xs:string" use="required"/>
+      <xs:attribute name="ceIdentity" type="xs:anyURI" use="optional"/>
+      <xs:attribute name="ceRole" type="xs:string" use="optional"/>
     </xs:complexType>
   </xs:element>
 

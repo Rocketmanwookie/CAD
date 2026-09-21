@@ -9,6 +9,7 @@ except Exception:  # pragma: no cover
     Gui = None
 
 from controls_wb.model.layout import create_starter_layout_objects
+from controls_wb.freecad_transactions import document_transaction
 
 
 class CreatePanelCommand:
@@ -21,9 +22,10 @@ class CreatePanelCommand:
     def Activated(self):
         if App.ActiveDocument is None:
             App.newDocument("ControlsPanel")
-        created = create_starter_layout_objects(App.ActiveDocument)
+        with document_transaction(App.ActiveDocument, "Create control panel"):
+            created = create_starter_layout_objects(App.ActiveDocument)
+            App.ActiveDocument.recompute()
         App.Console.PrintMessage(f"Created {len(created)} starter controls layout objects.\n")
-        App.ActiveDocument.recompute()
 
     def IsActive(self):
         return App is not None

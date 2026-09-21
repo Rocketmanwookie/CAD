@@ -87,6 +87,13 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [x] Add Project Intake import for supported CEProject XML and remember imported XML on the editable `CE_Project` object for later selection.
 - [x] Add project setup/import adapters for YAML and UML-derived interchange where practical.
 - [x] Make every project fact addressable by ID.
+- [x] Assign immutable CE identities and controlled roles immediately to current
+  project and starter layout FreeCAD objects.
+- [ ] Carry CE identities, roles, and references through the CEProject XSD and
+  deterministic import/export round trip.
+- [ ] Extend immediate identity assignment to devices, ports, PLC
+  racks/modules/channels, signals, nets, terminals, wires, and cables as those
+  typed entities are implemented.
 - [ ] Make every generated artifact traceable to source fields.
 - [ ] Support assumptions and estimates without treating them as verified values.
 - [ ] Add migration notes from schema `0.1` to future versions.
@@ -114,6 +121,8 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [x] Seed hardware catalog CADbase references for Siemens S7-1200 CPU STEP/SLDPRT files with local path and checksum metadata.
 - [x] Apply selected PLC CPU catalog metadata to the starter PLC layout placeholder.
 - [x] Add an approval-gated Siemens CAx asset-request manifest for selected seeded PLC parts; it records official sources but does not automate portal downloads.
+- [x] Add a neutral XML equipment taxonomy and a source-traceable Siemens S7-1200 record seed that can grow without making vendor fields mandatory in the core domain.
+- [ ] Audit the imported Siemens S7-1200 record seed against current manufacturer documents and mark individual records verified only after review.
 - [ ] Add adapter for selected device to CADbase part reference.
 - [ ] Add policy for official manufacturer sources and redistribution limits.
 - [ ] Add manual upload path when download is unavailable or restricted.
@@ -131,6 +140,10 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 
 ### Phase 6 - PLC/I/O controls package
 
+**Immediate MVP path:** finish the rack/module/channel model, typed terminal and
+wire graph, persistent 3D connection ports, and coordinated exports before
+starting digital-twin runtime work.
+
 - [x] Add PLC platform requirement fields.
 - [ ] Add rack/slot/module/channel model.
 - [x] Add starter signal registry.
@@ -144,8 +157,56 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 
 ### Phase 7 - Wiring, terminals, and cabinet-side power
 
+- [x] Export a deterministic, validated terminal plan from the typed electrical graph.
+
 - [x] Add starter terminal strip reference model.
 - [x] Add a persisted, deterministic signal-to-terminal-to-wire connection-record foundation; it is not a schematic netlist or compliance engine.
+- [x] Add the first fixed, deterministic continuous path contract from PLC channel
+  terminal through ordered cabinet terminal levels and wire segments to the
+  field-device terminal, including route-derived length and shared wiring/I/O
+  schedule projections.
+- [x] Materialize continuous paths as typed FreeCAD path, terminal, and wire
+  objects with ordered links, immediate identity/role assignment, route/length
+  properties, and preflight duplicate-identity rejection.
+- [x] Embed continuous paths in CEProject through an explicit namespace/XSD
+  import with typed round trips and duplicate path-identity validation.
+- [x] Add whole-project duplicate/dangling-reference validation across current
+  paths, terminal owners, signals, terminal endpoints, and wires.
+- [x] Add typed signal/path/device link collections and canonical fact IDs to the
+  `CE_Project` aggregate; register materialized signals and paths automatically.
+- [x] Connect typed electrical graph reconstruction and whole-project findings to
+  the existing FreeCAD validation command.
+- [x] Add typed field-device creation with immediate identity/role assignment and
+  project registration; automatically register placed PLC controllers and
+  terminal strips as electrical device occurrences.
+- [x] Add the first user-facing path creation workflow with registered owner
+  selection, optional immediately identified field-device creation, a fixed
+  PLC-terminal/terminal-strip/device-terminal chain, conductor metadata, and
+  transaction-safe materialization.
+- [x] Accept ordered 3D route coordinates during path creation, validate finite
+  point sequences, persist them on typed wires, and derive schedule length from
+  the routed polyline while retaining a separate specified-length input.
+- [x] Add identity-preserving editing of signal tags, terminal designations,
+  conductor metadata, specified lengths, and 3D routes for a selected path.
+- [x] Add graphical 3D route selection for existing paths through selected-geometry vertex capture and the dependency-free Part-polyline fallback.
+- [x] Integrate the optional FreeCAD Cables workbench as the physical wire/cable
+  routing engine through `WireFlex`, with two-sided identity-safe links from each
+  `CE_Wire` to its Cables route object; retain the Part polyline fallback when
+  Cables is not installed.
+- [x] Add a workbench command that exports canonical wiring and I/O path CSV
+  schedules from the typed electrical graph.
+- [x] Add a standalone namespace-correct, XSD-validated connection-path XML
+  contract with deterministic round trips and semantic continuity validation.
+- [x] Add route-derived wire length, conductor size/color/function/conduit fields
+  to the canonical path and wiring-schedule projection.
+- [x] Add profile-driven raceway fill calculation using NEC Chapter 9 Table 1
+  fill percentages and caller-supplied edition/raceway/conductor areas.
+- [ ] Add licensed/verified edition-specific conductor and raceway dimension data.
+- [ ] Add complete conductor ampacity, correction/adjustment, terminal-rating,
+  voltage-drop, protection, and project/AHJ sizing inputs before recommending a
+  conductor size.
+- [ ] Add project wire-color profiles that distinguish required/reserved
+  identification from documented plant conventions.
 - [ ] Add wire/from-to reference model.
 - [ ] Add internal cabinet power circuits.
 - [ ] Add control power distribution.
@@ -171,8 +232,14 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Create companion concept: `IntegraTwin Open` or `Digital Twin / Simulation`.
 - [ ] Keep digital twin simulation out of the initial core workbench.
 - [ ] Define links from CEProject to geometry, I/O state, simulated sensors, actuators, states, sequences, faults, and HMI behavior.
-- [ ] Research AutomationML, OPC UA NodeSet2, FMI/FMU, ROS 2, Gazebo/Ignition, and discrete-event simulation interfaces.
-- [ ] Add a future simulator boundary document.
+- [x] Select ROS/ROS 2 integration as the future digital-twin runtime boundary.
+- [ ] Define CEProject-to-ROS 2 identity mapping for devices, I/O, terminals,
+  geometry, state, commands, alarms, and simulation time.
+- [ ] Define ROS 2 messages, services, actions, or adapters without making ROS a
+  dependency of the core FreeCAD workbench.
+- [ ] Evaluate Gazebo and other ROS-compatible simulators after the electrical
+  graph and working MVP are stable.
+- [ ] Add a future ROS/ROS 2 simulator boundary document.
 
 ### Phase 10 - Education docs for new controls engineers
 
@@ -215,6 +282,26 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [ ] Documentation: drawing package, submittals, O&M manuals, datasheet package, training docs, FAT/SAT/IQ/OQ style requirements where applicable.
 
 ## 7. Standards and interoperability watchlist
+
+### Schematic-symbol library
+
+- [ ] Define a namespace-correct, XSD-validated neutral symbol-library contract
+  with immutable definition/occurrence identity separation and structured pins.
+- [ ] Seed IEC and NFPA/JIC variants for PLC CPU and I/O modules, power supplies,
+  terminal blocks, fuses, breakers, contactor coils and contacts, overloads,
+  safety relays, emergency stops, illuminated buttons, pull-rope switches, limit
+  switches, stack-light elements, HMIs, receptacles, and two-wire 4–20 mA
+  temperature/pressure transmitters.
+- [ ] Add parent/child cross-references, terminal/pin maps, insertion points,
+  rotation/mirroring rules, and device-tag propagation.
+- [ ] Link every placed symbol occurrence to the same equipment occurrence and
+  `CEIdentity` used by the 3D object, electrical path, BOM, and schedules.
+- [ ] Add deterministic schematic-sheet and ladder/rung rendering from smart nets.
+- [x] Link every CAD acquisition request to an XSD-validated datasheet registry
+  with local/checksummed, pending-download, or pending-part-selection state and
+  export category-aware library acceptance-test instructions to CSV.
+- [ ] Download and verify the outstanding official datasheets, populate revision
+  and document-date metadata, and resolve exact MLFBs before marking tests passed.
 
 - [ ] FreeCAD workbench/addon architecture.
 - [ ] FreeCAD BIM and IFC workflows.

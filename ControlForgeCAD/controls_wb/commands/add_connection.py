@@ -9,6 +9,7 @@ except Exception:  # pragma: no cover
     Gui = None
 
 from controls_wb.gui.connection import show_connection_dialog
+from controls_wb.freecad_transactions import document_transaction
 
 
 class AddConnectionCommand:
@@ -20,11 +21,12 @@ class AddConnectionCommand:
             App.newDocument("ControlsProject")
         try:
             parent = Gui.getMainWindow() if Gui is not None and hasattr(Gui, "getMainWindow") else None
-            show_connection_dialog(App.ActiveDocument, parent=parent, console=App.Console)
+            with document_transaction(App.ActiveDocument, "Add connection record"):
+                show_connection_dialog(App.ActiveDocument, parent=parent, console=App.Console)
+                App.ActiveDocument.recompute()
         except (RuntimeError, ValueError) as exc:
             App.Console.PrintWarning(f"{exc} Connection record was not added.\n")
             return
-        App.ActiveDocument.recompute()
 
     def IsActive(self):
         return App is not None

@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+- Added `CE_RouteWireWithCables`, which creates or synchronizes an optional
+  Cables-workbench `WireFlex` physical route for a typed `CE_Wire`.  The link is
+  guarded by the wire's immutable CE identity in both directions, and the
+  dependency-free Part-polyline remains the fallback when Cables is unavailable.
+
+- Added `CE_ExportTerminalPlan`, a validated deterministic CSV projection of
+  cabinet terminals and their connected wire-side endpoints.
+
+- Added `CE_CaptureWireRoute`, which captures ordered vertices from selected
+  FreeCAD geometry onto one typed `CE_Wire`, preserves CE identity, validates
+  the route, recalculates length, and regenerates the Part-polyline fallback.
+
 All notable changes to this project will be documented in this file.
 
 This project follows Semantic Versioning once public APIs stabilize. During `0.y.z`, APIs, XML schemas, and generated output formats may change.
@@ -8,6 +22,47 @@ This project follows Semantic Versioning once public APIs stabilize. During `0.y
 
 ### Added
 
+- Addon Manager metadata, SVG branding, document transaction boundaries, and an
+  Addon Academy release checklist.
+- Evidence-based AutoCAD Electrical PLC parity audit, target electrical-graph
+  architecture, delivery gates, and strict parity definition.
+- Working-MVP fast lane and deferred ROS/ROS 2 digital-twin integration boundary.
+- Immutable CEProject UUID identities and controlled semantic roles assigned at
+  project/layout object creation and restored for legacy document objects.
+- Repository-level master completion prompt with XML conformance, identity,
+  working-MVP, FreeCAD, adapter, validation, and completion gates.
+- CEProject root identity and role now round-trip through namespace-aware XML;
+  legacy XML without identity attributes receives a deterministic imported ID.
+- Fixed, deterministic continuous electrical-path contract spanning PLC channel
+  terminal, wire segments, cabinet terminal levels, and device terminal, with
+  physical route lengths and common wiring/I/O schedule projections.
+- Version 1.0 clarified as ROS/ROS 2 digital-twin ready, not runtime initialized.
+- Wiring schedules now carry routed length, conductor size, color, circuit
+  function, and conduit identity from the canonical wire segment.
+- Profile-driven preliminary raceway sizing with NEC Chapter 9 fill percentages
+  and explicit code edition, raceway type, supplied internal areas, and
+  unverified status; reserved colors are separated from project conventions.
+- Namespace-correct `ceproject.connection-path/1.0` XML serialization and XSD for
+  continuous terminal/wire paths, including identities, roles, routing points,
+  length fields, conductor data, ordered sequences, and deterministic round trips.
+- Typed FreeCAD path, terminal, and wire objects that preserve CE identities and
+  roles, own ordered object links, bind each wire to its terminal endpoints, keep
+  route and conductor metadata, and reject identity collisions before placement.
+- CEProject XML now imports the connection-path XSD namespace and embeds typed
+  paths with deterministic ordering, round trips, semantic validation, and
+  duplicate path-identity rejection.
+- Whole-project electrical graph validation for duplicate identities, dangling
+  signals/terminal owners, cross-signal terminal conflicts, inconsistent signal
+  tags, and missing wire size/color/length schedule data.
+- Typed signal objects and `CE_Project` signal/path/device link collections with
+  canonical fact IDs, automatic path registration, signal reuse/tag conflict
+  protection, typed path reconstruction, and FreeCAD validation-command output.
+- Typed field-device occurrence creation and project registration, plus automatic
+  electrical-device registration for placed PLC controller and terminal-strip
+  layout objects so terminal owner identities resolve to project objects.
+- `CE_ExportElectricalSchedules` command and deterministic typed-graph wiring/I/O
+  path CSVs containing identities, ordered endpoints, terminal paths, conductor
+  size/color/function, conduit identity, segment length, and total path length.
 - Initial repository seed.
 - FreeCAD external workbench bootstrap files: `Init.py` and `InitGui.py`.
 - Draft controls-project data model.

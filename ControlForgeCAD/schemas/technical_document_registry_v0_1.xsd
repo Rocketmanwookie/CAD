@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="https://whrsdaparty.github.io/ceproject/technical-documents/0.1"
+  xmlns:cedoc="https://whrsdaparty.github.io/ceproject/technical-documents/0.1"
+  elementFormDefault="qualified">
+  <xs:simpleType name="DocumentStatus">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="linked_local"/>
+      <xs:enumeration value="pending_download"/>
+      <xs:enumeration value="pending_part_selection"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="TestStatus">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="not_started"/>
+      <xs:enumeration value="passed"/>
+      <xs:enumeration value="failed"/>
+      <xs:enumeration value="not_applicable"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="TestDefinitionType">
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+    <xs:attribute name="instruction" type="xs:string" use="required"/>
+    <xs:attribute name="requiredEvidence" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="DocumentType">
+    <xs:attribute name="type" type="xs:string" use="required"/>
+    <xs:attribute name="status" type="cedoc:DocumentStatus" use="required"/>
+    <xs:attribute name="officialLookupUrl" type="xs:anyURI"/>
+    <xs:attribute name="localPath" type="xs:string"/>
+    <xs:attribute name="sha256" type="xs:string"/>
+    <xs:attribute name="revision" type="xs:string"/>
+    <xs:attribute name="documentDate" type="xs:date"/>
+  </xs:complexType>
+  <xs:complexType name="RequiredTestType">
+    <xs:attribute name="definitionId" type="xs:IDREF" use="required"/>
+    <xs:attribute name="status" type="cedoc:TestStatus" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="EquipmentDocumentLinkType">
+    <xs:sequence>
+      <xs:element name="Document" type="cedoc:DocumentType"/>
+      <xs:element name="RequiredTests">
+        <xs:complexType><xs:sequence>
+          <xs:element name="RequiredTest" type="cedoc:RequiredTestType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence></xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="requestId" type="xs:string" use="required"/>
+    <xs:attribute name="manufacturer" type="xs:string" use="required"/>
+    <xs:attribute name="productFamily" type="xs:string" use="required"/>
+    <xs:attribute name="requestedPart" type="xs:string" use="required"/>
+    <xs:attribute name="partKey" type="xs:string" use="required"/>
+    <xs:attribute name="selectionState" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:element name="TechnicalDocumentRegistry">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="TestDefinitions">
+          <xs:complexType><xs:sequence>
+            <xs:element name="TestDefinition" type="cedoc:TestDefinitionType" minOccurs="1" maxOccurs="unbounded"/>
+          </xs:sequence></xs:complexType>
+        </xs:element>
+        <xs:element name="EquipmentDocumentLinks">
+          <xs:complexType><xs:sequence>
+            <xs:element name="EquipmentDocumentLink" type="cedoc:EquipmentDocumentLinkType" minOccurs="1" maxOccurs="unbounded"/>
+          </xs:sequence></xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="schemaVersion" type="xs:string" use="required"/>
+      <xs:attribute name="recordCount" type="xs:nonNegativeInteger" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
