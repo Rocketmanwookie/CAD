@@ -752,3 +752,70 @@ Next recommended milestone:
 - Implement the TODO-backed rack/module/channel allocation model, including
   collision-safe rack, slot, channel, and PLC-address assignments that connect
   the existing I/O registry to catalog-backed PLC occurrences.
+
+## Agent Coordination and Change Log
+
+The user requested documentation/historian, architect, and programmer agents for
+the rack/module/channel milestone, and a persistent record of proposed changes.
+This section is the coordination record within the existing active ExecPlan.
+
+### Agent Register
+
+| Agent | Role | Session ID | Initial assignment |
+|---|---|---|---|
+| Peirce | Documentation / historian | `01a0c918-9bbc-79b2-a770-79142eaebc8c` | Reconcile backlog, decisions, acceptance requirements, and documentation gaps. |
+| Schrodinger | Architect | `01a0c918-9de3-7b91-bc65-48eccd25c499` | Recommend allocation contracts, stable identities, address rules, and catalog integration. |
+| Herschel | Programmer | `01a0c918-9fbc-7b83-9a40-b152fe9b575d` | Identify implementation boundaries, compatibility tests, capacity tests, and persistence tests. |
+
+All three were dispatched for read-only preparation. The coordinating agent
+owns integration, review, final validation, and commits. Assign explicit,
+non-overlapping file ownership before implementation. Session IDs identify
+current agents; availability after restart must be checked, not assumed.
+Reuse these role briefs if an agent must be recreated, and record its new ID.
+
+### Change Register
+
+Record each recommendation with evidence, affected files or contract, owner,
+status, decision rationale, and validation or commit evidence when completed.
+Use proposed, accepted, in progress, completed, deferred, or rejected as status.
+A recommendation is not implemented merely because it appears in this log.
+
+| ID | Status | Owner | Recommendation and evidence | Completion evidence |
+|---|---|---|---|---|
+| AG-001 | Accepted | Coordinator | Preserve the three role briefs and agent IDs here, as requested by the user. | Agent register recorded; documentation-only change. |
+| AG-002 | Accepted | Coordinator | Use this change register for project and agent-workflow recommendations, keeping decisions distinct from delivered behavior. | Register established; append findings as agents return. |
+| AG-003 | Proposed | Architect + programmer | Define the rack/module/channel contract before editing allocation behavior; the Phase 6 TODO and preceding milestone handoff identify this missing model. | Awaiting agent findings and contract review. |
+| AG-004 | Proposed | Historian | Reconcile stale status statements in the master prompt and ExecPlan with current code and test evidence before carrying them into the new milestone. | Awaiting historian findings. |
+
+### Consolidated Agent Findings and Allocation Decision
+
+All three preparation assignments completed read-only. Herschel verified the
+baseline: 196 tests passed, with bytecode/cache writes disabled.
+
+- Accepted: preserve existing controller identities and roles; distinguish catalog
+  part definitions from rack/module/channel occurrences.
+- Accepted: allocate only persisted signal identities; never create IDs during
+  export. Legacy signal reconciliation needs explicit ambiguity checks.
+- Accepted: collision checks must compare bit intervals within a controller and
+  input/output area, including overlapping bit and word addresses.
+- Accepted: address bases and widths must be explicit project inputs; the current
+  catalog does not establish vendor address layouts or reserved ranges.
+- Accepted: validate modeled capacities and known CPU signal-module limits;
+  unknown electrical compatibility, board allowances, and bus-power constraints
+  remain unresolved and must not be described as verified.
+- Accepted: use additive persistence and preflight validation. Preserve existing
+  I/O and connection records on project refresh.
+- Proposed follow-up: XML command-level graph and allocation round trips, typed
+  FreeCAD lifecycle validation, and coordinated exports. Existing serializer
+  support alone is insufficient evidence for these workflows.
+- Accepted documentation correction: distinguish historical ExecPlan checkpoints
+  from the active allocation goal; update the master prompt's obsolete 193-test
+  and route-capture statements.
+
+Next implementation increment: a pure-Python rack/module/channel model with
+catalog-backed occurrences, deterministic channel assignment, explicit address
+ranges, capacity/collision validation, and focused tests. This is the first
+bounded increment of the larger allocation milestone; GUI, XML integration,
+signal migration, and real FreeCAD persistence remain open until implemented
+and verified. Do not mark the entire allocation milestone complete for the
+domain foundation alone.
