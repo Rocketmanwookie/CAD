@@ -214,11 +214,15 @@ def materialize_electrical_path(document, path: ElectricalConnectionPath) -> Mat
     _append_unique_link(signal_obj, "ConnectionPaths", path_obj)
     project = _project_object(document)
     if project is not None:
+        from controls_wb.connections import append_connection_for_path
+
         _add_property(project, "App::PropertyLinkList", "ElectricalSignals", "Electrical Graph", "Typed signal objects owned by this project")
         _add_property(project, "App::PropertyLinkList", "ElectricalPaths", "Electrical Graph", "Typed continuous connection paths owned by this project")
         _add_property(project, "App::PropertyLinkList", "ElectricalDevices", "Electrical Graph", "Typed electrical device occurrences owned by this project")
+        _add_property(project, "App::PropertyStringList", "ConnectionRecords", "Wiring", "Signal-to-terminal-to-wire connection records as JSON lines")
         _append_unique_link(project, "ElectricalSignals", signal_obj)
         _append_unique_link(project, "ElectricalPaths", path_obj)
+        append_connection_for_path(project, path_obj)
     return MaterializedElectricalPath(path_obj, signal_obj, tuple(terminal_objects), tuple(wire_objects))
 
 

@@ -699,3 +699,56 @@ Next recommended milestone:
   the next engineering increment. The local workshop queue remains available
   for a later focused hardware milestone, starting with explicit hardware roles
   and independent signal-board versus signal-module allowances.
+
+## Continuation - 2026-09-22 Connection-Record Identity Linkage
+
+Repository preparation:
+
+- Published the five previously validated local commits to
+  `origin/controlforgecad`.
+- Updated `origin` from the moved `Whrsdaparty/CAD` URL to the canonical
+  `https://github.com/Rocketmanwookie/CAD.git` URL and verified the branch was
+  synchronized.
+- Updated and committed `MASTER_COMPLETION_PROMPT.md` so the canonical path,
+  source-of-truth precedence, completed routing baseline, and current milestone
+  are explicit.
+
+Completed milestone:
+
+- Extended backward-compatible `SignalConnection` JSON records with stable path,
+  signal, PLC-device, terminal-strip, field-device, ordered-terminal, and
+  ordered-wire identities.
+- Added deterministic identity columns to the legacy connection schedule CSV.
+- Added an automatic bridge from each newly materialized typed electrical path
+  to one `CE_Project.ConnectionRecords` entry.
+- Added connection-reference validation for missing, dangling, wrong-role, and
+  path-order inconsistencies and connected those findings to the existing
+  project validation command.
+- Preserved deserialization and export of existing text-only connection records;
+  validation reports them as unlinked rather than discarding them.
+- Corrected the stale roadmap statement that graphical route capture was next;
+  route capture and Cables routing are already implemented.
+
+Validation:
+
+```bash
+/usr/bin/python3 -m pytest -q ControlForgeCAD/tests/test_connections.py \
+  ControlForgeCAD/tests/test_electrical_objects.py \
+  ControlForgeCAD/tests/test_validate_project.py
+/usr/bin/python3 -m pytest -q ControlForgeCAD/tests
+python3 -m compileall -q ControlForgeCAD
+git diff --check
+```
+
+Results:
+
+- Focused tests passed: 19.
+- Full test suite passed: 196.
+- Compileall passed.
+- `git diff --check` passed.
+
+Next recommended milestone:
+
+- Implement the TODO-backed rack/module/channel allocation model, including
+  collision-safe rack, slot, channel, and PLC-address assignments that connect
+  the existing I/O registry to catalog-backed PLC occurrences.

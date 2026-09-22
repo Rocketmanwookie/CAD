@@ -10,6 +10,11 @@ except Exception:  # pragma: no cover
 
 from controls_wb.intake import validate_intake
 from controls_wb.missing_data import project_object_to_intake
+from controls_wb.connections import (
+    connection_findings,
+    connection_reference_findings,
+    connections_from_project,
+)
 from controls_wb.electrical_validation import validate_connection_graph
 from controls_wb.model.electrical import electrical_paths_from_project
 
@@ -40,6 +45,13 @@ def validate_document_objects(objects):
             if not description:
                 messages.append(("WARNING", f"{tag} has no description assigned."))
     for project in objects:
+        connections = connections_from_project(project)
+        for finding in connection_findings(connections):
+            level, _, message = finding.partition(": ")
+            messages.append((level, message))
+        for finding in connection_reference_findings(connections, objects):
+            level, _, message = finding.partition(": ")
+            messages.append((level, message))
         if not hasattr(project, "ElectricalPaths"):
             continue
         try:

@@ -62,9 +62,10 @@ following existing tested patterns.
   electrical schedule export already exist. Do not reimplement them.
 - The roadmap sentence saying graphical route capture is next is stale; the
   TODO correctly marks graphical route capture complete.
-- The next active milestone is connection-record identity linkage.
+- Connection-record identity linkage is the current completed increment. The
+  next active milestone is rack/module/channel allocation.
 
-## Active milestone — connection-record identity linkage
+## Completed contract — connection-record identity linkage
 
 Close the gap between legacy `CE_Project.ConnectionRecords` JSON records and the
 typed electrical graph. Complete this milestone only when:
@@ -82,8 +83,18 @@ typed electrical graph. Complete this milestone only when:
 7. the ExecPlan, TODO, roadmap, README, and changelog are updated only to match
    delivered behavior.
 
-Do not expand this milestone into rack/channel allocation, schematic generation,
-conductor sizing, or a new routing engine.
+Keep the completed connection-linkage contract separate from rack/channel
+allocation, schematic generation, conductor sizing, and physical routing.
+
+## Active milestone — rack/module/channel allocation
+
+Define the smallest pure-Python allocation model that connects catalog-backed
+PLC occurrences to the existing I/O signal registry. It must provide stable
+rack, module, and channel identities; deterministic slot/channel/address
+allocation; collision and capacity validation; persistence through thin FreeCAD
+adapters; and coordinated I/O export. Preserve the distinction between catalog
+part definitions and placed occurrences. Scope the exact public contract from
+the existing catalog, project, I/O, and layout modules before implementation.
 
 ## Mission
 

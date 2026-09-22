@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MIT
 
 from controls_wb.electrical_path import ElectricalConnectionPath, RoutePoint, TerminalEndpoint, WireSegment
+from controls_wb.connections import connections_from_project
 from controls_wb.identity import CERoles, new_ce_identity
 from controls_wb.model.electrical import (
     electrical_path_from_object,
@@ -106,6 +107,13 @@ def test_materialized_signal_and_path_register_on_project_aggregate():
 
     assert project.ElectricalSignals == [result.signal_object]
     assert project.ElectricalPaths == [result.path_object]
+    records = connections_from_project(project)
+    assert len(records) == 1
+    assert records[0].path_identity == result.path_object.CEIdentity
+    assert records[0].terminal_identities == tuple(
+        terminal.CEIdentity for terminal in result.terminal_objects
+    )
+    assert records[0].wire_identities == tuple(wire.CEIdentity for wire in result.wire_objects)
 
 
 def test_materialized_device_receives_identity_role_and_project_registration_immediately():

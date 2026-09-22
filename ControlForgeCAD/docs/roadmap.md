@@ -4,7 +4,7 @@ integraCAD Open is an integration-first FreeCAD workbench for controls-engineeri
 
 ## Current position
 
-The seed, intake/validation, and early controls-package milestones are underway rather than merely aspirational. The current workbench includes editable project intake, missing-data validation and CSV export, CEProject XML import/export, explicit starter I/O signals and CSV export, XML-backed PLC/panel planning metadata, starter load estimates, placeholder panel objects, typed device/terminal/wire paths, and persisted signal-to-terminal-to-wire connection records. Connection records can now be entered and exported as a schedule. The next engineering increment is graphical route capture for the typed wire objects; it is not yet a schematic-generation or vendor-project-generation tool.
+The seed, intake/validation, and early controls-package milestones are underway rather than merely aspirational. The current workbench includes editable project intake, missing-data validation and CSV export, CEProject XML import/export, explicit starter I/O signals and CSV export, XML-backed PLC/panel planning metadata, starter load estimates, placeholder panel objects, typed device/terminal/wire paths, route capture and editing, Cables-workbench routing, and persisted signal-to-terminal-to-wire connection records. Newly materialized paths now create identity-linked connection records that can be validated and exported as a schedule. The next engineering increment is the rack/module/channel allocation model; it is not yet a schematic-generation or vendor-project-generation tool.
 
 ## North star
 
