@@ -95,6 +95,7 @@ if Gui is not None:
             from controls_wb.commands import (  # noqa: F401
                 create_panel,
                 add_io_signal,
+                allocate_plc_io,
                 add_connection,
                 add_electrical_path,
                 edit_electrical_path,

@@ -12,7 +12,7 @@ class CommandSpec:
 
 
 PROJECT_COMMANDS = (
-    "CE_NewProject", "CE_AddIOSignal", "CE_AddConnection",
+    "CE_NewProject", "CE_AddIOSignal", "CE_AllocatePLCIO", "CE_AddConnection",
     "CE_AddElectricalPath", "CE_EditElectricalPath", "CE_CaptureWireRoute", "CE_RouteWireWithCables",
 )
 LAYOUT_COMMANDS = ("CE_CreatePanel",)
@@ -30,6 +30,7 @@ EXPORT_COMMANDS = (
 COMMAND_SPECS = (
     CommandSpec("CE_NewProject", "New Controls Project", "new_project"),
     CommandSpec("CE_AddIOSignal", "Add I/O Signal", "add_io_signal"),
+    CommandSpec("CE_AllocatePLCIO", "Allocate PLC I/O", "allocate_plc_io"),
     CommandSpec("CE_AddConnection", "Add Connection Record", "add_connection"),
     CommandSpec("CE_AddElectricalPath", "Add Electrical Path", "add_electrical_path"),
     CommandSpec("CE_EditElectricalPath", "Edit Electrical Path", "edit_electrical_path"),

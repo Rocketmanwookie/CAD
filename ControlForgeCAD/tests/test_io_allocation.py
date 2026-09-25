@@ -4,6 +4,7 @@ from controls_wb.hardware_catalog import load_hardware_catalog
 from controls_wb.io_allocation import allocate_io_signals, validate_io_allocations
 from controls_wb.io_list import IOSignal
 from controls_wb.io_list import io_signals_from_objects, persist_io_allocation_to_project, explicit_io_signals_from_project
+from controls_wb.commands.allocate_plc_io import persist_project_allocation
 from types import SimpleNamespace
 
 
@@ -143,3 +144,25 @@ def test_persisted_allocation_survives_project_signal_round_trip():
     assert [(signal.slot, signal.channel) for signal in explicit_io_signals_from_project(project)] == [
         ("1", "0"), ("1", "1"),
     ]
+
+
+def test_freecad_command_helper_persists_allocation_in_one_transaction():
+    events = []
+    project = SimpleNamespace(
+        ProjectId="CE-004", ProjectName="Command", SchemaVersion="0.1.0", Deliverables=["ioList"],
+        SensorCount="", SensorCountStatus="Received", PlcMake="Siemens", PlcLine="S7-1200",
+        PlcCPU="CPU 1212C DC/DC/DC", DICount="1", DOCount="", AICount="", AOCount="",
+        IOSignals=[], SourceRecords=[],
+    )
+    document = SimpleNamespace(
+        Objects=[project],
+        openTransaction=lambda label: events.append(("open", label)),
+        commitTransaction=lambda: events.append(("commit",)),
+        abortTransaction=lambda: events.append(("abort",)),
+        recompute=lambda: events.append(("recompute",)),
+    )
+
+    result = persist_project_allocation(document)
+
+    assert len(result.signals) == 1
+    assert events == [("open", "Allocate PLC I/O"), ("recompute",), ("commit",)]
