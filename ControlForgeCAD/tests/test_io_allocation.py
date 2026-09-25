@@ -3,7 +3,7 @@
 from controls_wb.hardware_catalog import load_hardware_catalog
 from controls_wb.io_allocation import allocate_io_signals, validate_io_allocations
 from controls_wb.io_list import IOSignal
-from controls_wb.io_list import io_signals_from_objects
+from controls_wb.io_list import io_signals_from_objects, persist_io_allocation_to_project, explicit_io_signals_from_project
 from types import SimpleNamespace
 
 
@@ -128,3 +128,18 @@ def test_project_io_projection_uses_the_selected_catalog_allocation():
         ('2', '0'),
     ]
     assert {signal.mapping_status for signal in signals} == {"allocated"}
+
+
+def test_persisted_allocation_survives_project_signal_round_trip():
+    project = SimpleNamespace(
+        ProjectId="CE-002", ProjectName="Persist", SchemaVersion="0.1.0", Deliverables=["ioList"],
+        SensorCount="", SensorCountStatus="Received", PlcMake="Siemens", PlcLine="S7-1200",
+        PlcCPU="CPU 1212C DC/DC/DC", DICount="2", DOCount="", AICount="", AOCount="",
+        IOSignals=[], SourceRecords=[],
+    )
+
+    persist_io_allocation_to_project(project)
+
+    assert [(signal.slot, signal.channel) for signal in explicit_io_signals_from_project(project)] == [
+        ("1", "0"), ("1", "1"),
+    ]

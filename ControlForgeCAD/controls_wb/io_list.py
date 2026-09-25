@@ -313,6 +313,23 @@ def io_allocation_for_project(project: object):
     return allocate_io_signals(signals, load_hardware_catalog(), make, line, cpu)
 
 
+def persist_io_allocation_to_project(project: object):
+    """Persist a complete catalog allocation as the project's explicit signals.
+
+    Refuse partial allocations so a save/reopen cycle never turns a capacity
+    error into apparently valid, but incompletely assigned, project state.
+    """
+
+    allocation = io_allocation_for_project(project)
+    if allocation is None:
+        raise ValueError("Select a PLC make, line, and CPU before allocating I/O.")
+    errors = [finding for finding in allocation.findings if finding.severity == "ERROR"]
+    if errors:
+        raise ValueError("I/O allocation cannot be persisted: " + "; ".join(finding.message for finding in errors))
+    project.IOSignals = [serialize_io_signal(signal) for signal in allocation.signals]
+    return allocation
+
+
 def io_signals_from_objects(objects: list[object]) -> list[IOSignal]:
     signals: list[IOSignal] = []
     for obj in objects:
