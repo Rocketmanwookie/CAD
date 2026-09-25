@@ -4,6 +4,7 @@ import json
 from types import SimpleNamespace
 
 from controls_wb.commands.validate_project import validate_document_objects
+from controls_wb.connections import SignalConnection, serialize_connection
 from controls_wb.identity import new_ce_identity
 
 
@@ -145,3 +146,28 @@ def test_validate_document_objects_reports_broken_typed_electrical_graph():
         level == "ERROR" and "Electrical graph could not be reconstructed" in message
         for level, message in messages
     )
+
+
+def test_validate_document_objects_reports_dangling_connection_record_reference():
+    connection = SignalConnection(
+        "CONN-0001",
+        "DI-0001",
+        path_identity="missing-path",
+        signal_identity="missing-signal",
+        plc_device_identity="missing-plc",
+        terminal_strip_identity="missing-strip",
+        field_device_identity="missing-field",
+        terminal_identities=("missing-terminal",),
+        wire_identities=("missing-wire",),
+    )
+    project = SimpleNamespace(
+        ProjectId="CE-PROJECT-001",
+        ProjectName="Controls Project",
+        SchemaVersion="0.1.0",
+        Deliverables=[],
+        ConnectionRecords=[serialize_connection(connection)],
+    )
+
+    messages = validate_document_objects([project])
+
+    assert ("ERROR", "CONN-0001 has a dangling path identity missing-path.") in messages

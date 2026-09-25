@@ -113,6 +113,8 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 
 ### Phase 4 - CADbase integration
 
+- [ ] Implement [workshop-derived hardware requirements](docs/siemens-workshop-reference.md): separate board/module allowances, electrical signal types, mounting side, onboard-versus-purchased interfaces, and exact-part CAD matching.
+
 - [ ] Treat CADbase as the preferred local component/CAD/datasheet library.
 - [ ] Store CADbase references in CEProject rather than duplicating library content.
 - [ ] Track CADbase part ID, model asset ID, datasheet asset ID, revision, source URL, local path, checksum, approval status, and last verified date.
@@ -159,6 +161,10 @@ starting digital-twin runtime work.
 
 - [x] Add starter terminal strip reference model.
 - [x] Add a persisted, deterministic signal-to-terminal-to-wire connection-record foundation; it is not a schematic netlist or compliance engine.
+- [x] Link newly materialized continuous paths back to connection records with
+  stable path, signal, PLC-device, terminal-strip, field-device, ordered
+  terminal, and ordered wire identities, including dangling/wrong-role/path
+  consistency validation and backward-compatible text-only records.
 - [x] Add the first fixed, deterministic continuous path contract from PLC channel
   terminal through ordered cabinet terminal levels and wire segments to the
   field-device terminal, including route-derived length and shared wiring/I/O

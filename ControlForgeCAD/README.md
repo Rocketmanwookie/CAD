@@ -36,7 +36,7 @@ integraCAD Open is the integration-first controls-engineering project; ControlFo
 | `CE_ExportCEProjectXML` | Export CEProject XML | Exports the first controls project intake object in the active document to `~/integracab_ceproject.xml`. |
 | `CE_ExportIOList` | Export I/O List | Exports a deterministic starter I/O list CSV to `~/integracab_io_list.csv` from explicit user-labeled signals plus the current project DI/DO/AI/AO counts. |
 | `CE_ExportMissingDataCSV` | Export Missing Data CSV | Exports the active controls project missing-data matrix to `~/integracab_missing_data.csv`. |
-| `CE_ExportConnectionSchedule` | Export Connection Schedule | Exports persisted connection records to `~/integracad_connection_schedule.csv`. |
+| `CE_ExportConnectionSchedule` | Export Connection Schedule | Exports persisted connection records, including typed path/device/terminal/wire identities when available, to `~/integracad_connection_schedule.csv`. |
 | `CE_ExportElectricalSchedules` | Export Electrical Schedules | Exports canonical typed-graph wiring and I/O path schedules with identities, endpoints, terminal chain, conductor metadata, and calculated length. |
 | `CE_ExportTerminalPlan` | Export Terminal Plan | Exports validated cabinet-terminal connections to `~/integracad_terminal_plan.csv`. |
 

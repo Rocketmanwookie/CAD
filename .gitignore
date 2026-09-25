@@ -7,3 +7,7 @@ __pycache__/
 *.FCBak
 *.log
 ADDON_DISABLED
+
+# Local editor indexes and packaged delivery artifacts.
+.vscode/
+/integracab-open-controlforgecad.zip

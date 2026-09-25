@@ -82,6 +82,12 @@ Always verify final part selections against current Siemens catalog data and pro
 
 ## Siemens CAx asset acquisition
 
+The CPU 1212C seed records a maximum of two signal modules; the 1214C records eight. PDF page 23 of the user-supplied SIMATIC S7-1200 Workshop corroborates these family limits and distinguishes the separate one-signal-board limit. The registered workshop source includes its local path and checksum. The PDF was created in 2016 and these slides carry a 2013 copyright; this reference does not establish current firmware or order-number revisions. Planning totals modules across I/O types, and export rejects selections exceeding known limits. Slot count checks do not validate electrical compatibility, bus power, or a complete cabinet.
+
+See the [workshop reference map](siemens-workshop-reference.md) for applied rules, hardware work items, and remaining sections. Pages 23-24 were visually reviewed; hardware observations from pages 18-22 and 28-31 were extracted as pending implementation requirements. Other sections have been indexed by heading.
+
+Unknown product lines, CPUs, modules, and missing part numbers now raise explicit errors. CSV generation also rejects blank manufacturer/part-number fields. Both seeded CPUs share the same local CAD files; these references have not been verified against each exact order number. Asset manifests therefore mark CAD matches `unverified`. The backend helpers require explicit selections and are not yet wired to a workbench export or a complete cabinet-selection workflow.
+
 The workbench can build an approval-gated request manifest for selected seeded Siemens parts. It records the official source, requested formats, and part number, but it does not scrape, log into, or bulk-download from Siemens portals. Obtain CAD and documentation assets through the permitted Siemens CAx/SiePortal workflow, then record the approved local path, checksum, revision, and source before using the asset in a cabinet model.
 
 The same selected-part requests can be reduced to a deterministic CSV with `Manufacturer`, `PartNumber`, and `Quantity`. This is the minimal handoff list for a CAx selection workflow. Confirm any portal-specific column names or upload format before treating it as a direct import file.

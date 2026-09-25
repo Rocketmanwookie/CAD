@@ -154,6 +154,10 @@ Current milestone: make every currently supported project fact addressable throu
 - [x] Add XML-backed generic panel hardware placeholders for backplate, DIN rail, wire duct, and terminal strip so starter BOM/validation output has part metadata for those objects.
 - [x] Add tests for layout metadata, fake FreeCAD object creation, proxy persistence hooks, and BOM extraction from starter layout objects.
 - [x] Add starter controlled-load lines and `EstimatedLoadAmps` on `CE_Project` so Project Intake can estimate load current from phase/voltage with 20 percent spare capacity.
+- [x] Integrate 22 newer `origin/controlforgecad` commits with the three local Siemens workshop/catalog commits using a non-rewriting merge.
+- [x] Preserve the newer typed electrical path, cable routing, equipment catalog, terminal planning, package, and test changes as the integration baseline.
+- [x] Fold in only the compatible local workshop source map, CPU signal-module limits, strict selected-parts export validation, tests, and supporting documentation.
+- [x] Validate the integrated tree with the full 193-test suite and `compileall` before committing the merge.
 
 ## Surprises & Discoveries
 
@@ -645,3 +649,173 @@ Next recommended milestone:
   when `SensorCount` is blank).
 - Do not pull/rebase/push until the user decides how to handle the branch being
   ahead 19 and behind 7 versus `origin/controlforgecad`.
+
+## Continuation - 2026-09-21 Newer Upstream Integration
+
+The user directed that the newer remote commits remain authoritative and that
+local work be folded in only where it does not disrupt those updates.
+
+State after fetching:
+
+- Local `controlforgecad` was three commits ahead and 22 commits behind
+  `origin/controlforgecad`.
+- The remote series added typed electrical paths, continuous wiring identity,
+  route capture and editing, cable routing, equipment catalogs, terminal-plan
+  export, FreeCAD object materialization, validation, schemas, and tests.
+- The local series added Siemens workshop traceability, corrected CPU 1212C and
+  1214C signal-module limits, strict selected-parts export validation, and
+  focused tests/documentation.
+
+Integration decision:
+
+- Used `git merge --no-commit --no-ff origin/controlforgecad` rather than a
+  rebase so neither side's published history was rewritten.
+- The merge completed without textual conflicts.
+- Compared the staged result directly with `origin/controlforgecad`. Only 12
+  targeted workshop/catalog files differ from the newer remote baseline; no
+  newer electrical-path, routing, equipment, terminal-plan, or package
+  implementation file is replaced by local work.
+- Left the pre-existing untracked `.vscode/` directory and
+  `integracab-open-controlforgecad.zip` untouched.
+
+Validation:
+
+```bash
+cd /home/egrantjr/Documents/Repositories/Dev/CAD
+/usr/bin/python3 -m pytest
+python3 -m compileall ControlForgeCAD
+```
+
+Results:
+
+- Pytest passed: 193 tests.
+- Compileall passed.
+- `git diff --cached --check` passed.
+
+Next recommended milestone:
+
+- Continue from the newer roadmap baseline. The current roadmap identifies
+  tying continuous connection records to device, terminal, and wire objects as
+  the next engineering increment. The local workshop queue remains available
+  for a later focused hardware milestone, starting with explicit hardware roles
+  and independent signal-board versus signal-module allowances.
+
+## Continuation - 2026-09-22 Connection-Record Identity Linkage
+
+Repository preparation:
+
+- Published the five previously validated local commits to
+  `origin/controlforgecad`.
+- Updated `origin` from the moved `Whrsdaparty/CAD` URL to the canonical
+  `https://github.com/Rocketmanwookie/CAD.git` URL and verified the branch was
+  synchronized.
+- Updated and committed `MASTER_COMPLETION_PROMPT.md` so the canonical path,
+  source-of-truth precedence, completed routing baseline, and current milestone
+  are explicit.
+
+Completed milestone:
+
+- Extended backward-compatible `SignalConnection` JSON records with stable path,
+  signal, PLC-device, terminal-strip, field-device, ordered-terminal, and
+  ordered-wire identities.
+- Added deterministic identity columns to the legacy connection schedule CSV.
+- Added an automatic bridge from each newly materialized typed electrical path
+  to one `CE_Project.ConnectionRecords` entry.
+- Added connection-reference validation for missing, dangling, wrong-role, and
+  path-order inconsistencies and connected those findings to the existing
+  project validation command.
+- Preserved deserialization and export of existing text-only connection records;
+  validation reports them as unlinked rather than discarding them.
+- Corrected the stale roadmap statement that graphical route capture was next;
+  route capture and Cables routing are already implemented.
+
+Validation:
+
+```bash
+/usr/bin/python3 -m pytest -q ControlForgeCAD/tests/test_connections.py \
+  ControlForgeCAD/tests/test_electrical_objects.py \
+  ControlForgeCAD/tests/test_validate_project.py
+/usr/bin/python3 -m pytest -q ControlForgeCAD/tests
+python3 -m compileall -q ControlForgeCAD
+git diff --check
+```
+
+Results:
+
+- Focused tests passed: 19.
+- Full test suite passed: 196.
+- Compileall passed.
+- `git diff --check` passed.
+
+Next recommended milestone:
+
+- Implement the TODO-backed rack/module/channel allocation model, including
+  collision-safe rack, slot, channel, and PLC-address assignments that connect
+  the existing I/O registry to catalog-backed PLC occurrences.
+
+## Agent Coordination and Change Log
+
+The user requested documentation/historian, architect, and programmer agents for
+the rack/module/channel milestone, and a persistent record of proposed changes.
+This section is the coordination record within the existing active ExecPlan.
+
+### Agent Register
+
+| Agent | Role | Session ID | Initial assignment |
+|---|---|---|---|
+| Peirce | Documentation / historian | `01a0c918-9bbc-79b2-a770-79142eaebc8c` | Reconcile backlog, decisions, acceptance requirements, and documentation gaps. |
+| Schrodinger | Architect | `01a0c918-9de3-7b91-bc65-48eccd25c499` | Recommend allocation contracts, stable identities, address rules, and catalog integration. |
+| Herschel | Programmer | `01a0c918-9fbc-7b83-9a40-b152fe9b575d` | Identify implementation boundaries, compatibility tests, capacity tests, and persistence tests. |
+
+All three were dispatched for read-only preparation. The coordinating agent
+owns integration, review, final validation, and commits. Assign explicit,
+non-overlapping file ownership before implementation. Session IDs identify
+current agents; availability after restart must be checked, not assumed.
+Reuse these role briefs if an agent must be recreated, and record its new ID.
+
+### Change Register
+
+Record each recommendation with evidence, affected files or contract, owner,
+status, decision rationale, and validation or commit evidence when completed.
+Use proposed, accepted, in progress, completed, deferred, or rejected as status.
+A recommendation is not implemented merely because it appears in this log.
+
+| ID | Status | Owner | Recommendation and evidence | Completion evidence |
+|---|---|---|---|---|
+| AG-001 | Accepted | Coordinator | Preserve the three role briefs and agent IDs here, as requested by the user. | Agent register recorded; documentation-only change. |
+| AG-002 | Accepted | Coordinator | Use this change register for project and agent-workflow recommendations, keeping decisions distinct from delivered behavior. | Register established; append findings as agents return. |
+| AG-003 | Proposed | Architect + programmer | Define the rack/module/channel contract before editing allocation behavior; the Phase 6 TODO and preceding milestone handoff identify this missing model. | Awaiting agent findings and contract review. |
+| AG-004 | Proposed | Historian | Reconcile stale status statements in the master prompt and ExecPlan with current code and test evidence before carrying them into the new milestone. | Awaiting historian findings. |
+
+### Consolidated Agent Findings and Allocation Decision
+
+All three preparation assignments completed read-only. Herschel verified the
+baseline: 196 tests passed, with bytecode/cache writes disabled.
+
+- Accepted: preserve existing controller identities and roles; distinguish catalog
+  part definitions from rack/module/channel occurrences.
+- Accepted: allocate only persisted signal identities; never create IDs during
+  export. Legacy signal reconciliation needs explicit ambiguity checks.
+- Accepted: collision checks must compare bit intervals within a controller and
+  input/output area, including overlapping bit and word addresses.
+- Accepted: address bases and widths must be explicit project inputs; the current
+  catalog does not establish vendor address layouts or reserved ranges.
+- Accepted: validate modeled capacities and known CPU signal-module limits;
+  unknown electrical compatibility, board allowances, and bus-power constraints
+  remain unresolved and must not be described as verified.
+- Accepted: use additive persistence and preflight validation. Preserve existing
+  I/O and connection records on project refresh.
+- Proposed follow-up: XML command-level graph and allocation round trips, typed
+  FreeCAD lifecycle validation, and coordinated exports. Existing serializer
+  support alone is insufficient evidence for these workflows.
+- Accepted documentation correction: distinguish historical ExecPlan checkpoints
+  from the active allocation goal; update the master prompt's obsolete 193-test
+  and route-capture statements.
+
+Next implementation increment: a pure-Python rack/module/channel model with
+catalog-backed occurrences, deterministic channel assignment, explicit address
+ranges, capacity/collision validation, and focused tests. This is the first
+bounded increment of the larger allocation milestone; GUI, XML integration,
+signal migration, and real FreeCAD persistence remain open until implemented
+and verified. Do not mark the entire allocation milestone complete for the
+domain foundation alone.

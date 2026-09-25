@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Newly materialized typed electrical paths now create backward-compatible
+  connection records carrying stable path, signal, device, ordered-terminal,
+  and ordered-wire identities. Connection schedule export includes those
+  references, and project validation reports missing, dangling, wrong-role, and
+  path-inconsistent links.
+
 - Added `CE_RouteWireWithCables`, which creates or synchronizes an optional
   Cables-workbench `WireFlex` physical route for a typed `CE_Wire`.  The link is
   guarded by the wire's immutable CE identity in both directions, and the
