@@ -53,7 +53,7 @@ def test_allocator_uses_distinct_expansion_slots_by_io_type():
 
     assert [(signal.slot, signal.channel) for signal in result.signals] == [
         ("1", "0"), ("1", "1"), ("1", "2"), ("1", "3"), ("1", "4"), ("1", "5"), ("2", "0"),
-        ("1", "0"), ("1", "1"), ("2", "0"),
+        ("1", "0"), ("1", "1"), ("3", "0"),
     ]
     assert [module.part_number for module in result.modules] == [
         "6ES7212-1AE40-0XB0", "6ES7222-1BH32-0XB0", "6ES7231-4HF32-0XB0",
