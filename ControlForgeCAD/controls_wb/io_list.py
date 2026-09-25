@@ -292,13 +292,38 @@ def starter_io_signals_from_project(project: object, existing_signals: list[IOSi
     )
 
 
+def io_allocation_for_project(project: object):
+    """Return a catalog-backed allocation when the project selects a known PLC.
+
+    The import is local to keep the allocation module's dependency direction
+    one-way: it consumes ``IOSignal`` but this projection remains the public
+    project-object boundary.
+    """
+
+    make = str(getattr(project, "PlcMake", "")).strip()
+    line = str(getattr(project, "PlcLine", "")).strip()
+    cpu = str(getattr(project, "PlcCPU", "")).strip()
+    if not (make and line and cpu):
+        return None
+    from controls_wb.hardware_catalog import load_hardware_catalog
+    from controls_wb.io_allocation import allocate_io_signals
+
+    explicit = explicit_io_signals_from_project(project)
+    signals = explicit + starter_io_signals_from_project(project, explicit)
+    return allocate_io_signals(signals, load_hardware_catalog(), make, line, cpu)
+
+
 def io_signals_from_objects(objects: list[object]) -> list[IOSignal]:
     signals: list[IOSignal] = []
     for obj in objects:
         if hasattr(obj, "ProjectId") and hasattr(obj, "Deliverables"):
-            explicit_signals = explicit_io_signals_from_project(obj)
-            signals.extend(explicit_signals)
-            signals.extend(starter_io_signals_from_project(obj, explicit_signals))
+            allocation = io_allocation_for_project(obj)
+            if allocation is not None:
+                signals.extend(allocation.signals)
+            else:
+                explicit_signals = explicit_io_signals_from_project(obj)
+                signals.extend(explicit_signals)
+                signals.extend(starter_io_signals_from_project(obj, explicit_signals))
     return signals
 
 

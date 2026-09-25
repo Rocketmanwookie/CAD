@@ -3,6 +3,8 @@
 from controls_wb.hardware_catalog import load_hardware_catalog
 from controls_wb.io_allocation import allocate_io_signals, validate_io_allocations
 from controls_wb.io_list import IOSignal
+from controls_wb.io_list import io_signals_from_objects
+from types import SimpleNamespace
 
 
 def _signals(signal_type: str, count: int) -> list[IOSignal]:
@@ -98,3 +100,31 @@ def test_validation_reports_collision_in_imported_or_manually_edited_assignments
     assert [(finding.code, finding.signal_tag) for finding in findings] == [
         ("io_channel_collision", "DI-0002"),
     ]
+
+
+def test_project_io_projection_uses_the_selected_catalog_allocation():
+    project = SimpleNamespace(
+        ProjectId="CE-001",
+        ProjectName="Allocation test",
+        SchemaVersion="0.1.0",
+        Deliverables=["ioList"],
+        SensorCount="",
+        SensorCountStatus="Received",
+        PlcMake="Siemens",
+        PlcLine="S7-1200",
+        PlcCPU="CPU 1212C DC/DC/DC",
+        DICount="9",
+        DOCount="",
+        AICount="",
+        AOCount="",
+        IOSignals=[],
+        SourceRecords=[],
+    )
+
+    signals = io_signals_from_objects([project])
+
+    assert [(signal.slot, signal.channel) for signal in signals] == [
+        *(('1', str(index)) for index in range(8)),
+        ('2', '0'),
+    ]
+    assert {signal.mapping_status for signal in signals} == {"allocated"}

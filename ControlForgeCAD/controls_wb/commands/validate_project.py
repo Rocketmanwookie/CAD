@@ -11,6 +11,7 @@ except Exception:  # pragma: no cover
 from controls_wb.intake import validate_intake
 from controls_wb.missing_data import project_object_to_intake
 from controls_wb.electrical_validation import validate_connection_graph
+from controls_wb.io_list import io_allocation_for_project
 from controls_wb.model.electrical import electrical_paths_from_project
 
 
@@ -40,6 +41,11 @@ def validate_document_objects(objects):
             if not description:
                 messages.append(("WARNING", f"{tag} has no description assigned."))
     for project in objects:
+        if hasattr(project, "ProjectId") and hasattr(project, "Deliverables"):
+            allocation = io_allocation_for_project(project)
+            if allocation is not None:
+                for finding in allocation.findings:
+                    messages.append((finding.severity, f"{finding.code}: {finding.message}"))
         if not hasattr(project, "ElectricalPaths"):
             continue
         try:
