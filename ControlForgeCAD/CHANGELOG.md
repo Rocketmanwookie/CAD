@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Added catalog-backed PLC I/O allocation with deterministic CPU/module slot and
+  channel assignments, capacity/collision findings, persisted `CE_Project`
+  mappings, allocation-aware I/O export, and the `CE_AllocatePLCIO` FreeCAD
+  command.
+
 - Newly materialized typed electrical paths now create backward-compatible
   connection records carrying stable path, signal, device, ordered-terminal,
   and ordered-wire identities. Connection schedule export includes those
