@@ -31,6 +31,7 @@ Implemented starter capabilities include:
 - a Project Intake dialog with safe GUI fallback;
 - missing-data preview and starter project validation;
 - starter panel/backplate, DIN rail, wire duct, terminal strip, PLC rack, and PLC module objects;
+- catalog-backed PLC I/O allocation with persisted rack/slot/channel mappings and typed PLC rack/module/channel occurrences;
 - CEProject XML export;
 - BOM CSV export; and
 - deterministic starter I/O-list CSV export; and
@@ -64,9 +65,12 @@ In FreeCAD, select **Controls / Automation** from the workbench selector. Confir
 
 - `CE_NewProject` - New Controls Project
 - `CE_AddIOSignal` - Add I/O Signal
+- `CE_AllocatePLCIO` - Allocate PLC I/O
 - `CE_AddConnection` - Add Connection Record
 - `CE_AddElectricalPath` - Add Electrical Path
 - `CE_EditElectricalPath` - Edit Electrical Path
+- `CE_CaptureWireRoute` - Capture Wire Route from Geometry
+- `CE_RouteWireWithCables` - Route CE Wire with Cables
 - `CE_CreatePanel` - Create Control Panel
 - `CE_ValidateProject` - Validate Controls Project
 - `CE_PreviewMissingData` - Preview Missing Data
@@ -76,6 +80,7 @@ In FreeCAD, select **Controls / Automation** from the workbench selector. Confir
 - `CE_ExportMissingDataCSV` - Export Missing Data CSV
 - `CE_ExportConnectionSchedule` - Export Connection Schedule
 - `CE_ExportElectricalSchedules` - Export Electrical Schedules
+- `CE_ExportTerminalPlan` - Export Terminal Plan
 
 ## Generated artifacts
 
@@ -127,14 +132,15 @@ Pure controls-domain behavior should have automated tests that do not require Fr
 7. Save the document as `.FCStd`, close it, reopen it, and confirm the basic editable `CE_Project` properties are retained.
 8. Clear `SensorCount`, `DICount`, and `AICount`, run **Preview Missing Data**, and confirm `io.sensorCount` is reported as missing.
 9. Fill `SensorCount`, or fill DI and AI counts, rerun **Preview Missing Data**, and confirm `io.sensorCount` is shown as an input-count response rather than missing.
-10. Run **Create Control Panel** and confirm starter placeholder layout objects appear for panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module.
-11. Run **Add Electrical Path**, select the registered PLC and terminal strip, select an existing field device or enter a new device tag, and submit the terminal/wire chain. Optionally enter semicolon-separated `x,y,z` millimetre route coordinates for each wire. Confirm one typed path, four typed terminals, three typed wires, and a signal appear with `CEIdentity` and `CERole` properties; routed wires should display as polylines. Confirm the project also receives one `ConnectionRecords` entry containing the path, signal, device, ordered-terminal, and ordered-wire identities.
-12. Select the typed path, run **Edit Electrical Path**, change a route or terminal designation, and confirm its path, signal, terminal, and wire identities remain unchanged.
-13. Run **Validate Controls Project** and confirm validation reads the edited project, starter layout metadata, and typed electrical graph without dangling-owner or continuity findings.
-14. Run **Export Electrical Schedules** and confirm `~/integracad_wiring_schedule.csv` has three rows for the path while `~/integracad_io_path_schedule.csv` has one row containing its edited signal path.
-15. Run **Export BOM** and confirm `~/controlforgecad_bom.csv` includes starter layout objects where manufacturer/part-number/description data is assigned.
-16. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
-17. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written from explicit `IOSignals` plus the current starter intake data. `IOSignals` remains blank until **Add I/O Signal** is used.
+10. Configure a catalog PLC CPU and DI/DO/AI/AO counts, then run **Allocate PLC I/O**. Confirm that the I/O list receives a complete rack/slot/channel mapping without capacity or collision findings. Persistent PLC rack/module/channel occurrences are available through the documented allocation materializer; direct command materialization is the next planned increment.
+11. Run **Create Control Panel** and confirm starter placeholder layout objects appear for panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module.
+12. Run **Add Electrical Path**, select the registered PLC and terminal strip, select an existing field device or enter a new device tag, and submit the terminal/wire chain. Optionally enter semicolon-separated `x,y,z` millimetre route coordinates for each wire. Confirm one typed path, four typed terminals, three typed wires, and a signal appear with `CEIdentity` and `CERole` properties; routed wires should display as polylines. Confirm the project also receives one `ConnectionRecords` entry containing the path, signal, device, ordered-terminal, and ordered-wire identities.
+13. Select the typed path, run **Edit Electrical Path**, change a route or terminal designation, and confirm its path, signal, terminal, and wire identities remain unchanged.
+14. Run **Validate Controls Project** and confirm validation reads the edited project, starter layout metadata, and typed electrical graph without dangling-owner or continuity findings.
+15. Run **Export Electrical Schedules** and confirm `~/integracad_wiring_schedule.csv` has three rows for the path while `~/integracad_io_path_schedule.csv` has one row containing its edited signal path.
+16. Run **Export BOM** and confirm `~/controlforgecad_bom.csv` includes starter layout objects where manufacturer/part-number/description data is assigned.
+17. Run **Export CEProject XML** and confirm `~/integracab_ceproject.xml` is written.
+18. Run **Export I/O List** and confirm `~/integracab_io_list.csv` is written from explicit `IOSignals` plus the current starter intake data. `IOSignals` remains blank until **Add I/O Signal** is used.
 
 ## Extending the system
 

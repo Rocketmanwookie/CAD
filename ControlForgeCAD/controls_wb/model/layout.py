@@ -270,6 +270,7 @@ def _add_property(obj, property_type: str, name: str, group: str, description: s
 
 
 def _object_for_identity(document, identity: str):
+    """Find the one document object carrying ``identity``, if it exists."""
     for obj in getattr(document, "Objects", []) or []:
         if getattr(obj, "CEIdentity", "") == identity:
             return obj
@@ -277,6 +278,7 @@ def _object_for_identity(document, identity: str):
 
 
 def _allocation_identity(project, kind: str, key: str) -> str:
+    """Derive a repeatable occurrence identity from project and PLC coordinates."""
     project_key = str(getattr(project, "CEIdentity", "") or getattr(project, "ProjectId", "")).strip()
     if not project_key:
         raise ValueError("PLC allocation occurrences require a project identity or ProjectId.")
@@ -284,6 +286,7 @@ def _allocation_identity(project, kind: str, key: str) -> str:
 
 
 def _materialize_allocation_object(document, name: str, role: str, identity: str):
+    """Create or reuse a typed allocation occurrence without duplicating it."""
     existing = _object_for_identity(document, identity)
     if existing is not None:
         if getattr(existing, "CERole", "") != role:

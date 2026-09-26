@@ -25,6 +25,7 @@ integraCAD Open is the integration-first controls-engineering project; ControlFo
 |---|---|---|
 | `CE_NewProject` | New Controls Project | Opens a project intake dialog for core project/customer/site/deliverable fields, combined phase/voltage selection, starter controlled-load lines for current estimating, enclosure rating checkboxes, XML-backed PLC make/line/CPU selection, typed DI/DO/AI/AO counts, compatible Ethernet/power dropdowns, communication protocol checkboxes, optional I/O accessories, setup source metadata, a remembered CEProject XML import selector, YAML/UML-derived setup import, and a link to the project setup hardware catalog guide. It creates or updates an editable `CE_Project` object and shows an I/O expansion planning popup. If Qt/PySide is unavailable, it creates the starter object and prints a warning. |
 | `CE_AddIOSignal` | Add I/O Signal | Opens an I/O signal dialog with selectable digital input, digital output, analog input, analog output, and relay types; user labels are stored as explicit signal rows with auto-generated tags and addresses. |
+| `CE_AllocatePLCIO` | Allocate PLC I/O | Validates the selected catalog CPU and expansion capacity, deterministically assigns rack/slot/channel values, and persists a complete mapping for I/O export and save/reopen. |
 | `CE_AddConnection` | Add Connection Record | Stores a traceable signal-to-terminal-to-wire record with field-device and PLC endpoint references. |
 | `CE_AddElectricalPath` | Add Electrical Path | Creates and registers a typed PLC-channel-to-cabinet-terminal-to-field-device path with immutable identities, three ordered wire segments, conductor metadata, standardized color resolution, and specified millimetre lengths. |
 | `CE_EditElectricalPath` | Edit Electrical Path | Edits the selected path's signal tag, terminal designations, wire metadata, specified lengths, and 3D routes while preserving every graph identity. |
@@ -61,16 +62,16 @@ document transaction. Each segment also accepts ordered `x,y,z` millimetre route
 coordinates; when present, their polyline length is authoritative in the wiring
 and I/O schedules, while a separate specified length remains preserved for
 traceability. Select a typed path and run **Edit Electrical Path** to revise
-those engineering fields without changing topology or identities. Graphical
-route selection directly from 3D geometry remains a future increment.
+those engineering fields without changing topology or identities. **Capture
+Wire Route from Geometry** provides the corresponding graphical route selection
+workflow described below.
 
 `CE_Project` now owns typed `ElectricalSignals`, `ElectricalPaths`, and
 `ElectricalDevices` link collections with canonical fact IDs. Materializing a
 path creates or safely reuses its signal object, registers the signal and path on
 the project, and permits reconstruction of the validated domain path from direct
 FreeCAD links. **Validate Controls Project** reports broken typed links and
-whole-project electrical graph findings. Selecting routes directly from 3D
-geometry remains the next user-facing increment.
+whole-project electrical graph findings.
 
 **Capture Wire Route from Geometry** closes that first interactive route-capture
 gap. Select exactly one typed `CE_Wire`, then select visible geometry with two
@@ -101,7 +102,7 @@ Editable `CE_Project` properties are converted back into the backend intake mode
 
 The pure-Python `controls_wb.ceproject_xml.ceproject_to_xml()` helper exports a `ProjectIntake` payload or `CE_Project`-style object to deterministic CEProject XML. The companion `controls_wb.ceproject_xml.parse_ceproject_xml()` helper reads the supported CEProject XML intake structure back into a stable pure-Python document wrapper. The current XML round trip includes metadata, contacts, intake deliverables and fields, intake question/response records, source records, validation findings, and missing-data matrix rows.
 
-The pure-Python `controls_wb.io_list` module provides the first starter I/O list model. It generates deterministic CSV rows with tag, address, description, signal type, device, PLC rack/slot/channel placeholders, terminal placeholder, source record IDs, and mapping status. Project setup captures XML-backed PLC make/line/CPU, DI/DO/AI/AO counts, compatible Ethernet and power-supply selections, communication protocols, enclosure ratings, and optional modular I/O accessories. Explicit user-labeled I/O signals can be added through the dialog and reduce the remaining starter placeholders. **Allocate PLC I/O** turns a complete selected catalog CPU/module configuration into deterministic rack, slot, and channel assignments, rejects capacity/collision errors, and persists the valid allocation on `CE_Project` for save/reopen and I/O CSV export.
+The pure-Python `controls_wb.io_list` module provides the first starter I/O list model. It generates deterministic CSV rows with tag, address, description, signal type, device, PLC rack/slot/channel placeholders, terminal placeholder, source record IDs, and mapping status. Project setup captures XML-backed PLC make/line/CPU, DI/DO/AI/AO counts, compatible Ethernet and power-supply selections, communication protocols, enclosure ratings, and optional modular I/O accessories. Explicit user-labeled I/O signals can be added through the dialog and reduce the remaining starter placeholders. **Allocate PLC I/O** turns a complete selected catalog CPU/module configuration into deterministic rack, slot, and channel assignments, rejects capacity/collision errors, and persists the valid allocation on `CE_Project` for save/reopen and I/O CSV export. Valid allocations can also be materialized as persistent, identity-safe `plc.rack`, `plc.module`, and `plc.channel` occurrences with rack-to-module-to-channel links. See [`docs/plc-allocation.md`](docs/plc-allocation.md) for the contract, persistence model, and current boundary.
 
 For intake validation, `io.sensorCount` means input points only. The Project Intake dialog derives it from `DICount + AICount`; output counts still drive I/O list and expansion planning, but they are not treated as sensors. The `IOSignals` property remains blank until **Add I/O Signal** records explicit user-labeled signal rows.
 
@@ -174,6 +175,7 @@ Project Intake
 - `docs/companion-workbenches.md` - HMI and digital twin future workbench scope.
 - `docs/standards-resource-map.md` - standards/resource families to point toward.
 - `docs/project-setup-hardware-catalog.md` - XML-backed PLC catalog guide and schema link.
+- `docs/plc-allocation.md` - deterministic PLC allocation and persistent occurrence model.
 - `templates/email/` - role-based request templates.
 - `templates/forms/` - structured form/schema seeds.
 

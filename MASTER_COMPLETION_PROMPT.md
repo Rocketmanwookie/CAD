@@ -62,8 +62,9 @@ following existing tested patterns.
   electrical schedule export already exist. Do not reimplement them.
 - The roadmap sentence saying graphical route capture is next is stale; the
   TODO correctly marks graphical route capture complete.
-- Connection-record identity linkage is the current completed increment. The
-  next active milestone is rack/module/channel allocation.
+- Connection-record identity linkage, catalog-backed PLC allocation, and
+  persistent rack/module/channel occurrences are completed increments. The next
+  active milestone is direct allocated-channel to typed-signal/path linkage.
 
 ## Completed contract — connection-record identity linkage
 
@@ -86,15 +87,14 @@ typed electrical graph. Complete this milestone only when:
 Keep the completed connection-linkage contract separate from rack/channel
 allocation, schematic generation, conductor sizing, and physical routing.
 
-## Active milestone — rack/module/channel allocation
+## Active milestone — allocated channel to electrical-graph linkage
 
-Define the smallest pure-Python allocation model that connects catalog-backed
-PLC occurrences to the existing I/O signal registry. It must provide stable
-rack, module, and channel identities; deterministic slot/channel/address
-allocation; collision and capacity validation; persistence through thin FreeCAD
-adapters; and coordinated I/O export. Preserve the distinction between catalog
-part definitions and placed occurrences. Scope the exact public contract from
-the existing catalog, project, I/O, and layout modules before implementation.
+Extend the completed allocation/occurrence model so every persisted allocated
+channel can link directly to the typed electrical signal and the paths that use
+it. Invoke occurrence materialization from the allocation command in one
+transaction, preserve save/reopen and idempotent behavior, and validate
+missing/wrong-role/dangling channel relationships. Preserve the distinction
+between catalog definitions, placed occurrences, and logical signals.
 
 ## Mission
 

@@ -108,6 +108,7 @@ flowchart TB
 
 - `CE_NewProject`
 - `CE_AddIOSignal`
+- `CE_AllocatePLCIO`
 - `CE_AddConnection`
 - `CE_AddElectricalPath`
 - `CE_EditElectricalPath`
@@ -146,6 +147,15 @@ Starter layout objects currently include:
 - PLC module.
 
 These layout objects are **partial engineering models**. They establish object identity and metadata contracts but do not yet constitute a complete electrical-panel design or automated placement engine.
+
+PLC allocation is a separate, FreeCAD-independent domain service. It selects
+catalog CPU/module capacity, assigns deterministic rack/slot/channel coordinates,
+and rejects insufficient capacity or collisions before persistence. A valid
+allocation persists its logical I/O mapping on `CE_Project`. The layout adapter
+can then materialize a typed `plc.rack` → `plc.module` → `plc.channel` object
+tree, with deterministic occurrence identities and direct links. Allocated
+channel objects carry their signal tag/address metadata, but direct links to
+typed electrical signal and path objects remain the next integration increment.
 
 Typed continuous electrical objects now include `ElectricalPathObject`,
 `ElectricalTerminalObject`, and `ElectricalWireObject`. The path owns ordered
@@ -222,7 +232,7 @@ The current BOM is not a complete procurement or ERP integration. Future work ma
 
 #### I/O-list CSV
 
-**Implemented, starter scope.** The I/O-list service creates deterministic starter records from explicit user-labeled I/O signals plus current intake data and writes `~/integracab_io_list.csv` by default.
+**Implemented, starter scope.** The I/O-list service creates deterministic starter records from explicit user-labeled I/O signals plus current intake data and writes `~/integracab_io_list.csv` by default. For a known catalog PLC, `CE_AllocatePLCIO` assigns and persists deterministic rack, slot, and channel coordinates; valid mappings can be materialized into persistent PLC occurrence objects.
 
 Future work may add channel allocation, rack/slot addressing, signal typing, terminal mapping, device associations, safety classification, and vendor-specific import/export formats.
 

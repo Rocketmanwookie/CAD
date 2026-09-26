@@ -145,7 +145,7 @@ wire graph, persistent 3D connection ports, and coordinated exports before
 starting digital-twin runtime work.
 
 - [x] Add PLC platform requirement fields.
-- [x] Add catalog-backed rack/slot/module/channel allocation with capacity and collision validation, persisted project mappings, and a FreeCAD allocation command.
+- [x] Add catalog-backed rack/slot/module/channel allocation with capacity and collision validation, persisted project mappings, a FreeCAD allocation command, and deterministic persistent rack/module/channel occurrences.
 - [x] Add starter signal registry.
 - [x] Add I/O count estimates and starter unmapped assignments.
 - [x] Validate PLC CPU onboard I/O capacity and suggest compatible expansion modules with 20 percent spare capacity.

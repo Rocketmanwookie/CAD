@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Added persistent, idempotent PLC rack, module, and channel occurrences for a
+  valid allocation. Their deterministic CE identities and direct containment
+  links preserve the selected catalog placement and allocated signal metadata
+  across FreeCAD document persistence.
+
 - Added catalog-backed PLC I/O allocation with deterministic CPU/module slot and
   channel assignments, capacity/collision findings, persisted `CE_Project`
   mappings, allocation-aware I/O export, and the `CE_AllocatePLCIO` FreeCAD

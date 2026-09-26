@@ -2,14 +2,23 @@
 
 This ExecPlan is a living implementation plan for continuing the existing `Whrsdaparty/CAD` repository on branch `controlforgecad`. It follows the repository's current files and TODO backlog, not a replacement scaffold.
 
-Active local work path: `/home/egrantjr/Dev/CAD`. The similarly named
-`/home/egrantjr/integraCAD_OPEN` path is not the active repository for this
-work unless the user explicitly redirects there.
+Canonical local work path: `/home/egrantjr/integraCAD_OPEN`. It is a stable
+symbolic link to the physical Git checkout at
+`/home/egrantjr/Documents/Repositories/controlforgecad`; both paths address the
+same repository. Do not create a second clone or treat historical `Dev/CAD`
+references below as current.
+
+For the current authoritative state, read
+[`docs/PROJECT_MANAGEMENT_CHARTER.md`](../../docs/PROJECT_MANAGEMENT_CHARTER.md),
+`MASTER_COMPLETION_PROMPT.md`, `ControlForgeCAD/TODO.md`, and
+`ControlForgeCAD/docs/roadmap.md`, then verify against Git and tests. The
+historical discovery notes below are retained for traceability and must not be
+used as a replacement for that procedure.
 
 ## Current State
 
 - Active branch: `controlforgecad`.
-- Initial working tree status: clean.
+- Historical initial working tree status: clean; always re-check before work.
 - Required guidance files: `AGENTS.md` and `.agent/PLANS.md` were requested but are not present in this checkout. The root contains `.agents/` and `.codex/` read-only placeholders.
 - Root layout:
   - `README.md` is a minimal top-level placeholder.
@@ -73,11 +82,16 @@ work unless the user explicitly redirects there.
   - README says FreeCAD menu label should be `Controls / Automation`, while `InitGui.py` currently uses `Controls Engineering`.
   - TODO asks for Python package `integracab`, but renaming package/folders would be broad and risky at this stage. Keep current package names unless a load blocker appears.
 
-## Goal
+## Current goal
 
-Continue the existing FreeCAD controls-engineering workbench toward the next working MVP milestone without replacing the project scaffold. The immediate milestone is the intake and validation prototype: add an initial project/intake command and pure-Python intake validation that can run under tests without FreeCAD.
-
-Current milestone: make every currently supported project fact addressable through a stable pure-Python CEProject fact ID registry, then wire existing intake, source-record, question, property, and missing-data paths to that registry without changing exported XML behavior.
+Continue the existing FreeCAD controls-engineering workbench toward the next
+working-MVP milestone without replacing the project scaffold. The immediate
+milestone is **allocated-channel to typed electrical-graph linkage**: invoke
+PLC occurrence materialization from the allocation command in one transaction,
+link each allocated channel occurrence to its typed signal and consuming paths,
+and validate missing, dangling, and wrong-role relationships. It must preserve
+identities, persistence, and compatibility; it is not schematic generation or
+vendor PLC-project export.
 
 ## Milestones
 

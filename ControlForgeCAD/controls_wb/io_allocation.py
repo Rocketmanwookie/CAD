@@ -25,6 +25,8 @@ _CAPACITY_KEY_BY_SIGNAL_TYPE = {
 
 @dataclass(frozen=True)
 class PLCModuleAllocation:
+    """One catalog-backed PLC CPU or expansion-module placement in a rack."""
+
     rack: str
     slot: str
     module_name: str
@@ -35,6 +37,8 @@ class PLCModuleAllocation:
 
 @dataclass(frozen=True)
 class IOAllocationFinding:
+    """A deterministic capacity, collision, or compatibility result."""
+
     severity: str
     code: str
     signal_tag: str
@@ -43,6 +47,8 @@ class IOAllocationFinding:
 
 @dataclass(frozen=True)
 class IOAllocationResult:
+    """Allocated signal projection plus the module occurrences and findings."""
+
     signals: tuple[IOSignal, ...]
     modules: tuple[PLCModuleAllocation, ...]
     findings: tuple[IOAllocationFinding, ...]
