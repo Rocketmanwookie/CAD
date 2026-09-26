@@ -99,12 +99,12 @@ policy until the user supplies direction.
 
 ### Current recommendation
 
-The next milestone is **allocated-channel to typed electrical-graph linkage**:
-link each persisted PLC channel occurrence to its typed signal and the typed
-paths that use it, invoke occurrence materialization as part of allocation in a
-single transaction, and validate missing, dangling, or wrong-role links. This
-completes the immediate PLC-to-field vertical slice; it is not schematic
-generation, a PLC vendor-project export, or electrical-code sizing.
+The next milestone is **safe allocation reconciliation**: when counts, slots,
+or selected modules change, locate every affected channel-owned signal and path
+and either migrate it through an explicit validated operation or stop with a
+deterministic actionable finding. It must never silently delete or readdress
+connected design data. This is not schematic generation, a PLC vendor-project
+export, or electrical-code sizing.
 
 ## Reporting structure and specialist review gate
 

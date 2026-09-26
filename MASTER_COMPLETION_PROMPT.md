@@ -62,9 +62,10 @@ following existing tested patterns.
   electrical schedule export already exist. Do not reimplement them.
 - The roadmap sentence saying graphical route capture is next is stale; the
   TODO correctly marks graphical route capture complete.
-- Connection-record identity linkage, catalog-backed PLC allocation, and
-  persistent rack/module/channel occurrences are completed increments. The next
-  active milestone is direct allocated-channel to typed-signal/path linkage.
+- Connection-record identity linkage, catalog-backed PLC allocation, persistent
+  rack/module/channel occurrences, allocated-channel signal/path linkage, and
+  channel-owned path authoring are completed increments. The next active
+  milestone is safe allocation reconciliation.
 
 ## Completed contract — connection-record identity linkage
 
@@ -87,14 +88,13 @@ typed electrical graph. Complete this milestone only when:
 Keep the completed connection-linkage contract separate from rack/channel
 allocation, schematic generation, conductor sizing, and physical routing.
 
-## Active milestone — allocated channel to electrical-graph linkage
+## Active milestone — safe allocation reconciliation
 
-Extend the completed allocation/occurrence model so every persisted allocated
-channel can link directly to the typed electrical signal and the paths that use
-it. Invoke occurrence materialization from the allocation command in one
-transaction, preserve save/reopen and idempotent behavior, and validate
-missing/wrong-role/dangling channel relationships. Preserve the distinction
-between catalog definitions, placed occurrences, and logical signals.
+When a PLC allocation changes, locate every affected channel-owned signal and
+electrical path. Either migrate it through an explicit validated operation or
+stop with deterministic, actionable findings; never silently delete or
+readdress connected design data. Preserve the distinction between catalog
+definitions, placed occurrences, logical signals, and terminal endpoints.
 
 ## Mission
 

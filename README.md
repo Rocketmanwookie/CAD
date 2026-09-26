@@ -5,6 +5,8 @@ This repository contains **integraCAD Open**, an open-source controls-engineerin
 ## Project documentation
 
 - [Architecture overview](docs/ARCHITECTURE.md) — architectural source of truth for system boundaries, layers, component contracts, data flows, dependencies, extension strategy, and implementation status.
+- [Project status and agent operating model](docs/PROJECT_STATUS.md) — verified capability boundaries, next milestone, agent hierarchy, and planned review effort.
+- [Agent-structure manifest](docs/project-agent-structure.yaml) — machine-readable responsibilities and reporting lines for Tony CAD's specialist team.
 - [Contributing](CONTRIBUTING.md) — development workflow, testing expectations, architecture rules, and documentation requirements.
 - [Changelog](CHANGELOG.md) — implemented milestones, unreleased changes, and contributor-facing change history.
 - [CAD library download manifest](exports/siemens_cad_library_download_manifest.csv) — requested Siemens and supporting panel/safety/instrumentation CAD assets, exact MLFBs or search keys, required schematic companions, and acquisition status.

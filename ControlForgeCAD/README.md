@@ -176,6 +176,7 @@ Project Intake
 - `docs/standards-resource-map.md` - standards/resource families to point toward.
 - `docs/project-setup-hardware-catalog.md` - XML-backed PLC catalog guide and schema link.
 - `docs/plc-allocation.md` - deterministic PLC allocation and persistent occurrence model.
+- `../docs/PROJECT_STATUS.md` - project capability boundaries, next milestone, and agent operating model.
 - `templates/email/` - role-based request templates.
 - `templates/forms/` - structured form/schema seeds.
 

@@ -55,12 +55,21 @@ Catalog part definitions remain separate from those placed occurrences.
 
 ## Current boundary and next work
 
-The allocation command persists the mapping; the occurrence materializer is
-currently an application helper. It does not yet create a typed
-`ElectricalSignalObject` for every allocated signal or connect channels to
-electrical paths. The next milestone is to invoke materialization from the
-command and create direct channel-to-signal/path links, making an allocated I/O
-point the authoritative endpoint used by the wiring graph and exports.
+**Allocate PLC I/O** persists and materializes a valid allocation inside one
+FreeCAD transaction. Each allocated channel creates or reuses a deterministic
+typed electrical signal, links to that signal in both directions, and records
+the electrical paths that consume it. **Add Electrical Path** requires an
+allocated PLC channel; it derives the path signal and the first PLC terminal's
+owner and designation from that channel. The editor preserves this allocation
+derived terminal address, and validation reports broken reciprocal links,
+unregistered signals, omitted consuming paths, and corrupted owner/address
+relationships.
+
+The next boundary is **safe allocation reconciliation**. A changed allocation
+must identify channel-owned signals and paths that would be moved or removed,
+then either migrate them explicitly or stop with an actionable finding. Manual
+FreeCAD allocate/save/reopen/recompute/edit/save/reopen evidence also remains
+required; automated tests do not substitute for that acceptance run.
 
 This model is not a PLCopen XML exporter, ladder editor, or a substitute for a
 vendor PLC IDE.

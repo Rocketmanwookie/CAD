@@ -86,12 +86,11 @@ used as a replacement for that procedure.
 
 Continue the existing FreeCAD controls-engineering workbench toward the next
 working-MVP milestone without replacing the project scaffold. The immediate
-milestone is **allocated-channel to typed electrical-graph linkage**: invoke
-PLC occurrence materialization from the allocation command in one transaction,
-link each allocated channel occurrence to its typed signal and consuming paths,
-and validate missing, dangling, and wrong-role relationships. It must preserve
-identities, persistence, and compatibility; it is not schematic generation or
-vendor PLC-project export.
+milestone is **safe allocation reconciliation**: when the selected CPU, modules,
+or I/O counts change, locate every affected channel-owned signal and electrical
+path and either migrate it explicitly or stop with deterministic actionable
+findings. It must never silently delete or readdress connected design data; it
+is not schematic generation or vendor PLC-project export.
 
 ## Milestones
 

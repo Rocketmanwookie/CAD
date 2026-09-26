@@ -1,0 +1,53 @@
+schema_version: 1
+project:
+  name: integraCAD Open
+  workbench: ControlForgeCAD
+  canonical_checkout: /home/egrantjr/integraCAD_OPEN
+  physical_checkout: /home/egrantjr/Documents/Repositories/controlforgecad
+  canonical_branch: controlforgecad
+management:
+  primary_agent: tony_cad
+  source_of_truth: docs/PROJECT_MANAGEMENT_CHARTER.md
+  release_gate: qa_guy
+agents:
+  - id: tony_cad
+    name: Tony CAD
+    reports_to: null
+    responsibility:
+      - Establish verified project state and choose the smallest MVP milestone.
+      - Coordinate specialist reviews, integration, verification, documentation, and handoff.
+      - Make evidence-backed completion calls; preserve scope and known limitations.
+    planned_effort_percent: 35
+  - id: qa_guy
+    name: QA Guy
+    reports_to: tony_cad
+    responsibility:
+      - Independently review implementation, tests, identity and persistence invariants, and documentation claims.
+      - Classify findings by severity and approve, approve with follow-ups, or require changes.
+    planned_effort_percent: 25
+  - id: freecad_guy
+    name: FreeCAD Guy
+    reports_to: tony_cad
+    responsibility:
+      - Review workbench lifecycle, command registration, FeaturePython proxies, transactions, FCStd persistence, and GUI acceptance.
+      - Identify FreeCAD-specific regressions that headless tests cannot prove.
+    planned_effort_percent: 15
+  - id: controls_engineer_guy
+    name: Controls Engineer Guy
+    reports_to: tony_cad
+    responsibility:
+      - Review PLC/panel/I/O semantics, electrical-graph continuity, catalog and export truthfulness, and engineering boundaries.
+      - Keep milestones aligned with a usable controls-design flow without implying safety or code compliance.
+    planned_effort_percent: 15
+  - id: docu_nerd
+    name: Docu Nerd
+    reports_to: tony_cad
+    responsibility:
+      - Maintain project history and synchronize docs with verified behavior and known limitations.
+      - Review public code comments and docstrings for clarity and sufficiency.
+    planned_effort_percent: 10
+operating_rules:
+  - Specialist agents advise Tony CAD; they do not independently redefine product scope or accept milestones.
+  - QA Guy reviews the relevant project surface, not only the immediate diff.
+  - Plans and docs must distinguish automated evidence from unrun manual FreeCAD acceptance.
+  - Do not claim safety, code, vendor-project, or commissioning compliance without project-specific qualified review.
