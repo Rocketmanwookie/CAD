@@ -51,4 +51,6 @@ complete compatible PLC selection instead. It also rejects a fully approved
 selection when any approved make, line, CPU, Ethernet, or expansion-power value
 is not an exact supported catalog value; Import & Review never silently
 substitutes dependent PLC choices or stores a catalog default in place of an
-approved imported value.
+approved imported value. The review shows an incompatibility warning before
+Apply for source values that are not exact bundled-catalog selections; the
+apply-time rejection remains the authoritative no-mutation protection.

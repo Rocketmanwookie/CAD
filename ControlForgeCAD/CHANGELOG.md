@@ -32,6 +32,9 @@
   storing a different catalog make, line, CPU, Ethernet, or expansion-power
   default. Rejection leaves the existing project unchanged.
 
+- Import & Review now displays unsupported PLC catalog selections in the staged
+  preview before Apply, while retaining the apply-time no-mutation rejection.
+
 - Fixed PLC allocation materialization against FreeCAD's native integer slot
   property and reject free-form connection records that would duplicate an
   existing typed electrical-path signal. Validation flags legacy duplicates.

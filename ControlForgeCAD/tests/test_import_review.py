@@ -121,6 +121,12 @@ def test_full_unsupported_plc_approval_rejects_catalog_rewrite_without_mutation(
         project,
     )
 
+    assert staged.warnings == (
+        "Imported PLC selections are not exact bundled-catalog values: PLC line, PLC CPU, "
+        "Ethernet adapter, expansion power supply. They can be reviewed but cannot be applied; "
+        "select a supported catalog combination.",
+    )
+
     with pytest.raises(ImportReviewError, match="not compatible with the bundled catalog"):
         apply_approved_project_import(
             project, staged, {candidate.key for candidate in staged.candidates}
@@ -156,11 +162,39 @@ def test_approved_unsupported_plc_line_rejects_even_when_default_matches_current
         "plc:\n  line: Unsupported line\n", "unsupported-line.yml", project
     )
 
+    assert "PLC line" in staged.warnings[0]
+
     with pytest.raises(ImportReviewError, match="not compatible with the bundled catalog"):
         apply_approved_project_import(project, staged, {"PlcLine"})
 
     assert project.PlcLine == "Micro800"
     assert project.PlcCPU == "Micro820 2080-LC20-20QWB"
+
+
+def test_partial_valid_plc_import_uses_existing_catalog_context_for_preview():
+    document = FakeDocument()
+    project = create_or_update_project(document)
+    project.PlcMake = "Allen-Bradley"
+    project.PlcLine = "Micro800"
+    project.PlcCPU = "Micro800 starter placeholder"
+    project.EthernetAdapter = ""
+    project.ExpansionPowerSupply = ""
+    project.ProjectName = "Existing"
+    staged = stage_project_import(
+        """project_name: Imported
+plc:
+  cpu: Micro800 starter placeholder
+""",
+        "partial-valid-ab.yml",
+        project,
+    )
+
+    assert not any("not exact bundled-catalog" in warning for warning in staged.warnings)
+    apply_approved_project_import(project, staged, {"ProjectName"})
+    assert project.ProjectName == "Imported"
+    assert project.PlcMake == "Allen-Bradley"
+    assert project.PlcLine == "Micro800"
+    assert project.PlcCPU == "Micro800 starter placeholder"
 
 
 def test_stage_ceproject_xml_preserves_source_only_after_explicit_apply():

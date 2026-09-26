@@ -136,6 +136,7 @@ def stage_project_import(
         warnings = tuple(str(item) for item in setup_values.get("ImportWarnings", []) or [])
 
     current = form_values_from_project(project)
+    warnings = tuple(warnings) + _plc_catalog_staging_warnings(current, values)
     candidates = []
     for key, proposed in values.items():
         if key not in _CATEGORY_BY_KEY:
@@ -153,6 +154,45 @@ def stage_project_import(
         values=values,
         candidates=tuple(sorted(candidates, key=lambda item: (item.category, item.key))),
         warnings=warnings,
+    )
+
+
+def _plc_catalog_staging_warnings(
+    current_values: dict[str, str], imported_values: dict[str, object]
+) -> tuple[str, ...]:
+    """Describe unsupported imported PLC selections before approval.
+
+    The apply boundary still validates every approved item and never mutates on
+    a rewrite.  This preview diagnostic makes the same incompatibility visible
+    while the reviewer is choosing checkboxes, rather than only after Apply.
+    """
+
+    catalog_fields = {
+        "PlcMake": "PLC make",
+        "PlcLine": "PLC line",
+        "PlcCPU": "PLC CPU",
+        "EthernetAdapter": "Ethernet adapter",
+        "ExpansionPowerSupply": "expansion power supply",
+    }
+    # Stage a partial file in the same context Apply will use: unchanged
+    # project fields remain current rather than falling back to Siemens defaults.
+    effective_values = dict(current_values)
+    effective_values.update(
+        {key: _display_value(value) for key, value in imported_values.items()}
+    )
+    normalized = normalized_form_values(effective_values)
+    unsupported = [
+        label
+        for key, label in catalog_fields.items()
+        if key in imported_values
+        and str(normalized[key]) != _display_value(imported_values[key]).strip()
+    ]
+    if not unsupported:
+        return ()
+    return (
+        "Imported PLC selections are not exact bundled-catalog values: "
+        + ", ".join(unsupported)
+        + ". They can be reviewed but cannot be applied; select a supported catalog combination.",
     )
 
 
