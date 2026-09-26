@@ -22,15 +22,28 @@ acceptance record, not a blocker for dependency-free development work.
    Controls Project, Layout, Validation, and Exports groups load without a
    traceback. Confirm **Capture Wire Route from Geometry** is present.
 
+## Allocation-to-path workflow
+
+1. Create a new document, run **New Controls Project**, choose a supported
+   catalog PLC, and enter at least one compatible I/O point.
+2. Run **Allocate PLC I/O**. Confirm the operation reports no capacity or
+   collision error and inspect the materialized rack/module/channel objects.
+3. Run **Create Control Panel**, then **Add Electrical Path**. Select an
+   allocated PLC channel and terminal strip. Select an existing field device,
+   or leave **Create new field device…** selected and enter a new field-device
+   tag. Confirm the signal tag and PLC terminal designation are derived from
+   the selected channel.
+4. Save, close, reopen, and recompute. Confirm channel identity, typed signal,
+   path link, first terminal owner, and first terminal designation remain
+   unchanged. Edit the path and confirm the PLC terminal cannot be changed away
+   from the allocated address.
+
 ## Route-capture workflow
 
-1. Create a new document, run **New Controls Project**, and enter a minimally
-   valid intake.
-2. Run **Create Control Panel**, then **Add Electrical Path**. Create a path
-   through a registered PLC, terminal strip, and field device.
-3. Create a visible Part or Draft polyline with vertices `(0,0,0)`,
+1. Complete the allocation-to-path workflow above.
+2. Create a visible Part or Draft polyline with vertices `(0,0,0)`,
    `(100,0,0)`, and `(100,50,0)` mm.
-4. Select exactly one resulting `CE_Wire` and that polyline, then run
+3. Select exactly one resulting `CE_Wire` and that polyline, then run
    **Capture Wire Route from Geometry**.
 
 Expected results:
@@ -61,3 +74,18 @@ Expected results:
 Record the exact FreeCAD/Flatpak version, the Git commit, screenshots of the
 command and resulting polyline, Report View output, exported CSVs, and any
 traceback.
+
+## Acceptance record template
+
+Record each desktop run in the issue, pull request, or handoff that requested
+it. Include:
+
+```text
+Git commit:
+FreeCAD version and installation:
+Operating system:
+Workflow checked: allocation-to-path / route capture / both
+Result: pass / fail / blocked
+Evidence: screenshots, Report View output, saved FCStd, exported CSV paths
+Findings or traceback:
+```

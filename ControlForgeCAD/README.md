@@ -25,7 +25,7 @@ integraCAD Open is the integration-first controls-engineering project; ControlFo
 |---|---|---|
 | `CE_NewProject` | New Controls Project | Opens a project intake dialog for core project/customer/site/deliverable fields, combined phase/voltage selection, starter controlled-load lines for current estimating, enclosure rating checkboxes, XML-backed PLC make/line/CPU selection, typed DI/DO/AI/AO counts, compatible Ethernet/power dropdowns, communication protocol checkboxes, optional I/O accessories, setup source metadata, a remembered CEProject XML import selector, YAML/UML-derived setup import, and a link to the project setup hardware catalog guide. It creates or updates an editable `CE_Project` object and shows an I/O expansion planning popup. If Qt/PySide is unavailable, it creates the starter object and prints a warning. |
 | `CE_AddIOSignal` | Add I/O Signal | Opens an I/O signal dialog with selectable digital input, digital output, analog input, analog output, and relay types; user labels are stored as explicit signal rows with auto-generated tags and addresses. |
-| `CE_AllocatePLCIO` | Allocate PLC I/O | Validates the selected catalog CPU and expansion capacity, deterministically assigns rack/slot/channel values, and persists a complete mapping for I/O export and save/reopen. |
+| `CE_AllocatePLCIO` | Allocate PLC I/O | Validates the selected catalog CPU and expansion capacity, deterministically assigns rack/slot/channel values, persists a complete mapping, and atomically materializes the linked rack/module/channel and typed-signal occurrences. |
 | `CE_AddConnection` | Add Connection Record | Stores a traceable signal-to-terminal-to-wire record with field-device and PLC endpoint references. |
 | `CE_AddElectricalPath` | Add Electrical Path | Creates and registers a typed PLC-channel-to-cabinet-terminal-to-field-device path with immutable identities, three ordered wire segments, conductor metadata, standardized color resolution, and specified millimetre lengths. |
 | `CE_EditElectricalPath` | Edit Electrical Path | Edits the selected path's signal tag, terminal designations, wire metadata, specified lengths, and 3D routes while preserving every graph identity. |
@@ -102,7 +102,7 @@ Editable `CE_Project` properties are converted back into the backend intake mode
 
 The pure-Python `controls_wb.ceproject_xml.ceproject_to_xml()` helper exports a `ProjectIntake` payload or `CE_Project`-style object to deterministic CEProject XML. The companion `controls_wb.ceproject_xml.parse_ceproject_xml()` helper reads the supported CEProject XML intake structure back into a stable pure-Python document wrapper. The current XML round trip includes metadata, contacts, intake deliverables and fields, intake question/response records, source records, validation findings, and missing-data matrix rows.
 
-The pure-Python `controls_wb.io_list` module provides the first starter I/O list model. It generates deterministic CSV rows with tag, address, description, signal type, device, PLC rack/slot/channel placeholders, terminal placeholder, source record IDs, and mapping status. Project setup captures XML-backed PLC make/line/CPU, DI/DO/AI/AO counts, compatible Ethernet and power-supply selections, communication protocols, enclosure ratings, and optional modular I/O accessories. Explicit user-labeled I/O signals can be added through the dialog and reduce the remaining starter placeholders. **Allocate PLC I/O** turns a complete selected catalog CPU/module configuration into deterministic rack, slot, and channel assignments, rejects capacity/collision errors, persists the valid allocation on `CE_Project`, and materializes identity-safe `plc.rack`, `plc.module`, and `plc.channel` occurrences in the same transaction. Each channel has a deterministic typed-signal link; a later typed path for that tag reuses the signal and links back to the channel, while validation detects broken or incomplete linkage. The path form does not yet author from a selected allocated-channel terminal, so this is not a complete terminal-owner workflow or a substitute for manual FreeCAD save/reopen verification. See [`docs/plc-allocation.md`](docs/plc-allocation.md) for the contract, persistence model, and current boundary.
+The pure-Python `controls_wb.io_list` module provides the first starter I/O list model. It generates deterministic CSV rows with tag, address, description, signal type, device, PLC rack/slot/channel placeholders, terminal placeholder, source record IDs, and mapping status. Project setup captures XML-backed PLC make/line/CPU, DI/DO/AI/AO counts, compatible Ethernet and power-supply selections, communication protocols, enclosure ratings, and optional modular I/O accessories. Explicit user-labeled I/O signals can be added through the dialog and reduce the remaining starter placeholders. **Allocate PLC I/O** turns a complete selected catalog CPU/module configuration into deterministic rack, slot, and channel assignments, rejects capacity/collision errors, persists the valid allocation on `CE_Project`, and materializes identity-safe `plc.rack`, `plc.module`, and `plc.channel` occurrences in the same transaction. **Add Electrical Path** selects an allocated channel, derives the PLC-terminal owner and address from it, and links the resulting path back to the channel signal; validation detects broken or incomplete linkage. Manual FreeCAD save/reopen verification remains an acceptance procedure rather than a completed claim. See [`docs/plc-allocation.md`](docs/plc-allocation.md) for the contract, persistence model, and current boundary.
 
 For intake validation, `io.sensorCount` means input points only. The Project Intake dialog derives it from `DICount + AICount`; output counts still drive I/O list and expansion planning, but they are not treated as sensors. The `IOSignals` property remains blank until **Add I/O Signal** records explicit user-labeled signal rows.
 
@@ -190,7 +190,7 @@ From the repository root, the repeatable symlink helper is:
 python3 scripts/link_freecad_workbench.py
 ```
 
-The script creates `~/.local/share/FreeCAD/Mod/ControlForgeCAD` as a symlink to `/home/egrantjr/Dev/CAD/ControlForgeCAD`. To use a different FreeCAD profile or source path:
+The script creates `~/.local/share/FreeCAD/Mod/ControlForgeCAD` as a symlink to the repository's `ControlForgeCAD` directory. To use a different FreeCAD profile or source path:
 
 ```bash
 python3 scripts/link_freecad_workbench.py --mod-dir /path/to/FreeCAD/Mod --source /path/to/ControlForgeCAD
@@ -205,14 +205,14 @@ Equivalent manual symlink command:
 
 ```bash
 mkdir -p ~/.local/share/FreeCAD/Mod
-ln -s /home/egrantjr/Dev/CAD/ControlForgeCAD ~/.local/share/FreeCAD/Mod/ControlForgeCAD
+ln -s /home/egrantjr/integraCAD_OPEN/ControlForgeCAD ~/.local/share/FreeCAD/Mod/ControlForgeCAD
 ```
 
 Equivalent copy command:
 
 ```bash
 mkdir -p ~/.local/share/FreeCAD/Mod
-cp -R /home/egrantjr/Dev/CAD/ControlForgeCAD ~/.local/share/FreeCAD/Mod/ControlForgeCAD
+cp -R /home/egrantjr/integraCAD_OPEN/ControlForgeCAD ~/.local/share/FreeCAD/Mod/ControlForgeCAD
 ```
 
 Restart FreeCAD and select **Controls / Automation** from the workbench selector. Confirm these commands appear in the toolbar or menu:
@@ -221,9 +221,11 @@ Restart FreeCAD and select **Controls / Automation** from the workbench selector
 |---|---|
 | `CE_NewProject` | New Controls Project |
 | `CE_AddIOSignal` | Add I/O Signal |
+| `CE_AllocatePLCIO` | Allocate PLC I/O |
 | `CE_AddConnection` | Add Connection Record |
 | `CE_AddElectricalPath` | Add Electrical Path |
 | `CE_EditElectricalPath` | Edit Electrical Path |
+| `CE_CaptureWireRoute` | Capture Wire Route from Geometry |
 | `CE_CreatePanel` | Create Control Panel |
 | `CE_ValidateProject` | Validate Controls Project |
 | `CE_PreviewMissingData` | Preview Missing Data |
@@ -233,6 +235,7 @@ Restart FreeCAD and select **Controls / Automation** from the workbench selector
 | `CE_ExportMissingDataCSV` | Export Missing Data CSV |
 | `CE_ExportConnectionSchedule` | Export Connection Schedule |
 | `CE_ExportElectricalSchedules` | Export Electrical Schedules |
+| `CE_ExportTerminalPlan` | Export Terminal Plan |
 
 Manual smoke validation:
 
@@ -251,8 +254,8 @@ Manual smoke validation:
 13. Run **Validate Controls Project** and confirm validation messages print to the FreeCAD console from the edited object values. Filled setup fields with source metadata should not report `missing_source`; they may still need verification or approval.
 14. Run **Add I/O Signal**, choose an I/O type, enter a label, and confirm Report View prints the generated tag and address.
 15. Run **Create Control Panel** and confirm `CE_Backplate`, `CE_DIN_Rail`, `CE_Wire_Duct`, `CE_Terminal_Strip`, and `CE_PLC_Rack` appear in the model tree with editable controls metadata.
-16. Run **Add Electrical Path**, select the registered PLC and terminal strip, select an existing field device or enter a new device tag, and submit the terminal/wire chain. Optionally enter each route as semicolon-separated `x,y,z` millimetre coordinates. Confirm one typed path, four typed terminals, three typed wires, and a signal appear with immutable identities and assigned roles; routed wires should display as polylines.
-17. Select the typed path, run **Edit Electrical Path**, change a terminal designation and route, and confirm its path, signal, terminal, and wire identities do not change.
+16. Run **Allocate PLC I/O** and confirm a valid allocation materializes rack, module, channel, and typed-signal objects. Run **Add Electrical Path**, select an allocated PLC channel and terminal strip, select an existing field device or enter a new device tag, and submit the terminal/wire chain. The signal tag and PLC terminal designation must match the selected channel allocation. Optionally enter each route as semicolon-separated `x,y,z` millimetre coordinates. Confirm one typed path, four typed terminals, three typed wires, and a signal appear with immutable identities and assigned roles; routed wires should display as polylines.
+17. Select the typed path, run **Edit Electrical Path**, change a route and confirm its path, signal, terminal, and wire identities do not change. For an allocation-backed path, confirm changing the PLC terminal away from the allocated address is rejected.
 18. Run **Validate Controls Project** and confirm validation reads the project, starter layout metadata, and typed graph without dangling-owner or path-continuity findings.
 19. Run **Export Electrical Schedules** and confirm `~/integracad_wiring_schedule.csv` has three wire rows while `~/integracad_io_path_schedule.csv` has one signal-path row containing the edited values.
 20. Run **Export BOM** and confirm `~/controlforgecad_bom.csv` includes starter layout objects with tag/description/manufacturer/part-number data where assigned.
