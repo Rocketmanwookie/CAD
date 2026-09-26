@@ -69,6 +69,12 @@ def choose_staged_project_import(
         checkbox = QtWidgets.QCheckBox(
             f"[{candidate.category}] {candidate.key}: {candidate.current_value or '<empty>'} → {candidate.proposed_value or '<empty>'}"
         )
+        if candidate.key in staged.blocked_keys:
+            checkbox.setText(
+                f"[Unsupported catalog selection — cannot approve] {candidate.key}: "
+                f"{candidate.current_value or '<empty>'} → {candidate.proposed_value or '<empty>'}"
+            )
+            checkbox.setEnabled(False)
         approvals[candidate.key] = checkbox
         layout.addWidget(checkbox)
     io_approvals = {}

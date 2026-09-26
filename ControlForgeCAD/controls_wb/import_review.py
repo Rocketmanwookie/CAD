@@ -54,6 +54,7 @@ class StagedProjectImport:
     values: dict[str, object]
     candidates: tuple[ImportCandidate, ...]
     warnings: tuple[str, ...] = ()
+    blocked_keys: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -136,7 +137,8 @@ def stage_project_import(
         warnings = tuple(str(item) for item in setup_values.get("ImportWarnings", []) or [])
 
     current = form_values_from_project(project)
-    warnings = tuple(warnings) + _plc_catalog_staging_warnings(current, values)
+    blocked_keys = _unsupported_plc_catalog_keys(current, values)
+    warnings = tuple(warnings) + _plc_catalog_staging_warnings(blocked_keys)
     candidates = []
     for key, proposed in values.items():
         if key not in _CATEGORY_BY_KEY:
@@ -154,16 +156,17 @@ def stage_project_import(
         values=values,
         candidates=tuple(sorted(candidates, key=lambda item: (item.category, item.key))),
         warnings=warnings,
+        blocked_keys=blocked_keys,
     )
 
 
-def _plc_catalog_staging_warnings(
+def _unsupported_plc_catalog_keys(
     current_values: dict[str, str], imported_values: dict[str, object]
 ) -> tuple[str, ...]:
-    """Describe unsupported imported PLC selections before approval.
+    """Return imported PLC fields that the current catalog would rewrite.
 
     The apply boundary still validates every approved item and never mutates on
-    a rewrite.  This preview diagnostic makes the same incompatibility visible
+    a rewrite. This preview diagnostic makes the same incompatibility visible
     while the reviewer is choosing checkboxes, rather than only after Apply.
     """
 
@@ -181,17 +184,29 @@ def _plc_catalog_staging_warnings(
         {key: _display_value(value) for key, value in imported_values.items()}
     )
     normalized = normalized_form_values(effective_values)
-    unsupported = [
-        label
-        for key, label in catalog_fields.items()
+    return tuple(
+        key
+        for key in catalog_fields
         if key in imported_values
         and str(normalized[key]) != _display_value(imported_values[key]).strip()
-    ]
-    if not unsupported:
+    )
+
+
+def _plc_catalog_staging_warnings(blocked_keys: tuple[str, ...]) -> tuple[str, ...]:
+    """Describe non-approvable catalog fields in a staged import preview."""
+
+    labels = {
+        "PlcMake": "PLC make",
+        "PlcLine": "PLC line",
+        "PlcCPU": "PLC CPU",
+        "EthernetAdapter": "Ethernet adapter",
+        "ExpansionPowerSupply": "expansion power supply",
+    }
+    if not blocked_keys:
         return ()
     return (
         "Imported PLC selections are not exact bundled-catalog values: "
-        + ", ".join(unsupported)
+        + ", ".join(labels[key] for key in blocked_keys)
         + ". They can be reviewed but cannot be applied; select a supported catalog combination.",
     )
 

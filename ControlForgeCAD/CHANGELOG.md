@@ -33,7 +33,8 @@
   default. Rejection leaves the existing project unchanged.
 
 - Import & Review now displays unsupported PLC catalog selections in the staged
-  preview before Apply, while retaining the apply-time no-mutation rejection.
+  preview before Apply, disables their approval checkboxes, and retains the
+  apply-time no-mutation rejection.
 
 - Fixed PLC allocation materialization against FreeCAD's native integer slot
   property and reject free-form connection records that would duplicate an

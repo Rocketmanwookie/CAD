@@ -126,6 +126,12 @@ def test_full_unsupported_plc_approval_rejects_catalog_rewrite_without_mutation(
         "Ethernet adapter, expansion power supply. They can be reviewed but cannot be applied; "
         "select a supported catalog combination.",
     )
+    assert staged.blocked_keys == (
+        "PlcLine",
+        "PlcCPU",
+        "EthernetAdapter",
+        "ExpansionPowerSupply",
+    )
 
     with pytest.raises(ImportReviewError, match="not compatible with the bundled catalog"):
         apply_approved_project_import(
@@ -163,6 +169,7 @@ def test_approved_unsupported_plc_line_rejects_even_when_default_matches_current
     )
 
     assert "PLC line" in staged.warnings[0]
+    assert staged.blocked_keys == ("PlcLine",)
 
     with pytest.raises(ImportReviewError, match="not compatible with the bundled catalog"):
         apply_approved_project_import(project, staged, {"PlcLine"})
@@ -190,6 +197,7 @@ plc:
     )
 
     assert not any("not exact bundled-catalog" in warning for warning in staged.warnings)
+    assert staged.blocked_keys == ()
     apply_approved_project_import(project, staged, {"ProjectName"})
     assert project.ProjectName == "Imported"
     assert project.PlcMake == "Allen-Bradley"

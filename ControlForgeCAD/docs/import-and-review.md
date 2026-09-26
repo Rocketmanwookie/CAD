@@ -53,4 +53,5 @@ is not an exact supported catalog value; Import & Review never silently
 substitutes dependent PLC choices or stores a catalog default in place of an
 approved imported value. The review shows an incompatibility warning before
 Apply for source values that are not exact bundled-catalog selections; the
-apply-time rejection remains the authoritative no-mutation protection.
+affected selection checkboxes are disabled. The apply-time rejection remains
+the authoritative no-mutation protection.
