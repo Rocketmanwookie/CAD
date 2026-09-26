@@ -75,6 +75,9 @@ a mismatched signal tag, or a mismatched PLC terminal designation.
 
 Exports are deterministic projections of the current project graph. They are
 not vendor PLC project files, schematics, or proof of code compliance.
+Electrical schedule rows include the allocated PLC channel identity and
+rack/slot/channel/address trace fields, and export stops if that allocation
+trace cannot be reconciled with the path.
 
 ## 5. Manual desktop acceptance (not yet recorded)
 

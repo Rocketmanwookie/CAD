@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Electrical schedule exports now append allocated PLC channel identity, rack,
+  slot, channel, and address trace fields. Export rejects paths whose PLC owner,
+  signal, or address does not match the persisted allocation.
+
 - Allocation reconciliation now preflights unsafe removals and type changes,
   migrates same-type channel moves without changing downstream identities, and
   prunes only stale allocation occurrences with no electrical paths.
