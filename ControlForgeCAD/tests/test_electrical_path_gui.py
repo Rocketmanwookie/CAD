@@ -4,6 +4,7 @@ import pytest
 
 from controls_wb.gui.electrical_path import (
     add_electrical_path_from_form,
+    allocated_channel_form_values,
     build_electrical_path,
     edit_electrical_path_from_form,
     parse_route_points,
@@ -99,6 +100,15 @@ def test_form_rejects_generic_controller_or_mismatched_channel_values():
     values["signal_tag"] = "DI-9999"
     with pytest.raises(ValueError, match="must match"):
         build_electrical_path(project, values)
+
+
+def test_selected_allocated_channel_derives_form_signal_and_terminal_values():
+    _, project, values = _setup()
+
+    assert allocated_channel_form_values(project, values["plc_channel_identity"]) == {
+        "signal_tag": "DI-0001",
+        "plc_terminal": "%I0.0",
+    }
 
 
 def test_form_service_materializes_and_registers_path():

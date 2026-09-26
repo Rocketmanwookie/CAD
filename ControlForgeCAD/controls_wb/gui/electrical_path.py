@@ -34,6 +34,22 @@ def _device_by_identity(project, identity: str, expected_role: str):
     raise ValueError(f"No registered {expected_role} device has identity {identity}.")
 
 
+def allocated_channel_form_values(project, channel_identity: str) -> dict[str, str]:
+    """Return the immutable signal and terminal values derived from one channel."""
+
+    channel = _device_by_identity(project, channel_identity, CERoles.PLC_CHANNEL)
+    signal = getattr(channel, "AllocatedSignalObject", None)
+    if signal is None or getattr(signal, "CERole", "") != CERoles.SIGNAL:
+        raise ValueError("Selected PLC channel has no typed allocated signal.")
+    signal_tag = str(getattr(signal, "SignalTag", "") or "")
+    designation = str(getattr(channel, "SignalAddress", "") or "")
+    if not signal_tag:
+        raise ValueError("Selected PLC channel has no allocated signal tag.")
+    if not designation:
+        raise ValueError("Selected PLC channel has no allocated address for its terminal designation.")
+    return {"signal_tag": signal_tag, "plc_terminal": designation}
+
+
 def _positive_length(value: object, label: str) -> float:
     try:
         length = float(str(value).strip())
@@ -142,15 +158,11 @@ def build_electrical_path(project, values: dict[str, str]) -> ElectricalConnecti
     """Normalize form values into a validated continuous path without FreeCAD APIs."""
 
     channel = _device_by_identity(project, values.get("plc_channel_identity", ""), CERoles.PLC_CHANNEL)
-    signal = getattr(channel, "AllocatedSignalObject", None)
-    if signal is None or getattr(signal, "CERole", "") != CERoles.SIGNAL:
-        raise ValueError("Selected PLC channel has no typed allocated signal.")
-    signal_tag = str(getattr(signal, "SignalTag", "") or "")
+    derived = allocated_channel_form_values(project, channel.CEIdentity)
+    signal_tag = derived["signal_tag"]
     if str(values.get("signal_tag", "")).strip() != signal_tag:
         raise ValueError("Signal tag must match the selected allocated PLC channel.")
-    designation = str(getattr(channel, "SignalAddress", "") or "")
-    if not designation:
-        raise ValueError("Selected PLC channel has no allocated address for its terminal designation.")
+    designation = derived["plc_terminal"]
     requested_designation = str(values.get("plc_terminal", "")).strip()
     if requested_designation and requested_designation != designation:
         raise ValueError("PLC terminal designation must match the selected allocated channel address.")
@@ -170,15 +182,11 @@ def add_electrical_path_from_form(document, values: dict[str, str]):
     project = existing_project_object(document) or create_or_update_project(document)
     normalized = dict(values)
     channel = _device_by_identity(project, normalized.get("plc_channel_identity", ""), CERoles.PLC_CHANNEL)
-    signal = getattr(channel, "AllocatedSignalObject", None)
-    if signal is None or getattr(signal, "CERole", "") != CERoles.SIGNAL:
-        raise ValueError("Selected PLC channel has no typed allocated signal.")
-    signal_tag = str(getattr(signal, "SignalTag", "") or "")
+    derived = allocated_channel_form_values(project, channel.CEIdentity)
+    signal_tag = derived["signal_tag"]
     if str(normalized.get("signal_tag", "")).strip() != signal_tag:
         raise ValueError("Signal tag must match the selected allocated PLC channel.")
-    designation = str(getattr(channel, "SignalAddress", "") or "")
-    if not designation:
-        raise ValueError("Selected PLC channel has no allocated address for its terminal designation.")
+    designation = derived["plc_terminal"]
     requested_designation = str(normalized.get("plc_terminal", "")).strip()
     if requested_designation and requested_designation != designation:
         raise ValueError("PLC terminal designation must match the selected allocated channel address.")
@@ -342,6 +350,24 @@ def show_electrical_path_dialog(document, parent=None, console=None):
         editors[key] = editor
         form.addRow(label, editor)
     layout.addLayout(form)
+    # A channel is the authoritative allocation endpoint.  Populate and lock
+    # these two values on selection instead of exposing a mismatch the service
+    # would have to reject after the user completes the rest of the form.
+    for key in ("signal_tag", "plc_terminal"):
+        editors[key].setReadOnly(True)
+
+    def apply_selected_channel(_index=None):
+        channel_identity = _combo_identity(plc_combo)
+        if not channel_identity:
+            editors["signal_tag"].setText("")
+            editors["plc_terminal"].setText("")
+            return
+        derived = allocated_channel_form_values(project, channel_identity)
+        editors["signal_tag"].setText(derived["signal_tag"])
+        editors["plc_terminal"].setText(derived["plc_terminal"])
+
+    plc_combo.currentIndexChanged.connect(apply_selected_channel)
+    apply_selected_channel()
     buttons = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)
     buttons.accepted.connect(dialog.accept)
     buttons.rejected.connect(dialog.reject)

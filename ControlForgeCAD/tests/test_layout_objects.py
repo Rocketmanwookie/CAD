@@ -13,6 +13,7 @@ from controls_wb.model.layout import (
     starter_layout_specs_for_project,
 )
 from controls_wb.model.project import create_or_update_project
+import controls_wb.model.layout as layout_module
 
 
 class FakeLayoutObject:
@@ -187,6 +188,24 @@ def test_layout_proxy_round_trips_persistent_state():
 
     assert restored.Type == "ControlsLayoutObject"
     assert restored.Role == CERoles.PANEL
+
+
+def test_allocation_occurrence_proxy_skips_zero_dimension_part_shape(monkeypatch):
+    calls = []
+
+    class FakePart:
+        @staticmethod
+        def makeBox(*dimensions):
+            calls.append(dimensions)
+            return object()
+
+    monkeypatch.setattr(layout_module, "Part", FakePart)
+    obj = FakeLayoutObject("CE_PLC_Channel")
+    proxy = ControlsLayoutObject(obj, CERoles.PLC_CHANNEL)
+
+    proxy.execute(obj)
+
+    assert calls == []
 
 
 def test_bom_export_includes_starter_layout_objects_with_metadata():

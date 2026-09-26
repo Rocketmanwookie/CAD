@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Allocation rack/module/channel occurrences no longer attempt zero-dimension
+  Part geometry during FreeCAD recompute. Add Electrical Path now derives and
+  locks its signal tag and PLC terminal address from the selected allocated
+  channel while retaining service-level mismatch protection.
+
 - Added `CE_ImportAndReview`, which stages supported CEProject XML and setup
   YAML/UML input for explicit per-field approval before atomic project-intake
   application. It does not yet import typed paths, devices, terminals, wires,

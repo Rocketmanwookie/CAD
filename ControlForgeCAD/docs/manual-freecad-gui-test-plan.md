@@ -27,7 +27,8 @@ acceptance record, not a blocker for dependency-free development work.
 1. Create a new document, run **New Controls Project**, choose a supported
    catalog PLC, and enter at least one compatible I/O point.
 2. Run **Allocate PLC I/O**. Confirm the operation reports no capacity or
-   collision error and inspect the materialized rack/module/channel objects.
+   collision error, creates materialized rack/module/channel objects, and adds
+   no zero-size-box error to Report View.
 3. Run **Create Control Panel**, then **Add Electrical Path**. Select an
    allocated PLC channel and terminal strip. Select an existing field device,
    or leave **Create new field device…** selected and enter a new field-device

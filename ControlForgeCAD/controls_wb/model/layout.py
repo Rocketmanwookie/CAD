@@ -568,6 +568,11 @@ class ControlsLayoutObject:
         ensure_object_identity(obj, role)
 
     def execute(self, obj):
+        # Allocation occurrences are semantic graph objects.  They intentionally
+        # have no physical dimensions, so asking Part to create a zero-size box
+        # produces a Report View error during allocation/recompute.
+        if self.Role in {CERoles.PLC_RACK, CERoles.PLC_MODULE, CERoles.PLC_CHANNEL}:
+            return None
         if Part is not None:
             obj.Shape = Part.makeBox(obj.Width, obj.Depth, obj.Height)
 
