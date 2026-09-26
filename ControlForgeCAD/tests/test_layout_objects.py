@@ -7,6 +7,7 @@ from controls_wb.model.layout import (
     ControlsLayoutObject,
     create_starter_layout_objects,
     layout_object_metadata,
+    materialize_plc_allocation,
     starter_layout_specs_for_project,
 )
 from controls_wb.model.project import create_or_update_project
@@ -196,3 +197,28 @@ def test_starter_plc_and_terminal_strip_register_as_project_devices():
         CERoles.PLC_CONTROLLER,
     ]
     assert project.ElectricalDevices == [objects[3], objects[4]]
+
+
+def test_materialized_plc_allocation_has_stable_rack_module_channel_links():
+    document = FakeDocument()
+    project = create_or_update_project(document)
+    project.ProjectId = "CE-ALLOC-001"
+    project.PlcMake = "Siemens"
+    project.PlcLine = "S7-1200"
+    project.PlcCPU = "CPU 1212C DC/DC/DC"
+    project.DICount = "9"
+
+    first = materialize_plc_allocation(document, project)
+    second = materialize_plc_allocation(document, project)
+
+    assert first["rack"] is second["rack"]
+    assert len(first["modules"]) == 2
+    assert [(module.RackNumber, module.SlotNumber) for module in first["modules"]] == [("0", "1"), ("0", "2")]
+    assert len(first["channels"]) == 9
+    assert first["modules"][0].Channels[0].AllocatedSignalTag == "DI-0001"
+    assert first["modules"][1].Channels[0].AllocatedSignalTag == "DI-0009"
+    assert first["modules"][1].Channels[0].ModuleObject is first["modules"][1]
+    assert first["rack"].Modules == list(first["modules"])
+    assert first["rack"].CERole == CERoles.PLC_RACK
+    assert first["modules"][0].CERole == CERoles.PLC_MODULE
+    assert first["channels"][0].CERole == CERoles.PLC_CHANNEL

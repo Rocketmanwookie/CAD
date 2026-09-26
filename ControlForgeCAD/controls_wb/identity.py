@@ -16,6 +16,9 @@ class CERoles:
     WIRE_DUCT = "panel.wire_duct"
     TERMINAL_STRIP = "electrical.terminal_strip"
     PLC_CONTROLLER = "plc.controller"
+    PLC_RACK = "plc.rack"
+    PLC_MODULE = "plc.module"
+    PLC_CHANNEL = "plc.channel"
     PLC_CHANNEL_TERMINAL = "plc.channel_terminal"
     CABINET_TERMINAL = "electrical.cabinet_terminal"
     DEVICE_TERMINAL = "electrical.device_terminal"
@@ -33,6 +36,9 @@ KNOWN_ROLES = frozenset(
         CERoles.WIRE_DUCT,
         CERoles.TERMINAL_STRIP,
         CERoles.PLC_CONTROLLER,
+        CERoles.PLC_RACK,
+        CERoles.PLC_MODULE,
+        CERoles.PLC_CHANNEL,
         CERoles.PLC_CHANNEL_TERMINAL,
         CERoles.CABINET_TERMINAL,
         CERoles.DEVICE_TERMINAL,

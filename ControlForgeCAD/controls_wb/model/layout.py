@@ -6,7 +6,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 
 from controls_wb.hardware_catalog import default_catalog_path, line_catalog, load_hardware_catalog, part_by_name
-from controls_wb.identity import CERoles, ensure_object_identity
+from controls_wb.identity import CERoles, ensure_object_identity, imported_ce_identity
 from controls_wb.panel_hardware_catalog import (
     default_panel_catalog_path,
     load_panel_hardware_catalog,
@@ -262,6 +262,126 @@ def create_starter_layout_objects(document=None) -> list[object]:
             if obj.CERole in {CERoles.PLC_CONTROLLER, CERoles.TERMINAL_STRIP}:
                 register_electrical_device(project, obj)
     return objects
+
+
+def _add_property(obj, property_type: str, name: str, group: str, description: str) -> None:
+    if name not in set(getattr(obj, "PropertiesList", []) or []):
+        obj.addProperty(property_type, name, group, description)
+
+
+def _object_for_identity(document, identity: str):
+    for obj in getattr(document, "Objects", []) or []:
+        if getattr(obj, "CEIdentity", "") == identity:
+            return obj
+    return None
+
+
+def _allocation_identity(project, kind: str, key: str) -> str:
+    project_key = str(getattr(project, "CEIdentity", "") or getattr(project, "ProjectId", "")).strip()
+    if not project_key:
+        raise ValueError("PLC allocation occurrences require a project identity or ProjectId.")
+    return imported_ce_identity("ceproject.plc-allocation", f"{project_key}:{kind}:{key}")
+
+
+def _materialize_allocation_object(document, name: str, role: str, identity: str):
+    existing = _object_for_identity(document, identity)
+    if existing is not None:
+        if getattr(existing, "CERole", "") != role:
+            raise ValueError(f"Allocation identity {identity} belongs to {getattr(existing, 'CERole', '')!r}.")
+        return existing
+    obj = document.addObject("App::FeaturePython", name)
+    ControlsLayoutObject(obj, role)
+    # The object was created with a random identity; replace it before it has
+    # any externally visible relationship so allocation occurrences are stable
+    # across reruns and save/reopen cycles.
+    obj.CEIdentity = identity
+    return obj
+
+
+def materialize_plc_allocation(document, project: object | None = None) -> dict[str, object]:
+    """Materialize a persisted project's PLC rack, modules, and channels.
+
+    Each occurrence has a deterministic CE identity derived from the project
+    and allocation coordinates.  Re-running is idempotent and preserves the
+    object links that make the catalog allocation navigable in FreeCAD.
+    """
+
+    project = project or _project_object(document)
+    if project is None:
+        raise ValueError("PLC allocation materialization requires one CE_Project.")
+    from controls_wb.io_list import explicit_io_signals_from_project, persist_io_allocation_to_project
+    from controls_wb.model.electrical import register_electrical_device
+
+    allocation = persist_io_allocation_to_project(project)
+    signals = explicit_io_signals_from_project(project)
+    rack_values = {module.rack for module in allocation.modules}
+    if len(rack_values) != 1:
+        raise ValueError("PLC allocation must contain exactly one rack to materialize it.")
+    rack_number = next(iter(rack_values))
+    rack_identity = _allocation_identity(project, "rack", rack_number)
+    rack = _materialize_allocation_object(document, "CE_PLC_Allocation_Rack", CERoles.PLC_RACK, rack_identity)
+    for property_type, name, description in (
+        ("App::PropertyString", "RackNumber", "PLC rack number"),
+        ("App::PropertyLinkList", "Modules", "Materialized PLC modules"),
+    ):
+        _add_property(rack, property_type, name, "PLC Allocation", description)
+    rack.RackNumber = rack_number
+
+    modules = []
+    channels = []
+    for module in allocation.modules:
+        module_identity = _allocation_identity(project, "module", f"{module.rack}:{module.slot}")
+        module_obj = _materialize_allocation_object(document, "CE_PLC_Module", CERoles.PLC_MODULE, module_identity)
+        for property_type, name, description in (
+            ("App::PropertyLink", "RackObject", "Owning PLC rack"),
+            ("App::PropertyString", "RackNumber", "PLC rack number"),
+            ("App::PropertyString", "SlotNumber", "PLC slot number"),
+            ("App::PropertyString", "ModuleName", "Catalog module name"),
+            ("App::PropertyString", "PartNumber", "Catalog part number"),
+            ("App::PropertyString", "CatalogSourceId", "Hardware catalog source"),
+            ("App::PropertyBool", "IsCPU", "Whether this module is the selected CPU"),
+            ("App::PropertyLinkList", "Channels", "Materialized allocated channels"),
+        ):
+            _add_property(module_obj, property_type, name, "PLC Allocation", description)
+        module_obj.RackObject = rack
+        module_obj.RackNumber = module.rack
+        module_obj.SlotNumber = module.slot
+        module_obj.ModuleName = module.module_name
+        module_obj.PartNumber = module.part_number
+        module_obj.CatalogSourceId = module.source_id
+        module_obj.IsCPU = module.is_cpu
+        modules.append(module_obj)
+        register_electrical_device(project, module_obj)
+
+        module_channels = []
+        for signal in signals:
+            if signal.rack != module.rack or signal.slot != module.slot:
+                continue
+            channel_identity = _allocation_identity(project, "channel", f"{signal.rack}:{signal.slot}:{signal.signal_type}:{signal.channel}")
+            channel_obj = _materialize_allocation_object(document, "CE_PLC_Channel", CERoles.PLC_CHANNEL, channel_identity)
+            for property_type, name, description in (
+                ("App::PropertyLink", "ModuleObject", "Owning PLC module"),
+                ("App::PropertyString", "RackNumber", "PLC rack number"),
+                ("App::PropertyString", "SlotNumber", "PLC slot number"),
+                ("App::PropertyString", "ChannelNumber", "PLC channel number"),
+                ("App::PropertyString", "SignalType", "Allocated I/O signal type"),
+                ("App::PropertyString", "AllocatedSignalTag", "Allocated logical I/O signal tag"),
+                ("App::PropertyString", "SignalAddress", "Allocated logical I/O address"),
+            ):
+                _add_property(channel_obj, property_type, name, "PLC Allocation", description)
+            channel_obj.ModuleObject = module_obj
+            channel_obj.RackNumber = signal.rack
+            channel_obj.SlotNumber = signal.slot
+            channel_obj.ChannelNumber = signal.channel
+            channel_obj.SignalType = signal.signal_type
+            channel_obj.AllocatedSignalTag = signal.tag
+            channel_obj.SignalAddress = signal.address
+            module_channels.append(channel_obj)
+            channels.append(channel_obj)
+        module_obj.Channels = module_channels
+    rack.Modules = modules
+    register_electrical_device(project, rack)
+    return {"rack": rack, "modules": tuple(modules), "channels": tuple(channels)}
 
 
 class ControlsLayoutObject:
