@@ -141,13 +141,26 @@ def _build_electrical_path(
 def build_electrical_path(project, values: dict[str, str]) -> ElectricalConnectionPath:
     """Normalize form values into a validated continuous path without FreeCAD APIs."""
 
-    plc = _device_by_identity(project, values.get("plc_owner_identity", ""), CERoles.PLC_CONTROLLER)
+    channel = _device_by_identity(project, values.get("plc_channel_identity", ""), CERoles.PLC_CHANNEL)
+    signal = getattr(channel, "AllocatedSignalObject", None)
+    if signal is None or getattr(signal, "CERole", "") != CERoles.SIGNAL:
+        raise ValueError("Selected PLC channel has no typed allocated signal.")
+    signal_tag = str(getattr(signal, "SignalTag", "") or "")
+    if str(values.get("signal_tag", "")).strip() != signal_tag:
+        raise ValueError("Signal tag must match the selected allocated PLC channel.")
+    designation = str(getattr(channel, "SignalAddress", "") or "")
+    if not designation:
+        raise ValueError("Selected PLC channel has no allocated address for its terminal designation.")
+    requested_designation = str(values.get("plc_terminal", "")).strip()
+    if requested_designation and requested_designation != designation:
+        raise ValueError("PLC terminal designation must match the selected allocated channel address.")
     strip = _device_by_identity(project, values.get("terminal_strip_identity", ""), CERoles.TERMINAL_STRIP)
     device = _device_by_identity(project, values.get("device_owner_identity", ""), CERoles.FIELD_DEVICE)
+    normalized = dict(values, plc_terminal=designation, signal_tag=signal_tag)
     return _build_electrical_path(
         project,
-        values,
-        plc_identity=plc.CEIdentity,
+        normalized,
+        plc_identity=channel.CEIdentity,
         terminal_strip_identity=strip.CEIdentity,
         device_identity=device.CEIdentity,
     )
@@ -156,7 +169,21 @@ def build_electrical_path(project, values: dict[str, str]) -> ElectricalConnecti
 def add_electrical_path_from_form(document, values: dict[str, str]):
     project = existing_project_object(document) or create_or_update_project(document)
     normalized = dict(values)
-    plc = _device_by_identity(project, normalized.get("plc_owner_identity", ""), CERoles.PLC_CONTROLLER)
+    channel = _device_by_identity(project, normalized.get("plc_channel_identity", ""), CERoles.PLC_CHANNEL)
+    signal = getattr(channel, "AllocatedSignalObject", None)
+    if signal is None or getattr(signal, "CERole", "") != CERoles.SIGNAL:
+        raise ValueError("Selected PLC channel has no typed allocated signal.")
+    signal_tag = str(getattr(signal, "SignalTag", "") or "")
+    if str(normalized.get("signal_tag", "")).strip() != signal_tag:
+        raise ValueError("Signal tag must match the selected allocated PLC channel.")
+    designation = str(getattr(channel, "SignalAddress", "") or "")
+    if not designation:
+        raise ValueError("Selected PLC channel has no allocated address for its terminal designation.")
+    requested_designation = str(normalized.get("plc_terminal", "")).strip()
+    if requested_designation and requested_designation != designation:
+        raise ValueError("PLC terminal designation must match the selected allocated channel address.")
+    normalized["signal_tag"] = signal_tag
+    normalized["plc_terminal"] = designation
     strip = _device_by_identity(project, normalized.get("terminal_strip_identity", ""), CERoles.TERMINAL_STRIP)
     device_identity = str(normalized.get("device_owner_identity", "")).strip()
     new_device_identity = ""
@@ -171,7 +198,7 @@ def add_electrical_path_from_form(document, values: dict[str, str]):
     path = _build_electrical_path(
         project,
         normalized,
-        plc_identity=plc.CEIdentity,
+        plc_identity=channel.CEIdentity,
         terminal_strip_identity=strip.CEIdentity,
         device_identity=device_identity,
     )
@@ -263,11 +290,11 @@ def show_electrical_path_dialog(document, parent=None, console=None):
     plc_combo = QtWidgets.QComboBox()
     strip_combo = QtWidgets.QComboBox()
     device_combo = QtWidgets.QComboBox()
-    _add_device_items(plc_combo, _devices_for_role(project, CERoles.PLC_CONTROLLER))
+    _add_device_items(plc_combo, _devices_for_role(project, CERoles.PLC_CHANNEL))
     _add_device_items(strip_combo, _devices_for_role(project, CERoles.TERMINAL_STRIP))
     device_combo.addItem("Create new field device…", "")
     _add_device_items(device_combo, _devices_for_role(project, CERoles.FIELD_DEVICE))
-    form.addRow("PLC", plc_combo)
+    form.addRow("Allocated PLC channel", plc_combo)
     form.addRow("Terminal strip", strip_combo)
     form.addRow("Existing field device", device_combo)
     editors = {}
@@ -275,7 +302,7 @@ def show_electrical_path_dialog(document, parent=None, console=None):
         ("device_tag", "New field-device tag", ""),
         ("device_description", "New device description", ""),
         ("signal_tag", "Signal tag", "DI-0001"),
-        ("plc_terminal", "PLC channel terminal", "PLC1:X1.0"),
+        ("plc_terminal", "PLC channel terminal (derived from allocation)", ""),
         ("terminal_in", "Cabinet terminal input", "TB1:1-IN"),
         ("terminal_out", "Cabinet terminal output", "TB1:1-OUT"),
         ("device_terminal", "Device terminal", "1"),
@@ -306,7 +333,7 @@ def show_electrical_path_dialog(document, parent=None, console=None):
         return None
     values = {key: editor.text() for key, editor in editors.items()}
     values.update(
-        plc_owner_identity=_combo_identity(plc_combo),
+        plc_channel_identity=_combo_identity(plc_combo),
         terminal_strip_identity=_combo_identity(strip_combo),
         device_owner_identity=_combo_identity(device_combo),
     )

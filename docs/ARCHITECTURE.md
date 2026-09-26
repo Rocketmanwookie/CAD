@@ -157,8 +157,8 @@ tree in the same document transaction. Each allocated channel has a
 deterministic typed-signal link, and a path subsequently materialized for that
 signal tag reuses the same signal and links back to the channel. Validation
 detects missing, unregistered, non-reciprocal, and omitted consuming-path
-links. Channel-terminal endpoint authoring remains separate work: the current
-path form does not yet select the allocated channel as its terminal owner.
+links. Path authoring selects an allocated channel and derives the first
+PLC-terminal owner and designation from the channel and its allocated address.
 
 Typed continuous electrical objects now include `ElectricalPathObject`,
 `ElectricalTerminalObject`, and `ElectricalWireObject`. The path owns ordered

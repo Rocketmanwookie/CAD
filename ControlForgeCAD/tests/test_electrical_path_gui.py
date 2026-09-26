@@ -11,7 +11,7 @@ from controls_wb.gui.electrical_path import (
 )
 from controls_wb.identity import CERoles
 from controls_wb.model.electrical import electrical_path_from_object, materialize_electrical_device
-from controls_wb.model.layout import create_starter_layout_objects
+from controls_wb.model.layout import create_starter_layout_objects, materialize_plc_allocation
 from controls_wb.model.project import create_or_update_project
 
 
@@ -43,13 +43,18 @@ def _setup():
     document = FakeDocument()
     project = create_or_update_project(document)
     layout = create_starter_layout_objects(document)
+    project.PlcMake = "Siemens"
+    project.PlcLine = "S7-1200"
+    project.PlcCPU = "CPU 1212C DC/DC/DC"
+    project.DICount = "1"
+    channel = materialize_plc_allocation(document, project)["channels"][0]
     device = materialize_electrical_device(document, "LS-001", description="Limit switch")
     values = {
-        "plc_owner_identity": layout[4].CEIdentity,
+        "plc_channel_identity": channel.CEIdentity,
         "terminal_strip_identity": layout[3].CEIdentity,
         "device_owner_identity": device.CEIdentity,
         "signal_tag": "DI-0001",
-        "plc_terminal": "PLC1:X1.0",
+        "plc_terminal": channel.SignalAddress,
         "terminal_in": "TB1:1-IN",
         "terminal_out": "TB1:1-OUT",
         "device_terminal": "LS-001:1",
@@ -79,6 +84,20 @@ def test_form_builds_required_plc_terminal_wire_terminal_wire_device_chain():
     ]
     assert [wire.wire_tag for wire in path.wires] == ["W-001", "JMP-001", "W-002"]
     assert path.total_length_mm == 1125.0
+    assert path.terminals[0].owner_identity == values["plc_channel_identity"]
+    assert path.terminals[0].designation == "%I0.0"
+
+
+def test_form_rejects_generic_controller_or_mismatched_channel_values():
+    _, project, values = _setup()
+    values["plc_channel_identity"] = ""
+    with pytest.raises(ValueError, match="plc.channel"):
+        build_electrical_path(project, values)
+
+    _, project, values = _setup()
+    values["signal_tag"] = "DI-9999"
+    with pytest.raises(ValueError, match="must match"):
+        build_electrical_path(project, values)
 
 
 def test_form_service_materializes_and_registers_path():
@@ -89,6 +108,8 @@ def test_form_service_materializes_and_registers_path():
     assert result.path_object in project.ElectricalPaths
     assert result.signal_object in project.ElectricalSignals
     assert result.path_object.SignalTag == "DI-0001"
+    assert result.terminal_objects[0].OwnerIdentity == values["plc_channel_identity"]
+    assert result.terminal_objects[0].Designation == "%I0.0"
 
 
 def test_form_rejects_missing_required_size_and_nonpositive_length():
@@ -118,7 +139,7 @@ def test_new_device_is_identified_before_path_materialization():
     result = add_electrical_path_from_form(document, values)
 
     owner_identity = result.terminal_objects[-1].OwnerIdentity
-    created = next(device for device in project.ElectricalDevices if device.Tag == "PE-002")
+    created = next(device for device in project.ElectricalDevices if getattr(device, "Tag", "") == "PE-002")
     assert created.CERole == CERoles.FIELD_DEVICE
     assert created.CEIdentity == owner_identity
 

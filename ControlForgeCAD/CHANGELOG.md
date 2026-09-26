@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- `CE_AddElectricalPath` now requires a selected allocated PLC channel. It
+  derives the path's PLC-terminal owner and designation from that channel and
+  its allocated address, rejecting generic-controller, mismatched-signal, and
+  mismatched-terminal inputs.
+
 - `CE_AllocatePLCIO` now materializes valid PLC rack, module, and channel
   occurrences in the same FreeCAD transaction as allocation persistence.
   Allocated channels link deterministically to typed signals; subsequent typed
