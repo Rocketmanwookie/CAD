@@ -14,8 +14,13 @@
 
 - Added `CE_ImportAndReview`, which stages supported CEProject XML and setup
   YAML/UML input for explicit per-field approval before atomic project-intake
-  application. It does not yet import typed paths, devices, terminals, wires,
-  vendor PLC projects, or engineering-compliance data.
+  application. Existing CEProject `Signals` rows can also be approved one at a
+  time as logical DI/DO/AI/AO rows; source PLC address and terminal text is
+  warned/ignored so catalog allocation remains canonical. The review rejects
+  stale, duplicate, unsupported-type, and same-tag type-conflict decisions and
+  records provenance for I/O-only applies. It does not yet import typed paths,
+  devices, terminals, wires, vendor PLC projects, or engineering-compliance
+  data.
 
 - Fixed PLC allocation materialization against FreeCAD's native integer slot
   property and reject free-form connection records that would duplicate an

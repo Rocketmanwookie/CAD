@@ -45,7 +45,7 @@ flowchart TD
 
 | Branch | Example failure mode | Current preventive/detective control | Evidence still needed or planned |
 |---|---|---|---|
-| Intake and traceability | Required project fact is transformed incorrectly or loses provenance | Pure-Python intake/XML tests; missing-data matrix; source/status fields | Broader contradictory-fact and external-source coverage |
+| Intake and traceability | Required project fact or imported logical I/O row is transformed incorrectly, loses provenance, or overwrites catalog coordinates | Pure-Python intake/XML tests; missing-data matrix; explicit import approvals; source/current I/O fingerprint; source address/terminal rejection | Broader contradictory-fact and external-source coverage |
 | PLC allocation | Capacity, collision, duplicate tag, same-tag type change, or unapproved catalog recommendation is accepted | Catalog allocation/recommendation findings, explicit UI approval, immutable allocation-review coordinates, and reconciliation preflight tests | More catalog families, real project data, and recorded desktop recommendation/review evidence |
 | Allocation reconciliation | Moved/removed channel silently deletes or readdresses connected data | Preflight blocks dependent removal; same-type migrations preserve identities; stale cleanup checks references | Manual FreeCAD allocation-change/save-reopen evidence |
 | Electrical graph | Signal, channel, PLC terminal owner, designation, or path links diverge | Reciprocal-link and terminal/address validation; regression tests | More terminal/cabinet-power topology variants |

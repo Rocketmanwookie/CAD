@@ -15,7 +15,7 @@ engineering-compliance tool.
 
 | Capability | Verified implementation | Remaining boundary |
 |---|---|---|
-| Project intake | Editable `CE_Project`, intake dialog, source/missing-data tracking, CEProject XML round trip, and staged Import & Review | Broader requirements and external-fact traceability |
+| Project intake | Editable `CE_Project`, intake dialog, source/missing-data tracking, CEProject XML round trip, and staged Import & Review of intake fields plus existing CEProject logical I/O rows | Broader requirements and external-fact traceability; imported physical PLC coordinates remain non-canonical |
 | PLC I/O | Explicit catalog-feasibility recommendation against 120%-spare typed demand; approved CPU/module/channel review; editable engineering labels with immutable allocation keys; deterministic allocation, persistent occurrences, and safe same-type reconciliation | Manual FreeCAD acceptance evidence; catalog feasibility is not final hardware approval |
 | PLC-to-field graph | Allocated channel owns the typed signal and PLC endpoint; connected paths migrate on safe same-type allocation moves | Manual save/reopen/recompute evidence in a real FreeCAD desktop |
 | Wiring and routing | Typed paths, terminals, wires, geometry capture/editing, optional Cables routing, schedules | Cabinet-side power/circuit modeling and richer engineering attributes |
