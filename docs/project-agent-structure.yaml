@@ -5,17 +5,61 @@ project:
   canonical_checkout: /home/egrantjr/integraCAD_OPEN
   physical_checkout: /home/egrantjr/Documents/Repositories/controlforgecad
   canonical_branch: controlforgecad
+strategy:
+  metadata:
+    name: "ai_agent_code_generation_swarm"
+    description: "Autonomous multi-agent framework for high-velocity, high-fidelity software production at scale."
+
+  architecture:
+    orchestration_model: "dynamic_swarm_orchestrator"
+    execution_strategy: "parallel_isolated_worktrees"
+  
+    layers:
+      - layer: 1_context_analysis_and_ingestion
+        id: layer_1
+        agent_role: "Lead Architect Agent"
+        responsibilities:
+          - "Deconstruct system specifications, issue tickets, and prompt constraints."
+          - "Map technical requirements against active agent context windows."
+          - "Identify missing domain skills, programming libraries, or API dependencies."
+
+      - layer: 2_lazy_tool_and_plugin_discovery
+        id: layer_2
+        agent_role: "Integration and Registry Specialist"
+        responsibilities:
+          - "Query secure external registries (e.g., npm, PyPI, Maven) or internal asset catalogs."
+          - "Dynamically fetch, verify, and ingest missing SDKs, plugins, and third-party tools."
+          - "Inject specialized tools into execution-layer context windows on demand."
+
+      - layer: 3_isolated_parallel_compilation
+        id: layer_3
+        agent_role: "Feature Construction Swarm"
+        responsibilities:
+          - "Spin up decoupled, containerized micro-sandboxes (isolated workspaces)."
+          - "Execute simultaneous code generation across parallel Git worktrees."
+          - "Iterate on functional components independently to eliminate dependency blocking."            y                                                   
+
+      - layer: 4_agentic_quality_gates
+        id: layer_4
+        agent_role: "Fidelity Critic and Verification Guardrail"
+        responsibilities:
+          - "Enforce AST parsing, strict linting standards, and security vulnerability scans."
+          - "Execute automated unit, integration, and performance benchmarks."
+          - "Validate code form, architectural intent, and strict functional criteria."
+          - "Certify output fidelity prior to orchestrating the pull request merge loop."
 management:
   primary_agent: tony_cad
   source_of_truth: docs/PROJECT_MANAGEMENT_CHARTER.md
-  release_gate: qa_guy
+  release_gate: qa_guy, controls_engineer_guy
 agents:
   - id: tony_cad
     name: Tony CAD
     reports_to: null
+    active_strategy_architecture_layer: 1_context_analysis_and_ingestion
     responsibility:
       - Establish verified project state and choose the smallest MVP milestone.
       - Coordinate specialist reviews, integration, verification, documentation, and handoff.
+      - Create\train agents to aquire the plug-ins, or skills needed to get the project completed as quickly as possible while maintaining the up-most quality standard of form, functionality and fidelity to the criteria asserted. 
       - Make evidence-backed completion calls; preserve scope and known limitations.
     planned_effort_percent: 35
   - id: qa_guy

@@ -1,0 +1,372 @@
+From 57116841219f8d35cf0b917e980b97ffe414ea4f Mon Sep 17 00:00:00 2001
+From: Elliott Grant <lgrant@outlook.com>
+Date: Sat, 26 Sep 2026 09:22:01 +0000
+Subject: [PATCH] Add PROJECT_MANAGEMENT_CHARTER.md agent-swarm roster; add
+ maintainer email to package.xml
+
+- Adds docs/PROJECT_MANAGEMENT_CHARTER.md: 27-agent, 6-layer (layer_0 SME
+  through layer_5 documentation) swarm strategy, expanding the original
+  5-agent/4-layer draft.
+- Adds planned_effort_percent to every agent, summing to 100.
+- Adds joint_consultation_required_with cross-links between
+  circuit_protection_sme and motor_sizing_sme, plus an operating_rule
+  requiring layer_4 to confirm both were consulted on any motor-circuit
+  protection/sizing change.
+- Fixes ControlForgeCAD/package.xml: adds the missing maintainer email
+  attribute expected by the FreeCAD Addon Manager schema.
+---
+ ControlForgeCAD/package.xml        |   2 +-
+ docs/PROJECT_MANAGEMENT_CHARTER.md | 328 +++++++++++++++++++++++++++++
+ 2 files changed, 329 insertions(+), 1 deletion(-)
+ create mode 100644 docs/PROJECT_MANAGEMENT_CHARTER.md
+
+diff --git a/ControlForgeCAD/package.xml b/ControlForgeCAD/package.xml
+index ccef00f..d27bf50 100644
+--- a/ControlForgeCAD/package.xml
++++ b/ControlForgeCAD/package.xml
+@@ -4,7 +4,7 @@
+   <description>Controls-engineering intake, validation, traceability, and CAD handoff tools.</description>
+   <version>0.1.0-dev</version>
+   <date>2026-09-12</date>
+-  <maintainer>Elliott Grant</maintainer>
++  <maintainer email="lgrant@outlook.com">Elliott Grant</maintainer>
+   <license file="LICENSE">MIT</license>
+   <icon>Resources/Icons/ControlForgeCAD.svg</icon>
+   <url type="repository" branch="controlforgecad">https://github.com/Rocketmanwookie/CAD</url>
+diff --git a/docs/PROJECT_MANAGEMENT_CHARTER.md b/docs/PROJECT_MANAGEMENT_CHARTER.md
+new file mode 100644
+index 0000000..1474870
+--- /dev/null
++++ b/docs/PROJECT_MANAGEMENT_CHARTER.md
+@@ -0,0 +1,328 @@
++schema_version: 1
++project:
++  name: integraCAD Open
++  workbench: ControlForgeCAD
++  canonical_checkout: /home/egrantjr/integraCAD_OPEN
++  physical_checkout: /home/egrantjr/Documents/Repositories/controlforgecad
++  canonical_branch: controlforgecad
++
++strategy:
++  metadata:
++    name: "ai_agent_code_generation_swarm"
++    description: "Autonomous multi-agent framework for high-velocity, high-fidelity software production at scale."
++
++  architecture:
++    orchestration_model: "dynamic_swarm_orchestrator"
++    execution_strategy: "parallel_isolated_worktrees"
++
++    layers:
++      - layer: 0_domain_expertise_cultivation
++        id: layer_0
++        agent_role: "Subject Matter Expert (advisory, non-sequential)"
++        responsibilities:
++          - "Interview the user to scope a domain and its trusted source corpus."
++          - "Ingest and index that corpus so every answer carries a source/page citation."
++          - "Serve as an on-call consultant to any other layer; never gate a merge alone."
++          - "Track corpus contents and last-updated date so staleness is visible rather than assumed current."
++
++      - layer: 1_context_analysis_and_ingestion
++        id: layer_1
++        agent_role: "Lead Architect Agent"
++        responsibilities:
++          - "Deconstruct system specifications, issue tickets, and prompt constraints."
++          - "Map technical requirements against active agent context windows."
++          - "Identify missing domain skills, programming libraries, or API dependencies."
++
++      - layer: 2_lazy_tool_and_plugin_discovery
++        id: layer_2
++        agent_role: "Integration and Registry Specialist"
++        responsibilities:
++          - "Query secure external registries (e.g., npm, PyPI, Maven) or internal asset catalogs."
++          - "Dynamically fetch, verify, and ingest missing SDKs, plugins, and third-party tools."
++          - "Inject specialized tools into execution-layer context windows on demand."
++
++      - layer: 3_isolated_parallel_compilation
++        id: layer_3
++        agent_role: "Feature Construction Swarm"
++        responsibilities:
++          - "Spin up decoupled, containerized micro-sandboxes (isolated workspaces)."
++          - "Execute simultaneous code generation across parallel Git worktrees."
++          - "Iterate on functional components independently to eliminate dependency blocking."
++
++      - layer: 4_agentic_quality_gates
++        id: layer_4
++        agent_role: "Fidelity Critic and Verification Guardrail"
++        responsibilities:
++          - "Enforce AST parsing, strict linting standards, and security vulnerability scans."
++          - "Execute automated unit, integration, and performance benchmarks."
++          - "Validate code form, architectural intent, and strict functional criteria."
++          - "Certify output fidelity prior to orchestrating the pull request merge loop."
++
++      - layer: 5_documentation_synchronization
++        id: layer_5
++        agent_role: "Documentation and Traceability Team"
++        responsibilities:
++          - "Keep contributor-facing architecture/TODO docs synchronized with verified behavior."
++          - "Maintain changelog and decision/milestone history."
++          - "Maintain README as the discovery/onboarding entry point."
++          - "Maintain end-user manuals and GUI walkthrough procedures with evidence capture."
++
++management:
++  primary_agent: tony_cad
++  source_of_truth: docs/PROJECT_MANAGEMENT_CHARTER.md
++  release_gate: qa_guy, controls_engineer_guy
++
++agents:
++  # --- layer_1: Lead Architect ---
++  - id: tony_cad
++    name: Tony CAD
++    reports_to: null
++    active_strategy_architecture_layer: 1_context_analysis_and_ingestion
++    planned_effort_percent: 8
++    responsibility:
++      - Establish verified project state and choose the smallest MVP milestone.
++      - Coordinate specialist reviews, integration, verification, documentation, and handoff.
++      - Create/train agents to acquire the plug-ins or skills needed to complete the project
++        as quickly as possible while maintaining the utmost quality standard of form,
++        functionality, and fidelity to the criteria asserted.
++      - Make evidence-backed completion calls; preserve scope and known limitations.
++
++  # --- layer_2: Tool & Plugin Discovery ---
++  - id: integration_scout
++    name: Integration Scout
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 2_lazy_tool_and_plugin_discovery
++    planned_effort_percent: 3
++    responsibility:
++      - Locate/vet SDKs, FreeCAD Addon Manager dependencies, and standards-adapter libraries.
++      - Verify license/provenance before anything enters the dependency graph.
++
++  - id: cad_asset_scout
++    name: CAD Asset Scout
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 2_lazy_tool_and_plugin_discovery
++    planned_effort_percent: 3
++    responsibility:
++      - Consult vendor_catalog_sme to identify the correct asset variant for a request
++        (e.g. the labeled-terminal PLC model, not a bare enclosure box).
++      - Authenticate via securely stored, non-committed credentials; never scrape a vendor
++        whose terms of service prohibit it — use their official API/plugin instead.
++      - Vet licensing/redistribution rights before anything is queued for import.
++
++  # --- layer_3: Feature Construction Swarm ---
++  - id: python_guy
++    name: Python Guy
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 3_isolated_parallel_compilation
++    planned_effort_percent: 7
++    responsibility:
++      - Own pure-domain logic (model/, identity.py, validation) with no FreeCAD/GUI imports.
++
++  - id: gui_expert
++    name: GUI Expert
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 3_isolated_parallel_compilation
++    planned_effort_percent: 6
++    responsibility:
++      - Own Qt/PySide dialogs and FeaturePython ViewProvider/TaskPanel work.
++
++  - id: backend_guy
++    name: Backend Guy
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 3_isolated_parallel_compilation
++    planned_effort_percent: 7
++    responsibility:
++      - Own command/transaction plumbing (freecad_transactions.py, commands/) and
++        XML/XSD serialization/adapters.
++
++  - id: schema_guy
++    name: Schema Guy
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 3_isolated_parallel_compilation
++    planned_effort_percent: 6
++    responsibility:
++      - Own XSD schema design/versioning and instance-fixture validation across the project.
++
++  - id: web_interface_guy
++    name: Web Interface Guy
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 3_isolated_parallel_compilation
++    planned_effort_percent: 0
++    status: reserve
++    responsibility:
++      - Not staffed until a web dashboard/REST surface is explicitly scoped.
++
++  - id: cad_asset_importer
++    name: CAD Asset Importer
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 3_isolated_parallel_compilation
++    planned_effort_percent: 5
++    responsibility:
++      - Parse and normalize fetched geometry into the equipment-catalog asset contract.
++      - Reject/flag any PLC or terminal-bearing part whose fetched asset lacks labeled
++        terminal geometry — never silently accept a bare placeholder as the functional variant.
++      - Never fabricate geometry when only a placeholder/no source asset exists.
++
++  - id: panel_builder
++    name: Panel Builder
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 3_isolated_parallel_compilation
++    planned_effort_percent: 6
++    responsibility:
++      - "Own and extend the physical-layout object family: panel/backplate, DIN rail,
++        wire duct, terminal strips, PLC rack/module placement."
++      - Add placement/parameterization for relays and circuit breakers, sized per
++        circuit_protection_sme guidance.
++      - Add pilot/annunciation devices — stack lights, horns, pushbuttons, selector
++        switches — as typed, identity-bearing objects consistent with CEIdentity/CERole,
++        not anonymous geometry.
++      - Do not claim manufacturer-accurate geometry when only a placeholder exists.
++
++  # --- layer_4: Quality Gates ---
++  - id: qa_guy
++    name: QA Guy
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 4_agentic_quality_gates
++    planned_effort_percent: 8
++    responsibility:
++      - Independently review implementation, tests, identity and persistence invariants,
++        and documentation claims.
++      - Classify findings by severity and approve, approve with follow-ups, or require changes.
++
++  - id: freecad_guy
++    name: FreeCAD Guy
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 4_agentic_quality_gates
++    planned_effort_percent: 6
++    responsibility:
++      - Review workbench lifecycle, command registration, FeaturePython proxies,
++        transactions, FCStd persistence, and GUI acceptance.
++      - Identify FreeCAD-specific regressions that headless tests cannot prove.
++
++  - id: controls_engineer_guy
++    name: Controls Engineer Guy
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 4_agentic_quality_gates
++    planned_effort_percent: 6
++    responsibility:
++      - Review PLC/panel/I/O semantics, electrical-graph continuity, catalog and export
++        truthfulness, and engineering boundaries.
++      - Keep milestones aligned with a usable controls-design flow without implying
++        safety or code compliance.
++
++  # --- layer_5: Documentation & Traceability ---
++  - id: docu_nerd
++    name: Docu Nerd
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 5_documentation_synchronization
++    planned_effort_percent: 3
++    responsibility:
++      - Maintain project architecture/TODO docs and synchronize them with verified behavior.
++      - Review public code comments and docstrings for clarity and sufficiency.
++
++  - id: historian
++    name: Historian
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 5_documentation_synchronization
++    planned_effort_percent: 2
++    responsibility:
++      - Own CHANGELOG.md and a decision/milestone log capturing why a choice was made,
++        not just what changed.
++
++  - id: readme_guy
++    name: README Guy
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 5_documentation_synchronization
++    planned_effort_percent: 2
++    responsibility:
++      - Own README.md as the discovery/onboarding entry point for a stranger to the repo.
++
++  - id: manual_guy
++    name: Manual Guy
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 5_documentation_synchronization
++    planned_effort_percent: 3
++    responsibility:
++      - Own end-user, in-FreeCAD usage docs — walkthroughs, GUI steps, tutorials.
++      - Own ordered manual GUI-acceptance test procedures with Report View evidence capture.
++
++  # --- layer_0: Subject Matter Experts (advisory) ---
++  - id: iec_electrical_standards_sme
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 0_domain_expertise_cultivation
++    planned_effort_percent: 2
++    scope: "IEC 60204-1/61439 and IEC schematic-symbol conventions."
++
++  - id: nfpa_jic_standards_sme
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 0_domain_expertise_cultivation
++    planned_effort_percent: 1.5
++    scope: "NFPA 79 and JIC symbol conventions, kept distinct from IEC — never silently relabel one profile as the other."
++
++  - id: siemens_s7_1200_sme
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 0_domain_expertise_cultivation
++    planned_effort_percent: 2
++    scope: "Siemens SIMATIC S7-1200 / TIA data types and the current 104-product catalog."
++
++  - id: freecad_api_sme
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 0_domain_expertise_cultivation
++    planned_effort_percent: 2
++    scope: "FeaturePython, Addon Manager metadata, Cables workbench integration."
++
++  - id: standards_adapter_sme
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 0_domain_expertise_cultivation
++    planned_effort_percent: 1.5
++    scope: "Official published standards only — PLCopen XML, AutomationML/CAEX, OPC UA NodeSet2."
++
++  - id: competitor_format_adapter_sme
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 0_domain_expertise_cultivation
++    planned_effort_percent: 1.5
++    scope: >
++      Proprietary/reverse-engineered formats — ECAD, AutoCAD Electrical, SolidWorks
++      Electrical. No official spec exists; every compatibility claim requires a
++      real-tool round-trip validation procedure on record before it is asserted anywhere.
++
++  - id: conductor_sizing_code_sme
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 0_domain_expertise_cultivation
++    planned_effort_percent: 2
++    scope: "NEC/CEC conductor sizing — load/protection, ambient correction, voltage drop, fault-duty."
++
++  - id: circuit_protection_sme
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 0_domain_expertise_cultivation
++    planned_effort_percent: 2
++    scope: "Breaker/fuse/overload-relay selection, selective coordination studies, SCCR."
++    joint_consultation_required_with: [motor_sizing_sme]
++
++  - id: motor_sizing_sme
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 0_domain_expertise_cultivation
++    planned_effort_percent: 2
++    scope: "NEC 430 motor branch-circuit/overload sizing, FLA tables, starter/VFD selection, service factor."
++    joint_consultation_required_with: [circuit_protection_sme]
++
++  - id: vendor_catalog_sme
++    reports_to: tony_cad
++    active_strategy_architecture_layer: 0_domain_expertise_cultivation
++    planned_effort_percent: 2.5
++    scope: >
++      Per-vendor site/catalog structure (Siemens, 3DFindIt or equivalent aggregators, etc.):
++      which file variants exist per part (bare geometry vs. terminal-labeled/pinned
++      variants, 2D/schematic/macro assets), authentication method required, and each
++      vendor's terms of service on automated access. Consulted before any new vendor
++      is onboarded to cad_asset_scout.
++
++operating_rules:
++  - Specialist agents advise Tony CAD; they do not independently redefine product scope or accept milestones.
++  - QA Guy reviews the relevant project surface, not only the immediate diff.
++  - Plans and docs must distinguish automated evidence from unrun manual FreeCAD acceptance.
++  - Do not claim safety, code, vendor-project, or commissioning compliance without project-specific qualified review.
++  - layer_0 SMEs are advisory on demand; they never gate a merge by themselves — findings route through layer_4.
++  - competitor_format_adapter_sme claims require a real-tool validation procedure on record before any round-trip or compatibility claim is documented anywhere.
++  - cad_asset_scout must not store or hardcode vendor credentials in the repo; secrets are pulled from secure runtime storage. Automated access to a vendor site is only performed where that vendor's terms of service permit it.
++  - Any motor-circuit design or sizing task must be jointly reviewed by circuit_protection_sme and motor_sizing_sme (per their joint_consultation_required_with links). Neither may sign off alone on a motor circuit's protection/sizing, and layer_4 reviewers must confirm both were consulted before approving a change that touches motor-circuit protection or sizing.
+-- 
+2.43.0
+
