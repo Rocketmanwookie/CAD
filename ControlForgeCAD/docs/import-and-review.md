@@ -31,14 +31,14 @@ dialog; unsupported input is not silently converted.
 3. Check only the items to approve, then apply. Conflicted I/O rows are shown
    but cannot be approved.
 4. Run **Validate Controls Project**, then run **Allocate PLC I/O** before
-   or creating electrical paths.
+   creating electrical paths.
 
 Application occurs inside one FreeCAD document transaction. The I/O review has
 a source-and-current-state fingerprint, so it rejects a stale decision before
 writing, and it fails closed if an existing persisted I/O row is malformed or
 tagless rather than discarding it. Imported `plcAddress` and `terminal`
 attributes are reference-only and are never applied: catalog allocation creates
-canonical rack/slot/channel, terminal, and part data. The command does not yet create imported PLC
-occurrences, field devices, terminals, wires, connection paths, vendor PLC
-projects, or electrical-compliance conclusions. Those need separate staged
-schemas and conflict rules before they can be offered for approval.
+canonical rack/slot/channel, terminal, and part data. The command does not yet
+create imported PLC occurrences, field devices, terminals, wires, connection
+paths, vendor PLC projects, or electrical-compliance conclusions. Those need
+separate staged schemas and conflict rules before they can be offered for approval.

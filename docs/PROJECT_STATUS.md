@@ -30,6 +30,15 @@ save/reopen → recompute → edit → export workflow. Desktop evidence must in
 the FreeCAD version, commit, screenshots, Report View output, saved FCStd, and
 exported CSVs; it is not yet recorded.
 
+## Recorded narrow desktop evidence
+
+At `701f8ab`, the user restarted the linked FreeCAD workbench and confirmed
+**New Controls Project** opens and its CPU recommendation updates after changes
+to the relevant PLC/I/O inputs. This confirms the repaired intake callback
+initialization in a fresh desktop process. It does not cover allocation,
+electrical-path authoring, persistence, recompute, edit protection, validation,
+or schedule export; those remain part of the open acceptance gate above.
+
 ## Evidence and governance
 
 - [Project-management charter](PROJECT_MANAGEMENT_CHARTER.md) — startup,
