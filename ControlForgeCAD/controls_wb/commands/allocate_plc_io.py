@@ -9,8 +9,9 @@ except Exception:  # pragma: no cover
     Gui = None
 
 from controls_wb.freecad_transactions import document_transaction
-from controls_wb.io_list import persist_io_allocation_to_project
+from controls_wb.io_list import explicit_io_signals_from_project, io_allocation_for_project, persist_io_allocation_to_project
 from controls_wb.model.layout import materialize_plc_allocation
+from controls_wb.allocation_reconciliation import preflight_reconciliation
 
 
 def project_from_objects(objects):
@@ -26,6 +27,17 @@ def persist_project_allocation(document):
 
     project = project_from_objects(getattr(document, "Objects", []) or [])
     with document_transaction(document, "Allocate PLC I/O"):
+        proposed = io_allocation_for_project(project)
+        if proposed is None:
+            raise ValueError("Select a PLC make, line, and CPU before allocating I/O.")
+        errors = [finding for finding in proposed.findings if finding.severity == "ERROR"]
+        if errors:
+            raise ValueError("I/O allocation cannot be persisted: " + "; ".join(finding.message for finding in errors))
+        dependent_tags = {
+            str(getattr(getattr(path, "SignalObject", None), "SignalTag", "") or "")
+            for path in (getattr(project, "ElectricalPaths", []) or [])
+        }
+        preflight_reconciliation(explicit_io_signals_from_project(project), proposed.signals, dependent_tags)
         # Allocation persistence and occurrence/link materialization are one
         # user-visible document operation: an aborted command cannot leave a
         # newly persisted mapping without its matching rack/channel objects.

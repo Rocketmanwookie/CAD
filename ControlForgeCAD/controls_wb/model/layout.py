@@ -440,7 +440,22 @@ def materialize_plc_allocation(document, project: object | None = None) -> dict[
             _add_property(typed_signal, "App::PropertyLink", "AllocatedChannelObject", "Electrical Signal", "Allocated PLC channel carrying this signal")
             previous_channel = getattr(typed_signal, "AllocatedChannelObject", None)
             if previous_channel is not None and previous_channel is not channel_obj:
-                raise ValueError(f"Typed signal {signal.tag} is already allocated to another PLC channel.")
+                if getattr(previous_channel, "SignalType", "") != signal.signal_type:
+                    raise ValueError(f"Typed signal {signal.tag} cannot migrate across PLC signal types.")
+                # A coordinate-derived channel is a new physical occurrence,
+                # but the logical typed signal and its downstream design data
+                # survive a same-type move.  Rewrite only the PLC endpoint;
+                # path/wire/terminal/signal identities remain immutable.
+                for path in list(getattr(previous_channel, "ElectricalPaths", []) or []):
+                    terminals = list(getattr(path, "TerminalObjects", []) or [])
+                    if not terminals:
+                        raise ValueError(f"PLC channel move cannot migrate path {getattr(path, 'CEIdentity', '')} without terminals.")
+                    first_terminal = terminals[0]
+                    if getattr(first_terminal, "OwnerIdentity", "") != getattr(previous_channel, "CEIdentity", ""):
+                        raise ValueError(f"PLC channel move found path {getattr(path, 'CEIdentity', '')} owned by another channel.")
+                    first_terminal.OwnerIdentity = channel_obj.CEIdentity
+                    first_terminal.Designation = signal.address
+                previous_channel.ElectricalPaths = []
             typed_signal.AllocatedChannelObject = channel_obj
             _, paths = _signal_and_paths_for_allocation(project, signal.tag)
             channel_obj.AllocatedSignalObject = typed_signal
@@ -451,7 +466,45 @@ def materialize_plc_allocation(document, project: object | None = None) -> dict[
         module_obj.Channels = module_channels
     rack.Modules = modules
     register_electrical_device(project, rack)
+    _prune_unlinked_allocation_occurrences(document, project, {obj.CEIdentity for obj in (rack, *modules, *channels)})
     return {"rack": rack, "modules": tuple(modules), "channels": tuple(channels)}
+
+
+def _prune_unlinked_allocation_occurrences(document, project, desired_identities: set[str]) -> None:
+    """Remove only stale allocation occurrences without downstream path data."""
+
+    stale = [
+        obj for obj in list(getattr(document, "Objects", []) or [])
+        if getattr(obj, "CERole", "") in {CERoles.PLC_RACK, CERoles.PLC_MODULE, CERoles.PLC_CHANNEL}
+        and getattr(obj, "CEIdentity", "") not in desired_identities
+    ]
+    for obj in stale:
+        if getattr(obj, "CERole", "") == CERoles.PLC_CHANNEL and getattr(obj, "ElectricalPaths", []):
+            raise ValueError(f"Cannot remove stale PLC channel {getattr(obj, 'CEIdentity', '')} while it owns electrical paths.")
+    if not stale:
+        return
+    stale_set = set(stale)
+    retired_signals = []
+    for obj in stale:
+        if getattr(obj, "CERole", "") != CERoles.PLC_CHANNEL:
+            continue
+        signal = getattr(obj, "AllocatedSignalObject", None)
+        if signal is not None and getattr(signal, "AllocatedChannelObject", None) is obj:
+            signal.AllocatedChannelObject = None
+            if not getattr(signal, "ConnectionPaths", []) and signal not in retired_signals:
+                retired_signals.append(signal)
+    stale_set.update(retired_signals)
+    for owner, property_name in ((project, "ElectricalDevices"),):
+        if hasattr(owner, property_name):
+            setattr(owner, property_name, [item for item in getattr(owner, property_name, []) or [] if item not in stale_set])
+    if hasattr(project, "ElectricalSignals"):
+        project.ElectricalSignals = [item for item in getattr(project, "ElectricalSignals", []) or [] if item not in stale_set]
+    remove = getattr(document, "removeObject", None)
+    for obj in stale:
+        if callable(remove):
+            remove(getattr(obj, "Name", ""))
+        elif hasattr(document, "Objects"):
+            document.Objects.remove(obj)
 
 
 def allocation_electrical_graph_findings(project, objects) -> tuple[tuple[str, str, str], ...]:

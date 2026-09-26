@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Allocation reconciliation now preflights unsafe removals and type changes,
+  migrates same-type channel moves without changing downstream identities, and
+  prunes only stale allocation occurrences with no electrical paths.
+
 - Editing a path created from an allocated PLC channel now preserves the
   channel-derived PLC-terminal designation. Validation also detects manually
   corrupted path terminal owner or address links.

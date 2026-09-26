@@ -9,6 +9,7 @@ from controls_wb.model.layout import (
     layout_object_metadata,
     allocation_electrical_graph_findings,
     materialize_plc_allocation,
+    _prune_unlinked_allocation_occurrences,
     starter_layout_specs_for_project,
 )
 from controls_wb.model.project import create_or_update_project
@@ -265,3 +266,21 @@ def test_allocation_graph_validation_reports_missing_reciprocal_and_unregistered
     codes = {code for _, code, _ in findings}
     assert "allocated_channel_unregistered_signal" in codes
     assert "allocated_channel_reverse_link_missing" in codes
+
+
+def test_pruning_unlinked_stale_channel_clears_and_retires_its_signal():
+    document = FakeDocument()
+    project = create_or_update_project(document)
+    project.ProjectId = "CE-PRUNE-001"
+    project.PlcMake = "Siemens"
+    project.PlcLine = "S7-1200"
+    project.PlcCPU = "CPU 1212C DC/DC/DC"
+    project.DICount = "1"
+    channel = materialize_plc_allocation(document, project)["channels"][0]
+    signal = channel.AllocatedSignalObject
+
+    _prune_unlinked_allocation_occurrences(document, project, set())
+
+    assert channel not in document.Objects
+    assert signal not in project.ElectricalSignals
+    assert signal.AllocatedChannelObject is None

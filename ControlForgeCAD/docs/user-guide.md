@@ -39,6 +39,9 @@ manufacturer-accurate panel geometry.
 Each allocated channel has a deterministic identity, an allocated signal tag
 and address, and a typed electrical-signal link. Re-running a valid unchanged
 allocation is intended to reuse those occurrences rather than duplicate them.
+Same-type allocation moves preserve linked path identities and update the PLC
+endpoint to the new channel/address; removing a path-dependent I/O point or
+changing its signal type is rejected for explicit engineering resolution.
 
 ## 3. Create a typed electrical path
 

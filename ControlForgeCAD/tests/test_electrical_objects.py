@@ -135,6 +135,33 @@ def test_allocation_first_path_reuses_channel_signal_and_records_path_link():
     assert len(project.ElectricalSignals) == 1
 
 
+def test_same_type_allocation_move_preserves_path_and_rewrites_plc_endpoint():
+    document = FakeDocument()
+    project = create_or_update_project(document)
+    project.ProjectId = "CE-MOVE-001"
+    project.PlcMake = "Siemens"
+    project.PlcLine = "S7-1200"
+    project.PlcCPU = "CPU 1212C DC/DC/DC"
+    project.DICount = "9"
+    first = materialize_plc_allocation(document, project)
+    old_channel = next(channel for channel in first["channels"] if channel.AllocatedSignalTag == "DI-0009")
+    path = _path()
+    path = replace(path, signal_tag="DI-0009")
+    result = materialize_electrical_path(document, path)
+    result.terminal_objects[0].OwnerIdentity = old_channel.CEIdentity
+    result.terminal_objects[0].Designation = old_channel.SignalAddress
+    old_channel.ElectricalPaths = [result.path_object]
+
+    project.PlcCPU = "CPU 1214C DC/DC/DC"
+    second = materialize_plc_allocation(document, project)
+    new_channel = next(channel for channel in second["channels"] if channel.AllocatedSignalTag == "DI-0009")
+
+    assert new_channel is not old_channel
+    assert result.signal_object.AllocatedChannelObject is new_channel
+    assert result.terminal_objects[0].OwnerIdentity == new_channel.CEIdentity
+    assert result.terminal_objects[0].Designation == new_channel.SignalAddress
+
+
 def test_materialized_device_receives_identity_role_and_project_registration_immediately():
     document = FakeDocument()
     project = create_or_update_project(document)

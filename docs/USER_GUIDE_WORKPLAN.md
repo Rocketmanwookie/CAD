@@ -46,3 +46,7 @@ Update the guide and this work plan when a command's user-visible behavior,
 selection contract, persisted property, export schema, validation finding, or
 manual acceptance status changes. Link rather than duplicate detailed design
 contracts from the architecture, roadmap, and PLC-allocation documentation.
+
+Allocation changes are a guide-maintenance trigger: document same-type move
+migration, and state that dependent removals and type changes require explicit
+engineering resolution.
