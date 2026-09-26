@@ -15,8 +15,8 @@ engineering-compliance tool.
 
 | Capability | Verified implementation | Remaining boundary |
 |---|---|---|
-| Project intake | Editable `CE_Project`, intake dialog, source/missing-data tracking, CEProject XML round trip | Broader requirements and external-fact traceability |
-| PLC I/O | Catalog selection, deterministic allocation, capacity/collision checks, persistent occurrences, and safe same-type reconciliation | Manual FreeCAD acceptance evidence for the completed workflow |
+| Project intake | Editable `CE_Project`, intake dialog, source/missing-data tracking, CEProject XML round trip, and staged Import & Review | Broader requirements and external-fact traceability |
+| PLC I/O | Explicit catalog-feasibility recommendation against 120%-spare typed demand; approved CPU/module/channel review; editable engineering labels with immutable allocation keys; deterministic allocation, persistent occurrences, and safe same-type reconciliation | Manual FreeCAD acceptance evidence; catalog feasibility is not final hardware approval |
 | PLC-to-field graph | Allocated channel owns the typed signal and PLC endpoint; connected paths migrate on safe same-type allocation moves | Manual save/reopen/recompute evidence in a real FreeCAD desktop |
 | Wiring and routing | Typed paths, terminals, wires, geometry capture/editing, optional Cables routing, schedules | Cabinet-side power/circuit modeling and richer engineering attributes |
 | FreeCAD lifecycle | Identity-aware FeaturePython objects, transaction boundaries, headless regression coverage | Recorded manual allocate/save/reopen/recompute/edit/save/reopen acceptance in FreeCAD |
@@ -25,9 +25,10 @@ engineering-compliance tool.
 ## Next milestone
 
 **Manual FreeCAD allocation-to-path acceptance evidence**: run and record the
-documented allocate → path → save/reopen → recompute → edit → export workflow.
-Desktop evidence must include the FreeCAD version, commit, screenshots, Report
-View output, saved FCStd, and exported CSVs; it is not yet recorded.
+documented project-intake recommendation/review → allocate → path →
+save/reopen → recompute → edit → export workflow. Desktop evidence must include
+the FreeCAD version, commit, screenshots, Report View output, saved FCStd, and
+exported CSVs; it is not yet recorded.
 
 ## Evidence and governance
 

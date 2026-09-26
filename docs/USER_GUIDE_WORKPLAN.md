@@ -21,7 +21,9 @@ result until FreeCAD Guy records it and QA Guy accepts the evidence.
 
 The first guide covers the verified controls-design vertical slice:
 
-1. create a project and choose a catalog PLC;
+1. create a project, explicitly accept a catalog-feasibility recommendation or
+   choose a supported catalog PLC, and review immutable CPU/module/channel keys
+   while applying readable engineering labels;
 2. allocate I/O and inspect materialized rack/module/channel occurrences;
 3. create a typed path from an allocated channel through a terminal strip to a
    field device;
@@ -50,3 +52,8 @@ contracts from the architecture, roadmap, and PLC-allocation documentation.
 Allocation changes are a guide-maintenance trigger: document same-type move
 migration, and state that dependent removals and type changes require explicit
 engineering resolution.
+
+Catalog-recommendation changes are also a guide-maintenance trigger: explain
+the 120-percent spare capacity calculation as a catalog feasibility aid, require
+explicit approval, and never present it as final hardware, electrical, safety,
+or procurement approval.

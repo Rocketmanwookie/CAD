@@ -24,8 +24,10 @@ acceptance record, not a blocker for dependency-free development work.
 
 ## Allocation-to-path workflow
 
-1. Create a new document, run **New Controls Project**, choose a supported
-   catalog PLC, and enter at least one compatible I/O point.
+1. Create a new document, run **New Controls Project**, and enter at least one
+   compatible I/O point. If selecting the catalog-feasible recommendation,
+   review/approve its proposed canonical allocation rows before submitting the
+   intake; a manually selected CPU uses the normal capacity/collision checks.
 2. Run **Allocate PLC I/O**. Confirm the operation reports no capacity or
    collision error, creates materialized rack/module/channel objects, and adds
    no zero-size-box error to Report View.

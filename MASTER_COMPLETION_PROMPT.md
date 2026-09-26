@@ -91,10 +91,12 @@ allocation, schematic generation, conductor sizing, and physical routing.
 
 ## Active milestone — manual FreeCAD allocation-to-path acceptance
 
-Run the documented allocation → allocated-channel path → save/reopen →
-recompute → edit → schedule-export desktop workflow. Record the FreeCAD
-version, commit, screenshots, Report View output, saved FCStd, and exported
-CSVs. Do not describe this gate as passed until that evidence exists. When no
+Run the documented Project Intake catalog-recommendation/review → allocation →
+allocated-channel path → save/reopen → recompute → edit → schedule-export
+desktop workflow. Record the FreeCAD version, commit, screenshots, Report View
+output, saved FCStd, and exported CSVs. Do not describe this gate as passed
+until that evidence exists. The recommendation is catalog feasibility only, and
+the review must show canonical allocation keys are not editable. When no
 FreeCAD executable is available, retain the checklist and report the exact
 external requirement while continuing dependency-free work.
 

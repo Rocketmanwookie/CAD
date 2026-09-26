@@ -46,10 +46,10 @@ flowchart TD
 | Branch | Example failure mode | Current preventive/detective control | Evidence still needed or planned |
 |---|---|---|---|
 | Intake and traceability | Required project fact is transformed incorrectly or loses provenance | Pure-Python intake/XML tests; missing-data matrix; source/status fields | Broader contradictory-fact and external-source coverage |
-| PLC allocation | Capacity, collision, duplicate tag, or same-tag type change is accepted | Catalog allocation findings and reconciliation preflight tests | More catalog families and real project data |
+| PLC allocation | Capacity, collision, duplicate tag, same-tag type change, or unapproved catalog recommendation is accepted | Catalog allocation/recommendation findings, explicit UI approval, immutable allocation-review coordinates, and reconciliation preflight tests | More catalog families, real project data, and recorded desktop recommendation/review evidence |
 | Allocation reconciliation | Moved/removed channel silently deletes or readdresses connected data | Preflight blocks dependent removal; same-type migrations preserve identities; stale cleanup checks references | Manual FreeCAD allocation-change/save-reopen evidence |
 | Electrical graph | Signal, channel, PLC terminal owner, designation, or path links diverge | Reciprocal-link and terminal/address validation; regression tests | More terminal/cabinet-power topology variants |
-| Document lifecycle | Partial command state, recompute, undo, or FCStd reopen breaks graph | Transaction wrappers, stub tests, import-safe proxies | Recorded desktop allocate → path → save/reopen → recompute → edit → export run |
+| Document lifecycle | Partial command state, recompute, undo, or FCStd reopen breaks graph | Transaction wrappers, stub tests, import-safe proxies; regression coverage for native integer slot assignment and zero-dimension allocation occurrence rendering | Recorded desktop allocate → path → save/reopen → recompute → edit → export run |
 | Schedule/export | Export resolves an orphan, wrong-project, wrong-signal, or wrong-address channel | Fail-closed schedule checks and multi-project regression tests | CSV consumer interoperability evidence and further export schemas |
 | User guidance | Documentation describes a feature or acceptance result that is not delivered | Docu Nerd review; user-guide work-plan; QA release gate | Usability feedback from real controls engineers |
 | Engineering boundary | Workbench implies compliance, final design, vendor project generation, or commissioning certainty | Explicit scope/limitation wording in docs and review gates | Qualified engineering review when future scope requires it |
@@ -77,3 +77,14 @@ For a changed workflow, QA Guy should:
 - Add a QA evidence log only after there are actual runs/incidents to record.
 - Add formal CI and documentation-build checks when repository automation is
   available.
+
+## Observed defects incorporated into automated regression coverage
+
+The following user-reported FreeCAD desktop findings were diagnosed and fixed,
+but do **not** make the desktop workflow accepted:
+
+| Finding | Corrective control | Remaining evidence |
+|---|---|---|
+| Allocation materialization assigned a persisted string slot to FreeCAD's native integer property, stopping channel creation | The materializer converts slot values before assigning the native property; a strict FreeCAD-stub regression test covers string input | Repeat allocation in a real FreeCAD desktop and retain Report View output |
+| Semantic PLC occurrence objects with zero dimensions attempted `Part.makeBox`, producing a box-size error during recompute | Rack/module/channel occurrences skip solid geometry generation; regression coverage checks the role-specific behavior | Repeat allocation/recompute in a real FreeCAD desktop and retain Report View output |
+| Add Electrical Path permitted an editable signal/address surface inconsistent with its selected allocated channel | The dialog derives and locks allocation-backed signal/address values, while service validation still rejects mismatches | Perform and record allocated-channel selection and path save/reopen behavior |

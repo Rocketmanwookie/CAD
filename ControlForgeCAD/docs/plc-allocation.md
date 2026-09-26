@@ -79,6 +79,7 @@ relationships.
 Safe allocation reconciliation is implemented: supported same-type moves
 migrate their linked signal, terminal, and paths atomically; incompatible
 changes or removals with dependent design data stop with actionable findings.
+Stale allocation occurrences with no downstream path data are pruned safely.
 The remaining acceptance boundary is a **manual FreeCAD
 allocate/save/reopen/recompute/edit/save/reopen** run. Automated tests do not
 substitute for that desktop evidence.

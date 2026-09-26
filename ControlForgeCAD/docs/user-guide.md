@@ -19,15 +19,23 @@ project-specific.
 ## 1. Create the project and select I/O
 
 1. Run **New Controls Project**.
-2. In the Project Intake dialog, select a PLC make, line, and CPU. For a quick
-   path test, choose a Siemens S7-1200 CPU with at least one digital input.
-3. Set `DI Count` to at least `1`, complete any required starter fields, and
-   submit the form. A `CE_Project` appears in the model tree.
-4. Run **Create Control Panel** to create the starter terminal-strip occurrence
+2. In the Project Intake dialog, select a PLC make and line, then enter the
+   DI/DO/AI/AO counts. For a quick path test, use at least one DI.
+3. Select the displayed **catalog-feasible CPU** recommendation only if it is
+   appropriate for the project. It is a catalog-capacity aid using 120-percent
+   spare demand, not an engineering or purchasing approval.
+4. Review the proposed CPU/module/channel rows. Rack, slot, channel, terminal,
+   and catalog part fields are canonical and cannot be edited in this review;
+   provide readable engineering labels where useful, then approve the rows.
+5. Complete any remaining starter fields and submit the form. A `CE_Project`
+   appears in the model tree.
+6. Run **Create Control Panel** to create the starter terminal-strip occurrence
    used by this workflow.
 
 The created panel objects are metadata-rich placeholders, not final
-manufacturer-accurate panel geometry.
+manufacturer-accurate panel geometry. You can instead choose a CPU manually,
+but its allocation must pass actual-demand catalog capacity and collision checks;
+manual selection does not itself apply the 120-percent-spare recommendation.
 
 ## 2. Allocate PLC I/O
 
