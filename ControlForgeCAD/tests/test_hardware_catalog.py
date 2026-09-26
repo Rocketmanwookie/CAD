@@ -9,6 +9,7 @@ from controls_wb.hardware_catalog import (
     line_catalog,
     load_hardware_catalog,
     part_by_name,
+    recommend_plc_hardware,
 )
 
 
@@ -70,3 +71,27 @@ def test_expansion_limit_counts_all_io_types_and_unknown_limits():
     assert "exceed" not in io_expansion_suggestion(catalog, "Siemens", "S7-1200", "CPU 1212C DC/DC/DC", 20, 0, 0, 0)
     assert "exceed" not in io_expansion_suggestion(catalog, "Siemens", "S7-1200", "CPU 1214C DC/DC/DC", 100, 0, 0, 0)
     assert "exceed CPU limit 8" in io_expansion_suggestion(catalog, "Siemens", "S7-1200", "CPU 1214C DC/DC/DC", 140, 0, 0, 0)
+
+
+def test_catalog_recommendation_ranks_cpu_that_meets_spare_and_module_limit():
+    recommendations = recommend_plc_hardware(
+        load_hardware_catalog(), "Siemens", "S7-1200", 20, 12, 4, 2
+    )
+
+    assert [item.cpu.name for item in recommendations] == ["CPU 1214C DC/DC/DC"]
+    recommendation = recommendations[0]
+    assert dict(recommendation.target_counts) == {"di": 24, "do": 15, "ai": 5, "ao": 3}
+    assert recommendation.required_signal_modules == 4
+    assert recommendation.max_signal_modules == 8
+    assert [(item.signal_type, item.quantity, item.part_number) for item in recommendation.module_plan] == [
+        ("di", 1, "6ES7221-1BH32-0XB0"),
+        ("do", 1, "6ES7222-1BH32-0XB0"),
+        ("ai", 1, "6ES7231-4HF32-0XB0"),
+        ("ao", 1, "6ES7232-4HD32-0XB0"),
+    ]
+
+
+def test_catalog_recommendation_returns_no_cpu_when_spare_demand_exceeds_limits():
+    assert recommend_plc_hardware(
+        load_hardware_catalog(), "Siemens", "S7-1200", 140, 0, 0, 0
+    ) == ()

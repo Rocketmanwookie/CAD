@@ -20,6 +20,7 @@ from controls_wb.hardware_catalog import (
     load_hardware_catalog,
     makes,
     part_names,
+    recommend_plc_hardware,
     io_expansion_suggestion as catalog_io_expansion_suggestion,
 )
 from controls_wb.intake import SourceRecordType
@@ -712,6 +713,57 @@ def show_project_intake_dialog(document: object, parent=None, console=None) -> o
         editor = QtWidgets.QLineEdit(initial_values[field.key])
         editors[field.key] = editor
         form.addRow(field.label, editor)
+
+    recommendation_box = QtWidgets.QWidget()
+    recommendation_layout = QtWidgets.QHBoxLayout(recommendation_box)
+    recommendation_label = QtWidgets.QLabel()
+    recommendation_button = QtWidgets.QPushButton("Use catalog-feasible CPU")
+    recommendation_layout.addWidget(recommendation_label)
+    recommendation_layout.addWidget(recommendation_button)
+    layout.addWidget(recommendation_box)
+    recommended_cpu = None
+
+    def refresh_cpu_recommendation():
+        nonlocal recommended_cpu
+        recommendations = recommend_plc_hardware(
+            HARDWARE_CATALOG,
+            make_editor.currentText(),
+            line_editor.currentText(),
+            editors["DICount"].text(),
+            editors["DOCount"].text(),
+            editors["AICount"].text(),
+            editors["AOCount"].text(),
+        )
+        recommended_cpu = recommendations[0] if recommendations else None
+        if recommended_cpu is None:
+            recommendation_label.setText(
+                "No catalog CPU currently satisfies 120% spare demand and documented module limits."
+            )
+            recommendation_button.setEnabled(False)
+            return
+        recommendation_label.setText(
+            f"Catalog feasibility: {recommended_cpu.cpu.name} — "
+            f"{recommended_cpu.required_signal_modules}/{recommended_cpu.max_signal_modules} signal modules."
+        )
+        recommendation_button.setEnabled(True)
+
+    def accept_cpu_recommendation():
+        if recommended_cpu is None:
+            return
+        cpu_editor.setCurrentText(recommended_cpu.cpu.name)
+        QtWidgets.QMessageBox.information(
+            dialog,
+            "Catalog CPU recommendation accepted",
+            "Selected a catalog-feasible CPU for the current 120%-spare I/O demand. "
+            "This is not electrical, safety, or vendor-program approval.",
+        )
+
+    recommendation_button.clicked.connect(accept_cpu_recommendation)
+    for key in ("DICount", "DOCount", "AICount", "AOCount"):
+        editors[key].textChanged.connect(lambda _text: refresh_cpu_recommendation())
+    make_editor.currentTextChanged.connect(lambda _text: refresh_cpu_recommendation())
+    line_editor.currentTextChanged.connect(lambda _text: refresh_cpu_recommendation())
+    refresh_cpu_recommendation()
 
     power_editor = QtWidgets.QComboBox()
     power_editor.addItems(list(POWER_CONFIGURATIONS))

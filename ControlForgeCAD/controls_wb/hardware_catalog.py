@@ -54,6 +54,30 @@ class HardwareCatalog:
     sources: dict[str, HardwareSource]
 
 
+@dataclass(frozen=True)
+class ExpansionModulePlan:
+    """One catalog module family required by a feasibility recommendation."""
+
+    signal_type: str
+    module_name: str
+    part_number: str
+    source_id: str
+    quantity: int
+    capacity_per_module: int
+    target_points: int
+
+
+@dataclass(frozen=True)
+class PLCHardwareRecommendation:
+    """A catalog-feasible CPU and expansion plan for a 120%-spare demand."""
+
+    cpu: HardwarePart
+    target_counts: tuple[tuple[str, int], ...]
+    module_plan: tuple[ExpansionModulePlan, ...]
+    required_signal_modules: int
+    max_signal_modules: int
+
+
 def default_catalog_path() -> Path:
     return Path(__file__).resolve().parent / "resources" / "hardware" / "plc_catalog.xml"
 
@@ -211,6 +235,85 @@ def io_expansion_suggestion(
     return "; ".join(suggestions)
 
 
+def recommend_plc_hardware(
+    catalog: HardwareCatalog,
+    make: str,
+    line: str,
+    di_count: object,
+    do_count: object,
+    ai_count: object,
+    ao_count: object,
+) -> tuple[PLCHardwareRecommendation, ...]:
+    """Rank catalog CPUs that cover 120%-spare I/O within their module limit.
+
+    This is a catalog-feasibility calculation only.  It does not approve a
+    PLC, validate electrical/safety suitability, or create a vendor project.
+    CPUs whose catalog module limit is unknown are deliberately not returned as
+    recommendations because their required expansion count cannot be verified.
+    """
+
+    line_data = line_catalog(catalog, make, line)
+    if line_data is None:
+        return ()
+    requested = {
+        "di": _count_int(di_count),
+        "do": _count_int(do_count),
+        "ai": _count_int(ai_count),
+        "ao": _count_int(ao_count),
+    }
+    targets = {key: _spare_target(value) for key, value in requested.items()}
+    recommendations = []
+    for cpu in line_data.cpus:
+        if cpu.max_signal_modules is None:
+            continue
+        module_plan = []
+        feasible = True
+        for signal_type, target in targets.items():
+            extra_needed = max(target - int(getattr(cpu, signal_type)), 0)
+            if not extra_needed:
+                continue
+            module = _planning_module(line_data.io_modules, signal_type, extra_needed)
+            if module is None:
+                feasible = False
+                break
+            capacity = int(getattr(module, signal_type))
+            module_plan.append(
+                ExpansionModulePlan(
+                    signal_type=signal_type,
+                    module_name=module.name,
+                    part_number=module.part_number,
+                    source_id=module.source_id,
+                    quantity=_module_count_for(extra_needed, capacity),
+                    capacity_per_module=capacity,
+                    target_points=target,
+                )
+            )
+        required_modules = sum(item.quantity for item in module_plan)
+        if feasible and required_modules <= cpu.max_signal_modules and (
+            module_plan or any(targets.values())
+        ):
+            recommendations.append(
+                PLCHardwareRecommendation(
+                    cpu=cpu,
+                    target_counts=tuple((key, targets[key]) for key in ("di", "do", "ai", "ao")),
+                    module_plan=tuple(module_plan),
+                    required_signal_modules=required_modules,
+                    max_signal_modules=cpu.max_signal_modules,
+                )
+            )
+    return tuple(
+        sorted(
+            recommendations,
+            key=lambda item: (
+                item.required_signal_modules,
+                sum(plan.quantity * plan.capacity_per_module for plan in item.module_plan),
+                item.cpu.part_number,
+                item.cpu.name,
+            ),
+        )
+    )
+
+
 def _count_int(value: object) -> int:
     try:
         return max(int(str(value).strip()), 0)
@@ -222,3 +325,26 @@ def _module_count_for(needed: int, capacity: int) -> int:
     if needed <= 0 or capacity <= 0:
         return 0
     return (needed + capacity - 1) // capacity
+
+
+def _spare_target(requested: int) -> int:
+    """Return an integer count with the required 20 percent spare capacity."""
+
+    return (requested * 6 + 4) // 5
+
+
+def _planning_module(
+    modules: tuple[HardwarePart, ...], signal_type: str, needed: int
+) -> HardwarePart | None:
+    compatible = [module for module in modules if int(getattr(module, signal_type)) > 0]
+    if not compatible:
+        return None
+    return min(
+        compatible,
+        key=lambda module: (
+            _module_count_for(needed, int(getattr(module, signal_type))),
+            _module_count_for(needed, int(getattr(module, signal_type))) * int(getattr(module, signal_type)) - needed,
+            module.part_number,
+            module.name,
+        ),
+    )
