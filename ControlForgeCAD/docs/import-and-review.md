@@ -42,3 +42,10 @@ canonical rack/slot/channel, terminal, and part data. The command does not yet
 create imported PLC occurrences, field devices, terminals, wires, connection
 paths, vendor PLC projects, or electrical-compliance conclusions. Those need
 separate staged schemas and conflict rules before they can be offered for approval.
+
+PLC make, line, CPU, compatible Ethernet, compatible expansion power, and the
+derived platform form a dependency group. If approving selected import fields
+would make the intake normalizer change an unapproved member of that group, the
+command rejects the decision and leaves the project unchanged. Review a
+complete compatible PLC selection instead; Import & Review never silently
+substitutes dependent PLC choices.

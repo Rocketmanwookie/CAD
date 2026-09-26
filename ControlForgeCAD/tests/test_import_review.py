@@ -69,6 +69,37 @@ def test_apply_requires_explicit_approved_subset_and_leaves_other_candidates_unc
     assert project.ProjectName == "Existing project"
 
 
+def test_partial_plc_make_approval_rejects_unapproved_dependency_normalization():
+    document = FakeDocument()
+    project = create_or_update_project(document)
+    project.PlcMake = "Siemens"
+    project.PlcLine = "S7-1200"
+    project.PlcCPU = "CPU 1212C DC/DC/DC"
+    project.EthernetAdapter = "Integrated PROFINET interface"
+    project.ExpansionPowerSupply = "External 24 VDC supply required"
+    project.PlcPlatform = "Siemens S7-1200"
+    staged = stage_project_import("plc:\n  make: Allen-Bradley\n", "setup.yml", project)
+
+    with pytest.raises(ImportReviewError, match="unapproved PLC fields"):
+        apply_approved_project_import(project, staged, {"PlcMake"})
+
+    assert (
+        project.PlcMake,
+        project.PlcLine,
+        project.PlcCPU,
+        project.EthernetAdapter,
+        project.ExpansionPowerSupply,
+        project.PlcPlatform,
+    ) == (
+        "Siemens",
+        "S7-1200",
+        "CPU 1212C DC/DC/DC",
+        "Integrated PROFINET interface",
+        "External 24 VDC supply required",
+        "Siemens S7-1200",
+    )
+
+
 def test_stage_ceproject_xml_preserves_source_only_after_explicit_apply():
     document = FakeDocument()
     project = create_or_update_project(document)

@@ -18,6 +18,7 @@ from controls_wb.gui.project_intake import (
     form_values_from_project,
     form_values_from_project_setup_text,
     merge_ceproject_import_records,
+    normalized_form_values,
 )
 from controls_wb.io_allocation import validate_io_allocations
 from controls_wb.io_list import (
@@ -176,9 +177,50 @@ def apply_approved_project_import(
     values = form_values_from_project(project)
     for key in approved:
         values[key] = _display_value(staged.values[key])
+    _require_explicit_plc_dependency_approval(
+        form_values_from_project(project), values, approved
+    )
     if staged.source_format == "ceproject-xml":
         values["CEProjectImportRecord"] = ceproject_import_record(staged.source_text, staged.source_path)
     return apply_form_values_to_project(project, values)
+
+
+def _require_explicit_plc_dependency_approval(
+    current_values: dict[str, str], proposed_values: dict[str, str], approved: set[str]
+) -> None:
+    """Reject a partial PLC selection that normalization would silently alter.
+
+    The intake form keeps make, line, CPU, compatible Ethernet, compatible
+    expansion power, and the derived platform mutually consistent.  Import
+    review must not use that normalization to change a dependent value the user
+    did not approve.  A source therefore needs to offer and the user needs to
+    approve every affected selectable value; the derived platform changes only
+    after its make and line inputs were both explicitly approved.
+    """
+
+    normalized = normalized_form_values(proposed_values)
+    current_normalized = normalized_form_values(current_values)
+    protected = {
+        "PlcLine": "PLC line",
+        "PlcCPU": "PLC CPU",
+        "EthernetAdapter": "Ethernet adapter",
+        "ExpansionPowerSupply": "expansion power supply",
+    }
+    changed = [
+        label
+        for key, label in protected.items()
+        if str(normalized[key]) != str(current_values.get(key, "")) and key not in approved
+    ]
+    if (
+        str(normalized["PlcPlatform"]) != str(current_normalized["PlcPlatform"])
+        and not {"PlcMake", "PlcLine"}.issubset(approved)
+    ):
+        changed.append("derived PLC platform")
+    if changed:
+        raise ImportReviewError(
+            "Import approval would normalize unapproved PLC fields: " + ", ".join(changed) + ". "
+            "Approve a complete compatible PLC selection instead."
+        )
 
 
 _IO_TYPE_BY_CEPROJECT_TYPE = {

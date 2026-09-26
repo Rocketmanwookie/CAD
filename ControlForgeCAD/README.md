@@ -121,7 +121,9 @@ For deliberate review before mutation, use **Import and Review Project Data**.
 It previews changed supported intake fields and existing CEProject `Signals`
 rows, requiring explicit selection of every item to apply. Logical I/O rows are
 stale-state checked; imported terminal/address text is warning-only so the
-catalog allocator remains authoritative. See
+catalog allocator remains authoritative. PLC selections are also fail-closed:
+a partial approval that would normalize an unapproved compatible PLC field is
+rejected rather than silently changing it. See
 [`docs/import-and-review.md`](docs/import-and-review.md) for supported inputs,
 provenance, and the current boundary.
 
