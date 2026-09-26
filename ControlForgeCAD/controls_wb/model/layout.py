@@ -301,6 +301,61 @@ def _materialize_allocation_object(document, name: str, role: str, identity: str
     return obj
 
 
+def _signal_and_paths_for_allocation(project, signal_tag: str):
+    """Return the typed signal and paths carrying one allocated I/O tag.
+
+    Allocation records predate typed path materialization, so the mutable tag is
+    used only to discover the existing logical signal.  The persisted channel
+    relationship itself is an object link (and therefore carries CE identity),
+    never a second tag-derived identity.
+    """
+
+    matches = [
+        signal
+        for signal in (getattr(project, "ElectricalSignals", []) or [])
+        if getattr(signal, "CERole", "") == CERoles.SIGNAL
+        and str(getattr(signal, "SignalTag", "") or "") == signal_tag
+    ]
+    if len(matches) > 1:
+        raise ValueError(f"Allocated signal tag {signal_tag!r} resolves to multiple typed signals.")
+    typed_signal = matches[0] if matches else None
+    paths = [
+        path
+        for path in (getattr(project, "ElectricalPaths", []) or [])
+        if typed_signal is not None and getattr(path, "SignalObject", None) is typed_signal
+    ]
+    return typed_signal, paths
+
+
+def _materialize_allocation_signal(document, project, signal_tag: str):
+    """Create or reuse the one typed signal represented by an allocated tag."""
+
+    typed_signal, _ = _signal_and_paths_for_allocation(project, signal_tag)
+    if typed_signal is not None:
+        return typed_signal
+    from controls_wb.model.electrical import ElectricalSignalObject
+
+    identity = _allocation_identity(project, "signal", signal_tag)
+    existing = _object_for_identity(document, identity)
+    if existing is not None:
+        if getattr(existing, "CERole", "") != CERoles.SIGNAL:
+            raise ValueError(f"Allocation signal identity {identity} belongs to a non-signal object.")
+        typed_signal = existing
+    else:
+        typed_signal = document.addObject("App::FeaturePython", "CE_Signal")
+        ElectricalSignalObject(typed_signal, identity)
+    _add_property(typed_signal, "App::PropertyString", "SignalTag", "Electrical Signal", "Signal tag")
+    _add_property(typed_signal, "App::PropertyLinkList", "ConnectionPaths", "Electrical Signal", "Paths carrying this signal")
+    if str(getattr(typed_signal, "SignalTag", "") or "") not in {"", signal_tag}:
+        raise ValueError(f"Allocation signal {identity} has a conflicting tag.")
+    typed_signal.SignalTag = signal_tag
+    _add_property(project, "App::PropertyLinkList", "ElectricalSignals", "Electrical Graph", "Typed signal objects owned by this project")
+    existing_signals = list(getattr(project, "ElectricalSignals", []) or [])
+    if typed_signal not in existing_signals:
+        project.ElectricalSignals = existing_signals + [typed_signal]
+    return typed_signal
+
+
 def materialize_plc_allocation(document, project: object | None = None) -> dict[str, object]:
     """Materialize a persisted project's PLC rack, modules, and channels.
 
@@ -370,6 +425,8 @@ def materialize_plc_allocation(document, project: object | None = None) -> dict[
                 ("App::PropertyString", "SignalType", "Allocated I/O signal type"),
                 ("App::PropertyString", "AllocatedSignalTag", "Allocated logical I/O signal tag"),
                 ("App::PropertyString", "SignalAddress", "Allocated logical I/O address"),
+                ("App::PropertyLink", "AllocatedSignalObject", "Typed electrical signal allocated to this channel"),
+                ("App::PropertyLinkList", "ElectricalPaths", "Typed electrical paths carrying the allocated signal"),
             ):
                 _add_property(channel_obj, property_type, name, "PLC Allocation", description)
             channel_obj.ModuleObject = module_obj
@@ -379,12 +436,61 @@ def materialize_plc_allocation(document, project: object | None = None) -> dict[
             channel_obj.SignalType = signal.signal_type
             channel_obj.AllocatedSignalTag = signal.tag
             channel_obj.SignalAddress = signal.address
+            typed_signal = _materialize_allocation_signal(document, project, signal.tag)
+            _add_property(typed_signal, "App::PropertyLink", "AllocatedChannelObject", "Electrical Signal", "Allocated PLC channel carrying this signal")
+            previous_channel = getattr(typed_signal, "AllocatedChannelObject", None)
+            if previous_channel is not None and previous_channel is not channel_obj:
+                raise ValueError(f"Typed signal {signal.tag} is already allocated to another PLC channel.")
+            typed_signal.AllocatedChannelObject = channel_obj
+            _, paths = _signal_and_paths_for_allocation(project, signal.tag)
+            channel_obj.AllocatedSignalObject = typed_signal
+            channel_obj.ElectricalPaths = paths
+            register_electrical_device(project, channel_obj)
             module_channels.append(channel_obj)
             channels.append(channel_obj)
         module_obj.Channels = module_channels
     rack.Modules = modules
     register_electrical_device(project, rack)
     return {"rack": rack, "modules": tuple(modules), "channels": tuple(channels)}
+
+
+def allocation_electrical_graph_findings(project, objects) -> tuple[tuple[str, str, str], ...]:
+    """Validate persisted PLC-channel links to the typed electrical graph.
+
+    This deliberately checks FreeCAD links as well as cached tags so copied,
+    stale, or manually edited occurrence objects cannot silently claim a valid
+    channel-to-path relationship.
+    """
+
+    findings = []
+    for channel in objects:
+        if getattr(channel, "CERole", "") != CERoles.PLC_CHANNEL:
+            continue
+        tag = str(getattr(channel, "AllocatedSignalTag", "") or "")
+        channel_id = str(getattr(channel, "CEIdentity", "") or getattr(channel, "Name", "PLC channel"))
+        signal = getattr(channel, "AllocatedSignalObject", None)
+        if signal is None:
+            findings.append(("ERROR", "allocated_channel_missing_signal", f"PLC channel {channel_id} has no typed signal link for {tag}."))
+            continue
+        if signal not in (getattr(project, "ElectricalSignals", []) or []):
+            findings.append(("ERROR", "allocated_channel_unregistered_signal", f"PLC channel {channel_id} links to a signal not registered on the project."))
+        if getattr(signal, "CERole", "") != CERoles.SIGNAL:
+            findings.append(("ERROR", "allocated_channel_wrong_role_signal", f"PLC channel {channel_id} links to a non-signal object."))
+            continue
+        if str(getattr(signal, "SignalTag", "") or "") != tag:
+            findings.append(("ERROR", "allocated_channel_signal_tag_mismatch", f"PLC channel {channel_id} signal link does not match allocated tag {tag}."))
+        if getattr(signal, "AllocatedChannelObject", None) is not channel:
+            findings.append(("ERROR", "allocated_channel_reverse_link_missing", f"PLC channel {channel_id} is not the signal's reciprocal allocated channel."))
+        linked_paths = list(getattr(channel, "ElectricalPaths", []) or [])
+        for path in (getattr(project, "ElectricalPaths", []) or []):
+            if getattr(path, "SignalObject", None) is signal and path not in linked_paths:
+                findings.append(("ERROR", "allocated_channel_path_link_missing", f"PLC channel {channel_id} is missing a link to consuming path {getattr(path, 'CEIdentity', '')}."))
+        for path in linked_paths:
+            if getattr(path, "CERole", "") != CERoles.CONNECTION_PATH:
+                findings.append(("ERROR", "allocated_channel_wrong_role_path", f"PLC channel {channel_id} links to a non-path object."))
+            elif getattr(path, "SignalObject", None) is not signal:
+                findings.append(("ERROR", "allocated_channel_path_signal_mismatch", f"PLC channel {channel_id} path does not carry its typed signal."))
+    return tuple(sorted(findings, key=lambda finding: (finding[0], finding[1], finding[2])))
 
 
 class ControlsLayoutObject:

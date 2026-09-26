@@ -151,11 +151,14 @@ These layout objects are **partial engineering models**. They establish object i
 PLC allocation is a separate, FreeCAD-independent domain service. It selects
 catalog CPU/module capacity, assigns deterministic rack/slot/channel coordinates,
 and rejects insufficient capacity or collisions before persistence. A valid
-allocation persists its logical I/O mapping on `CE_Project`. The layout adapter
-can then materialize a typed `plc.rack` → `plc.module` → `plc.channel` object
-tree, with deterministic occurrence identities and direct links. Allocated
-channel objects carry their signal tag/address metadata, but direct links to
-typed electrical signal and path objects remain the next integration increment.
+allocation persists its logical I/O mapping on `CE_Project` and the allocation
+command materializes a typed `plc.rack` → `plc.module` → `plc.channel` object
+tree in the same document transaction. Each allocated channel has a
+deterministic typed-signal link, and a path subsequently materialized for that
+signal tag reuses the same signal and links back to the channel. Validation
+detects missing, unregistered, non-reciprocal, and omitted consuming-path
+links. Channel-terminal endpoint authoring remains separate work: the current
+path form does not yet select the allocated channel as its terminal owner.
 
 Typed continuous electrical objects now include `ElectricalPathObject`,
 `ElectricalTerminalObject`, and `ElectricalWireObject`. The path owns ordered
@@ -232,7 +235,7 @@ The current BOM is not a complete procurement or ERP integration. Future work ma
 
 #### I/O-list CSV
 
-**Implemented, starter scope.** The I/O-list service creates deterministic starter records from explicit user-labeled I/O signals plus current intake data and writes `~/integracab_io_list.csv` by default. For a known catalog PLC, `CE_AllocatePLCIO` assigns and persists deterministic rack, slot, and channel coordinates; valid mappings can be materialized into persistent PLC occurrence objects.
+**Implemented, starter scope.** The I/O-list service creates deterministic starter records from explicit user-labeled I/O signals plus current intake data and writes `~/integracab_io_list.csv` by default. For a known catalog PLC, `CE_AllocatePLCIO` assigns and persists deterministic rack, slot, and channel coordinates and materializes persistent PLC occurrence objects in the same transaction. Each resulting channel links to its deterministic typed signal, and later typed paths for that tag reuse and link back to it; endpoint-owner authoring remains incomplete.
 
 Future work may add channel allocation, rack/slot addressing, signal typing, terminal mapping, device associations, safety classification, and vendor-specific import/export formats.
 

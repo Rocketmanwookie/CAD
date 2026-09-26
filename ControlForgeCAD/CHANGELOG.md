@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- `CE_AllocatePLCIO` now materializes valid PLC rack, module, and channel
+  occurrences in the same FreeCAD transaction as allocation persistence.
+  Allocated channels link deterministically to typed signals; subsequent typed
+  paths for the allocated tag reuse that signal and link back to the channel.
+  Validation reports broken, unregistered, non-reciprocal, or omitted
+  channel/signal/path links. This does not yet provide allocated-channel
+  terminal authoring, a vendor PLC project, electrical-code compliance, or
+  completed manual FreeCAD persistence acceptance.
+
 - Added persistent, idempotent PLC rack, module, and channel occurrences for a
   valid allocation. Their deterministic CE identities and direct containment
   links preserve the selected catalog placement and allocated signal metadata

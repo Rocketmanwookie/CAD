@@ -132,6 +132,22 @@ def materialize_electrical_path(document, path: ElectricalConnectionPath) -> Mat
     existing = _assert_identities_available(document, path)
 
     signal_obj = existing.get(path.signal_identity)
+    # Allocation-first is the normal workflow.  In that case the persisted PLC
+    # channel has already created the canonical typed signal; a newly authored
+    # path may carry a provisional identity but must join that signal rather
+    # than creating a second object for the same logical I/O tag.
+    if signal_obj is None:
+        project = _project_object(document)
+        tag_matches = [
+            candidate
+            for candidate in (getattr(project, "ElectricalSignals", []) or [])
+            if getattr(candidate, "CERole", "") == CERoles.SIGNAL
+            and str(getattr(candidate, "SignalTag", "") or "") == path.signal_tag
+        ] if project is not None else []
+        if len(tag_matches) > 1:
+            raise ValueError(f"Signal tag {path.signal_tag!r} resolves to multiple typed signals.")
+        if tag_matches:
+            signal_obj = tag_matches[0]
     if signal_obj is not None:
         if getattr(signal_obj, "CERole", "") != CERoles.SIGNAL:
             raise ValueError(f"Signal identity {path.signal_identity} belongs to a non-signal object.")
@@ -154,7 +170,7 @@ def materialize_electrical_path(document, path: ElectricalConnectionPath) -> Mat
     _add_property(path_obj, "App::PropertyLinkList", "TerminalObjects", "Electrical Path", "Ordered terminal objects")
     _add_property(path_obj, "App::PropertyLinkList", "WireObjects", "Electrical Path", "Ordered wire objects")
     path_obj.PathFormat = "ceproject.connection-path/1.0"
-    path_obj.SignalIdentity = path.signal_identity
+    path_obj.SignalIdentity = signal_obj.CEIdentity
     path_obj.SignalTag = path.signal_tag
     path_obj.SignalObject = signal_obj
 
@@ -222,6 +238,12 @@ def materialize_electrical_path(document, path: ElectricalConnectionPath) -> Mat
         _add_property(project, "App::PropertyStringList", "ConnectionRecords", "Wiring", "Signal-to-terminal-to-wire connection records as JSON lines")
         _append_unique_link(project, "ElectricalSignals", signal_obj)
         _append_unique_link(project, "ElectricalPaths", path_obj)
+        allocated_channel = getattr(signal_obj, "AllocatedChannelObject", None)
+        if allocated_channel is not None:
+            if getattr(allocated_channel, "CERole", "") != CERoles.PLC_CHANNEL:
+                raise ValueError("Allocated signal links to a non-PLC-channel object.")
+            _add_property(allocated_channel, "App::PropertyLinkList", "ElectricalPaths", "PLC Allocation", "Typed electrical paths carrying the allocated signal")
+            _append_unique_link(allocated_channel, "ElectricalPaths", path_obj)
         append_connection_for_path(project, path_obj)
     return MaterializedElectricalPath(path_obj, signal_obj, tuple(terminal_objects), tuple(wire_objects))
 

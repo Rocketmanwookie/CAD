@@ -18,9 +18,11 @@ from controls_wb.connections import (
 from controls_wb.electrical_validation import validate_connection_graph
 from controls_wb.io_list import io_allocation_for_project
 from controls_wb.model.electrical import electrical_paths_from_project
+from controls_wb.model.layout import allocation_electrical_graph_findings
 
 
 def validate_project_objects(objects):
+    """Return intake-level ``(severity, message)`` findings for CE projects."""
     messages = []
     for obj in objects:
         if hasattr(obj, "ProjectId") and hasattr(obj, "Deliverables"):
@@ -31,6 +33,7 @@ def validate_project_objects(objects):
 
 
 def validate_document_objects(objects):
+    """Return deterministic document-wide validation messages for the active project graph."""
     messages = validate_project_objects(objects)
     seen_tags = set()
     for obj in objects:
@@ -51,6 +54,8 @@ def validate_document_objects(objects):
             if allocation is not None:
                 for finding in allocation.findings:
                     messages.append((finding.severity, f"{finding.code}: {finding.message}"))
+            for severity, code, message in allocation_electrical_graph_findings(project, objects):
+                messages.append((severity, f"{code}: {message}"))
         connections = connections_from_project(project)
         for finding in connection_findings(connections):
             level, _, message = finding.partition(": ")
@@ -87,6 +92,7 @@ def validate_document_objects(objects):
 
 
 class ValidateProjectCommand:
+    """FreeCAD command boundary that prints validation without mutating the document."""
     def GetResources(self):
         return {"MenuText": "Validate Controls Project", "ToolTip": "Check tags and controls metadata completeness."}
 

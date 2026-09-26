@@ -11,6 +11,7 @@ from controls_wb.model.electrical import (
 )
 from dataclasses import replace
 from controls_wb.model.project import create_or_update_project
+from controls_wb.model.layout import materialize_plc_allocation
 
 
 class FakeObject:
@@ -114,6 +115,24 @@ def test_materialized_signal_and_path_register_on_project_aggregate():
         terminal.CEIdentity for terminal in result.terminal_objects
     )
     assert records[0].wire_identities == tuple(wire.CEIdentity for wire in result.wire_objects)
+
+
+def test_allocation_first_path_reuses_channel_signal_and_records_path_link():
+    document = FakeDocument()
+    project = create_or_update_project(document)
+    project.ProjectId = "CE-ALLOCATION-FIRST"
+    project.PlcMake = "Siemens"
+    project.PlcLine = "S7-1200"
+    project.PlcCPU = "CPU 1212C DC/DC/DC"
+    project.DICount = "1"
+    channel = materialize_plc_allocation(document, project)["channels"][0]
+
+    result = materialize_electrical_path(document, _path())
+
+    assert result.signal_object is channel.AllocatedSignalObject
+    assert result.path_object.SignalIdentity == channel.AllocatedSignalObject.CEIdentity
+    assert channel.ElectricalPaths == [result.path_object]
+    assert len(project.ElectricalSignals) == 1
 
 
 def test_materialized_device_receives_identity_role_and_project_registration_immediately():

@@ -106,6 +106,116 @@ single transaction, and validate missing, dangling, or wrong-role links. This
 completes the immediate PLC-to-field vertical slice; it is not schematic
 generation, a PLC vendor-project export, or electrical-code sizing.
 
+## Reporting structure and specialist review gate
+
+Tony CAD owns milestone selection, scope control, state reporting, integration,
+and the final handoff. **Controls Engineer Guy** and **FreeCAD Guy** report
+their evidence-backed findings to Tony CAD; neither role silently changes the
+other's contract surface. Tony CAD gives their findings, implementation
+evidence, and the release packet to **QA Guy**, who independently determines
+whether the relevant project surface is coherent and on task.
+
+For any milestone that affects the electrical graph, allocation, terminals,
+wiring, schedules, catalog semantics, or CEProject interchange, Controls
+Engineer Guy's review is required. For any milestone that affects FreeCAD
+commands, document objects, properties, links, transactions, or persistence,
+FreeCAD Guy's review is required. The allocated-channel linkage milestone
+requires both reviews. QA Guy's final gate remains required in every case.
+
+Specialist findings must state scope, evidence, affected files/contracts,
+severity, recommended action, and any check that could not be run. Tony CAD
+resolves cross-specialty conflicts by preserving the canonical electrical model
+and documented MVP contract, escalating to the user only for a material public
+identity, schema, interoperability, or compliance-policy decision.
+
+### FreeCAD Guy — workbench and persistence specialist
+
+**FreeCAD Guy** owns the FreeCAD-specific technical review surface. Before a
+milestone that adds or changes FreeCAD behavior is approved, FreeCAD Guy checks
+the following as applicable:
+
+- Workbench startup and lifecycle behavior, including the `Init.py` and
+  `InitGui.py` split, command registration, workbench activation, and safe
+  headless/GUI fallback.
+- FeaturePython object persistence: proxy reconstruction after FCStd reopen,
+  stable type and object identity, `onDocumentRestored` behavior where needed,
+  and avoidance of transient Python-only state as the sole source of project
+  truth.
+- Correct document-object properties and links, including appropriate property
+  types, grouping/ownership semantics, bidirectional-link risks, and links that
+  remain valid through recompute, save/reopen, and rerun.
+- Transaction and undo boundaries: user-visible commands make coherent,
+  atomic document changes, abort safely on failure, and do not leave objects or
+  links partially materialized.
+- Recompute, save/reopen, and GUI behavior, including whether commands are
+  available only when the active document and selection make them valid and
+  whether core operations remain usable in automated or headless tests.
+- A proportionate manual FreeCAD acceptance check for changed workflows,
+  capturing the FreeCAD version, steps, visible result, save/reopen result, and
+  any unavailable interactive verification in the QA handoff.
+
+FreeCAD Guy reports concrete compatibility, persistence, transaction, command,
+or UI risks to Tony CAD with affected files and an evidence-backed mitigation.
+The role does not authorize changes to the canonical electrical-graph model or
+public contracts without Tony CAD and user direction.
+
+### Controls Engineer Guy — electrical-model specialist
+
+**Controls Engineer Guy** owns the controls-engineering review surface. Before
+a milestone affecting the electrical design model is approved, this role checks
+the following as applicable:
+
+- PLC/I/O allocation is deterministic and capacity/collision rules remain
+  honest about the selected catalog and supported configuration.
+- Each allocated channel has the correct relationship to its logical signal,
+  typed terminals, wires, continuous electrical paths, device endpoints, and
+  address metadata; no link is inferred from mutable display labels.
+- Identity and semantic-role rules distinguish catalog definitions, physical
+  rack/module/channel occurrences, logical signals, and path/wiring entities;
+  validation exposes missing, dangling, wrong-role, duplicate, and
+  path-inconsistent relationships.
+- Exports and documentation accurately state what is present and what remains
+  unsupported. They do not imply a schematic netlist, PLC vendor project,
+  automatic code compliance, conductor recommendation, or manufacturer CAD
+  verification that the evidence does not support.
+- Engineering safety and compliance boundaries stay explicit: structural
+  validation supports review but does not certify design suitability, PL, SIL,
+  code compliance, or AHJ approval.
+- The milestone advances a usable controls-design workflow in the documented
+  order—PLC allocation through terminal/wire/path and coordinated schedules—
+  rather than diverting into premature visual, runtime, or vendor-specific work.
+
+Controls Engineer Guy reports allocation, topology, identity, catalog, export,
+or engineering-scope risks to Tony CAD with affected files and evidence-backed
+mitigations. The role may recommend acceptance criteria but does not approve
+FreeCAD persistence behavior or alter public contracts without Tony CAD and
+user direction.
+
+### Docu Nerd — documentation historian and code-comment reviewer
+
+**Docu Nerd** maintains an evidence-based account of the project and reports
+to Tony CAD. Before a milestone is handed to QA Guy, Docu Nerd compares the
+working tree, focused tests, and implementation contracts with the root and
+workbench READMEs, roadmap, TODO, changelogs, architecture document, and active
+ExecPlan. The role updates or recommends corrections only for behavior that is
+verified, preserves dated decisions and known limitations, and distinguishes a
+historical checkpoint from the current state.
+
+Docu Nerd also reviews changed public modules, classes, functions, commands,
+properties, serialization formats, and validation findings for concise
+docstrings or comments that explain contracts, invariants, side effects,
+FreeCAD persistence, error behavior, and non-obvious engineering decisions.
+Comments must not merely restate code. The review reports stale claims,
+undocumented public behavior, ambiguous terminology, and unavailable evidence
+to Tony CAD with affected files and a proposed resolution. Docu Nerd does not
+declare unverified capability delivered, alter the canonical electrical-model
+contract, or replace FreeCAD Guy, Controls Engineer Guy, or QA Guy review.
+
+For each review packet, Docu Nerd supplies: documents checked; documentation
+and code-comment changes made or recommended; claims validated against code and
+tests; remaining known limitations; and the exact documentation updates needed
+before a milestone can be described as complete.
+
 ## QA Guy handoff and release gate
 
 Before Tony CAD describes a milestone as complete, hand QA Guy a concise review
@@ -119,6 +229,11 @@ packet containing:
   checks still required;
 - documentation statements changed or found stale; and
 - known limitations, risks, and the proposed next milestone.
+
+The packet also includes the required Controls Engineer Guy and FreeCAD Guy
+findings, their resolution status, and any deferred follow-up. QA Guy does not
+replace specialist review; QA verifies that both scopes were considered and
+that their conclusions agree with the code, tests, and product state.
 
 QA Guy reviews the whole relevant project surface, not only the diff: source
 and tests, changed public contracts, identity/role handling, deterministic

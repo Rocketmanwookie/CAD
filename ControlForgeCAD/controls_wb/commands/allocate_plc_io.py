@@ -10,9 +10,11 @@ except Exception:  # pragma: no cover
 
 from controls_wb.freecad_transactions import document_transaction
 from controls_wb.io_list import persist_io_allocation_to_project
+from controls_wb.model.layout import materialize_plc_allocation
 
 
 def project_from_objects(objects):
+    """Return the sole CE project in ``objects`` or raise an actionable error."""
     projects = [obj for obj in objects if hasattr(obj, "ProjectId") and hasattr(obj, "Deliverables")]
     if len(projects) != 1:
         raise ValueError("Allocate PLC I/O requires exactly one CE_Project in the active document.")
@@ -24,7 +26,15 @@ def persist_project_allocation(document):
 
     project = project_from_objects(getattr(document, "Objects", []) or [])
     with document_transaction(document, "Allocate PLC I/O"):
+        # Allocation persistence and occurrence/link materialization are one
+        # user-visible document operation: an aborted command cannot leave a
+        # newly persisted mapping without its matching rack/channel objects.
         result = persist_io_allocation_to_project(project)
+        # Lightweight unit-test and batch stubs may model only the persisted
+        # project payload.  A real FreeCAD document always exposes addObject;
+        # only it can host the occurrence graph.
+        if callable(getattr(document, "addObject", None)):
+            materialize_plc_allocation(document, project)
         recompute = getattr(document, "recompute", None)
         if callable(recompute):
             recompute()
@@ -32,6 +42,7 @@ def persist_project_allocation(document):
 
 
 class AllocatePLCIoCommand:
+    """FreeCAD command boundary for atomic catalog allocation and occurrence creation."""
     def GetResources(self):
         return {
             "MenuText": "Allocate PLC I/O",

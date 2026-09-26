@@ -7,6 +7,7 @@ from controls_wb.model.layout import (
     ControlsLayoutObject,
     create_starter_layout_objects,
     layout_object_metadata,
+    allocation_electrical_graph_findings,
     materialize_plc_allocation,
     starter_layout_specs_for_project,
 )
@@ -222,3 +223,45 @@ def test_materialized_plc_allocation_has_stable_rack_module_channel_links():
     assert first["rack"].CERole == CERoles.PLC_RACK
     assert first["modules"][0].CERole == CERoles.PLC_MODULE
     assert first["channels"][0].CERole == CERoles.PLC_CHANNEL
+
+
+def test_materialized_plc_channels_link_to_deterministic_typed_signals():
+    document = FakeDocument()
+    project = create_or_update_project(document)
+    project.ProjectId = "CE-ALLOC-SIGNAL-001"
+    project.PlcMake = "Siemens"
+    project.PlcLine = "S7-1200"
+    project.PlcCPU = "CPU 1212C DC/DC/DC"
+    project.DICount = "1"
+
+    first = materialize_plc_allocation(document, project)
+    second = materialize_plc_allocation(document, project)
+    channel = first["channels"][0]
+    signal = channel.AllocatedSignalObject
+
+    assert signal is second["channels"][0].AllocatedSignalObject
+    assert signal.CERole == CERoles.SIGNAL
+    assert signal.SignalTag == "DI-0001"
+    assert signal.AllocatedChannelObject is channel
+    assert signal in project.ElectricalSignals
+    assert channel in project.ElectricalDevices
+
+
+def test_allocation_graph_validation_reports_missing_reciprocal_and_unregistered_links():
+    document = FakeDocument()
+    project = create_or_update_project(document)
+    project.ProjectId = "CE-ALLOC-VALIDATE-001"
+    project.PlcMake = "Siemens"
+    project.PlcLine = "S7-1200"
+    project.PlcCPU = "CPU 1212C DC/DC/DC"
+    project.DICount = "1"
+    channel = materialize_plc_allocation(document, project)["channels"][0]
+    signal = channel.AllocatedSignalObject
+
+    project.ElectricalSignals = []
+    signal.AllocatedChannelObject = None
+    findings = allocation_electrical_graph_findings(project, document.Objects)
+
+    codes = {code for _, code, _ in findings}
+    assert "allocated_channel_unregistered_signal" in codes
+    assert "allocated_channel_reverse_link_missing" in codes
