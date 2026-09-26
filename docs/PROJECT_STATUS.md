@@ -52,6 +52,8 @@ data must never be silently deleted or readdressed.
 
 - [Project-management charter](PROJECT_MANAGEMENT_CHARTER.md) — startup,
   source-of-truth, specialist review, and release-gate procedure.
+- [QA fault-tree analysis](QA_FAULT_TREE.md) — living failure-mode map and
+  future QA evidence backlog.
 - [PLC allocation model](../ControlForgeCAD/docs/plc-allocation.md) — allocation
   and occurrence contract.
 - [Architecture](ARCHITECTURE.md) — system layers and extension boundaries.

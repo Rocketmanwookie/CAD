@@ -13,6 +13,17 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [x] Keep tagline: `The open-source FreeCAD workbench that unites PLC controls with CAD.`
 - [ ] Avoid the trademark symbol in filenames, Python imports, XML namespaces, or package identifiers.
 
+## QA and fault-tree follow-up
+
+- [x] Add a living QA fault-tree analysis covering intake, PLC allocation,
+  electrical graph, document lifecycle, exports, user guidance, and engineering
+  boundary failure modes.
+- [ ] Populate the fault-tree analysis with observed reproductions, evidence,
+  mitigations, and linked regression tests as QA work discovers them; do not
+  invent historical incidents where evidence is unavailable.
+- [ ] Add a QA evidence log after actual manual FreeCAD acceptance runs or
+  reproducible incidents exist.
+
 ## 1. Product philosophy
 
 - [ ] Keep the core workbench light, integration-first, and useful before it is polished.
