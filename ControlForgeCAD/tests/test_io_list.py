@@ -15,6 +15,7 @@ from controls_wb.io_list import (
     io_mapping_summary,
     io_signals_from_objects,
     starter_io_signals_from_project,
+    starter_io_signals_for_counts,
     unmapped_io_findings,
 )
 
@@ -112,6 +113,17 @@ def test_starter_io_signals_from_typed_project_counts():
     assert {signal.mapping_status for signal in signals} == {"addressed"}
 
 
+def test_starter_io_signals_for_counts_is_project_independent_and_canonical():
+    signals = starter_io_signals_for_counts(1, 1, 1, 1)
+
+    assert [(signal.tag, signal.address, signal.signal_type) for signal in signals] == [
+        ("DI-0001", "%I0.0", "digital_input"),
+        ("DO-0001", "%Q0.0", "digital_output"),
+        ("AI-0001", "%IW0", "analog_input"),
+        ("AO-0001", "%QW0", "analog_output"),
+    ]
+
+
 def test_starter_io_signals_reports_missing_or_invalid_sensor_count():
     signals = starter_io_signals_from_project(_project(""))
 
@@ -130,9 +142,9 @@ def test_io_list_csv_is_deterministic():
     csv_text = io_list_csv(starter_io_signals_from_project(_project("2")))
 
     assert csv_text == (
-        "Tag,Address,Description,SignalType,Device,Rack,Slot,Channel,Terminal,SourceRecordIds,MappingStatus\n"
-        "DI-0001,%I0.0,Starter digital input 1,digital_input,Digital Input 1,,,,,SRC-IO,addressed\n"
-        "DI-0002,%I0.1,Starter digital input 2,digital_input,Digital Input 2,,,,,SRC-IO,addressed\n"
+        "Tag,Address,Description,SignalType,Device,Rack,Slot,Channel,Terminal,ModuleName,CatalogPartNumber,SourceRecordIds,MappingStatus\n"
+        "DI-0001,%I0.0,Starter digital input 1,digital_input,Digital Input 1,,,,,,,SRC-IO,addressed\n"
+        "DI-0002,%I0.1,Starter digital input 2,digital_input,Digital Input 2,,,,,,,SRC-IO,addressed\n"
     )
 
 

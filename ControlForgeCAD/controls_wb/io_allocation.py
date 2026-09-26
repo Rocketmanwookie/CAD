@@ -54,6 +54,21 @@ class IOAllocationResult:
     findings: tuple[IOAllocationFinding, ...]
 
 
+@dataclass(frozen=True)
+class AllocationPreviewRow:
+    """One immutable catalog allocation row with an editable engineering label."""
+
+    signal_tag: str
+    signal_type: str
+    engineering_label: str
+    rack: str
+    slot: str
+    channel: str
+    plc_terminal: str
+    module_name: str
+    part_number: str
+
+
 def allocate_io_signals(
     signals: Iterable[IOSignal],
     catalog: HardwareCatalog,
@@ -92,7 +107,7 @@ def allocate_io_signals(
         capacity = int(getattr(cpu, capacity_key))
         cpu_indexes, remaining_indexes = indexes[:capacity], indexes[capacity:]
         for channel, index in enumerate(cpu_indexes):
-            allocated[index] = _allocated(allocated[index], rack, cpu_slot, channel)
+            allocated[index] = _allocated(allocated[index], rack, cpu_slot, channel, cpu)
 
         module = _best_module(line_data.io_modules, capacity_key)
         while remaining_indexes and module is not None:
@@ -104,7 +119,7 @@ def allocate_io_signals(
                 if not remaining_indexes:
                     break
                 index = remaining_indexes.pop(0)
-                allocated[index] = _allocated(allocated[index], rack, slot, channel)
+                allocated[index] = _allocated(allocated[index], rack, slot, channel, module)
 
         for index in remaining_indexes:
             signal = allocated[index]
@@ -132,8 +147,53 @@ def allocate_io_signals(
     return IOAllocationResult(tuple(allocated), tuple(modules), _sorted_findings(findings))
 
 
-def _allocated(signal: IOSignal, rack: str, slot: str, channel: int) -> IOSignal:
-    return replace(signal, rack=str(rack), slot=str(slot), channel=str(channel), mapping_status="allocated")
+def allocation_preview_rows(result: IOAllocationResult) -> tuple[AllocationPreviewRow, ...]:
+    """Return catalog part/channel rows suitable for review before persistence."""
+
+    module_by_coordinate = {(module.rack, module.slot): module for module in result.modules}
+    rows = []
+    for signal in result.signals:
+        module = module_by_coordinate.get((signal.rack, signal.slot))
+        if not signal.rack or not signal.slot or not signal.channel or module is None:
+            continue
+        rows.append(
+            AllocationPreviewRow(
+                signal_tag=signal.tag,
+                signal_type=signal.signal_type,
+                engineering_label=signal.description or signal.device,
+                rack=signal.rack,
+                slot=signal.slot,
+                channel=signal.channel,
+                plc_terminal=signal.address,
+                module_name=module.module_name,
+                part_number=module.part_number,
+            )
+        )
+    return tuple(rows)
+
+
+def apply_engineering_labels(
+    result: IOAllocationResult, labels_by_signal_tag: dict[str, str]
+) -> IOAllocationResult:
+    """Apply readable labels without changing canonical allocation keys or tags."""
+
+    signals = []
+    for signal in result.signals:
+        label = str(labels_by_signal_tag.get(signal.tag, "")).strip()
+        signals.append(replace(signal, description=label or signal.description, device=label or signal.device))
+    return replace(result, signals=tuple(signals))
+
+
+def _allocated(signal: IOSignal, rack: str, slot: str, channel: int, module: HardwarePart) -> IOSignal:
+    return replace(
+        signal,
+        rack=str(rack),
+        slot=str(slot),
+        channel=str(channel),
+        module_name=module.name,
+        catalog_part_number=module.part_number,
+        mapping_status="allocated",
+    )
 
 
 def _best_module(modules: Iterable[HardwarePart], capacity_key: str) -> HardwarePart | None:

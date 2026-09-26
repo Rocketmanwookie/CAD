@@ -22,6 +22,8 @@ IO_LIST_HEADERS = (
     "Slot",
     "Channel",
     "Terminal",
+    "ModuleName",
+    "CatalogPartNumber",
     "SourceRecordIds",
     "MappingStatus",
 )
@@ -70,6 +72,8 @@ class IOSignal:
     slot: str = ""
     channel: str = ""
     terminal: str = ""
+    module_name: str = ""
+    catalog_part_number: str = ""
     source_record_ids: tuple[str, ...] = ()
     mapping_status: str = "unmapped"
 
@@ -84,6 +88,8 @@ class IOSignal:
             "Slot": self.slot,
             "Channel": self.channel,
             "Terminal": self.terminal,
+            "ModuleName": self.module_name,
+            "CatalogPartNumber": self.catalog_part_number,
             "SourceRecordIds": ";".join(self.source_record_ids),
             "MappingStatus": self.mapping_status,
         }
@@ -173,6 +179,8 @@ def deserialize_io_signal(record: str | dict[str, Any]) -> IOSignal:
         slot=str(payload.get("slot", "")),
         channel=str(payload.get("channel", "")),
         terminal=str(payload.get("terminal", "")),
+        module_name=str(payload.get("module_name", payload.get("moduleName", ""))),
+        catalog_part_number=str(payload.get("catalog_part_number", payload.get("catalogPartNumber", ""))),
         source_record_ids=tuple(str(source_id) for source_id in source_record_ids),
         mapping_status=str(payload.get("mapping_status", payload.get("mappingStatus", "unmapped"))),
     )
@@ -290,6 +298,22 @@ def starter_io_signals_from_project(project: object, existing_signals: list[IOSi
         existing,
         source_record_ids,
     )
+
+
+def starter_io_signals_for_counts(
+    di_count: object, do_count: object, ai_count: object, ao_count: object
+) -> list[IOSignal]:
+    """Build canonical starter I/O rows for typed counts without a project object."""
+
+    signals: list[IOSignal] = []
+    for signal_type_key, count in (
+        ("digital_input", _safe_sensor_count(di_count)),
+        ("digital_output", _safe_sensor_count(do_count)),
+        ("analog_input", _safe_sensor_count(ai_count)),
+        ("analog_output", _safe_sensor_count(ao_count)),
+    ):
+        signals.extend(_starter_signals_for_type(signal_type_key, count, signals))
+    return signals
 
 
 def io_allocation_for_project(project: object):

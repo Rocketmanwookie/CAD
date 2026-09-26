@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: MIT
 
 from controls_wb.hardware_catalog import load_hardware_catalog
-from controls_wb.io_allocation import allocate_io_signals, validate_io_allocations
-from controls_wb.io_list import IOSignal
+from controls_wb.io_allocation import allocation_preview_rows, allocate_io_signals, apply_engineering_labels, validate_io_allocations
+from controls_wb.io_list import IOSignal, starter_io_signals_for_counts
 from controls_wb.io_list import io_signals_from_objects, persist_io_allocation_to_project, explicit_io_signals_from_project
 from controls_wb.commands.allocate_plc_io import persist_project_allocation
 from types import SimpleNamespace
@@ -59,6 +59,25 @@ def test_allocator_uses_distinct_expansion_slots_by_io_type():
     assert [module.part_number for module in result.modules] == [
         "6ES7212-1AE40-0XB0", "6ES7222-1BH32-0XB0", "6ES7231-4HF32-0XB0",
     ]
+
+
+def test_approval_preview_exposes_catalog_parts_and_preserves_canonical_keys_when_named():
+    result = allocate_io_signals(
+        starter_io_signals_for_counts(9, 0, 0, 0),
+        load_hardware_catalog(), "Siemens", "S7-1200", "CPU 1212C DC/DC/DC",
+    )
+
+    rows = allocation_preview_rows(result)
+    named = apply_engineering_labels(result, {"DI-0001": "Conveyor photoeye"})
+
+    assert rows[8].module_name == "SM 1221 DI 16x24 V DC"
+    assert rows[8].part_number == "6ES7221-1BH32-0XB0"
+    assert (rows[8].rack, rows[8].slot, rows[8].channel, rows[8].plc_terminal) == ("0", "2", "0", "%I1.0")
+    signal = named.signals[0]
+    assert (signal.tag, signal.rack, signal.slot, signal.channel, signal.address, signal.catalog_part_number) == (
+        "DI-0001", "0", "1", "0", "%I0.0", "6ES7212-1AE40-0XB0"
+    )
+    assert (signal.description, signal.device) == ("Conveyor photoeye", "Conveyor photoeye")
 
 
 def test_allocator_reports_catalog_and_signal_type_gaps_without_inventing_assignments():

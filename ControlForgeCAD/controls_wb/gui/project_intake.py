@@ -24,6 +24,9 @@ from controls_wb.hardware_catalog import (
     io_expansion_suggestion as catalog_io_expansion_suggestion,
 )
 from controls_wb.intake import SourceRecordType
+from controls_wb.io_allocation import allocate_io_signals
+from controls_wb.io_list import serialize_io_signal, starter_io_signals_for_counts
+from controls_wb.gui.allocation_review import show_allocation_naming_dialog
 from controls_wb.model.project import create_or_update_project, ensure_project_properties, intake_to_project_properties
 from controls_wb.power_loads import estimated_total_amps, format_load_lines, parse_load_lines
 from controls_wb.setup_import import ProjectSetupImportError, parse_project_setup
@@ -722,9 +725,13 @@ def show_project_intake_dialog(document: object, parent=None, console=None) -> o
     recommendation_layout.addWidget(recommendation_button)
     layout.addWidget(recommendation_box)
     recommended_cpu = None
+    approved_allocation_signals = None
 
     def refresh_cpu_recommendation():
-        nonlocal recommended_cpu
+        nonlocal recommended_cpu, approved_allocation_signals
+        # Editing demand, make, or line invalidates a previously reviewed
+        # allocation preview; it must be reviewed again before persistence.
+        approved_allocation_signals = None
         recommendations = recommend_plc_hardware(
             HARDWARE_CATALOG,
             make_editor.currentText(),
@@ -748,8 +755,24 @@ def show_project_intake_dialog(document: object, parent=None, console=None) -> o
         recommendation_button.setEnabled(True)
 
     def accept_cpu_recommendation():
+        nonlocal approved_allocation_signals
         if recommended_cpu is None:
             return
+        proposal = allocate_io_signals(
+            starter_io_signals_for_counts(
+                editors["DICount"].text(), editors["DOCount"].text(),
+                editors["AICount"].text(), editors["AOCount"].text(),
+            ),
+            HARDWARE_CATALOG, make_editor.currentText(), line_editor.currentText(), recommended_cpu.cpu.name,
+        )
+        errors = [finding.message for finding in proposal.findings if finding.severity == "ERROR"]
+        if errors:
+            QtWidgets.QMessageBox.warning(dialog, "Catalog allocation preview", "\n".join(errors))
+            return
+        approved = show_allocation_naming_dialog(proposal, dialog)
+        if approved is None:
+            return
+        approved_allocation_signals = approved.signals
         cpu_editor.setCurrentText(recommended_cpu.cpu.name)
         QtWidgets.QMessageBox.information(
             dialog,
@@ -1058,6 +1081,11 @@ def show_project_intake_dialog(document: object, parent=None, console=None) -> o
     values["CEProjectImportRecord"] = pending_import_record
     values["SelectedCEProjectImportId"] = selected_import_id
     project = create_or_update_project_from_form(document, values)
+    if approved_allocation_signals is not None:
+        # These rows were explicitly reviewed.  Their tags, allocation
+        # coordinates, and PLC terminal addresses came from the catalog
+        # allocator; only readable engineering labels were editable.
+        project.IOSignals = [serialize_io_signal(signal) for signal in approved_allocation_signals]
     if console is not None:
         console.PrintMessage(f"Controls project intake updated: {project.ProjectName}\n")
         console.PrintMessage(f"I/O expansion plan: {project.IOExpansionSuggestion}\n")

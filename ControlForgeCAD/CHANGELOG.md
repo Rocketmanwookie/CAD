@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Project Intake can explicitly select a catalog-feasible 120%-spare CPU,
+  review deterministic CPU/module/channel rows, and approve readable I/O
+  engineering labels. Persisted allocation rows now retain catalog module name
+  and part number with their canonical rack/slot/channel/address keys.
+
 - Allocation rack/module/channel occurrences no longer attempt zero-dimension
   Part geometry during FreeCAD recompute. Add Electrical Path now derives and
   locks its signal tag and PLC terminal address from the selected allocated

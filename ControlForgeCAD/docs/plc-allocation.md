@@ -30,6 +30,17 @@ Only a result without `ERROR` findings may be persisted. The **Allocate PLC
 I/O** command writes that complete mapping to `CE_Project.IOSignals`, so it
 survives save/reopen and is the source of the I/O-list CSV projection.
 
+## Catalog recommendation and reviewed labels
+
+Project Intake can rank catalog CPUs against 120-percent spare DI/DO/AI/AO
+demand and their documented signal-module limit. Selecting **Use
+catalog-feasible CPU** is explicit: it opens an allocation review that displays
+each CPU/module part, rack, slot, channel, and PLC terminal. Those allocation
+keys are read-only; the user may approve readable engineering labels for the
+I/O points. The accepted rows persist their catalog module name/part number and
+canonical coordinates. This is catalog feasibility only, not electrical,
+safety, compliance, lifecycle, or vendor-PLC-project approval.
+
 ## Persistent FreeCAD occurrences
 
 `controls_wb.model.layout.materialize_plc_allocation()` projects a valid,
