@@ -24,10 +24,15 @@ if Gui is not None:
         )
 
         # FreeCAD requires an absolute workbench icon path at class definition
-        # time. InitGui.py is a supported legacy entry point for existing addons.
+        # time.  Its addon loader may expose a synthetic ``__file__``, so use
+        # the validated bootstrap-path helper rather than deriving the icon
+        # from that value directly.
         Icon = str(
-            (__import__("pathlib").Path(globals().get("__file__", "InitGui.py")).resolve().parent
-             / "Resources" / "Icons" / "ControlForgeCAD.svg")
+            __import__("pathlib").Path(
+                __import__("controls_wb.freecad_paths", fromlist=["workbench_root_from_module_globals"])
+                .workbench_root_from_module_globals(globals())
+            )
+            / "Resources" / "Icons" / "ControlForgeCAD.svg"
         )
 
         def _workbench_root(self):

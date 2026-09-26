@@ -115,6 +115,35 @@ def test_workbench_root_helper_falls_back_to_controls_package_without_file():
     assert (Path(root) / "controls_wb").is_dir()
 
 
+def test_workbench_root_helper_ignores_synthetic_loader_file():
+    root = workbench_root_from_module_globals({"__file__": "/home/example/InitGui.py"})
+
+    assert Path(root).name == "ControlForgeCAD"
+    assert (Path(root) / "Resources" / "Icons" / "ControlForgeCAD.svg").is_file()
+
+
+def test_init_gui_icon_ignores_synthetic_loader_file(monkeypatch):
+    fake_gui = types.SimpleNamespace(addWorkbench=lambda workbench: None)
+    monkeypatch.setitem(sys.modules, "FreeCADGui", fake_gui)
+
+    class FakeWorkbench:
+        pass
+
+    init_gui_path = Path(__file__).resolve().parents[1] / "InitGui.py"
+    module_globals = {
+        "__name__": "InitGui_synthetic_file_test",
+        "__file__": "/home/example/InitGui.py",
+        "__builtins__": __builtins__,
+        "Workbench": FakeWorkbench,
+    }
+
+    exec(compile(init_gui_path.read_text(), str(init_gui_path), "exec"), module_globals)
+
+    assert module_globals["ControlsEngineeringWorkbench"].Icon == str(
+        init_gui_path.parent / "Resources" / "Icons" / "ControlForgeCAD.svg"
+    )
+
+
 def test_init_gui_initialize_without_file_uses_safe_workbench_root(monkeypatch):
     icon_paths = []
     workbenches = []

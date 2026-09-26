@@ -9,12 +9,20 @@ def workbench_root_from_module_globals(module_globals: Mapping[str, Any]) -> str
     """Return the ControlForgeCAD workbench root for FreeCAD init modules."""
     candidate = module_globals.get("__file__")
     if candidate:
-        return str(Path(candidate).resolve().parent)
+        root = Path(candidate).resolve().parent
+        # A few FreeCAD addon loading paths supply an inherited or synthetic
+        # ``__file__`` (for example ``~/InitGui.py``).  It identifies the
+        # loader, not this workbench, so only trust it when it has the package
+        # layout that makes it a ControlForgeCAD root.
+        if (root / "controls_wb").is_dir():
+            return str(root)
 
     module_spec = module_globals.get("__spec__")
     origin = getattr(module_spec, "origin", None)
     if origin:
-        return str(Path(origin).resolve().parent)
+        root = Path(origin).resolve().parent
+        if (root / "controls_wb").is_dir():
+            return str(root)
 
     import controls_wb
 
