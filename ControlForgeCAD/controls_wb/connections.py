@@ -149,8 +149,25 @@ def next_connection_id(connections: list[SignalConnection]) -> str:
     return f"CONN-{max(indexes, default=0) + 1:04d}"
 
 
+def _typed_paths_for_signal(project: object, signal_tag: str) -> list[object]:
+    """Return persisted typed paths carrying ``signal_tag`` on this project."""
+
+    return [
+        path
+        for path in (getattr(project, "ElectricalPaths", []) or [])
+        if str(getattr(path, "SignalTag", "") or "") == signal_tag
+    ]
+
+
 def append_connection_to_project(project: object, values: dict[str, object]) -> SignalConnection:
-    """Persist one normalized connection record on an editable CE_Project."""
+    """Persist one normalized connection record on an editable CE_Project.
+
+    The free-form legacy dialog cannot create a second, unlinked description of
+    a signal that already has a typed electrical path.  Such records can diverge
+    from the authoritative path's terminals, wire, or allocated PLC endpoint.
+    Materialization supplies the matching path identity and remains the one
+    supported route for deriving a record from a typed path.
+    """
     existing = connections_from_project(project)
     connection = SignalConnection(
         connection_id=str(values.get("connection_id", "")).strip() or next_connection_id(existing),
@@ -173,6 +190,18 @@ def append_connection_to_project(project: object, values: dict[str, object]) -> 
     )
     if not connection.signal_tag:
         raise ValueError("A signal tag is required for a connection record.")
+    typed_paths = _typed_paths_for_signal(project, connection.signal_tag)
+    typed_path_ids = {
+        str(getattr(path, "CEIdentity", "") or "") for path in typed_paths
+    }
+    if typed_paths and connection.path_identity not in typed_path_ids:
+        raise ValueError(
+            f"Signal {connection.signal_tag} already has a typed electrical path; "
+            "create or edit that path instead of adding an unlinked connection record."
+        )
+    for existing_connection in existing:
+        if connection.path_identity and existing_connection.path_identity == connection.path_identity:
+            return existing_connection
     records = list(getattr(project, "ConnectionRecords", []) or [])
     records.append(serialize_connection(connection))
     setattr(project, "ConnectionRecords", records)
@@ -267,6 +296,29 @@ def connection_findings(connections: list[SignalConnection]) -> list[str]:
     return findings
 
 
+def connection_typed_path_findings(
+    connections: list[SignalConnection], paths: list[object] | tuple[object, ...]
+) -> list[str]:
+    """Report legacy records that duplicate or contradict typed path signal data."""
+
+    path_ids_by_tag: dict[str, set[str]] = {}
+    for path in paths:
+        signal_tag = str(getattr(path, "SignalTag", "") or "")
+        path_identity = str(getattr(path, "CEIdentity", "") or "")
+        if signal_tag and path_identity:
+            path_ids_by_tag.setdefault(signal_tag, set()).add(path_identity)
+
+    findings = []
+    for connection in connections:
+        path_ids = path_ids_by_tag.get(connection.signal_tag, set())
+        if path_ids and connection.path_identity not in path_ids:
+            findings.append(
+                f"ERROR: {connection.connection_id} duplicates typed electrical path data for "
+                f"signal {connection.signal_tag}."
+            )
+    return findings
+
+
 def connection_reference_findings(
     connections: list[SignalConnection], objects: list[object] | tuple[object, ...]
 ) -> list[str]:
@@ -287,7 +339,9 @@ def connection_reference_findings(
         references = (
             ("path", connection.path_identity, {CERoles.CONNECTION_PATH}),
             ("signal", connection.signal_identity, {CERoles.SIGNAL}),
-            ("PLC device", connection.plc_device_identity, {CERoles.PLC_CONTROLLER}),
+            # Old project records may name a PLC controller; allocated-path
+            # records correctly name their resolved PLC channel.
+            ("PLC device", connection.plc_device_identity, {CERoles.PLC_CONTROLLER, CERoles.PLC_CHANNEL}),
             ("terminal strip", connection.terminal_strip_identity, {CERoles.TERMINAL_STRIP}),
             ("field device", connection.field_device_identity, {CERoles.FIELD_DEVICE}),
         )

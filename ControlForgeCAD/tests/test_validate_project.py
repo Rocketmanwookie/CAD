@@ -171,3 +171,24 @@ def test_validate_document_objects_reports_dangling_connection_record_reference(
     messages = validate_document_objects([project])
 
     assert ("ERROR", "CONN-0001 has a dangling path identity missing-path.") in messages
+
+
+def test_validate_document_objects_reports_unlinked_record_that_duplicates_typed_path():
+    legacy = SignalConnection("CONN-0001", "DI-0001")
+    project = SimpleNamespace(
+        ProjectId="CE-PROJECT-001",
+        ProjectName="Controls Project",
+        SchemaVersion="0.1.0",
+        Deliverables=[],
+        ConnectionRecords=[serialize_connection(legacy)],
+        ElectricalPaths=[SimpleNamespace(CEIdentity="path-001", SignalTag="DI-0001")],
+        ElectricalSignals=[],
+        ElectricalDevices=[],
+    )
+
+    messages = validate_document_objects([project])
+
+    assert (
+        "ERROR",
+        "CONN-0001 duplicates typed electrical path data for signal DI-0001.",
+    ) in messages

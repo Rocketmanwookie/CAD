@@ -36,6 +36,32 @@ class FakeDocument:
         return obj
 
 
+class StrictSlotLayoutObject(FakeLayoutObject):
+    """Small FreeCAD-like fake that enforces integer slot properties."""
+
+    def __init__(self, name):
+        super().__init__(name)
+        self._property_types = {}
+
+    def addProperty(self, property_type, name, group, description):
+        self._property_types[name] = property_type
+        return super().addProperty(property_type, name, group, description)
+
+    def __setattr__(self, name, value):
+        property_types = self.__dict__.get("_property_types", {})
+        if property_types.get(name) == "App::PropertyInteger" and not isinstance(value, int):
+            raise TypeError(f"{name} must be int, not {type(value).__name__}")
+        super().__setattr__(name, value)
+
+
+class StrictSlotDocument(FakeDocument):
+    def addObject(self, object_type, name):
+        obj = StrictSlotLayoutObject(name)
+        obj.ObjectType = object_type
+        self.Objects.append(obj)
+        return obj
+
+
 def test_starter_layout_specs_cover_required_placeholder_types():
     names = {spec.name for spec in STARTER_LAYOUT_SPECS}
 
@@ -215,7 +241,7 @@ def test_materialized_plc_allocation_has_stable_rack_module_channel_links():
 
     assert first["rack"] is second["rack"]
     assert len(first["modules"]) == 2
-    assert [(module.RackNumber, module.SlotNumber) for module in first["modules"]] == [("0", "1"), ("0", "2")]
+    assert [(module.RackNumber, module.SlotNumber) for module in first["modules"]] == [("0", 1), ("0", 2)]
     assert len(first["channels"]) == 9
     assert first["modules"][0].Channels[0].AllocatedSignalTag == "DI-0001"
     assert first["modules"][1].Channels[0].AllocatedSignalTag == "DI-0009"
@@ -224,6 +250,21 @@ def test_materialized_plc_allocation_has_stable_rack_module_channel_links():
     assert first["rack"].CERole == CERoles.PLC_RACK
     assert first["modules"][0].CERole == CERoles.PLC_MODULE
     assert first["channels"][0].CERole == CERoles.PLC_CHANNEL
+
+
+def test_materialized_allocation_converts_persisted_string_slots_for_freecad_properties():
+    document = StrictSlotDocument()
+    project = create_or_update_project(document)
+    project.ProjectId = "CE-ALLOC-STRING-SLOT-001"
+    project.PlcMake = "Siemens"
+    project.PlcLine = "S7-1200"
+    project.PlcCPU = "CPU 1212C DC/DC/DC"
+    project.DICount = "9"
+
+    materialized = materialize_plc_allocation(document, project)
+
+    assert [module.SlotNumber for module in materialized["modules"]] == [1, 2]
+    assert {channel.SlotNumber for channel in materialized["channels"]} == {1, 2}
 
 
 def test_materialized_plc_channels_link_to_deterministic_typed_signals():

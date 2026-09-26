@@ -9,6 +9,7 @@ from controls_wb.connections import (
     append_connection_for_path,
     connection_findings,
     connection_reference_findings,
+    connection_typed_path_findings,
     connection_schedule_csv,
     connections_from_project,
     deserialize_connection,
@@ -70,6 +71,30 @@ def test_connection_form_persists_record_and_export_reads_project_objects():
     )
     assert connection.connection_id == "CONN-0001"
     assert "CONN-0001,DI-0001,PE-101,TB-001,1,W-1001,PLC-001,0,0,planned" in connection_schedule_csv_for_objects([project])
+
+
+def test_manual_connection_record_cannot_duplicate_a_typed_path_signal():
+    typed_path = SimpleNamespace(CEIdentity="path-id", SignalTag="DI-0001")
+    project = SimpleNamespace(
+        ProjectId="CE-PROJECT-001", Deliverables=[], ConnectionRecords=[], ElectricalPaths=[typed_path]
+    )
+    document = SimpleNamespace(Objects=[project])
+
+    try:
+        add_connection_from_form(document, {"signal_tag": "DI-0001"})
+    except ValueError as exc:
+        assert "already has a typed electrical path" in str(exc)
+    else:
+        raise AssertionError("manual record should not duplicate a typed electrical path")
+
+
+def test_connection_validation_reports_legacy_record_that_duplicates_typed_path_signal():
+    legacy = SignalConnection("CONN-0001", "DI-0001")
+    typed_path = SimpleNamespace(CEIdentity="path-id", SignalTag="DI-0001")
+
+    assert connection_typed_path_findings([legacy], [typed_path]) == [
+        "ERROR: CONN-0001 duplicates typed electrical path data for signal DI-0001."
+    ]
 
 
 def _linked_objects():

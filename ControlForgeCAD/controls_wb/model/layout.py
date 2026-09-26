@@ -393,7 +393,11 @@ def materialize_plc_allocation(document, project: object | None = None) -> dict[
         for property_type, name, description in (
             ("App::PropertyLink", "RackObject", "Owning PLC rack"),
             ("App::PropertyString", "RackNumber", "PLC rack number"),
-            ("App::PropertyString", "SlotNumber", "PLC slot number"),
+            # ControlsLayoutObject already supplies SlotNumber as an integer.
+            # Keep that native property type for materialized occurrences: PLC
+            # allocation records deserialize coordinates as strings, while
+            # FreeCAD rejects assigning those strings to App::PropertyInteger.
+            ("App::PropertyInteger", "SlotNumber", "PLC slot number"),
             ("App::PropertyString", "ModuleName", "Catalog module name"),
             ("App::PropertyString", "PartNumber", "Catalog part number"),
             ("App::PropertyString", "CatalogSourceId", "Hardware catalog source"),
@@ -403,7 +407,7 @@ def materialize_plc_allocation(document, project: object | None = None) -> dict[
             _add_property(module_obj, property_type, name, "PLC Allocation", description)
         module_obj.RackObject = rack
         module_obj.RackNumber = module.rack
-        module_obj.SlotNumber = module.slot
+        module_obj.SlotNumber = int(module.slot)
         module_obj.ModuleName = module.module_name
         module_obj.PartNumber = module.part_number
         module_obj.CatalogSourceId = module.source_id
@@ -420,7 +424,7 @@ def materialize_plc_allocation(document, project: object | None = None) -> dict[
             for property_type, name, description in (
                 ("App::PropertyLink", "ModuleObject", "Owning PLC module"),
                 ("App::PropertyString", "RackNumber", "PLC rack number"),
-                ("App::PropertyString", "SlotNumber", "PLC slot number"),
+                ("App::PropertyInteger", "SlotNumber", "PLC slot number"),
                 ("App::PropertyString", "ChannelNumber", "PLC channel number"),
                 ("App::PropertyString", "SignalType", "Allocated I/O signal type"),
                 ("App::PropertyString", "AllocatedSignalTag", "Allocated logical I/O signal tag"),
@@ -431,7 +435,7 @@ def materialize_plc_allocation(document, project: object | None = None) -> dict[
                 _add_property(channel_obj, property_type, name, "PLC Allocation", description)
             channel_obj.ModuleObject = module_obj
             channel_obj.RackNumber = signal.rack
-            channel_obj.SlotNumber = signal.slot
+            channel_obj.SlotNumber = int(signal.slot)
             channel_obj.ChannelNumber = signal.channel
             channel_obj.SignalType = signal.signal_type
             channel_obj.AllocatedSignalTag = signal.tag

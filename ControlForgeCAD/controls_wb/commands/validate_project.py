@@ -13,6 +13,7 @@ from controls_wb.missing_data import project_object_to_intake
 from controls_wb.connections import (
     connection_findings,
     connection_reference_findings,
+    connection_typed_path_findings,
     connections_from_project,
 )
 from controls_wb.electrical_validation import validate_connection_graph
@@ -61,6 +62,11 @@ def validate_document_objects(objects):
             level, _, message = finding.partition(": ")
             messages.append((level, message))
         for finding in connection_reference_findings(connections, objects):
+            level, _, message = finding.partition(": ")
+            messages.append((level, message))
+        for finding in connection_typed_path_findings(
+            connections, list(getattr(project, "ElectricalPaths", []) or [])
+        ):
             level, _, message = finding.partition(": ")
             messages.append((level, message))
         if not hasattr(project, "ElectricalPaths"):
