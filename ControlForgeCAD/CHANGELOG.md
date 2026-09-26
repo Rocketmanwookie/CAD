@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Added `CE_ImportAndReview`, which stages supported CEProject XML and setup
+  YAML/UML input for explicit per-field approval before atomic project-intake
+  application. It does not yet import typed paths, devices, terminals, wires,
+  vendor PLC projects, or engineering-compliance data.
+
+- Fixed PLC allocation materialization against FreeCAD's native integer slot
+  property and reject free-form connection records that would duplicate an
+  existing typed electrical-path signal. Validation flags legacy duplicates.
+
 - Electrical schedule exports now append allocated PLC channel identity, rack,
   slot, channel, and address trace fields. Export rejects paths whose PLC owner,
   signal, or address does not match the persisted allocation.

@@ -24,6 +24,7 @@ integraCAD Open is the integration-first controls-engineering project; ControlFo
 | Command ID | Menu text | Current behavior |
 |---|---|---|
 | `CE_NewProject` | New Controls Project | Opens a project intake dialog for core project/customer/site/deliverable fields, combined phase/voltage selection, starter controlled-load lines for current estimating, enclosure rating checkboxes, XML-backed PLC make/line/CPU selection, typed DI/DO/AI/AO counts, compatible Ethernet/power dropdowns, communication protocol checkboxes, optional I/O accessories, setup source metadata, a remembered CEProject XML import selector, YAML/UML-derived setup import, and a link to the project setup hardware catalog guide. It creates or updates an editable `CE_Project` object and shows an I/O expansion planning popup. If Qt/PySide is unavailable, it creates the starter object and prints a warning. |
+| `CE_ImportAndReview` | Import and Review Project Data | Stages supported CEProject XML or setup YAML/UML input, presents changed project fields for explicit per-field approval, and atomically applies only approved values. |
 | `CE_AddIOSignal` | Add I/O Signal | Opens an I/O signal dialog with selectable digital input, digital output, analog input, analog output, and relay types; user labels are stored as explicit signal rows with auto-generated tags and addresses. |
 | `CE_AllocatePLCIO` | Allocate PLC I/O | Validates the selected catalog CPU and expansion capacity, deterministically assigns rack/slot/channel values, persists a complete mapping, and atomically materializes the linked rack/module/channel and typed-signal occurrences. |
 | `CE_AddConnection` | Add Connection Record | Stores a traceable signal-to-terminal-to-wire record with field-device and PLC endpoint references. |
@@ -115,6 +116,11 @@ The current project facts are addressable through the pure-Python `controls_wb.f
 Project setup can also store starter controlled-load lines such as `motor, Conveyor motor, 2, 1hp` and estimate total load amps from the selected phase/voltage with 20 percent spare capacity. This is an early planning aid, not a final electrical design calculation.
 
 Project setup can import supported CEProject XML through the Project Intake dialog. Imported XML is remembered on the editable `CE_Project` object, can be selected again later, and preserves parsed project metadata, contacts, source records, and intake questions. The dialog can also import lightweight YAML-ish setup notes and PlantUML/UML-derived fact lines that map into the same Project Intake fields. Those setup text imports are adapter inputs, not remembered CEProject source records yet.
+
+For deliberate review before mutation, use **Import and Review Project Data**.
+It previews only changed supported intake fields and requires explicit selection
+of every value to apply. See [`docs/import-and-review.md`](docs/import-and-review.md)
+for supported inputs, provenance, and the current boundary.
 
 The first CAD-side layout objects are placeholders, not manufacturer-accurate models. **Create Control Panel** creates a panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module with editable metadata such as tag, manufacturer, part number, description, panel name, voltage, current, terminal count, slot number, channel count, and signal type where applicable. Panel placeholder metadata comes from the XML panel hardware catalog. When a selected PLC CPU exists in the XML hardware catalog, the PLC placeholder receives the catalog manufacturer, part number, onboard channel count, and CADbase reference metadata. BOM export includes these objects when they expose controls metadata.
 

@@ -115,6 +115,7 @@ if Gui is not None:
                 export_terminal_plan,
                 missing_data,
                 new_project,
+                import_and_review,
                 validate_project,
             )
 

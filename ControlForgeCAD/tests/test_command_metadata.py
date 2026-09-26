@@ -21,6 +21,7 @@ from controls_wb.freecad_paths import workbench_root_from_module_globals
 def test_command_metadata_matches_expected_workbench_commands():
     assert all_command_ids() == (
         "CE_NewProject",
+        "CE_ImportAndReview",
         "CE_AddIOSignal",
         "CE_AllocatePLCIO",
         "CE_AddConnection",
@@ -40,7 +41,7 @@ def test_command_metadata_matches_expected_workbench_commands():
         "CE_ExportTerminalPlan",
     )
     assert PROJECT_COMMANDS == (
-        "CE_NewProject", "CE_AddIOSignal", "CE_AllocatePLCIO", "CE_AddConnection",
+        "CE_NewProject", "CE_ImportAndReview", "CE_AddIOSignal", "CE_AllocatePLCIO", "CE_AddConnection",
         "CE_AddElectricalPath", "CE_EditElectricalPath", "CE_CaptureWireRoute", "CE_RouteWireWithCables",
     )
     assert LAYOUT_COMMANDS == ("CE_CreatePanel",)
@@ -58,6 +59,7 @@ def test_command_metadata_matches_expected_workbench_commands():
 
 def test_command_metadata_exposes_menu_text_for_manual_validation_docs():
     assert command_menu_text("CE_NewProject") == "New Controls Project"
+    assert command_menu_text("CE_ImportAndReview") == "Import and Review Project Data"
     assert command_menu_text("CE_AddIOSignal") == "Add I/O Signal"
     assert command_menu_text("CE_AllocatePLCIO") == "Allocate PLC I/O"
     assert command_menu_text("CE_AddConnection") == "Add Connection Record"
