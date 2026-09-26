@@ -63,9 +63,10 @@ following existing tested patterns.
 - The roadmap sentence saying graphical route capture is next is stale; the
   TODO correctly marks graphical route capture complete.
 - Connection-record identity linkage, catalog-backed PLC allocation, persistent
-  rack/module/channel occurrences, allocated-channel signal/path linkage, and
-  channel-owned path authoring are completed increments. The next active
-  milestone is safe allocation reconciliation.
+  rack/module/channel occurrences, allocated-channel signal/path linkage,
+  channel-owned path authoring, safe allocation reconciliation, and
+  allocation-traceable schedule exports are completed increments. The next
+  active milestone is manual FreeCAD allocation-to-path acceptance evidence.
 
 ## Completed contract — connection-record identity linkage
 
@@ -88,13 +89,14 @@ typed electrical graph. Complete this milestone only when:
 Keep the completed connection-linkage contract separate from rack/channel
 allocation, schematic generation, conductor sizing, and physical routing.
 
-## Active milestone — safe allocation reconciliation
+## Active milestone — manual FreeCAD allocation-to-path acceptance
 
-When a PLC allocation changes, locate every affected channel-owned signal and
-electrical path. Either migrate it through an explicit validated operation or
-stop with deterministic, actionable findings; never silently delete or
-readdress connected design data. Preserve the distinction between catalog
-definitions, placed occurrences, logical signals, and terminal endpoints.
+Run the documented allocation → allocated-channel path → save/reopen →
+recompute → edit → schedule-export desktop workflow. Record the FreeCAD
+version, commit, screenshots, Report View output, saved FCStd, and exported
+CSVs. Do not describe this gate as passed until that evidence exists. When no
+FreeCAD executable is available, retain the checklist and report the exact
+external requirement while continuing dependency-free work.
 
 ## Mission
 

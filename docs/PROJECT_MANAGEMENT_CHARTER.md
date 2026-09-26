@@ -99,11 +99,11 @@ policy until the user supplies direction.
 
 ### Current recommendation
 
-The next milestone is **safe allocation reconciliation**: when counts, slots,
-or selected modules change, locate every affected channel-owned signal and path
-and either migrate it through an explicit validated operation or stop with a
-deterministic actionable finding. It must never silently delete or readdress
-connected design data. This is not schematic generation, a PLC vendor-project
+The next milestone is **manual FreeCAD allocation-to-path acceptance evidence**:
+run the documented allocate → path → save/reopen → recompute → edit → export
+workflow and record the version, commit, visible results, saved FCStd, and CSVs.
+Until a desktop run is captured, report the environment limitation rather than
+claiming success. This is not schematic generation, a PLC vendor-project
 export, or electrical-code sizing.
 
 ## Reporting structure and specialist review gate
