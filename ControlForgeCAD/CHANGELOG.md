@@ -27,6 +27,11 @@
   or derived platform. The user must review a compatible selection rather than
   having dependent choices changed implicitly.
 
+- Import & Review now also rejects a fully approved PLC selection if any
+  approved value is unsupported by the bundled catalog, rather than silently
+  storing a different catalog make, line, CPU, Ethernet, or expansion-power
+  default. Rejection leaves the existing project unchanged.
+
 - Fixed PLC allocation materialization against FreeCAD's native integer slot
   property and reject free-form connection records that would duplicate an
   existing typed electrical-path signal. Validation flags legacy duplicates.

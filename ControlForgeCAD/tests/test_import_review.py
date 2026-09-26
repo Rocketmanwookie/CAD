@@ -100,6 +100,69 @@ def test_partial_plc_make_approval_rejects_unapproved_dependency_normalization()
     )
 
 
+def test_full_unsupported_plc_approval_rejects_catalog_rewrite_without_mutation():
+    document = FakeDocument()
+    project = create_or_update_project(document)
+    project.PlcMake = "Siemens"
+    project.PlcLine = "S7-1200"
+    project.PlcCPU = "CPU 1212C DC/DC/DC"
+    project.EthernetAdapter = "Integrated PROFINET interface"
+    project.ExpansionPowerSupply = "External 24 VDC supply required"
+    project.PlcPlatform = "Siemens S7-1200"
+    staged = stage_project_import(
+        """plc:
+  make: Allen-Bradley
+  line: CompactLogix 5380
+  cpu: 5069-L306ER
+  ethernet_adapter: EtherNet/IP
+  expansion_power_supply: 24 VDC
+""",
+        "unsupported-plc.yml",
+        project,
+    )
+
+    with pytest.raises(ImportReviewError, match="not compatible with the bundled catalog"):
+        apply_approved_project_import(
+            project, staged, {candidate.key for candidate in staged.candidates}
+        )
+
+    assert (
+        project.PlcMake,
+        project.PlcLine,
+        project.PlcCPU,
+        project.EthernetAdapter,
+        project.ExpansionPowerSupply,
+        project.PlcPlatform,
+    ) == (
+        "Siemens",
+        "S7-1200",
+        "CPU 1212C DC/DC/DC",
+        "Integrated PROFINET interface",
+        "External 24 VDC supply required",
+        "Siemens S7-1200",
+    )
+
+
+def test_approved_unsupported_plc_line_rejects_even_when_default_matches_current_project():
+    document = FakeDocument()
+    project = create_or_update_project(document)
+    project.PlcMake = "Allen-Bradley"
+    project.PlcLine = "Micro800"
+    project.PlcCPU = "Micro820 2080-LC20-20QWB"
+    project.EthernetAdapter = "Embedded EtherNet/IP"
+    project.ExpansionPowerSupply = "24 VDC expansion supply"
+    project.PlcPlatform = "Allen-Bradley Micro800"
+    staged = stage_project_import(
+        "plc:\n  line: Unsupported line\n", "unsupported-line.yml", project
+    )
+
+    with pytest.raises(ImportReviewError, match="not compatible with the bundled catalog"):
+        apply_approved_project_import(project, staged, {"PlcLine"})
+
+    assert project.PlcLine == "Micro800"
+    assert project.PlcCPU == "Micro820 2080-LC20-20QWB"
+
+
 def test_stage_ceproject_xml_preserves_source_only_after_explicit_apply():
     document = FakeDocument()
     project = create_or_update_project(document)

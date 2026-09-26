@@ -47,5 +47,8 @@ PLC make, line, CPU, compatible Ethernet, compatible expansion power, and the
 derived platform form a dependency group. If approving selected import fields
 would make the intake normalizer change an unapproved member of that group, the
 command rejects the decision and leaves the project unchanged. Review a
-complete compatible PLC selection instead; Import & Review never silently
-substitutes dependent PLC choices.
+complete compatible PLC selection instead. It also rejects a fully approved
+selection when any approved make, line, CPU, Ethernet, or expansion-power value
+is not an exact supported catalog value; Import & Review never silently
+substitutes dependent PLC choices or stores a catalog default in place of an
+approved imported value.

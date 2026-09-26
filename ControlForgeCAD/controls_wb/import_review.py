@@ -216,6 +216,29 @@ def _require_explicit_plc_dependency_approval(
         and not {"PlcMake", "PlcLine"}.issubset(approved)
     ):
         changed.append("derived PLC platform")
+    # Approval means accepting the exact catalog value displayed in the review,
+    # not merely accepting a value that the intake normalizer can replace with a
+    # default.  This is especially important when a source names a vendor/line
+    # or CPU that is not represented by the bundled catalog: accepting all of
+    # those rows must fail, rather than silently storing a different supported
+    # vendor/line/CPU combination.
+    approved_catalog_values = {
+        "PlcMake": "PLC make",
+        "PlcLine": "PLC line",
+        **protected,
+    }
+    rewritten = [
+        label
+        for key, label in approved_catalog_values.items()
+        if key in approved
+        and str(normalized[key]) != str(proposed_values.get(key, "")).strip()
+    ]
+    if rewritten:
+        raise ImportReviewError(
+            "Import approval contains PLC selections that are not compatible with "
+            "the bundled catalog: " + ", ".join(rewritten) + ". "
+            "No project values were changed; select a supported catalog combination instead."
+        )
     if changed:
         raise ImportReviewError(
             "Import approval would normalize unapproved PLC fields: " + ", ".join(changed) + ". "
