@@ -65,11 +65,12 @@ derived terminal address, and validation reports broken reciprocal links,
 unregistered signals, omitted consuming paths, and corrupted owner/address
 relationships.
 
-The next boundary is **safe allocation reconciliation**. A changed allocation
-must identify channel-owned signals and paths that would be moved or removed,
-then either migrate them explicitly or stop with an actionable finding. Manual
-FreeCAD allocate/save/reopen/recompute/edit/save/reopen evidence also remains
-required; automated tests do not substitute for that acceptance run.
+Safe allocation reconciliation is implemented: supported same-type moves
+migrate their linked signal, terminal, and paths atomically; incompatible
+changes or removals with dependent design data stop with actionable findings.
+The remaining acceptance boundary is a **manual FreeCAD
+allocate/save/reopen/recompute/edit/save/reopen** run. Automated tests do not
+substitute for that desktop evidence.
 
 This model is not a PLCopen XML exporter, ladder editor, or a substitute for a
 vendor PLC IDE.

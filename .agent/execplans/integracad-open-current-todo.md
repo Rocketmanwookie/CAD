@@ -86,11 +86,12 @@ used as a replacement for that procedure.
 
 Continue the existing FreeCAD controls-engineering workbench toward the next
 working-MVP milestone without replacing the project scaffold. The immediate
-milestone is **safe allocation reconciliation**: when the selected CPU, modules,
-or I/O counts change, locate every affected channel-owned signal and electrical
-path and either migrate it explicitly or stop with deterministic actionable
-findings. It must never silently delete or readdress connected design data; it
-is not schematic generation or vendor PLC-project export.
+milestone is **manual FreeCAD allocation-to-path acceptance evidence**. Run the
+documented allocation, allocated-channel path-authoring, save/reopen, recompute,
+edit, validation, and schedule-export workflow in a real FreeCAD desktop.
+Record the exact version, commit, saved FCStd, screenshots, Report View output,
+and exported CSVs. Safe allocation reconciliation is complete; do not claim the
+manual gate passed until this evidence exists.
 
 ## Milestones
 

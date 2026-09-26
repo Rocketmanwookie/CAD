@@ -1,28 +1,9 @@
-# Project status and agent operating model
+# Project status
 
-This page is the human-readable companion to
-[`project-agent-structure.yaml`](project-agent-structure.yaml). The YAML is the
-machine-readable source for the agent hierarchy and planned effort allocation;
-these percentages are planning weights, **not measured time or utilization**.
-
-## Team structure
-
-```mermaid
-flowchart TD
-    T[Tony CAD<br/>Project manager] --> Q[QA Guy<br/>Independent quality gate]
-    T --> F[FreeCAD Guy<br/>Workbench and persistence]
-    T --> C[Controls Engineer Guy<br/>Controls-workflow integrity]
-    T --> D[Docu Nerd<br/>Documentation and history]
-```
-
-```mermaid
-pie title Planned relative agent effort
-    "Tony CAD — integration and milestone management" : 35
-    "QA Guy — independent quality review" : 25
-    "FreeCAD Guy — workbench and persistence" : 15
-    "Controls Engineer Guy — engineering workflow" : 15
-    "Docu Nerd — documentation and history" : 10
-```
+[`PROJECT_MANAGEMENT_CHARTER.md`](PROJECT_MANAGEMENT_CHARTER.md) is the
+authoritative YAML swarm roster, reporting structure, and release-gate policy.
+This page records the verified product position and its next acceptance gate;
+it does not duplicate or override the charter's agent structure.
 
 ## Verified project position
 
@@ -35,18 +16,18 @@ engineering-compliance tool.
 | Capability | Verified implementation | Remaining boundary |
 |---|---|---|
 | Project intake | Editable `CE_Project`, intake dialog, source/missing-data tracking, CEProject XML round trip | Broader requirements and external-fact traceability |
-| PLC I/O | Catalog selection, deterministic allocation, capacity/collision checks, persistent occurrences | Safe reconciliation after changed counts, slots, or modules |
-| PLC-to-field graph | Allocated channel owns the typed signal and PLC endpoint for new paths | Explicit migration/reconciliation of connected paths during allocation changes |
+| PLC I/O | Catalog selection, deterministic allocation, capacity/collision checks, persistent occurrences, and safe same-type reconciliation | Manual FreeCAD acceptance evidence for the completed workflow |
+| PLC-to-field graph | Allocated channel owns the typed signal and PLC endpoint; connected paths migrate on safe same-type allocation moves | Manual save/reopen/recompute evidence in a real FreeCAD desktop |
 | Wiring and routing | Typed paths, terminals, wires, geometry capture/editing, optional Cables routing, schedules | Cabinet-side power/circuit modeling and richer engineering attributes |
 | FreeCAD lifecycle | Identity-aware FeaturePython objects, transaction boundaries, headless regression coverage | Recorded manual allocate/save/reopen/recompute/edit/save/reopen acceptance in FreeCAD |
 | Interchange and compliance | Deterministic CEProject/XML/CSV starter boundaries | PLCopen/schematic contracts, vendor adapters, code/safety/protection and commissioning workflows |
 
 ## Next milestone
 
-**Safe allocation reconciliation**: changing a PLC allocation must locate every
-affected channel-owned path and either migrate it through an explicit validated
-operation or stop with deterministic, actionable findings. Connected engineering
-data must never be silently deleted or readdressed.
+**Manual FreeCAD allocation-to-path acceptance evidence**: run and record the
+documented allocate → path → save/reopen → recompute → edit → export workflow.
+Desktop evidence must include the FreeCAD version, commit, screenshots, Report
+View output, saved FCStd, and exported CSVs; it is not yet recorded.
 
 ## Evidence and governance
 
