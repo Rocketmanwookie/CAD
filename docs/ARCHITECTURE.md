@@ -159,6 +159,8 @@ signal tag reuses the same signal and links back to the channel. Validation
 detects missing, unregistered, non-reciprocal, and omitted consuming-path
 links. Path authoring selects an allocated channel and derives the first
 PLC-terminal owner and designation from the channel and its allocated address.
+Editing preserves that allocation-derived designation, and allocation-aware
+validation detects a manually corrupted terminal owner or address.
 
 Typed continuous electrical objects now include `ElectricalPathObject`,
 `ElectricalTerminalObject`, and `ElectricalWireObject`. The path owns ordered

@@ -490,6 +490,15 @@ def allocation_electrical_graph_findings(project, objects) -> tuple[tuple[str, s
                 findings.append(("ERROR", "allocated_channel_wrong_role_path", f"PLC channel {channel_id} links to a non-path object."))
             elif getattr(path, "SignalObject", None) is not signal:
                 findings.append(("ERROR", "allocated_channel_path_signal_mismatch", f"PLC channel {channel_id} path does not carry its typed signal."))
+            else:
+                terminals = list(getattr(path, "TerminalObjects", []) or [])
+                first_terminal = terminals[0] if terminals else None
+                if first_terminal is None or getattr(first_terminal, "CERole", "") != CERoles.PLC_CHANNEL_TERMINAL:
+                    findings.append(("ERROR", "allocated_channel_path_terminal_missing", f"PLC channel {channel_id} path has no PLC channel terminal."))
+                elif getattr(first_terminal, "OwnerIdentity", "") != getattr(channel, "CEIdentity", ""):
+                    findings.append(("ERROR", "allocated_channel_path_owner_mismatch", f"PLC channel {channel_id} does not own its path PLC terminal."))
+                elif getattr(first_terminal, "Designation", "") != getattr(channel, "SignalAddress", ""):
+                    findings.append(("ERROR", "allocated_channel_path_address_mismatch", f"PLC channel {channel_id} path terminal does not match allocated address {getattr(channel, 'SignalAddress', '')}."))
     return tuple(sorted(findings, key=lambda finding: (finding[0], finding[1], finding[2])))
 
 

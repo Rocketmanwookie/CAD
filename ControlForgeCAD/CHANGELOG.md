@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Editing a path created from an allocated PLC channel now preserves the
+  channel-derived PLC-terminal designation. Validation also detects manually
+  corrupted path terminal owner or address links.
+
 - `CE_AddElectricalPath` now requires a selected allocated PLC channel. It
   derives the path's PLC-terminal owner and designation from that channel and
   its allocated address, rejecting generic-controller, mismatched-signal, and

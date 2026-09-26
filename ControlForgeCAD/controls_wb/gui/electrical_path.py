@@ -263,8 +263,26 @@ def _route_text(route: tuple[RoutePoint, ...]) -> str:
 
 
 def edit_electrical_path_from_form(path_obj, values: dict[str, str]):
+    """Apply an edit while preserving an allocated channel's terminal contract."""
+
     current = electrical_path_from_object(path_obj)
-    return update_electrical_path_object(path_obj, update_electrical_path_from_form(current, values))
+    owner_identity = current.terminals[0].owner_identity
+    channel = next(
+        (
+            obj for obj in (getattr(getattr(path_obj, "Document", None), "Objects", []) or [])
+            if getattr(obj, "CEIdentity", "") == owner_identity
+            and getattr(obj, "CERole", "") == CERoles.PLC_CHANNEL
+        ),
+        None,
+    )
+    normalized = dict(values)
+    if channel is not None:
+        allocated_designation = str(getattr(channel, "SignalAddress", "") or "")
+        requested_designation = str(normalized.get("plc_terminal", "")).strip()
+        if requested_designation != allocated_designation:
+            raise ValueError("PLC terminal designation must remain the allocated channel address.")
+        normalized["plc_terminal"] = allocated_designation
+    return update_electrical_path_object(path_obj, update_electrical_path_from_form(current, normalized))
 
 
 def _add_device_items(combo, devices: list[object]) -> None:

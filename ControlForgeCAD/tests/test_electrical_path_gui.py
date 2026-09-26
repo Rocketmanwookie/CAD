@@ -35,6 +35,7 @@ class FakeDocument:
     def addObject(self, object_type, name):
         obj = FakeObject(name)
         obj.ObjectType = object_type
+        obj.Document = self
         self.Objects.append(obj)
         return obj
 
@@ -202,3 +203,12 @@ def test_edit_preserves_all_identities_and_updates_route_length():
     assert result.signal_object.SignalTag == "DI-ESTOP"
     assert result.wire_objects[0].CalculatedLength == "300.0 mm"
     assert result.wire_objects[0].SpecifiedLength == "350.0 mm"
+
+
+def test_edit_rejects_changed_allocated_plc_terminal_designation():
+    document, _, values = _setup()
+    result = add_electrical_path_from_form(document, values)
+    values["plc_terminal"] = "%I7.7"
+
+    with pytest.raises(ValueError, match="must remain"):
+        edit_electrical_path_from_form(result.path_object, values)
