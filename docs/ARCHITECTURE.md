@@ -396,7 +396,26 @@ sequenceDiagram
 4. Validation can inspect project and layout metadata.
 5. BOM export selects supported objects with sufficiently populated fields.
 
-### 7.4 Export flow
+### 7.4 Import and review flow
+
+`CE_ImportAndReview` is the explicit, opt-in project-import entry point (CEProject
+XML, setup YAML/YML, and PlantUML/UML notes).
+
+1. The command stages a selected file without mutating the document.
+2. The dialog previews only changed supported project fields and, for CEProject
+   XML `Signals`, one logical I/O candidate per supported `DI`/`DO`/`AI`/`AO`
+   signal — never a full unreviewed overwrite.
+3. The engineer checks only the items to approve; conflicted I/O rows are shown
+   but cannot be approved.
+4. Apply runs inside one FreeCAD document transaction. A source-and-current-state
+   fingerprint rejects a stale decision before writing.
+5. A malformed or tagless persisted I/O row fails closed rather than being
+   silently discarded.
+6. Imported `plcAddress`/`terminal` attributes are reference-only and are never
+   applied directly — catalog-backed `CE_AllocatePLCIO` remains the sole writer
+   of authoritative allocation.
+
+### 7.5 Export flow
 
 ```mermaid
 flowchart LR
