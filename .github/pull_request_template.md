@@ -4,6 +4,7 @@
 
 - [ ] Focused tests passed.
 - [ ] Relevant full test suite and compilation passed.
+- [ ] Critical Ruff gate passed.
 - [ ] Manual FreeCAD checks are recorded, or explicitly listed as unrun.
 
 ## Contract and documentation impact
@@ -18,3 +19,8 @@
 - [ ] FreeCAD Guy review, if document objects, transactions, or persistence changed.
 - [ ] Docu Nerd review, if user-facing behavior or public-code comments changed.
 - [ ] QA Guy approval recorded before merge.
+- [ ] Required SME consultation, source locator, and Layer 4 disposition are
+      recorded in `docs/AGENT_OPERATIONS_LEDGER.md`.
+- [ ] For a release candidate, QA Guy and Controls Engineer Guy decisions are
+      recorded in `docs/RELEASE_GATE_CHECKLIST.md`; Tony CAD is not a substitute
+      for either independent approval.

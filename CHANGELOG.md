@@ -8,6 +8,14 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Added
 
+- Added a repository-controlled quality workflow for pull requests and the
+  `controlforgecad` branch: regression tests, compilation, whitespace checks,
+  and a critical-error Ruff gate now have a reproducible CI definition.
+- Added an agent-operations ledger and release-gate checklist that record
+  worktree/handoff provenance, SME sources and dispositions, manual FreeCAD
+  evidence, and independent QA/controls-engineering decisions. Replaced the
+  stale duplicate GitHub agent roster with a pointer to the authoritative
+  project-management charter, and issued the corresponding Tony CAD SOP.
 - Added `CE_ImportAndReview`, a staged, opt-in project-import entry point for
   CEProject XML, setup YAML/YML, and PlantUML/UML notes. It previews only
   changed supported project fields and logical I/O rows, applies only

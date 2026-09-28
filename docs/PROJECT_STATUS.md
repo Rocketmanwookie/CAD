@@ -43,6 +43,12 @@ or schedule export; those remain part of the open acceptance gate above.
 
 - [Project-management charter](PROJECT_MANAGEMENT_CHARTER.md) — startup,
   source-of-truth, specialist review, and release-gate procedure.
+- [Agent operations ledger](AGENT_OPERATIONS_LEDGER.md) — milestone ownership,
+  worktree/handoff, consultation, and evidence record.
+- [Release-gate checklist](RELEASE_GATE_CHECKLIST.md) — required automated,
+  specialist, manual-acceptance, and independent release decisions.
+- [Change of SOP for Tony CAD](TONY_CAD_CHANGE_OF_SOP.md) — required milestone,
+  handoff, evidence, and escalation procedure.
 - [QA fault-tree analysis](QA_FAULT_TREE.md) — living failure-mode map and
   future QA evidence backlog.
 - [PLC allocation model](../ControlForgeCAD/docs/plc-allocation.md) — allocation

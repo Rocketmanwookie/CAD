@@ -38,12 +38,19 @@ A contribution that changes any of these must update the architecture document i
 ```bash
 python3 -m pytest
 python3 -m compileall ControlForgeCAD
+ruff check ControlForgeCAD --select E9,F63,F7,F82 --per-file-ignores 'ControlForgeCAD/InitGui.py:F821'
 ```
 
 6. Validate relevant GUI behavior in FreeCAD when changing commands, dialogs, document objects, object properties, workbench initialization, or command-driven exports.
 7. Update all documentation affected by the change.
 8. Add a concise entry under `Unreleased` in [`CHANGELOG.md`](CHANGELOG.md).
 9. Open a pull request that explains the problem, implementation, architecture impact, validation performed, generated-artifact impact, and known limitations.
+
+Record the milestone in [`docs/AGENT_OPERATIONS_LEDGER.md`](docs/AGENT_OPERATIONS_LEDGER.md).
+For a release candidate, complete
+[`docs/RELEASE_GATE_CHECKLIST.md`](docs/RELEASE_GATE_CHECKLIST.md); Tony CAD
+coordinates the decision but cannot substitute for the independent QA Guy and
+Controls Engineer Guy approvals required by the charter.
 
 ## Architecture boundaries
 
