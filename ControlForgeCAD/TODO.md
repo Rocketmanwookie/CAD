@@ -62,13 +62,13 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 
 - [x] Establish integraCAD Open as the project-facing documentation name while retaining ControlForgeCAD for the current workbench/module.
 - [x] Add contributor guide.
-- [ ] Add issue templates.
-- [ ] Add pull request template.
-- [ ] Add coding style guide.
-- [ ] Add schema style guide.
-- [ ] Add external-asset policy.
+- [x] Add issue templates.
+- [x] Add pull request template.
+- [x] Add coding style guide.
+- [x] Add schema style guide.
+- [x] Add external-asset policy.
 - [ ] Add versioning and migration policy for CEProject XML.
-- [ ] Add architecture decision record folder: `docs/adr/`.
+- [x] Add architecture decision record folder: `docs/adr/`.
 - [ ] Add roadmap issue labels: `roadmap`, `intake`, `xml`, `adapter`, `documentation`, `learning`, `hmi`, `digital-twin`, `bim`, `cadbase`, `bom`, `costing`.
 
 ### Phase 1 - Intake-first workflow
