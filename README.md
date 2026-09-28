@@ -12,6 +12,10 @@ This repository contains **integraCAD Open**, an open-source controls-engineerin
 - [Contributing](CONTRIBUTING.md) — development workflow, testing expectations, architecture rules, and documentation requirements.
 - [Contributor governance guides](docs/CODING_STYLE_GUIDE.md) — coding, schema,
   external-asset, and architecture-decision-record guidance.
+- [Tool and dependency registry](docs/TOOL_AND_DEPENDENCY_REGISTRY.md) —
+  verification-tool provenance, ownership, and revalidation records.
+- [SME consultation receipt](docs/SME_CONSULTATION_RECEIPT.md) — required
+  evidence format for standards, vendor, and engineering consultations.
 - [Changelog](CHANGELOG.md) — implemented milestones, unreleased changes, and contributor-facing change history.
 - [CAD library download manifest](exports/siemens_cad_library_download_manifest.csv) — requested Siemens and supporting panel/safety/instrumentation CAD assets, exact MLFBs or search keys, required schematic companions, and acquisition status.
 - [Datasheet link export](exports/equipment_datasheet_links.csv) — one document-registry row per requested manufactured part, including exact/pending state, official lookup, local path, checksum, and document metadata.

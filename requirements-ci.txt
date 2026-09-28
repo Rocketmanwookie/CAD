@@ -1,0 +1,7 @@
+# CI-only verification tools. Runtime code intentionally has no mandatory
+# third-party dependency; optional integrations remain behind adapter boundaries.
+pytest>=9.0.3,<10
+ruff>=0.14,<1
+lxml>=5,<7
+pip-audit>=2.9,<3
+detect-secrets>=1.5,<2
