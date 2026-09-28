@@ -26,5 +26,6 @@ Any future implementation milestone must start a separate entry in
 [`AGENT_OPERATIONS_LEDGER.md`](AGENT_OPERATIONS_LEDGER.md), identify its
 specialist and SME evidence, and pass the applicable
 [`RELEASE_GATE_CHECKLIST.md`](RELEASE_GATE_CHECKLIST.md). Tony CAD may
-coordinate that evidence but cannot replace independent QA Guy or Controls
-Engineer Guy release decisions.
+coordinate that evidence but cannot replace the review evidence required by
+the active cycle position in
+[`MILESTONE_REVIEW_CADENCE.md`](MILESTONE_REVIEW_CADENCE.md).

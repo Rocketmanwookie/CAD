@@ -24,10 +24,11 @@ engineering review.
 
 ## Specialist and SME evidence
 
-- [ ] QA Guy independently reviewed the affected project surface and recorded
-  approve / approve-with-follow-ups / changes-required.
-- [ ] Controls Engineer Guy independently reviewed PLC, panel, I/O, electrical
-  graph, catalog, export, and engineering-boundary effects when applicable.
+- [ ] For cycle milestones 1–5: two independent agent review reports are
+  recorded in the operations ledger, each with role, scope, evidence, and
+  conclusion. See `MILESTONE_REVIEW_CADENCE.md`.
+- [ ] For cycle milestone 6: the project-owner review is recorded in the
+  operations ledger, pull request, or issue. Do not substitute agent reports.
 - [ ] FreeCAD Guy reviewed lifecycle, transactions, persistence, and GUI
   effects when applicable.
 - [ ] Required Layer 0 consultations are recorded in the operations ledger with
@@ -47,13 +48,15 @@ engineering review.
 
 ## Decision
 
-- QA Guy decision / evidence link:
-- Controls Engineer Guy decision / evidence link:
+- Cycle position (1–6):
+- Agent review report 1 / evidence link, or project-owner review at position 6:
+- Agent review report 2 / evidence link, if applicable:
 - Tony CAD integration decision:
 - Release status: approved / approved with follow-ups / blocked
 
-The QA and Controls Engineer decisions must be independent for a release. Tony
-CAD coordinates the gate and cannot replace either required approver.
+For cycle positions 1–5, the two agent reports must be independent. At cycle
+position 6, the project-owner review is mandatory. Tony CAD coordinates the
+gate and cannot replace either form of required evidence.
 
 **Evidence rule:** do not mark this candidate done based only on a commit or a
 passing test run. Each applicable completed item must point to durable evidence

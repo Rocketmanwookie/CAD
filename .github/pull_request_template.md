@@ -18,9 +18,11 @@
 - [ ] Controls Engineer Guy review, if PLC/electrical behavior changed.
 - [ ] FreeCAD Guy review, if document objects, transactions, or persistence changed.
 - [ ] Docu Nerd review, if user-facing behavior or public-code comments changed.
-- [ ] QA Guy approval recorded before merge.
+- [ ] Review evidence required by the active position in
+      `docs/MILESTONE_REVIEW_CADENCE.md` is recorded before merge.
 - [ ] Required SME consultation, source locator, and Layer 4 disposition are
       recorded in `docs/AGENT_OPERATIONS_LEDGER.md`.
-- [ ] For a release candidate, QA Guy and Controls Engineer Guy decisions are
-      recorded in `docs/RELEASE_GATE_CHECKLIST.md`; Tony CAD is not a substitute
-      for either independent approval.
+- [ ] For a release candidate, the active cycle position and its required
+      evidence are recorded in `docs/RELEASE_GATE_CHECKLIST.md`; Tony CAD is
+      not a substitute for two independent agent reports or the milestone-6
+      project-owner review.

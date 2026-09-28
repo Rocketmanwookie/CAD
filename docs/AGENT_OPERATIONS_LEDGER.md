@@ -8,17 +8,19 @@ evidence rather than duplicating their contents.
 **Completion rule:** a milestone is not done because implementation was
 committed or automated tests passed. It is done only when this ledger contains
 the applicable evidence links and, for a release candidate, the corresponding
-`RELEASE_GATE_CHECKLIST.md` is completed with independent QA Guy and Controls
-Engineer Guy decisions. Tony CAD may coordinate and integrate; neither
-independent decision may be substituted or self-approved by Tony CAD.
+`RELEASE_GATE_CHECKLIST.md` is completed with the evidence required by
+`MILESTONE_REVIEW_CADENCE.md`. Tony CAD may coordinate and integrate, but may
+not substitute the two independent agent reports for cycle positions 1–5 or
+the project-owner review at cycle position 6.
 
 ## Active entries
 
 | Milestone | Scope / owner | Worktree and handoffs | Required reviews | SME evidence | Automated evidence | Manual FreeCAD evidence | Status |
 |---|---|---|---|---|---|---|---|
-| Issue #2 roadmap acceptance map | Tony CAD; documentation/architecture integration | `codex/controlForgeCAD` at `05421dd`; documentation-only change; [PR #4](https://github.com/Rocketmanwookie/CAD/pull/4) handoff required | QA Guy + Controls Engineer Guy independent release decisions for any release candidate; architecture review requested | No new engineering claim or standards interpretation; existing source locators remain authoritative | Target-existence check; `python -m pytest -q` — 246 passed; `python -m compileall -q ControlForgeCAD` — passed; critical Ruff — passed; [PR CI run](https://github.com/Rocketmanwookie/CAD/actions/runs/36401272729) — passed | Not applicable — no GUI behavior changes | Blocked pending independent QA Guy and Controls Engineer Guy decisions; Issue #2 handoff: [comment](https://github.com/Rocketmanwookie/CAD/issues/2#issuecomment-5866825369) |
-| Release-branch governance enforcement | Tony CAD; repository-governance owner | `codex/controlForgeCAD` from `b7c7431`; protected-branch PR required for integration | Independent QA Guy + Controls Engineer Guy approval required by GitHub; Tony CAD cannot self-approve | Not applicable; repository-process scope | PR **Automated verification** workflow required on `controlforgecad` | Not applicable | In progress — PR evidence and independent approvals pending |
-| Manual FreeCAD allocation-to-path acceptance | Tony CAD; FreeCAD Guy executes; QA Guy observes; Controls Engineer Guy releases | Current checkout; create a dedicated acceptance handoff before execution | QA + Controls Engineer required; FreeCAD review required | Not applicable unless scope changes into motor/protection, vendor assets, or standards adapters | 246 passing tests at `b7c7431` (local audit run); rerun at candidate commit | Unrun — see `MANUAL_FREECAD_ACCEPTANCE_HANDOFF.md` | Blocked pending desktop evidence and independent dual decision |
+| Milestone review-cadence migration | Tony CAD; repository-governance owner | `codex/controlForgeCAD` at `9554aef`; PR #4 handoff required | Cycle position 1: two independent agent reports; no person approval required | Not applicable; governance scope | Automated verification required on PR #4 | Not applicable | In progress — awaiting agent reports and CI on this change |
+| Issue #2 roadmap acceptance map | Tony CAD; documentation/architecture integration | `codex/controlForgeCAD` at `05421dd`; documentation-only change; [PR #4](https://github.com/Rocketmanwookie/CAD/pull/4) handoff required | Cycle position 1: QA-agent and Controls-agent reports required; no person approval required | No new engineering claim or standards interpretation; existing source locators remain authoritative | Target-existence check; `python -m pytest -q` — 246 passed; `python -m compileall -q ControlForgeCAD` — passed; critical Ruff — passed; [PR CI run](https://github.com/Rocketmanwookie/CAD/actions/runs/36401272729) — passed | Not applicable — no GUI behavior changes | Awaiting two independent agent reports; Issue #2 handoff: [comment](https://github.com/Rocketmanwookie/CAD/issues/2#issuecomment-5866825369) |
+| Release-branch governance enforcement | Tony CAD; repository-governance owner | `codex/controlForgeCAD` from `b7c7431`; protected-branch PR required for integration | Superseded by the two-agent / project-owner cadence | Not applicable; repository-process scope | PR **Automated verification** workflow required on `controlforgecad` | Not applicable | Superseded by milestone review-cadence migration |
+| Manual FreeCAD allocation-to-path acceptance | Tony CAD; FreeCAD Guy executes; QA Guy observes; Controls Engineer Guy releases | Current checkout; create a dedicated acceptance handoff before execution | Two independent agent reports for cycle positions 1–5; project-owner review at position 6 | Not applicable unless scope changes into motor/protection, vendor assets, or standards adapters | 246 passing tests at `b7c7431` (local audit run); rerun at candidate commit | Unrun — see `MANUAL_FREECAD_ACCEPTANCE_HANDOFF.md` | Blocked pending desktop evidence and applicable cycle review |
 
 ## Entry template
 
@@ -30,8 +32,8 @@ independent decision may be substituted or self-approved by Tony CAD.
 | Worktree path / base commit | |
 | Handoff links and integration commit | |
 | Affected charter layers and public contracts | |
-| QA Guy decision and evidence | |
-| Controls Engineer Guy decision and evidence | |
+| Agent review report 1 and evidence, or project-owner review at position 6 | |
+| Agent review report 2 and evidence, if applicable | |
 | FreeCAD Guy decision and evidence, if applicable | |
 | Layer 0 consultation: role, source/version/date/page, conclusion | |
 | Motor/protection dual consultation, if applicable | |

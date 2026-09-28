@@ -16,15 +16,15 @@ task:
 > `docs/AGENT_OPERATIONS_LEDGER.md`. Do not call a milestone or release
 > complete until the applicable automated evidence, manual-FreeCAD status,
 > specialist reviews, SME citations, documentation synchronization, and
-> independent QA/Controls Engineer release decisions are recorded. If any
-> required reviewer or evidence is unavailable, mark the gate blocked and
-> continue only with a non-blocked milestone.
+> review evidence required by `docs/MILESTONE_REVIEW_CADENCE.md` are recorded.
+> If any required reviewer or evidence is unavailable, mark the gate blocked
+> and continue only with a non-blocked milestone.
 
 This instruction is a mandatory control, not advisory context. **Done means
 the ledger and applicable release-gate checklist contain evidence links; it
 does not mean merely that code was committed or tests passed.** Tony CAD may
-coordinate and integrate, but may not replace either the independent QA Guy or
-Controls Engineer Guy decision.
+coordinate and integrate, but may not replace the two independent agent reports
+for milestones 1–5 or the project-owner review on milestone 6.
 
 1. Start each milestone by adding an entry to
    [`AGENT_OPERATIONS_LEDGER.md`](AGENT_OPERATIONS_LEDGER.md). Name the bounded
@@ -33,9 +33,10 @@ Controls Engineer Guy decision.
 2. Use separate Git worktrees for independently mergeable surfaces. Record the
    base commit and integration handoff. Do not create parallel worktrees merely
    to duplicate review or edit the same ownership surface.
-3. Treat QA Guy, FreeCAD Guy, Controls Engineer Guy, and Layer 0 SMEs as
-   evidence-bearing reviewers. Tony CAD coordinates their work but does not
-   substitute for an unavailable independent reviewer.
+3. Apply [`MILESTONE_REVIEW_CADENCE.md`](MILESTONE_REVIEW_CADENCE.md). For
+   milestones 1–5, obtain and record two independent agent reports. For
+   milestone 6, block for the project-owner review. Tony CAD coordinates but
+   does not substitute for either required report or the owner’s review.
 4. Record source, version/date, locator, conclusion, and Layer 4 disposition
    for every standards, vendor, or engineering SME consultation. Motor-circuit
    protection/sizing requires both Circuit Protection SME and Motor Sizing SME.
@@ -46,9 +47,8 @@ Controls Engineer Guy decision.
    exists. Required evidence is the FreeCAD version, candidate commit,
    screenshots or Report View output, saved FCStd, and generated files.
 7. Before a release call, complete
-   [`RELEASE_GATE_CHECKLIST.md`](RELEASE_GATE_CHECKLIST.md). QA Guy and
-   Controls Engineer Guy must independently record their decisions; only then
-   may Tony CAD make the integration disposition.
+   [`RELEASE_GATE_CHECKLIST.md`](RELEASE_GATE_CHECKLIST.md), including the
+   review evidence required by the active cycle position.
 
 Escalate rather than infer: if a source, SME, reviewer, desktop environment, or
 required evidence is unavailable, mark the applicable gate blocked, preserve
