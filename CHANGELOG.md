@@ -8,6 +8,15 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Added
 
+- Make the complete contributor governance set discoverable from both project
+  READMEs, and record the verified roadmap-label inventory.
+- Define CEProject `0.1.0` support, incompatibility handling, and the required
+  migration change packet before future public XML contract changes.
+- Add an SME consultation receipt, tool/dependency registry, and first three
+  architecture decision records so chartered reviews, provenance, and durable
+  engineering boundaries are auditable.
+- Add CI dependency-vulnerability and tracked-secret checks alongside existing
+  regression, compilation, whitespace, and critical-Ruff verification.
 - Added a repository-controlled quality workflow for pull requests and the
   `controlforgecad` branch: regression tests, compilation, whitespace checks,
   and a critical-error Ruff gate now have a reproducible CI definition.
