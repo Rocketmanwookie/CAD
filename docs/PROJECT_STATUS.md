@@ -56,6 +56,8 @@ or schedule export; those remain part of the open acceptance gate above.
 - [Architecture](ARCHITECTURE.md) — system layers and extension boundaries.
 - [Roadmap](../ControlForgeCAD/docs/roadmap.md) and
   [TODO](../ControlForgeCAD/TODO.md) — release direction and remaining scope.
+- [Issue #2 roadmap acceptance map](ISSUE_2_ROADMAP_ACCEPTANCE.md) — traced
+  intake-first, education, HMI-companion, and digital-twin-companion scope.
 
 Before a milestone is called complete, Tony CAD records the exact test results,
 manual checks still needed, known limitations, and QA Guy’s review outcome.
