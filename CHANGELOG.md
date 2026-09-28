@@ -6,6 +6,28 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ## [Unreleased]
 
+### Added
+
+- Added a repository-controlled quality workflow for pull requests and the
+  `controlforgecad` branch: regression tests, compilation, whitespace checks,
+  and a critical-error Ruff gate now have a reproducible CI definition.
+- Added an agent-operations ledger and release-gate checklist that record
+  worktree/handoff provenance, SME sources and dispositions, manual FreeCAD
+  evidence, and independent QA/controls-engineering decisions. Replaced the
+  stale duplicate GitHub agent roster with a pointer to the authoritative
+  project-management charter, and issued the corresponding Tony CAD SOP.
+- Added `CE_ImportAndReview`, a staged, opt-in project-import entry point for
+  CEProject XML, setup YAML/YML, and PlantUML/UML notes. It previews only
+  changed supported project fields and logical I/O rows, applies only
+  user-approved checkboxes inside one FreeCAD transaction, rejects unsupported
+  or partially-approved PLC selections, and fails closed on stale or malformed
+  persisted I/O rows rather than discarding them.
+- Added `docs/PROJECT_MANAGEMENT_CHARTER.md`, a 27-agent, 6-layer (SME
+  cultivation, context/architecture, tool discovery, parallel construction,
+  quality gates, documentation sync) operating model superseding the earlier
+  5-agent draft. Retired `docs/project-agent-structure.yaml` as a duplicate
+  source of truth; `README.md` now links the current charter.
+
 ### Fixed
 
 - Resolved the CPU 1214C signal-module limit as eight using the user-supplied Siemens workshop, PDF page 23. Recorded the local source and checksum and tested acceptance at eight modules and rejection at nine.

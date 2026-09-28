@@ -43,6 +43,12 @@ or schedule export; those remain part of the open acceptance gate above.
 
 - [Project-management charter](PROJECT_MANAGEMENT_CHARTER.md) — startup,
   source-of-truth, specialist review, and release-gate procedure.
+- [Agent operations ledger](AGENT_OPERATIONS_LEDGER.md) — milestone ownership,
+  worktree/handoff, consultation, and evidence record.
+- [Release-gate checklist](RELEASE_GATE_CHECKLIST.md) — required automated,
+  specialist, manual-acceptance, and independent release decisions.
+- [Change of SOP for Tony CAD](TONY_CAD_CHANGE_OF_SOP.md) — required milestone,
+  handoff, evidence, and escalation procedure.
 - [QA fault-tree analysis](QA_FAULT_TREE.md) — living failure-mode map and
   future QA evidence backlog.
 - [PLC allocation model](../ControlForgeCAD/docs/plc-allocation.md) — allocation
@@ -50,6 +56,11 @@ or schedule export; those remain part of the open acceptance gate above.
 - [Architecture](ARCHITECTURE.md) — system layers and extension boundaries.
 - [Roadmap](../ControlForgeCAD/docs/roadmap.md) and
   [TODO](../ControlForgeCAD/TODO.md) — release direction and remaining scope.
+- [Issue #2 roadmap acceptance map](ISSUE_2_ROADMAP_ACCEPTANCE.md) — traced
+  intake-first, education, HMI-companion, and digital-twin-companion scope.
 
 Before a milestone is called complete, Tony CAD records the exact test results,
-manual checks still needed, known limitations, and QA Guy’s review outcome.
+manual checks still needed, known limitations, and the review evidence required
+by the active position in the [milestone review cadence](MILESTONE_REVIEW_CADENCE.md):
+two independent agent reports for positions 1–5, or the project-owner review
+at position 6.

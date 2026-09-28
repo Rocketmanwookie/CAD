@@ -6,7 +6,7 @@ This repository contains **integraCAD Open**, an open-source controls-engineerin
 
 - [Architecture overview](docs/ARCHITECTURE.md) — architectural source of truth for system boundaries, layers, component contracts, data flows, dependencies, extension strategy, and implementation status.
 - [Project status and agent operating model](docs/PROJECT_STATUS.md) — verified capability boundaries, next milestone, agent hierarchy, and planned review effort.
-- [Agent-structure manifest](docs/project-agent-structure.yaml) — machine-readable responsibilities and reporting lines for Tony CAD's specialist team.
+- [Agent-structure manifest](docs/PROJECT_MANAGEMENT_CHARTER.md) — machine-readable responsibilities, layer assignments, and planned effort for Tony CAD's specialist team.
 - [QA fault-tree analysis](docs/QA_FAULT_TREE.md) — living failure-mode map for
   tests, investigations, and future QA evidence.
 - [Contributing](CONTRIBUTING.md) — development workflow, testing expectations, architecture rules, and documentation requirements.
@@ -38,8 +38,10 @@ Implemented starter capabilities include:
 - catalog-backed PLC I/O allocation with persisted rack/slot/channel mappings and typed PLC rack/module/channel occurrences;
 - CEProject XML export;
 - BOM CSV export; and
-- deterministic starter I/O-list CSV export; and
-- a neutral XML equipment taxonomy and an explorable 104-record Siemens S7-1200 XML seed.
+- deterministic starter I/O-list CSV export;
+- a neutral XML equipment taxonomy and an explorable 104-record Siemens S7-1200 XML seed;
+- transaction-safe `CE_AddElectricalPath`/`CE_EditElectricalPath` creating and editing the identity-linked PLC-channel → terminal → field-device wiring chain, with electrical schedule export; and
+- `CE_ImportAndReview`, a staged, opt-in import workflow for CEProject XML, setup YAML/YML, and PlantUML notes that previews changed fields and I/O rows and applies only user-approved checkboxes.
 
 These are foundation contracts, not yet a complete electrical schematic, automatic hardware-selection, terminal/wire-schedule, or vendor project-generation system. Manufacturer catalog adapters and richer engineering automation remain planned.
 
@@ -78,6 +80,7 @@ In FreeCAD, select **Controls / Automation** from the workbench selector. Confir
 - `CE_CreatePanel` - Create Control Panel
 - `CE_ValidateProject` - Validate Controls Project
 - `CE_PreviewMissingData` - Preview Missing Data
+- `CE_ImportAndReview` - Import and Review Project Data
 - `CE_ExportBOM` - Export BOM
 - `CE_ExportCEProjectXML` - Export CEProject XML
 - `CE_ExportIOList` - Export I/O List

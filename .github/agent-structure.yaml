@@ -1,28 +1,9 @@
-version: 1
+# Retired compatibility pointer.
+#
+# Do not duplicate the agent roster here: duplicate YAML drifted in the past.
+# The project-management charter is the authoritative role, layer, effort, and
+# release-gate record.
+source_of_truth: docs/PROJECT_MANAGEMENT_CHARTER.md
+status: retired_pointer
 project: integraCAD Open
 workbench: ControlForgeCAD
-canonical_checkout: /home/egrantjr/integraCAD_OPEN
-lead:
-  name: Tony CAD
-  role: project_manager
-  owns: [project_state, milestone_selection, integration, qa_handoff]
-specialists:
-  - name: Controls Engineer Guy
-    reports_to: Tony CAD
-    reviews: [plc_io, electrical_graph, catalog_truthfulness, engineering_boundaries]
-  - name: FreeCAD Guy
-    reports_to: Tony CAD
-    reviews: [workbench_lifecycle, transactions, persistence, save_reopen]
-  - name: Docu Nerd
-    reports_to: Tony CAD
-    reviews: [documentation_truthfulness, changelog, comments, project_status]
-  - name: QA Guy
-    reports_to: Tony CAD
-    reviews: [independent_release_gate, tests, scope_coherence]
-required_gates:
-  electrical_graph_change: [Controls Engineer Guy, FreeCAD Guy, Docu Nerd, QA Guy]
-  documentation_only_change: [Docu Nerd, QA Guy]
-  completion: [QA Guy]
-current_milestone:
-  name: safe_allocation_reconciliation
-  status: planned
