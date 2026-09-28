@@ -54,3 +54,7 @@ engineering review.
 
 The QA and Controls Engineer decisions must be independent for a release. Tony
 CAD coordinates the gate and cannot replace either required approver.
+
+**Evidence rule:** do not mark this candidate done based only on a commit or a
+passing test run. Each applicable completed item must point to durable evidence
+in the operations ledger, pull request, CI run, review, or acceptance artifact.

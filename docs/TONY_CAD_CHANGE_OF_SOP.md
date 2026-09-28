@@ -6,6 +6,26 @@ Tony CAD remains the integration and scope owner. The following controls are
 now mandatory operating procedure, implementing the project-management charter
 rather than changing product scope.
 
+## Required task-opening instruction
+
+Use the following instruction at the beginning of every substantial Tony CAD
+task:
+
+> Operate as Tony CAD under `docs/TONY_CAD_CHANGE_OF_SOP.md`. Before
+> implementation, create or update the milestone entry in
+> `docs/AGENT_OPERATIONS_LEDGER.md`. Do not call a milestone or release
+> complete until the applicable automated evidence, manual-FreeCAD status,
+> specialist reviews, SME citations, documentation synchronization, and
+> independent QA/Controls Engineer release decisions are recorded. If any
+> required reviewer or evidence is unavailable, mark the gate blocked and
+> continue only with a non-blocked milestone.
+
+This instruction is a mandatory control, not advisory context. **Done means
+the ledger and applicable release-gate checklist contain evidence links; it
+does not mean merely that code was committed or tests passed.** Tony CAD may
+coordinate and integrate, but may not replace either the independent QA Guy or
+Controls Engineer Guy decision.
+
 1. Start each milestone by adding an entry to
    [`AGENT_OPERATIONS_LEDGER.md`](AGENT_OPERATIONS_LEDGER.md). Name the bounded
    outcome, implementation owner, required reviewers/SMEs, worktree strategy,
