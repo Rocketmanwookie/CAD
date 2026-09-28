@@ -15,18 +15,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          # Full history lets the whitespace gate inspect the entire pushed or
+          # pull-request range rather than only the final commit.
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install verification tools
-        run: python -m pip install --upgrade pip pytest ruff
+        run: python -m pip install --upgrade pip pytest ruff lxml
       - name: Run regression suite
         run: python -m pytest -q
       - name: Compile Python sources
         run: python -m compileall -q ControlForgeCAD
-      - name: Reject whitespace errors
-        run: git diff --check HEAD~1 HEAD
+      - name: Reject whitespace errors in pull-request range
+        if: github.event_name == 'pull_request'
+        run: git diff --check "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}"
+      - name: Reject whitespace errors in pushed range
+        if: github.event_name == 'push'
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          if [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            git diff-tree --check --root "$HEAD_SHA"
+          else
+            git diff --check "$BEFORE_SHA" "$HEAD_SHA"
+          fi
       - name: Reject new critical Ruff errors
         # The project has documented legacy style debt. This deliberately
         # enforces syntax/undefined-name classes now; style rules are ratcheted

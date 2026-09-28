@@ -10,3 +10,17 @@
 # draft and had drifted out of sync with the charter it was supposed to
 # mirror. It is kept only as a pointer to avoid a dangling reference for
 # anything that still links here directly.
+
+# Compatibility metadata for older YAML consumers. This intentionally does not
+# recreate the retired roster: consumers must load `source_of_truth` for the
+# canonical agents and responsibilities.
+schema_version: 1
+status: retired_pointer
+source_of_truth: docs/PROJECT_MANAGEMENT_CHARTER.md
+project:
+  name: integraCAD Open
+  workbench: ControlForgeCAD
+management:
+  source_of_truth: docs/PROJECT_MANAGEMENT_CHARTER.md
+  compatibility_behavior: load_canonical_charter
+agents: []
