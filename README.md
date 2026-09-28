@@ -10,6 +10,8 @@ This repository contains **integraCAD Open**, an open-source controls-engineerin
 - [QA fault-tree analysis](docs/QA_FAULT_TREE.md) — living failure-mode map for
   tests, investigations, and future QA evidence.
 - [Contributing](CONTRIBUTING.md) — development workflow, testing expectations, architecture rules, and documentation requirements.
+- [Contributor governance guides](docs/CODING_STYLE_GUIDE.md) — coding, schema,
+  external-asset, and architecture-decision-record guidance.
 - [Changelog](CHANGELOG.md) — implemented milestones, unreleased changes, and contributor-facing change history.
 - [CAD library download manifest](exports/siemens_cad_library_download_manifest.csv) — requested Siemens and supporting panel/safety/instrumentation CAD assets, exact MLFBs or search keys, required schematic companions, and acquisition status.
 - [Datasheet link export](exports/equipment_datasheet_links.csv) — one document-registry row per requested manufactured part, including exact/pending state, official lookup, local path, checksum, and document metadata.

@@ -2,7 +2,8 @@
 
 ## Scope
 
-Use Python 3.11-compatible code. Keep domain/model logic independent of
+Use Python 3.10-compatible code; automated verification currently runs Python
+3.11. Keep domain/model logic independent of
 FreeCAD and GUI imports; isolate FreeCAD transactions, FeaturePython proxies,
 and Qt/PySide code at their adapters.
 

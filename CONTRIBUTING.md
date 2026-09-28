@@ -49,8 +49,15 @@ ruff check ControlForgeCAD --select E9,F63,F7,F82 --per-file-ignores 'ControlFor
 Record the milestone in [`docs/AGENT_OPERATIONS_LEDGER.md`](docs/AGENT_OPERATIONS_LEDGER.md).
 For a release candidate, complete
 [`docs/RELEASE_GATE_CHECKLIST.md`](docs/RELEASE_GATE_CHECKLIST.md); Tony CAD
-coordinates the decision but cannot substitute for the independent QA Guy and
-Controls Engineer Guy approvals required by the charter.
+coordinates the decision but cannot substitute for the review evidence required
+by [`docs/MILESTONE_REVIEW_CADENCE.md`](docs/MILESTONE_REVIEW_CADENCE.md): two
+independent agent reports for cycle positions 1–5, or the project-owner review
+at position 6.
+
+Contributor guidance also includes the [coding style guide](docs/CODING_STYLE_GUIDE.md),
+[schema style guide](docs/SCHEMA_STYLE_GUIDE.md),
+[external asset policy](docs/EXTERNAL_ASSET_POLICY.md), and
+[architecture-decision-record guide](docs/adr/README.md).
 
 ## Architecture boundaries
 
