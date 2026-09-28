@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CEProject xmlns="https://whrsdaparty.github.io/integracab-open/ceproject/0.1" schemaVersion="0.1.0" projectId="ICAB-DEMO-CONVEYOR-001">
+  <Metadata>
+    <Name>Conveyor Controls Demo</Name>
+    <Revision>0.1.0-dev</Revision>
+    <Author>Elliott Grant</Author>
+  </Metadata>
+  <Devices>
+    <Device tag="CP-001" category="Panel" description="Main conveyor control panel" manufacturer="TBD" partNumber="TBD" panel="CP-001"/>
+    <Device tag="PLC1" category="PLC" description="PLC rack placeholder" manufacturer="Generic" partNumber="TBD" panel="CP-001"/>
+    <Device tag="PS1" category="PowerSupply" description="24 VDC power supply" manufacturer="Generic" partNumber="TBD" panel="CP-001"/>
+  </Devices>
+  <Signals>
+    <Signal signalId="SIG_PE101" tag="PE101" type="DI" description="Product present" plcAddress="Local:2:I.Data.1" terminal="X1:02" safetyRelated="false"/>
+  </Signals>
+  <Connections>
+    <Connection wireId="W-001" from="PS1:+" to="X1:01" potential="+24VDC" gauge="18 AWG" color="blue"/>
+  </Connections>
+</CEProject>
