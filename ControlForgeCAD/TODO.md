@@ -69,7 +69,7 @@ This file tracks the project scope, roadmap, interoperability commitments, docum
 - [x] Add external-asset policy.
 - [ ] Add versioning and migration policy for CEProject XML.
 - [x] Add architecture decision record folder: `docs/adr/`.
-- [ ] Add roadmap issue labels: `roadmap`, `intake`, `xml`, `adapter`, `documentation`, `learning`, `hmi`, `digital-twin`, `bim`, `cadbase`, `bom`, `costing`.
+- [x] Add roadmap issue labels: `roadmap`, `intake`, `xml`, `adapter`, `documentation`, `learning`, `hmi`, `digital-twin`, `bim`, `cadbase`, `bom`, `costing`.
 
 ### Phase 1 - Intake-first workflow
 

@@ -10,8 +10,14 @@ This repository contains **integraCAD Open**, an open-source controls-engineerin
 - [QA fault-tree analysis](docs/QA_FAULT_TREE.md) — living failure-mode map for
   tests, investigations, and future QA evidence.
 - [Contributing](CONTRIBUTING.md) — development workflow, testing expectations, architecture rules, and documentation requirements.
-- [Contributor governance guides](docs/CODING_STYLE_GUIDE.md) — coding, schema,
-  external-asset, and architecture-decision-record guidance.
+- [Coding style guide](docs/CODING_STYLE_GUIDE.md) — Python, FreeCAD-boundary,
+  testing, and review expectations.
+- [Schema style guide](docs/SCHEMA_STYLE_GUIDE.md) — CEProject versioning,
+  stable-ID, fixture, and migration expectations.
+- [External asset policy](docs/EXTERNAL_ASSET_POLICY.md) — provenance,
+  authorized acquisition, and redistribution boundaries.
+- [Architecture decision records](docs/adr/README.md) — durable decisions about
+  contracts, dependencies, persistence, and ownership.
 - [Tool and dependency registry](docs/TOOL_AND_DEPENDENCY_REGISTRY.md) —
   verification-tool provenance, ownership, and revalidation records.
 - [SME consultation receipt](docs/SME_CONSULTATION_RECEIPT.md) — required

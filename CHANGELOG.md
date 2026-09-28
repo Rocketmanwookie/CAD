@@ -8,6 +8,8 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Added
 
+- Make the complete contributor governance set discoverable from both project
+  READMEs, and record the verified roadmap-label inventory.
 - Add an SME consultation receipt, tool/dependency registry, and first three
   architecture decision records so chartered reviews, provenance, and durable
   engineering boundaries are auditable.

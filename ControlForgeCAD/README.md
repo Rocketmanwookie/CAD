@@ -188,6 +188,11 @@ Project Intake
 - `docs/project-setup-hardware-catalog.md` - XML-backed PLC catalog guide and schema link.
 - `docs/plc-allocation.md` - deterministic PLC allocation and persistent occurrence model.
 - `../docs/PROJECT_STATUS.md` - project capability boundaries, next milestone, and agent operating model.
+- `../CONTRIBUTING.md` - contributor workflow and required verification.
+- `../docs/CODING_STYLE_GUIDE.md` - coding, FreeCAD-boundary, and review rules.
+- `../docs/SCHEMA_STYLE_GUIDE.md` - CEProject schema-versioning and fixture rules.
+- `../docs/EXTERNAL_ASSET_POLICY.md` - asset provenance and redistribution rules.
+- `../docs/adr/README.md` - architecture decision record index.
 - `templates/email/` - role-based request templates.
 - `templates/forms/` - structured form/schema seeds.
 
