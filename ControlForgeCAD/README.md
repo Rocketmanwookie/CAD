@@ -191,6 +191,7 @@ Project Intake
 - `../CONTRIBUTING.md` - contributor workflow and required verification.
 - `../docs/CODING_STYLE_GUIDE.md` - coding, FreeCAD-boundary, and review rules.
 - `../docs/SCHEMA_STYLE_GUIDE.md` - CEProject schema-versioning and fixture rules.
+- `../docs/CEPROJECT_VERSIONING_AND_MIGRATION.md` - supported CEProject XML and migration policy.
 - `../docs/EXTERNAL_ASSET_POLICY.md` - asset provenance and redistribution rules.
 - `../docs/adr/README.md` - architecture decision record index.
 - `templates/email/` - role-based request templates.

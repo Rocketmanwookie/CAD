@@ -56,6 +56,7 @@ at position 6.
 
 Contributor guidance also includes the [coding style guide](docs/CODING_STYLE_GUIDE.md),
 [schema style guide](docs/SCHEMA_STYLE_GUIDE.md),
+[CEProject versioning and migration policy](docs/CEPROJECT_VERSIONING_AND_MIGRATION.md),
 [external asset policy](docs/EXTERNAL_ASSET_POLICY.md), and
 [architecture-decision-record guide](docs/adr/README.md).
 

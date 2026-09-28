@@ -14,6 +14,8 @@ This repository contains **integraCAD Open**, an open-source controls-engineerin
   testing, and review expectations.
 - [Schema style guide](docs/SCHEMA_STYLE_GUIDE.md) — CEProject versioning,
   stable-ID, fixture, and migration expectations.
+- [CEProject versioning and migration policy](docs/CEPROJECT_VERSIONING_AND_MIGRATION.md)
+  — supported XML boundary and required compatibility evidence.
 - [External asset policy](docs/EXTERNAL_ASSET_POLICY.md) — provenance,
   authorized acquisition, and redistribution boundaries.
 - [Architecture decision records](docs/adr/README.md) — durable decisions about

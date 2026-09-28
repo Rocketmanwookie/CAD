@@ -8,6 +8,8 @@
   superseded facts distinctly. Never serialize an assumption as a verified fact.
 - Document backwards-compatibility and migration behavior before changing a
   persisted public contract.
+- Follow the [CEProject versioning and migration policy](CEPROJECT_VERSIONING_AND_MIGRATION.md)
+  for version support, fixture, conversion, and release-evidence requirements.
 - Provide a valid fixture, an invalid fixture, and round-trip coverage for each
   new schema surface.
 - Keep vendor-specific formats behind adapters; CEProject remains
