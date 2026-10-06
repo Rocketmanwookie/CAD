@@ -8,6 +8,14 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Added
 
+- Add the governing product scope and supplied controls-document package,
+  six workflow milestones, and focused Plant Questionnaire/I/O Count commands
+  with live 20% capacity targets. Retire the combined New Controls Project
+  entry from visible menus and replace the old toolbar groups with Controls
+  Workflow; supporting tools and exports remain in submenus.
+- Correct allocated-channel selector labels to display signal, address and
+  rack/slot/channel coordinates when the generic device tag is empty.
+
 - Make the complete contributor governance set discoverable from both project
   READMEs, and record the verified roadmap-label inventory.
 - Define CEProject `0.1.0` support, incompatibility handling, and the required

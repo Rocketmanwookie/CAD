@@ -1,0 +1,11 @@
+Cause Ref,Cause Description,Tag,Trip Setting,Units,Delay s,MTR-101 Stop,XV-101 Close,FCV-101 Close,Beacon On,Horn On,Sequence Hold,Master Trip,Reset Type,Test Ref
+C-001,Emergency stop pressed,ESTOP-01,,,0,X,X,X,X,X,X,X,Manual,FAT-SF-001
+C-002,Guard door opened,GS-101,,,0,X,X,,X,,X,,Manual,FAT-SF-002
+C-003,Feed tank level high high,LT-101,95,%,2,X,X,,X,X,X,,Manual,FAT-IL-001
+C-004,Feed tank level low low,LT-101,5,%,5,X,,,X,,X,,Auto,FAT-IL-002
+C-005,Reactor temperature high high,TT-101,180,degC,0,X,X,X,X,X,X,X,Manual,FAT-IL-003
+C-006,Feed flow low,FT-101,5,m3/h,10,,,,X,,X,,Auto,FAT-IL-004
+C-007,Feed pump fault,MTR-101,,,0,X,,,X,,X,,Manual,FAT-IL-005
+C-008,Valve failed to open,XV-101,,,10,X,,,X,,X,,Manual,FAT-IL-006
+C-009,Remote I/O comms loss,,,,3,X,X,X,X,X,X,,Manual,FAT-IL-007
+C-010,Control power failure,,,,0,X,X,X,,,X,X,Manual,FAT-IL-008

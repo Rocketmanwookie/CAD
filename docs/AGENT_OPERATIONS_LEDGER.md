@@ -46,6 +46,14 @@ the project-owner review at cycle position 6.
 
 ## Operating rules
 
+Workflow restructuring, 2026-10-06: primary owner implemented separate plant
+and I/O-count steps, updated milestones and governing workflow, imported the
+owner-supplied scope/document assets, and retired the combined intake entry
+from visible navigation. Automated evidence: 254 regression tests passed;
+desktop acceptance is pending per WORKFLOW_MILESTONES.md. This is a development
+checkpoint, with release review and FreeCAD acceptance still open. The next
+implementation item is the PLC configurator and I/O definition table.
+
 1. One task may be assigned to one implementation owner; reviewers remain
    independent of that implementation work.
 2. Use separate Git worktrees only for separable surfaces. Record their base

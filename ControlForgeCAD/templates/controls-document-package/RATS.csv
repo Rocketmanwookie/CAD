@@ -1,0 +1,6 @@
+Tag,Service,Instrument Type,Signal,Cal Range Low,Cal Range High,Units,Normal Operating Low,Normal Operating High,LL Trip,L Alarm,H Alarm,HH Trip,Deadband,Delay s,LL Priority,L Priority,H Priority,HH Priority,Trip Action,Cause Ref,Calibrated By,Cal Date,Cal Due,Cert No
+FT-101,Feed flow,Magnetic flow meter,4-20mA,0,50,m3/h,15,35,,5,45,,1,10,,Medium,Medium,,Sequence hold,C-006,,,,
+LT-101,Feed tank level,Radar level,4-20mA,0,100,%,20,80,5,10,90,95,2,2,High,Medium,Medium,High,Pump stop and valve close,C-003 C-004,,,,
+TT-101,Reactor temperature,RTD Pt100,RTD,0,200,degC,120,160,,100,150,180,2,0,,Low,Medium,High,Master trip,C-005,,,,
+PT-101,Reactor pressure,Pressure transmitter,4-20mA,0,10,barg,2,6,,1,7,8,0.2,1,,Medium,High,High,Master trip,,,,,
+AT-101,Product concentration,Analyser,4-20mA,0,100,%,45,55,,40,60,,0.5,30,,Low,Low,,Alarm only,,,,,

@@ -95,6 +95,17 @@ flowchart TB
 
 ### 5.1 FreeCAD UI layer
 
+The workflow redesign is tracked in [Workflow milestones](WORKFLOW_MILESTONES.md).
+The primary toolbar now exposes `CE_PlantQuestionnaire` and `CE_IOCount`.
+Focused forms update only their owned project properties: plant edits preserve
+PLC selection and I/O records; count edits preserve configuration and labels.
+Count capacity targets are computed per type with exact integer rounding of
+20% spare, while persisted counts remain actual demand. Existing lower-level
+commands reside in Supporting Tools and Exports submenus. `CE_NewProject`
+remains registered for compatibility but is removed from visible navigation.
+Further stages are implemented incrementally; unavailable stages have no
+placeholder buttons.
+
 **Responsibilities**
 
 - register the Controls / Automation workbench;
