@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: MIT
 """Focused plant and I/O sizing steps for the workbench workflow."""
 
+from types import SimpleNamespace
+
 from controls_wb.gui.project_intake import (
     COMMUNICATION_PROTOCOL_OPTIONS,
     CORE_INTAKE_FORM_FIELDS,
@@ -12,6 +14,62 @@ from controls_wb.gui.project_intake import (
     normalized_form_values,
 )
 from controls_wb.model.project import create_or_update_project
+from controls_wb.hardware_catalog import load_hardware_catalog, makes, lines_for_make, recommend_plc_hardware
+from controls_wb.io_list import explicit_io_signals_from_project, io_allocation_for_project, serialize_io_signal
+from controls_wb.allocation_reconciliation import preflight_reconciliation
+from controls_wb.model.layout import materialize_plc_allocation
+from controls_wb.gui.allocation_review import show_allocation_naming_dialog
+
+
+def configuration_preview(project, make, line, cpu):
+    """Compute a spare-aware allocation without changing the document."""
+    candidate = SimpleNamespace(**{
+        key: getattr(project, key, default)
+        for key, default in (("ProjectId", ""), ("ProjectName", ""),
+                             ("Deliverables", []), ("IOSignals", []), ("SourceRecords", []),
+                             ("SensorCount", ""), *( (key, "") for key in COUNT_KEYS ))
+    })
+    candidate.PlcMake, candidate.PlcLine, candidate.PlcCPU = make, line, cpu
+    sizing_targets({key: getattr(candidate, key) for key in COUNT_KEYS})
+    preview = io_allocation_for_project(candidate)
+    if preview is None:
+        raise ValueError("Select a PLC make, line and CPU.")
+    errors = [finding.message for finding in preview.findings if finding.severity == "ERROR"]
+    if errors:
+        raise ValueError("; ".join(errors))
+    dependent_tags = {
+        str(getattr(getattr(path, "SignalObject", None), "SignalTag", "") or "")
+        for path in (getattr(project, "ElectricalPaths", []) or [])
+    }
+    preflight_reconciliation(explicit_io_signals_from_project(project), preview.signals, dependent_tags)
+    return preview
+
+
+def save_plc_configuration(document, make, line, cpu):
+    project = existing_project_object(document)
+    if project is None:
+        raise ValueError("Complete the Plant Questionnaire and I/O Count first.")
+    preview = configuration_preview(project, make, line, cpu)
+    project.PlcMake, project.PlcLine, project.PlcCPU = make, line, cpu
+    project.PlcPlatform = f"{make} {line}"
+    project.IOSignals = [serialize_io_signal(signal) for signal in preview.signals]
+    if callable(getattr(document, "addObject", None)):
+        materialize_plc_allocation(document, project)
+    return project
+
+
+def show_define_io(document, parent=None):
+    project = existing_project_object(document)
+    if project is None or not getattr(project, "IOSignals", []):
+        raise ValueError("Save the PLC configuration before defining I/O labels.")
+    preview = configuration_preview(project, project.PlcMake, project.PlcLine, project.PlcCPU)
+    approved = show_allocation_naming_dialog(preview, parent)
+    if approved is None:
+        return None
+    project.IOSignals = [serialize_io_signal(signal) for signal in approved.signals]
+    if callable(getattr(document, "addObject", None)):
+        materialize_plc_allocation(document, project)
+    return project
 
 
 COUNT_KEYS = ("DICount", "DOCount", "AICount", "AOCount")
@@ -141,4 +199,93 @@ def show_io_count_dialog(document, parent=None):
             return save_io_counts(document, {key: editor.text() for key, editor in editors.items()})
         except ValueError as exc:
             widgets.QMessageBox.warning(dialog, "I/O count", str(exc))
+    return None
+
+
+def show_plc_configurator(document, parent=None):
+    widgets = _qt_widgets()
+    project = existing_project_object(document)
+    if project is None:
+        raise ValueError("Complete the Plant Questionnaire and I/O Count first.")
+    catalog = load_hardware_catalog()
+    dialog = widgets.QDialog(parent)
+    dialog.setWindowTitle("Controls Circuit — PLC Configurator")
+    layout = widgets.QVBoxLayout(dialog)
+    form = widgets.QFormLayout()
+    make = widgets.QComboBox()
+    make.addItems(list(makes(catalog)))
+    make.setCurrentText(str(getattr(project, "PlcMake", "") or "Siemens"))
+    line = widgets.QComboBox()
+    cpu = widgets.QComboBox()
+    form.addRow("PLC make", make)
+    form.addRow("PLC family", line)
+    form.addRow("CPU (capacity including 20% spare)", cpu)
+    layout.addLayout(form)
+    summary = widgets.QLabel()
+    layout.addWidget(summary)
+    recommendations = []
+
+    def refresh_preview(_index=None):
+        if cpu.currentIndex() < 0:
+            summary.setText("No catalog configuration covers the current demand and 20% spare. Revise I/O Count or platform.")
+            return
+        recommendation = recommendations[cpu.currentIndex()]
+        try:
+            preview = configuration_preview(project, make.currentText(), line.currentText(), recommendation.cpu.name)
+            summary.setText("Capacity targets: " + ", ".join(
+                f"{key.upper()} {target}" for key, target in recommendation.target_counts)
+                + "\n\nHardware to install:\n" + "\n".join(
+                    f"Slot {module.slot}: {module.module_name} — {module.part_number}"
+                    for module in preview.modules)
+                + f"\n\n{len(preview.signals)} actual I/O points; unused capacity remains spare."
+                + "\nSave configures and allocates hardware. Define I/O labels next.")
+        except ValueError as exc:
+            summary.setText(str(exc))
+
+    def refresh_cpus(_text=None):
+        nonlocal recommendations
+        cpu.blockSignals(True)
+        cpu.clear()
+        actual = {key: getattr(project, key, "") for key in COUNT_KEYS}
+        try:
+            sizing_targets(actual)
+            # Explicit definitions may exceed the initial estimates. Size for
+            # both so imported/defined points are never dropped from the plan.
+            explicit = explicit_io_signals_from_project(project)
+            counts = [max(int(str(actual[key] or "0")), sum(s.signal_type == kind for s in explicit))
+                      for key, kind in zip(COUNT_KEYS, ("digital_input", "digital_output", "analog_input", "analog_output"))]
+            recommendations = list(recommend_plc_hardware(catalog, make.currentText(), line.currentText(), *counts))
+            cpu.addItems([item.cpu.name for item in recommendations])
+            cpu.setCurrentText(str(getattr(project, "PlcCPU", "") or ""))
+        except ValueError:
+            recommendations = []
+        cpu.blockSignals(False)
+        refresh_preview()
+
+    def refresh_lines(_text=None):
+        line.blockSignals(True)
+        line.clear()
+        line.addItems(list(lines_for_make(catalog, make.currentText())))
+        line.setCurrentText(str(getattr(project, "PlcLine", "") or ""))
+        line.blockSignals(False)
+        refresh_cpus()
+
+    make.currentTextChanged.connect(refresh_lines)
+    line.currentTextChanged.connect(refresh_cpus)
+    cpu.currentIndexChanged.connect(refresh_preview)
+    refresh_lines()
+    _buttons(widgets, dialog, layout)
+    while _accepted(dialog, widgets):
+        if cpu.currentIndex() < 0:
+            widgets.QMessageBox.warning(dialog, "PLC configurator", "No feasible configuration is selected.")
+            continue
+        try:
+            configuration_preview(project, make.currentText(), line.currentText(), recommendations[cpu.currentIndex()].cpu.name)
+        except ValueError as exc:
+            widgets.QMessageBox.warning(dialog, "PLC configurator", str(exc))
+            continue
+        # Let materialization failures reach the command transaction so the
+        # complete hardware/record change is aborted rather than retried over
+        # partially changed state.
+        return save_plc_configuration(document, make.currentText(), line.currentText(), recommendations[cpu.currentIndex()].cpu.name)
     return None

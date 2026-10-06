@@ -15,7 +15,7 @@ PROJECT_COMMANDS = (
     "CE_ImportAndReview", "CE_AddIOSignal", "CE_AllocatePLCIO", "CE_AddConnection",
     "CE_AddElectricalPath", "CE_EditElectricalPath", "CE_CaptureWireRoute", "CE_RouteWireWithCables",
 )
-WORKFLOW_COMMANDS = ("CE_PlantQuestionnaire", "CE_IOCount")
+WORKFLOW_COMMANDS = ("CE_PlantQuestionnaire", "CE_IOCount", "CE_PLCConfigurator", "CE_DefineIO")
 LAYOUT_COMMANDS = ("CE_CreatePanel",)
 VALIDATION_COMMANDS = ("CE_ValidateProject", "CE_PreviewMissingData")
 EXPORT_COMMANDS = (
@@ -31,6 +31,8 @@ EXPORT_COMMANDS = (
 COMMAND_SPECS = (
     CommandSpec("CE_PlantQuestionnaire", "Plant Questionnaire", "workflow"),
     CommandSpec("CE_IOCount", "I/O Count", "workflow"),
+    CommandSpec("CE_PLCConfigurator", "PLC Configurator", "workflow"),
+    CommandSpec("CE_DefineIO", "Define I/O", "workflow"),
     CommandSpec("CE_NewProject", "New Controls Project", "new_project"),
     CommandSpec("CE_ImportAndReview", "Import and Review Project Data", "import_and_review"),
     CommandSpec("CE_AddIOSignal", "Add I/O Signal", "add_io_signal"),

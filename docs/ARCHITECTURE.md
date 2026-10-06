@@ -106,6 +106,16 @@ remains registered for compatibility but is removed from visible navigation.
 Further stages are implemented incrementally; unavailable stages have no
 placeholder buttons.
 
+`CE_PLCConfigurator` previews and commits CPU selection and module/channel
+materialization in the command transaction. Project allocation passes per-type
+20% capacity targets to the domain allocator, including modules with no actual
+signals when needed for spare capacity. The target-aware allocator uses the
+catalog recommendation's module-selection rule and checks CPU module limits.
+Existing low-level allocator callers may omit capacity targets to retain their
+actual-demand behavior. `CE_DefineIO` reuses the allocated-channel label review;
+canonical tags and coordinates remain controlled. Configurator previews leave
+document state unchanged and preflight path-dependent reconciliation.
+
 **Responsibilities**
 
 - register the Controls / Automation workbench;

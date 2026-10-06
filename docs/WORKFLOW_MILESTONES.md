@@ -7,7 +7,7 @@ Package. Both circuits precede shared cabinet construction.
 | Milestone | Delivery | Acceptance | Status |
 |---|---|---|---|
 | M1 — Focused intake and counts | Separate Plant Questionnaire and I/O Count entry points, persisted plant facts and actual counts, live 20% capacity targets | Plant edits preserve PLC/I/O data; count edits preserve labels/hardware; correct per-type rounding; desktop save/reopen | Starter implemented; 254 tests passed on 2026-10-06; desktop acceptance pending |
-| M2 — Controls circuit | PLC configurator using count targets, CPU/module review, one editable I/O definition table and import route, logical circuit connections | Installed capacity covers typed targets; spare channels remain separate; edits/imports preserve identities and expose affected assignments | Next implementation milestone |
+| M2 — Controls circuit | PLC configurator using count targets, CPU/module review, one editable I/O definition table and import route, logical circuit connections | Installed capacity covers typed targets; spare channels remain separate; edits/imports preserve identities and expose affected assignments | Configurator and allocated-point label table implemented; import/table expansion and circuit workflow remain open; desktop acceptance pending |
 | M3 — Safety circuit | Supplied requirements, safety point/channel definitions, hardware selection and logical connections | Both circuit equipment/endpoint sets are ready for shared cabinet construction | Planned |
 | M4 — Combined parts and CAD | Combined equipment list, personal/CADbase library resolution, missing-asset collection and endpoint matching | Every needed occurrence has a resolved part, dimensions and connection data, or an explicit unresolved item | Planned |
 | M5 — Shared cabinet and routing | Final enclosure sizing/selection, placement of both circuits, terminals and Cables routes | Combined assembly realizes both circuits; routed connections retain endpoint identities | Planned |
@@ -44,3 +44,20 @@ compatibility.
 Record FreeCAD version, tested checkout/revision, Report View findings and
 saved FCStd evidence. Passing this check covers the starter dialogs, not the
 remaining configuration/table/import and richer questionnaire work.
+
+## M2 configurator checkpoint
+
+The Controls Workflow toolbar continues with PLC Configurator and Define I/O.
+The configurator shows feasible CPUs and the installed module/slot list for
+20% capacity targets; saving also materializes the allocation. Define I/O
+opens the existing channel review table to edit engineering labels while
+preserving canonical tags and coordinates. Custom tag/type/device editing and
+CSV import are subsequent table work.
+
+Project allocations now retain spare-only expansion modules, while IOSignals
+contains actual demand only. This also applies to the supporting Allocate PLC
+I/O command. Checks at this checkpoint: 257 regression tests passed, compilation
+and critical Ruff passed. Desktop check: DI=8 with CPU 1212C DC/DC/DC must
+create a spare-only DI module beyond its eight onboard points; Define I/O must
+show eight actual points. Save/reopen and verify that labels, assignments and
+the extra module remain consistent.

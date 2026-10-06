@@ -54,6 +54,13 @@ desktop acceptance is pending per WORKFLOW_MILESTONES.md. This is a development
 checkpoint, with release review and FreeCAD acceptance still open. The next
 implementation item is the PLC configurator and I/O definition table.
 
+Continuation on 2026-10-06: checkpoint `7d5836d` pushed to
+`codex/phase0-contributor-governance`. Added the dedicated PLC configurator,
+allocated-point label entry and spare-aware project allocation. Verification:
+257 regression tests, compilation, critical Ruff and whitespace checks passed.
+Desktop acceptance and broader I/O table/import work remain open; see the M2
+checkpoint in WORKFLOW_MILESTONES.md. The unrelated charter edit is excluded.
+
 1. One task may be assigned to one implementation owner; reviewers remain
    independent of that implementation work.
 2. Use separate Git worktrees only for separable surfaces. Record their base

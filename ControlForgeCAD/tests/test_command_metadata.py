@@ -22,6 +22,8 @@ def test_command_metadata_matches_expected_workbench_commands():
     assert all_command_ids() == (
         "CE_PlantQuestionnaire",
         "CE_IOCount",
+        "CE_PLCConfigurator",
+        "CE_DefineIO",
         "CE_NewProject",
         "CE_ImportAndReview",
         "CE_AddIOSignal",

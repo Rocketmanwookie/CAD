@@ -28,7 +28,8 @@ The workflow restructuring is now tracked in
 [Workflow milestones](WORKFLOW_MILESTONES.md): focused plant intake/counts,
 controls circuit, safety circuit, combined parts/CAD, shared cabinet/routing,
 and package generation. M1 has starter implementation; M2 is the next
-implementation milestone. The existing desktop acceptance below remains an
+implementation milestone, with its configurator and allocated-point label
+table now implemented and broader table/import work pending. The existing desktop acceptance below remains an
 open foundation gate.
 
 **Manual FreeCAD allocation-to-path acceptance evidence**: run and record the

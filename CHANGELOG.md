@@ -8,6 +8,10 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Added
 
+- Add PLC Configurator and Define I/O workflow actions. Project allocation now
+  installs expansion capacity for 20% spare and enforces documented CPU module
+  limits; unused capacity does not create field-signal records.
+
 - Add the governing product scope and supplied controls-document package,
   six workflow milestones, and focused Plant Questionnaire/I/O Count commands
   with live 20% capacity targets. Retire the combined New Controls Project

@@ -10,7 +10,7 @@ except Exception:  # pragma: no cover
 
 from controls_wb.freecad_transactions import document_transaction
 from controls_wb.gui.project_intake import existing_project_object
-from controls_wb.gui.workflow import show_io_count_dialog, show_plant_questionnaire
+from controls_wb.gui.workflow import show_io_count_dialog, show_plant_questionnaire, show_plc_configurator, show_define_io
 
 
 class PlantQuestionnaireCommand:
@@ -37,6 +37,22 @@ class IOCountCommand:
         _run_step(show_io_count_dialog, "I/O Count")
 
 
+class PLCConfiguratorCommand(IOCountCommand):
+    def GetResources(self):
+        return {"MenuText": "PLC Configurator", "ToolTip": "Review CPU and modules with 20% spare capacity, then configure and allocate."}
+
+    def Activated(self):
+        _run_step(show_plc_configurator, "PLC Configurator")
+
+
+class DefineIOCommand(IOCountCommand):
+    def GetResources(self):
+        return {"MenuText": "Define I/O", "ToolTip": "Label configured I/O points while retaining catalog channel assignments."}
+
+    def Activated(self):
+        _run_step(show_define_io, "Define I/O")
+
+
 def _run_step(show_dialog, title):
     try:
         parent = Gui.getMainWindow() if Gui is not None else None
@@ -52,3 +68,5 @@ def _run_step(show_dialog, title):
 if Gui is not None:
     Gui.addCommand("CE_PlantQuestionnaire", PlantQuestionnaireCommand())
     Gui.addCommand("CE_IOCount", IOCountCommand())
+    Gui.addCommand("CE_PLCConfigurator", PLCConfiguratorCommand())
+    Gui.addCommand("CE_DefineIO", DefineIOCommand())
