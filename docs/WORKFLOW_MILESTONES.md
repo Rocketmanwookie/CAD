@@ -1,17 +1,20 @@
 # Workflow restructuring milestones
 
-Owner-approved direction: 2026-10-06. The primary stages are Project & Plant,
-Controls Circuit, Safety Circuit, Parts & CAD, Cabinet & Routing, and Generate
-Package. Both circuits precede shared cabinet construction.
+Owner-approved direction: 2026-10-06, clarified 2026-10-10. The first major
+release is the resolved controls-project data and export pipeline: Project &
+Plant, I/O/load/hardware resolution, panel-capacity inputs, and consistent
+handover artifacts. CAD geometry, placement, routing, and final cabinet
+realization are the following release. Both circuits still precede shared
+cabinet construction.
 
 | Milestone | Delivery | Acceptance | Status |
 |---|---|---|---|
 | M1 — Focused intake and counts | Separate Plant Questionnaire and I/O Count entry points, persisted plant facts and actual counts, live 20% capacity targets | Plant edits preserve PLC/I/O data; count edits preserve labels/hardware; correct per-type rounding; desktop save/reopen | Starter implemented; 254 tests passed on 2026-10-06; desktop acceptance pending |
 | M2 — Controls circuit | PLC configurator using count targets, CPU/module review, one editable I/O definition table and import route, logical circuit connections | Installed capacity covers typed targets; spare channels remain separate; edits/imports preserve identities and expose affected assignments | Configurator and allocated-point label table implemented; import/table expansion and circuit workflow remain open; desktop acceptance pending |
 | M3 — Safety circuit | Supplied requirements, safety point/channel definitions, hardware selection and logical connections | Both circuit equipment/endpoint sets are ready for shared cabinet construction | Planned |
-| M4 — Combined parts and CAD | Combined equipment list, personal/CADbase library resolution, missing-asset collection and endpoint matching | Every needed occurrence has a resolved part, dimensions and connection data, or an explicit unresolved item | Planned |
-| M5 — Shared cabinet and routing | Final enclosure sizing/selection, placement of both circuits, terminals and Cables routes | Combined assembly realizes both circuits; routed connections retain endpoint identities | Planned |
-| M6 — Generate package | Coordinated BOM, circuit drawings, 2D/3D cabinet representations, cabinet sheets and final wire schedule | Outputs use the same project revision and show changes requiring regeneration | Planned |
+| M4 — First-major-release resolver and package | Typed load/I/O requirements, transparent hardware-class proposals, panel-capacity envelope, BOM/I/O/YAML/CEProject XML/CAx-manifest/cost exports | Every output shares one resolver snapshot; each hardware proposal has a rule/evidence status; unresolved engineering decisions are explicit | Started: generic typed load/I/O requirement model and review-required hardware-class resolver implemented; capacity/export adapters remain open |
+| M5 — CAD realization (next release) | Vendor CAx acquisition/import, final enclosure sizing/selection, placement of both circuits, terminals, and routes | Combined assembly realizes both circuits; routed connections retain endpoint identities and recorded asset provenance | Deferred to next release |
+| M6 — CAD package (next release) | Coordinated circuit drawings, 2D/3D cabinet representations, cabinet sheets, and final wire schedule | Outputs use the same CAD/project revision and show changes requiring regeneration | Deferred to next release |
 
 M1 initially uses the plant fields already supported by CE_Project. Richer
 environmental conditions and supplied requirements references need model and

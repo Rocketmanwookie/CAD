@@ -34,6 +34,12 @@ The guide uses a Siemens S7-1200 starter catalog selection because that is the
 source-backed catalog currently supplied. Other engineering choices remain
 project-specific.
 
+For the first major release, the project model is being extended from labeled
+I/O toward reviewable load and hardware requirements, panel-capacity inputs,
+and consistent BOM/I/O/YAML/XML/CAx-manifest exports. CAD geometry, vendor
+model import, placement, and routing are deliberately deferred to the next
+release; see the repository-level [Release 1 contract](../../docs/FIRST_MAJOR_RELEASE_CONTRACT.md).
+
 ## 1. Create the project and select I/O
 
 1. Run **New Controls Project**.
