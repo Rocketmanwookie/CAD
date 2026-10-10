@@ -20,6 +20,10 @@ from controls_wb.freecad_paths import workbench_root_from_module_globals
 
 def test_command_metadata_matches_expected_workbench_commands():
     assert all_command_ids() == (
+        "CE_PlantQuestionnaire",
+        "CE_IOCount",
+        "CE_PLCConfigurator",
+        "CE_DefineIO",
         "CE_NewProject",
         "CE_ImportAndReview",
         "CE_AddIOSignal",
@@ -41,7 +45,7 @@ def test_command_metadata_matches_expected_workbench_commands():
         "CE_ExportTerminalPlan",
     )
     assert PROJECT_COMMANDS == (
-        "CE_NewProject", "CE_ImportAndReview", "CE_AddIOSignal", "CE_AllocatePLCIO", "CE_AddConnection",
+        "CE_ImportAndReview", "CE_AddIOSignal", "CE_AllocatePLCIO", "CE_AddConnection",
         "CE_AddElectricalPath", "CE_EditElectricalPath", "CE_CaptureWireRoute", "CE_RouteWireWithCables",
     )
     assert LAYOUT_COMMANDS == ("CE_CreatePanel",)

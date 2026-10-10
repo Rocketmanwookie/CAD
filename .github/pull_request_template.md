@@ -10,7 +10,8 @@
 ## Contract and documentation impact
 
 - [ ] Identity, role, persistence, and export effects are documented.
-- [ ] README, roadmap, TODO, changelog, architecture, and ExecPlan were checked.
+- [ ] README, roadmap, TODO, changelog, architecture, and any applicable
+      ExecPlan were checked.
 - [ ] Known limitations are stated without implying engineering, safety, or vendor compatibility claims.
 
 ## Specialist review

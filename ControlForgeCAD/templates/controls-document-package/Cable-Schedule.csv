@@ -1,0 +1,15 @@
+Cable Ref,Type,Cores,CSA mm2,Screen,From,From Terminal,From Gland,To,To Terminal,To Gland,Length m,Route,Segregation,Function,Voltage,Continuity Test,Insulation Test,Tested By,Date,Notes
+C-101,SY,4,1.0,Braid,CP-01,X1:01-04,M20,XV-101,1-4,M16,25,Tray A,Control,24VDC,,,,,
+C-102,SY,4,1.0,Braid,CP-01,X1:03-06,M20,Local station LS-01,1-4,M16,12,Tray A,Control,24VDC,,,,,
+C-103,SY,4,1.0,Braid,CP-01,X2:01-04,M20,ESTOP-01,1-4,M16,18,Tray A,Safety,24VDC,,,,,
+C-104,SY,4,1.0,Braid,CP-01,X2:03-06,M20,GS-101,1-4,M16,22,Tray A,Safety,24VDC,,,,,
+C-201,Instrument,1 pair,0.5,Foil + drain,CP-01,X3:01-02,M16,FT-101,+/-,M20,30,Tray B,Instrument,4-20mA,,,,,Screen earthed at panel only
+C-202,Instrument,1 pair,0.5,Foil + drain,CP-01,X3:03-04,M16,LT-101,+/-,M20,28,Tray B,Instrument,4-20mA,,,,,Screen earthed at panel only
+C-203,Instrument,1 triple,0.5,Foil + drain,CP-01,X4:01-03,M16,TT-101,1-3,M20,35,Tray B,Instrument,RTD,,,,,Three wire RTD
+C-301,SY,4,1.5,Braid,CP-01,X5:01-04,M20,MCC starter,,M20,45,Tray C,Control,24VDC,,,,,
+C-302,SY,3,1.0,Braid,CP-01,X5:02-04,M20,XV-101-SOL,1-3,M16,25,Tray A,Control,24VDC,,,,,
+C-303,SY,3,1.0,Braid,CP-01,X5:03-05,M20,LMP-FAULT,1-3,M16,15,Tray A,Control,24VDC,,,,,
+C-401,Instrument,1 pair,0.5,Foil + drain,CP-01,X6:01-02,M16,FCV-101,+/-,M20,32,Tray B,Instrument,4-20mA,,,,,
+C-501,SF/UTP Cat6,4 pair,,Foil,CP-01,SW1 P1,M20,Remote panel CP-02,SW2 P1,M20,60,Tray D,Data,Ethernet,,,,,
+P-001,SWA,4,16,Armour,MCC,,M32,CP-01 Q1,L1 L2 L3 N,M32,55,Tray E,Power,400VAC,,,,,
+E-001,Earth,1,16,,Earth bar,,M20,CP-01 PE,PE,M20,55,Tray E,Earth,,,,,,

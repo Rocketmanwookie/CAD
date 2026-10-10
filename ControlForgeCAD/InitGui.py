@@ -92,6 +92,7 @@ if Gui is not None:
                 LAYOUT_COMMANDS,
                 PROJECT_COMMANDS,
                 VALIDATION_COMMANDS,
+                WORKFLOW_COMMANDS,
             )
 
             base_dir = self._workbench_root()
@@ -117,19 +118,19 @@ if Gui is not None:
                 new_project,
                 import_and_review,
                 validate_project,
+                workflow,
             )
 
             self.project_commands = list(PROJECT_COMMANDS)
+            self.workflow_commands = list(WORKFLOW_COMMANDS)
             self.layout_commands = list(LAYOUT_COMMANDS)
             self.validation_commands = list(VALIDATION_COMMANDS)
             self.export_commands = list(EXPORT_COMMANDS)
 
-            self.appendToolbar("Controls Project", self.project_commands)
-            self.appendToolbar("Controls Layout", self.layout_commands)
-            self.appendToolbar("Controls Validation", self.validation_commands)
-            self.appendToolbar("Controls Exports", self.export_commands)
+            self.appendToolbar("Controls Workflow", self.workflow_commands)
+            self.appendMenu(["Controls / Automation", "Workflow"], self.workflow_commands)
             self.appendMenu(
-                "Controls / Automation",
+                ["Controls / Automation", "Supporting Tools"],
                 self.project_commands + self.layout_commands + self.validation_commands,
             )
             self.appendMenu(["Controls / Automation", "Exports"], self.export_commands)
@@ -153,7 +154,7 @@ if Gui is not None:
         def ContextMenu(self, recipient):
             self.appendContextMenu(
                 "Controls / Automation",
-                self.project_commands + self.layout_commands + self.validation_commands,
+                self.workflow_commands + self.project_commands + self.layout_commands + self.validation_commands,
             )
 
         def GetClassName(self):

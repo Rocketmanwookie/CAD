@@ -21,10 +21,32 @@ The project should reduce costly controls-engineering rework by making missing d
 
 ## Release direction
 
+The active [workflow milestones](../../docs/WORKFLOW_MILESTONES.md) organize
+delivery into six stages: Project & Plant, Controls Circuit, Safety Circuit,
+Parts & CAD, Cabinet & Routing, and Generate Package. Bulk CAD collection
+follows definition of both circuits. Final enclosure construction and routing
+use their combined equipment list; package generation produces the coordinated
+BOM and drawings, followed by the final wire schedule.
+
+The governing [workbench workflow](../../docs/governance/WORKBENCH_WORKFLOW.md)
+now sets the product sequence: plant questionnaire, I/O counts with 20% spare
+capacity, PLC/model/module selection, detailed I/O definition or import,
+controls circuit definition, safety circuit definition, combined CAD collection, shared
+cabinet construction, BOM and 2D/3D/cabinet drawings, then the combined wire
+schedule. Implementation proceeds in that order using the existing allocation
+and electrical-path services as foundations.
+
+After defining the controls circuit, a similar safety-circuit modeling workflow
+captures supplied requirements, sizes/selects safety hardware, defines points,
+gathers CAD, and completes the safety connections within the same project.
+Both circuits must be defined before constructing their shared cabinet. The
+combined assembly then supplies BOM/drawings and wire schedules. See the
+governing workflow for its ownership boundary.
+
 ### Working MVP fast lane
 
-The immediate objective is one end-to-end usable controls workflow, not broad
-feature parity. The MVP is complete when a user can:
+The existing allocation-to-path slice is a foundation milestone within the
+revised workflow. That foundation is complete when a user can:
 
 1. select a catalog-backed PLC and modules;
 2. create/edit labeled I/O with rack, slot, channel, and address assignments;
@@ -33,7 +55,14 @@ feature parity. The MVP is complete when a user can:
 5. export a validated I/O list, terminal plan, connection schedule, and BOM from
    the same project state.
 
-Ladder drawing generation follows this vertical slice. HMI authoring, automatic
+The next workflow implementation milestone separates plant intake from I/O
+sizing and configuration, then supports detailed I/O definition after hardware
+selection. Controls and safety circuit definition, combined CAD gathering, shared cabinet
+construction, BOM/drawing adapters,
+and final wire schedules follow. Their completion requires more than the
+foundation exports above.
+
+Ladder drawing generation follows the electrical foundation. HMI authoring, automatic
 3D routing, broad vendor coverage, and runtime simulation do not block the MVP.
 
 ### 0.1 - Seed architecture

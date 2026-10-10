@@ -22,7 +22,16 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install verification tools
-        run: python -m pip install --upgrade pip pytest ruff lxml
+        run: python -m pip install --upgrade pip -r requirements-ci.txt
+      - name: Audit CI dependency resolution
+        run: python -m pip_audit --strict -r requirements-ci.txt
+      - name: Reject potential tracked secrets
+        shell: bash
+        run: |
+          # The catalog intentionally stores SHA checksums. Keep specialized
+          # token/key detectors enabled while excluding generic hex entropy,
+          # which otherwise turns those provenance records into false positives.
+          detect-secrets-hook --disable-plugin HexHighEntropyString $(git ls-files)
       - name: Run regression suite
         run: python -m pytest -q
       - name: Compile Python sources

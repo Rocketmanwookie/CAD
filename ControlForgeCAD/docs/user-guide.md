@@ -8,6 +8,24 @@ electrical design, safety function, or PLC program.
 
 ## Before you start
 
+The workflow restructuring adds **Plant Questionnaire** and **I/O Count** in
+the **Controls Workflow** toolbar and the **Workflow** submenu. Start with the
+questionnaire, then enter actual counts and review the calculated 20% spare
+capacity targets. These focused dialogs save to the same CE_Project used by
+the commands below. Supporting commands are under **Supporting Tools** and
+**Exports**; the combined **New Controls Project** entry is retired from visible
+navigation. The configuration instructions below describe the previous flow
+while the dedicated PLC configurator and I/O table are being implemented. See
+[workflow milestones](../../docs/WORKFLOW_MILESTONES.md) for status and desktop
+acceptance steps.
+
+After saving I/O Count, run **PLC Configurator** to select a feasible CPU and
+review the module/slot list. Saving creates the allocation with 20% spare
+capacity, including expansion modules needed only for spares. Run **Define I/O**
+to edit engineering labels in the allocated-channel table. These are the new
+entry points for configuration and naming; full CSV import and broader I/O
+table editing remain milestone work.
+
 Install or link the workbench as described in the
 [workbench README](../README.md). Start FreeCAD, choose **Controls /
 Automation**, and create a new document.
@@ -15,6 +33,12 @@ Automation**, and create a new document.
 The guide uses a Siemens S7-1200 starter catalog selection because that is the
 source-backed catalog currently supplied. Other engineering choices remain
 project-specific.
+
+For the first major release, the project model is being extended from labeled
+I/O toward reviewable load and hardware requirements, panel-capacity inputs,
+and consistent BOM/I/O/YAML/XML/CAx-manifest exports. CAD geometry, vendor
+model import, placement, and routing are deliberately deferred to the next
+release; see the repository-level [Release 1 contract](../../docs/FIRST_MAJOR_RELEASE_CONTRACT.md).
 
 ## 1. Create the project and select I/O
 
@@ -29,8 +53,12 @@ project-specific.
    provide readable engineering labels where useful, then approve the rows.
 5. Complete any remaining starter fields and submit the form. A `CE_Project`
    appears in the model tree.
-6. Run **Create Control Panel** to create the starter terminal-strip occurrence
-   used by this workflow.
+6. Run **Create Control Panel**, recompute, and confirm the starter backplate,
+   DIN rail, top and bottom wire guides, terminal-strip occurrence, PLC, and
+   24 VDC power-supply representation are spatially distinct before creating a
+   wire path. This starter geometry establishes routing context only; it is not
+   manufacturer-accurate or clearance-approved until verified vendor assets
+   and mounting data are recorded.
 
 The created panel objects are metadata-rich placeholders, not final
 manufacturer-accurate panel geometry. You can instead choose a CPU manually,
