@@ -32,13 +32,26 @@ def test_count_step_preserves_hardware_and_defined_io():
 
 
 def test_plant_step_preserves_counts_hardware_and_defined_io():
-    project = SimpleNamespace(ProjectId="P", Deliverables=[], PlcCPU="Selected CPU", DICount="7", IOSignals=["defined"])
-    save_plant_questionnaire(SimpleNamespace(Objects=[project]), dict(ProjectName="Plant A", PowerConfiguration="1PH 120V"))
+    project = SimpleNamespace(
+        ProjectId="P", Deliverables=["ioList", "panelLayout"], PlcCPU="Selected CPU",
+        DICount="7", IOSignals=["defined"],
+    )
+    save_plant_questionnaire(
+        SimpleNamespace(Objects=[project]),
+        dict(
+            ProjectName="Plant A", PowerConfiguration="1PH 120V",
+            EnclosureRatings=["UL Listed", "NEMA 12"],
+            CommunicationProtocols=["PROFINET", "Modbus TCP"],
+        ),
+    )
     assert project.ProjectName == "Plant A"
     assert project.NominalVoltage == "120"
     assert project.PlcCPU == "Selected CPU"
     assert project.DICount == "7"
     assert project.IOSignals == ["defined"]
+    assert project.Deliverables == ["ioList", "panelLayout"]
+    assert project.EnclosureRatings == ["NEMA 12", "UL Listed"]
+    assert project.CommunicationProtocols == ["Modbus TCP", "PROFINET"]
 
 
 def test_configuration_installs_spare_only_module_without_inventing_field_points():

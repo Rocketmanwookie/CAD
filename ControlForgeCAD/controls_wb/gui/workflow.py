@@ -12,6 +12,7 @@ from controls_wb.gui.project_intake import (
     existing_project_object,
     form_values_from_project,
     normalized_form_values,
+    parse_multiselect,
 )
 from controls_wb.model.project import create_or_update_project
 from controls_wb.hardware_catalog import load_hardware_catalog, makes, lines_for_make, recommend_plc_hardware
@@ -74,11 +75,12 @@ def show_define_io(document, parent=None):
 
 COUNT_KEYS = ("DICount", "DOCount", "AICount", "AOCount")
 PLANT_PROPERTIES = (
-    "ProjectName", "Customer", "SiteLocation", "Deliverables",
+    "ProjectName", "Customer", "SiteLocation",
     "PowerConfiguration", "NominalVoltage", "PhaseCount", "ControlledLoads",
     "EstimatedLoadAmps", "EnclosureRatings", "EnclosureRating",
     "CommunicationProtocols",
 )
+PLANT_FORM_FIELDS = tuple(field for field in CORE_INTAKE_FORM_FIELDS if field.key != "Deliverables")
 
 
 def sizing_targets(values):
@@ -125,6 +127,26 @@ def _accepted(dialog, widgets):
     return execute() == widgets.QDialog.Accepted
 
 
+def _checkbox_group(widgets, options, selected_values):
+    """Build a compact multi-select control from the stored list value."""
+
+    selected = set(parse_multiselect(selected_values))
+    container = widgets.QWidget()
+    layout = widgets.QVBoxLayout(container)
+    layout.setContentsMargins(0, 0, 0, 0)
+    boxes = []
+    for option in options:
+        box = widgets.QCheckBox(option)
+        box.setChecked(option in selected)
+        layout.addWidget(box)
+        boxes.append(box)
+    return container, boxes
+
+
+def _checked_options(boxes):
+    return [box.text() for box in boxes if box.isChecked()]
+
+
 def show_plant_questionnaire(document, parent=None):
     widgets = _qt_widgets()
     initial = form_values_from_project(existing_project_object(document))
@@ -133,7 +155,7 @@ def show_plant_questionnaire(document, parent=None):
     layout = widgets.QVBoxLayout(dialog)
     form = widgets.QFormLayout()
     editors = {}
-    for field in CORE_INTAKE_FORM_FIELDS:
+    for field in PLANT_FORM_FIELDS:
         editors[field.key] = widgets.QLineEdit(initial[field.key])
         form.addRow(field.label, editors[field.key])
     power = widgets.QComboBox()
@@ -144,18 +166,21 @@ def show_plant_questionnaire(document, parent=None):
     loads.setPlainText(initial["ControlledLoads"])
     loads.setPlaceholderText("motor, Conveyor motor, 1, 1.5hp")
     form.addRow("Controlled loads", loads)
-    enclosure = widgets.QLineEdit(initial["EnclosureRatings"])
-    enclosure.setPlaceholderText(", ".join(ENCLOSURE_RATING_OPTIONS))
+    enclosure, enclosure_boxes = _checkbox_group(
+        widgets, ENCLOSURE_RATING_OPTIONS, initial["EnclosureRatings"]
+    )
     form.addRow("Enclosure requirements", enclosure)
-    protocols = widgets.QLineEdit(initial["CommunicationProtocols"])
-    protocols.setPlaceholderText(", ".join(COMMUNICATION_PROTOCOL_OPTIONS))
+    protocols, protocol_boxes = _checkbox_group(
+        widgets, COMMUNICATION_PROTOCOL_OPTIONS, initial["CommunicationProtocols"]
+    )
     form.addRow("Network protocols", protocols)
     layout.addLayout(form)
     _buttons(widgets, dialog, layout)
     while _accepted(dialog, widgets):
         values = {key: editor.text() for key, editor in editors.items()}
         values.update(PowerConfiguration=power.currentText(), ControlledLoads=loads.toPlainText(),
-                      EnclosureRatings=enclosure.text(), CommunicationProtocols=protocols.text())
+                      EnclosureRatings=_checked_options(enclosure_boxes),
+                      CommunicationProtocols=_checked_options(protocol_boxes))
         try:
             return save_plant_questionnaire(document, values)
         except ValueError as exc:
