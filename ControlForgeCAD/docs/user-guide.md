@@ -47,8 +47,12 @@ project-specific.
    provide readable engineering labels where useful, then approve the rows.
 5. Complete any remaining starter fields and submit the form. A `CE_Project`
    appears in the model tree.
-6. Run **Create Control Panel** to create the starter terminal-strip occurrence
-   used by this workflow.
+6. Run **Create Control Panel**, recompute, and confirm the starter backplate,
+   DIN rail, top and bottom wire guides, terminal-strip occurrence, PLC, and
+   24 VDC power-supply representation are spatially distinct before creating a
+   wire path. This starter geometry establishes routing context only; it is not
+   manufacturer-accurate or clearance-approved until verified vendor assets
+   and mounting data are recorded.
 
 The created panel objects are metadata-rich placeholders, not final
 manufacturer-accurate panel geometry. You can instead choose a CPU manually,

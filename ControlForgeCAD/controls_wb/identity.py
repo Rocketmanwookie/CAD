@@ -15,6 +15,7 @@ class CERoles:
     MOUNTING_RAIL = "panel.mounting_rail"
     WIRE_DUCT = "panel.wire_duct"
     TERMINAL_STRIP = "electrical.terminal_strip"
+    POWER_SUPPLY = "electrical.power_supply"
     PLC_CONTROLLER = "plc.controller"
     PLC_RACK = "plc.rack"
     PLC_MODULE = "plc.module"
@@ -35,6 +36,7 @@ KNOWN_ROLES = frozenset(
         CERoles.MOUNTING_RAIL,
         CERoles.WIRE_DUCT,
         CERoles.TERMINAL_STRIP,
+        CERoles.POWER_SUPPLY,
         CERoles.PLC_CONTROLLER,
         CERoles.PLC_RACK,
         CERoles.PLC_MODULE,
