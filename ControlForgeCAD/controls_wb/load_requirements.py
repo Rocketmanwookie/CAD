@@ -11,7 +11,7 @@ from __future__ import annotations
 import json
 from dataclasses import asdict, dataclass
 
-from controls_wb.identity import imported_ce_identity
+from controls_wb.identity import imported_ce_identity, is_ce_identity
 
 
 LOAD_CLASSES = frozenset({"motor", "conveyor", "hydraulic", "robot", "generic"})
@@ -40,8 +40,8 @@ class LoadRequirement:
     evidence_locator: str = ""
 
     def validate(self) -> None:
-        if not self.identity.strip():
-            raise ValueError("Load requirement identity is required.")
+        if not is_ce_identity(self.identity):
+            raise ValueError("Load requirement identity must be a valid CE identity.")
         if not self.tag.strip():
             raise ValueError("Load requirement tag is required.")
         if self.load_class not in LOAD_CLASSES:
@@ -74,16 +74,16 @@ class IORequirement:
     evidence_locator: str = ""
 
     def validate(self) -> None:
-        if not self.identity.strip():
-            raise ValueError("I/O requirement identity is required.")
-        if not self.signal_identity.strip():
-            raise ValueError("I/O requirement signal identity is required.")
+        if not is_ce_identity(self.identity):
+            raise ValueError("I/O requirement identity must be a valid CE identity.")
+        if not is_ce_identity(self.signal_identity):
+            raise ValueError("I/O requirement signal identity must be a valid CE identity.")
         if not self.signal_tag.strip():
             raise ValueError("I/O requirement signal tag is required.")
         if self.direction not in IO_DIRECTIONS:
             raise ValueError(f"Unsupported I/O requirement direction: {self.direction!r}.")
-        if not self.load_identity.strip():
-            raise ValueError("I/O requirement must link to a load identity.")
+        if not is_ce_identity(self.load_identity):
+            raise ValueError("I/O requirement must link to a valid load CE identity.")
         if not self.behavior.strip():
             raise ValueError("I/O requirement behavior is required.")
 
@@ -108,16 +108,20 @@ class HardwareRequirement:
     status: str = RESOLUTION_NEEDS_ENGINEERING_DECISION
 
     def validate(self) -> None:
-        if not self.identity.strip():
-            raise ValueError("Hardware requirement identity is required.")
+        if not is_ce_identity(self.identity):
+            raise ValueError("Hardware requirement identity must be a valid CE identity.")
         if not self.requirement_class.strip():
             raise ValueError("Hardware requirement class is required.")
         if isinstance(self.quantity, bool) or not isinstance(self.quantity, int) or self.quantity <= 0:
             raise ValueError("Hardware requirement quantity must be greater than zero.")
-        if not self.load_identity.strip():
-            raise ValueError("Hardware requirement must link to a load identity.")
+        if not is_ce_identity(self.load_identity):
+            raise ValueError("Hardware requirement must link to a valid load CE identity.")
+        if any(not is_ce_identity(identity) for identity in self.linked_io_identities):
+            raise ValueError("Hardware requirement linked I/O identities must be valid CE identities.")
         if not self.rationale.strip() or not self.rule_id.strip():
             raise ValueError("Hardware requirement rationale and rule ID are required.")
+        if self.status != RESOLUTION_NEEDS_ENGINEERING_DECISION:
+            raise ValueError(f"Unsupported hardware requirement status: {self.status!r}.")
 
     def to_dict(self) -> dict[str, object]:
         self.validate()
@@ -176,12 +180,44 @@ def serialize_hardware_requirement(requirement: HardwareRequirement) -> str:
     return json.dumps(requirement.to_dict(), sort_keys=True, separators=(",", ":"))
 
 
+def deserialize_hardware_requirement(record: str | dict[str, object]) -> HardwareRequirement:
+    payload = json.loads(record) if isinstance(record, str) else dict(record)
+    requirement = HardwareRequirement(
+        identity=str(payload.get("identity", "")),
+        requirement_class=str(payload.get("requirement_class", payload.get("requirementClass", ""))),
+        quantity=payload.get("quantity", 0),
+        load_identity=str(payload.get("load_identity", payload.get("loadIdentity", ""))),
+        linked_io_identities=_identity_tuple(payload.get("linked_io_identities", payload.get("linkedIoIdentities", ())), "linked I/O identities"),
+        evidence_locators=_string_tuple(payload.get("evidence_locators", payload.get("evidenceLocators", ())), "evidence locators"),
+        unresolved_fields=_string_tuple(payload.get("unresolved_fields", payload.get("unresolvedFields", ())), "unresolved fields"),
+        rationale=str(payload.get("rationale", "")),
+        rule_id=str(payload.get("rule_id", payload.get("ruleId", ""))),
+        status=str(payload.get("status", RESOLUTION_NEEDS_ENGINEERING_DECISION)),
+    )
+    requirement.validate()
+    return requirement
+
+
+def _string_tuple(value: object, label: str) -> tuple[str, ...]:
+    if not isinstance(value, (list, tuple)):
+        raise ValueError(f"Hardware requirement {label} must be a list.")
+    return tuple(str(item) for item in value)
+
+
+def _identity_tuple(value: object, label: str) -> tuple[str, ...]:
+    return _string_tuple(value, label)
+
+
 def load_requirements_from_project(project: object) -> tuple[LoadRequirement, ...]:
     return tuple(deserialize_load_requirement(record) for record in getattr(project, "LoadRequirements", []) or [])
 
 
 def io_requirements_from_project(project: object) -> tuple[IORequirement, ...]:
     return tuple(deserialize_io_requirement(record) for record in getattr(project, "IORequirements", []) or [])
+
+
+def hardware_requirements_from_project(project: object) -> tuple[HardwareRequirement, ...]:
+    return tuple(deserialize_hardware_requirement(record) for record in getattr(project, "HardwareRequirements", []) or [])
 
 
 def persist_resolver_requirements(
