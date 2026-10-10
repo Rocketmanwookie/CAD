@@ -8,6 +8,24 @@ electrical design, safety function, or PLC program.
 
 ## Before you start
 
+The workflow restructuring adds **Plant Questionnaire** and **I/O Count** in
+the **Controls Workflow** toolbar and the **Workflow** submenu. Start with the
+questionnaire, then enter actual counts and review the calculated 20% spare
+capacity targets. These focused dialogs save to the same CE_Project used by
+the commands below. Supporting commands are under **Supporting Tools** and
+**Exports**; the combined **New Controls Project** entry is retired from visible
+navigation. The configuration instructions below describe the previous flow
+while the dedicated PLC configurator and I/O table are being implemented. See
+[workflow milestones](../../docs/WORKFLOW_MILESTONES.md) for status and desktop
+acceptance steps.
+
+After saving I/O Count, run **PLC Configurator** to select a feasible CPU and
+review the module/slot list. Saving creates the allocation with 20% spare
+capacity, including expansion modules needed only for spares. Run **Define I/O**
+to edit engineering labels in the allocated-channel table. These are the new
+entry points for configuration and naming; full CSV import and broader I/O
+table editing remain milestone work.
+
 Install or link the workbench as described in the
 [workbench README](../README.md). Start FreeCAD, choose **Controls /
 Automation**, and create a new document.

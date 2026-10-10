@@ -295,7 +295,27 @@ def edit_electrical_path_from_form(path_obj, values: dict[str, str]):
 
 def _add_device_items(combo, devices: list[object]) -> None:
     for device in devices:
-        label = f"{getattr(device, 'Tag', getattr(device, 'Name', 'Device'))} — {getattr(device, 'CERole', '')}"
+        role = str(getattr(device, "CERole", "") or "")
+        tag = str(getattr(device, "Tag", "") or "").strip()
+        name = str(getattr(device, "Label", "") or getattr(device, "Name", "Device")).strip()
+        if role == CERoles.PLC_CHANNEL:
+            # Materialized allocation channels deliberately have no generic
+            # device Tag.  FreeCAD still supplies an empty Tag property, so a
+            # simple getattr fallback yields indistinguishable "— plc.channel"
+            # entries.  The allocation coordinates are the useful identity a
+            # designer needs when selecting the immutable path endpoint.
+            signal_tag = str(getattr(device, "AllocatedSignalTag", "") or "").strip()
+            address = str(getattr(device, "SignalAddress", "") or "").strip()
+            location = ", ".join(
+                f"{label} {getattr(device, attribute)}"
+                for label, attribute in (("Rack", "RackNumber"), ("Slot", "SlotNumber"), ("Channel", "ChannelNumber"))
+                if str(getattr(device, attribute, "") or "").strip()
+            )
+            primary = " — ".join(item for item in (signal_tag, address) if item)
+            label = f"{primary} ({location})" if primary and location else primary or name
+        else:
+            label = tag or name
+            label = f"{label} — {role}" if role else label
         combo.addItem(label, getattr(device, "CEIdentity", ""))
 
 
