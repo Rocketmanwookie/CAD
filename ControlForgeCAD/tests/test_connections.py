@@ -16,7 +16,12 @@ from controls_wb.connections import (
     serialize_connection,
 )
 from controls_wb.commands.export_connection_schedule import connection_schedule_csv_for_objects
-from controls_wb.gui.connection import add_connection_from_form
+from controls_wb.gui.connection import (
+    add_connection_from_form,
+    allocated_connection_defaults,
+    selected_allocated_signal_tag,
+)
+from controls_wb.io_list import IOSignal, serialize_io_signal
 from controls_wb.identity import CERoles
 
 
@@ -71,6 +76,28 @@ def test_connection_form_persists_record_and_export_reads_project_objects():
     )
     assert connection.connection_id == "CONN-0001"
     assert "CONN-0001,DI-0001,PE-101,TB-001,1,W-1001,PLC-001,0,0,planned" in connection_schedule_csv_for_objects([project])
+
+
+def test_connection_defaults_follow_the_selected_allocated_signal_only():
+    allocated = IOSignal(
+        tag="AI-0003", description="Tank level", signal_type="analog_input",
+        address="%IW4", device="Tank level", rack="0", slot="2", channel="0",
+        mapping_status="allocated",
+    )
+    project = SimpleNamespace(IOSignals=[serialize_io_signal(allocated)])
+
+    assert allocated_connection_defaults(project, "AI-0003") == {
+        "signal_tag": "AI-0003", "plc_rack": "0", "plc_slot": "2", "plc_channel": "0",
+    }
+    assert allocated_connection_defaults(project, "unknown") == {}
+
+
+def test_selected_channel_resolves_its_allocated_signal_tag():
+    signal = SimpleNamespace(SignalTag="AI-0003")
+    channel = SimpleNamespace(AllocatedSignalObject=signal)
+
+    assert selected_allocated_signal_tag([channel]) == "AI-0003"
+    assert selected_allocated_signal_tag([]) == ""
 
 
 def test_manual_connection_record_cannot_duplicate_a_typed_path_signal():

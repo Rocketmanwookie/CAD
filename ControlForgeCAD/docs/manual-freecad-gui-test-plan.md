@@ -31,11 +31,16 @@ acceptance record, not a blocker for dependency-free development work.
 2. Run **Allocate PLC I/O**. Confirm the operation reports no capacity or
    collision error, creates materialized rack/module/channel objects, and adds
    no zero-size-box error to Report View.
-3. Run **Create Control Panel**, then **Add Electrical Path**. Select an
-   allocated PLC channel and terminal strip. Select an existing field device,
-   or leave **Create new field device…** selected and enter a new field-device
-   tag. Confirm the signal tag and PLC terminal designation are derived from
-   the selected channel.
+3. Run **Create Control Panel** and recompute before creating any wire. Confirm
+   the backplate, DIN rail, top and bottom wire guides, terminal strip, PLC,
+   and 24 VDC power-supply representation are visibly distinct. These are
+   generic starter geometry unless a separately verified vendor asset is
+   recorded; do not treat them as clearance-approved manufacturing geometry.
+4. Then run **Add Electrical Path**. Select an allocated PLC channel and
+   terminal strip. Select an existing field device, or leave **Create new
+   field device…** selected and enter a new field-device tag. Confirm the
+   signal tag and PLC terminal designation are derived from the selected
+   channel.
 4. Save, close, reopen, and recompute. Confirm channel identity, typed signal,
    path link, first terminal owner, and first terminal designation remain
    unchanged. Edit the path and confirm the PLC terminal cannot be changed away

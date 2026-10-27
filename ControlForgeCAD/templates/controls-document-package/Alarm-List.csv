@@ -1,0 +1,12 @@
+Alarm Tag,Message Text,Source Tag,Trigger Condition,Priority,Consequence of Inaction,Time to Respond,Operator Action,Class,Deadband,On Delay s,Off Delay s,Auto Ack,Suppressed When,Rationalised By,Date
+AL-001,Emergency stop activated,ESTOP-01,Signal de-energised,High,Plant remains stopped,Immediate,Identify station and make safe before reset,Safety,,0,0,No,,,
+AL-002,Guard door open,GS-101,Signal de-energised,High,Machine cannot run,Immediate,Close and latch guard then reset,Safety,,0,0,No,Maintenance mode,,
+AL-003,Feed tank level high high,LT-101,> 95%,High,Overflow and spill,1 minute,Check outfeed route and clear blockage,Process,2%,2,5,No,,,
+AL-004,Feed tank level low low,LT-101,< 5%,High,Pump runs dry and is damaged,1 minute,Stop pump and restore feed,Equipment,2%,5,5,No,Pump stopped,,
+AL-005,Reactor temperature high,TT-101,> 150 degC,Medium,Off specification product,10 minutes,Reduce feed rate and check cooling,Quality,2 degC,0,5,No,,,
+AL-006,Reactor temperature high high,TT-101,> 180 degC,High,Runaway reaction,Immediate,Confirm master trip and investigate,Safety,2 degC,0,0,No,,,
+AL-007,Feed flow low,FT-101,< 5 m3/h,Medium,Sequence stalls,5 minutes,Check strainer and valve position,Process,1 m3/h,10,10,No,Pump stopped,,
+AL-008,Feed pump fault,MTR-101,Starter aux open with run command,Medium,Loss of feed,5 minutes,Check overload and reset at MCC,Equipment,,3,0,No,,,
+AL-009,Valve failed to open,XV-101,No open limit 10 s after command,Medium,Sequence holds,5 minutes,Check air supply and limit switch,Equipment,,10,0,No,,,
+AL-010,Remote I/O communication loss,,Watchdog expired,High,Loss of control and indication,Immediate,Check network and panel power,System,,3,0,No,,,
+AL-011,Control power failure,,24VDC below threshold,High,Total loss of control,Immediate,Restore supply then restart per procedure,System,,0,0,No,,,

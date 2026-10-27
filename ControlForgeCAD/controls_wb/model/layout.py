@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+from hashlib import sha256
+from pathlib import Path
 
 from controls_wb.hardware_catalog import default_catalog_path, line_catalog, load_hardware_catalog, part_by_name
 from controls_wb.identity import CERoles, ensure_object_identity, imported_ce_identity
@@ -31,6 +33,9 @@ class LayoutObjectSpec:
     width: str
     height: str
     depth: str
+    x: str = "0 mm"
+    y: str = "0 mm"
+    z: str = "0 mm"
     manufacturer: str = ""
     part_number: str = ""
     voltage: str = ""
@@ -64,16 +69,22 @@ STARTER_LAYOUT_SPECS = (
         width="600 mm",
         height="35 mm",
         depth="7.5 mm",
+        x="100 mm",
+        y="3 mm",
+        z="720 mm",
     ),
     LayoutObjectSpec(
         name="CE_Wire_Duct",
         role=CERoles.WIRE_DUCT,
-        tag="DUCT-001",
-        description="Wire duct placeholder",
+        tag="DUCT-001-TOP",
+        description="Top wire guide/duct placeholder",
         panel_name="PANEL-001",
         width="600 mm",
         height="80 mm",
         depth="60 mm",
+        x="100 mm",
+        y="3 mm",
+        z="820 mm",
     ),
     LayoutObjectSpec(
         name="CE_Terminal_Strip",
@@ -84,6 +95,9 @@ STARTER_LAYOUT_SPECS = (
         width="300 mm",
         height="45 mm",
         depth="50 mm",
+        x="400 mm",
+        y="3 mm",
+        z="670 mm",
         terminal_count=16,
     ),
     LayoutObjectSpec(
@@ -95,11 +109,42 @@ STARTER_LAYOUT_SPECS = (
         width="250 mm",
         height="120 mm",
         depth="90 mm",
+        x="100 mm",
+        y="3 mm",
+        z="670 mm",
         voltage="24 VDC",
         current="2 A",
         slot_number=0,
         channel_count=16,
         signal_type="mixed_io",
+    ),
+    LayoutObjectSpec(
+        name="CE_Power_Supply",
+        role=CERoles.POWER_SUPPLY,
+        tag="PSU-001",
+        description="Generic 24 VDC power supply placeholder",
+        panel_name="PANEL-001",
+        width="100 mm",
+        height="120 mm",
+        depth="80 mm",
+        x="100 mm",
+        y="3 mm",
+        z="440 mm",
+        voltage="24 VDC",
+        current="5 A",
+    ),
+    LayoutObjectSpec(
+        name="CE_Wire_Duct_Bottom",
+        role=CERoles.WIRE_DUCT,
+        tag="DUCT-002-BOTTOM",
+        description="Bottom wire guide/duct placeholder",
+        panel_name="PANEL-001",
+        width="600 mm",
+        height="80 mm",
+        depth="60 mm",
+        x="100 mm",
+        y="3 mm",
+        z="600 mm",
     ),
 )
 
@@ -119,9 +164,13 @@ LAYOUT_PROPERTY_SPECS = (
     ("App::PropertyString", "CadModelPath", "CADbase", "Referenced CAD model path"),
     ("App::PropertyString", "CadModelFormat", "CADbase", "Referenced CAD model format"),
     ("App::PropertyString", "CadModelSha256", "CADbase", "Referenced CAD model SHA-256"),
+    ("App::PropertyString", "CadAssetStatus", "CADbase", "Local CAD asset availability/checksum status"),
     ("App::PropertyLength", "Width", "Geometry", "Placeholder width"),
     ("App::PropertyLength", "Height", "Geometry", "Placeholder height"),
     ("App::PropertyLength", "Depth", "Geometry", "Placeholder depth"),
+    ("App::PropertyLength", "LayoutX", "Geometry", "Backplate-relative X coordinate"),
+    ("App::PropertyLength", "LayoutY", "Geometry", "Backplate-relative Y coordinate"),
+    ("App::PropertyLength", "LayoutZ", "Geometry", "Backplate-relative Z coordinate"),
 )
 
 
@@ -147,9 +196,13 @@ def apply_layout_spec(obj, spec: LayoutObjectSpec):
     obj.CadModelPath = spec.cad_model_path
     obj.CadModelFormat = spec.cad_model_format
     obj.CadModelSha256 = spec.cad_model_sha256
+    obj.CadAssetStatus = cad_asset_status(spec.cad_model_path, spec.cad_model_sha256)
     obj.Width = spec.width
     obj.Height = spec.height
     obj.Depth = spec.depth
+    obj.LayoutX = spec.x
+    obj.LayoutY = spec.y
+    obj.LayoutZ = spec.z
     return obj
 
 
@@ -171,6 +224,10 @@ def layout_object_metadata(obj) -> dict[str, object]:
         "CadModelPath": getattr(obj, "CadModelPath", ""),
         "CadModelFormat": getattr(obj, "CadModelFormat", ""),
         "CadModelSha256": getattr(obj, "CadModelSha256", ""),
+        "CadAssetStatus": getattr(obj, "CadAssetStatus", ""),
+        "LayoutX": getattr(obj, "LayoutX", ""),
+        "LayoutY": getattr(obj, "LayoutY", ""),
+        "LayoutZ": getattr(obj, "LayoutZ", ""),
     }
 
 
@@ -186,6 +243,61 @@ def _step_cad_ref(part):
         if cad_ref.format.upper() == "STEP":
             return cad_ref
     return part.cad_refs[0] if part.cad_refs else None
+
+
+def cad_asset_status(path: str, expected_sha256: str = "") -> str:
+    """Describe a local CAD reference without asserting product applicability.
+
+    A checksum match means the locally available file is the catalog's recorded
+    file.  It deliberately does not mean the asset has been verified as the
+    exact selected product, correctly oriented, or approved for manufacture.
+    """
+
+    source = Path(str(path or "")).expanduser()
+    if not str(path or "").strip():
+        return "not_requested"
+    if not source.is_file():
+        return "unavailable"
+    if not expected_sha256.strip():
+        return "unverified"
+    digest = sha256(source.read_bytes()).hexdigest()
+    return "reference_checked" if digest == expected_sha256.strip().lower() else "checksum_mismatch"
+
+
+def _cad_shape_for_layout_object(obj):
+    """Load a checksum-matched local STEP reference, otherwise return ``None``.
+
+    This boundary never downloads from a vendor site.  It only renders an asset
+    that is already present locally and exactly matches the project catalog
+    reference.  The associated ``CadAssetStatus`` keeps its limited provenance
+    visible in the FreeCAD property editor.
+    """
+
+    if Part is None:
+        return None
+    path = str(getattr(obj, "CadModelPath", "") or "")
+    expected = str(getattr(obj, "CadModelSha256", "") or "")
+    status = cad_asset_status(path, expected)
+    obj.CadAssetStatus = status
+    if status != "reference_checked" or str(getattr(obj, "CadModelFormat", "") or "").upper() != "STEP":
+        return None
+    try:
+        shape = Part.Shape()
+        shape.read(path)
+        return shape if not shape.isNull() else None
+    except Exception:
+        obj.CadAssetStatus = "load_failed"
+        return None
+
+
+def _millimetres(value) -> float:
+    """Accept FreeCAD quantities and the string values used by lightweight tests."""
+
+    numeric = getattr(value, "Value", value)
+    try:
+        return float(numeric)
+    except (TypeError, ValueError):
+        return float(str(numeric).strip().split()[0])
 
 
 def starter_layout_specs_for_project(project: object | None) -> tuple[LayoutObjectSpec, ...]:
@@ -259,7 +371,7 @@ def create_starter_layout_objects(document=None) -> list[object]:
         from controls_wb.model.electrical import register_electrical_device
 
         for obj in objects:
-            if obj.CERole in {CERoles.PLC_CONTROLLER, CERoles.TERMINAL_STRIP}:
+            if obj.CERole in {CERoles.PLC_CONTROLLER, CERoles.TERMINAL_STRIP, CERoles.POWER_SUPPLY}:
                 register_electrical_device(project, obj)
     return objects
 
@@ -574,7 +686,14 @@ class ControlsLayoutObject:
         if self.Role in {CERoles.PLC_RACK, CERoles.PLC_MODULE, CERoles.PLC_CHANNEL}:
             return None
         if Part is not None:
-            obj.Shape = Part.makeBox(obj.Width, obj.Depth, obj.Height)
+            asset_shape = _cad_shape_for_layout_object(obj)
+            obj.Shape = asset_shape if asset_shape is not None else Part.makeBox(obj.Width, obj.Depth, obj.Height)
+            if App is not None and hasattr(obj, "Placement"):
+                obj.Placement.Base = App.Vector(
+                    _millimetres(obj.LayoutX),
+                    _millimetres(obj.LayoutY),
+                    _millimetres(obj.LayoutZ),
+                )
 
     def onDocumentRestored(self, obj):
         ensure_layout_properties(obj)

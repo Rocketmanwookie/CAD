@@ -334,7 +334,13 @@ def io_allocation_for_project(project: object):
 
     explicit = explicit_io_signals_from_project(project)
     signals = explicit + starter_io_signals_from_project(project, explicit)
-    return allocate_io_signals(signals, load_hardware_catalog(), make, line, cpu)
+    targets = {
+        key: (sum(signal.signal_type == signal_type for signal in signals) * 6 + 4) // 5
+        for key, signal_type in (("di", "digital_input"), ("do", "digital_output"),
+                                 ("ai", "analog_input"), ("ao", "analog_output"))
+    }
+    return allocate_io_signals(signals, load_hardware_catalog(), make, line, cpu,
+                               capacity_targets=targets)
 
 
 def persist_io_allocation_to_project(project: object):

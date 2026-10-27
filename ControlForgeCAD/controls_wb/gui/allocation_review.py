@@ -41,7 +41,12 @@ def show_allocation_naming_dialog(
         label_editors[row.signal_tag] = editor
         form.addRow(key, editor)
     layout.addLayout(form)
-    buttons = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Apply | QtWidgets.QDialogButtonBox.Cancel)
+    # ``Apply`` has no accepted/rejected semantic in QDialogButtonBox.  The
+    # original dialog wired it to ``accepted``, which made the visible Apply
+    # button a no-op in FreeCAD.  This review is one atomic save, so expose a
+    # real accept button and make its outcome explicit.
+    buttons = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)
+    buttons.button(QtWidgets.QDialogButtonBox.Ok).setText("Save labels")
     buttons.accepted.connect(dialog.accept)
     buttons.rejected.connect(dialog.reject)
     layout.addWidget(buttons)

@@ -75,8 +75,8 @@ For a changed workflow, QA Guy should:
   on a workstation that has FreeCAD installed.
 - Expand the fault tree with observed defects and their linked regression tests.
 - Add a QA evidence log only after there are actual runs/incidents to record.
-- Add formal CI and documentation-build checks when repository automation is
-  available.
+- Extend the existing CI quality workflow with documentation-link checks and
+  targeted coverage or performance evidence where a milestone warrants them.
 
 ## Observed defects incorporated into automated regression coverage
 

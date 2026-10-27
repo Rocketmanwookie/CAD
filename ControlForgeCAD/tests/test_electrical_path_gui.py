@@ -8,6 +8,7 @@ from controls_wb.gui.electrical_path import (
     build_electrical_path,
     edit_electrical_path_from_form,
     parse_route_points,
+    _add_device_items,
     update_electrical_path_from_form,
 )
 from controls_wb.identity import CERoles
@@ -109,6 +110,27 @@ def test_selected_allocated_channel_derives_form_signal_and_terminal_values():
         "signal_tag": "DI-0001",
         "plc_terminal": "%I0.0",
     }
+
+
+class FakeCombo:
+    def __init__(self):
+        self.items = []
+
+    def addItem(self, label, value):
+        self.items.append((label, value))
+
+
+def test_allocated_channel_selector_uses_allocation_values_not_empty_freecad_tag():
+    _, project, _ = _setup()
+    channel = next(device for device in project.ElectricalDevices if device.CERole == CERoles.PLC_CHANNEL)
+    channel.Tag = ""  # FreeCAD supplies the property, but allocation channels do not use it.
+    combo = FakeCombo()
+
+    _add_device_items(combo, [channel])
+
+    assert combo.items == [
+        ("DI-0001 — %I0.0 (Rack 0, Slot 1, Channel 0)", channel.CEIdentity)
+    ]
 
 
 def test_form_service_materializes_and_registers_path():

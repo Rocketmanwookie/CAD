@@ -15,6 +15,7 @@ def test_default_panel_hardware_catalog_loads_starter_parts():
 
     backplate = part_for_layout(catalog, "CE_Backplate")
     terminal_strip = part_for_layout(catalog, "CE_Terminal_Strip")
+    power_supply = part_for_layout(catalog, "CE_Power_Supply")
 
     assert backplate is not None
     assert backplate.manufacturer == "Generic"
@@ -22,6 +23,8 @@ def test_default_panel_hardware_catalog_loads_starter_parts():
     assert backplate.verified is False
     assert terminal_strip is not None
     assert terminal_strip.part_number == "TERMINAL-STRIP-16"
+    assert power_supply is not None
+    assert power_supply.part_number == "PSU-24VDC-5A"
 
 
 def test_panel_hardware_catalog_xml_and_schema_are_parseable():

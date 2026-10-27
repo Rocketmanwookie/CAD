@@ -11,7 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import Iterable
 
-from controls_wb.hardware_catalog import HardwareCatalog, HardwarePart, line_catalog, part_by_name
+from controls_wb.hardware_catalog import HardwareCatalog, HardwarePart, line_catalog, part_by_name, _planning_module
 from controls_wb.io_list import IOSignal
 
 
@@ -78,6 +78,7 @@ def allocate_io_signals(
     *,
     rack: str = "0",
     cpu_slot: str = "1",
+    capacity_targets: dict[str, int] | None = None,
 ) -> IOAllocationResult:
     """Allocate supported I/O signals to a selected CPU and catalog modules.
 
@@ -105,21 +106,34 @@ def allocate_io_signals(
     for signal_type, capacity_key in _CAPACITY_KEY_BY_SIGNAL_TYPE.items():
         indexes = [index for index, signal in enumerate(allocated) if signal.signal_type == signal_type]
         capacity = int(getattr(cpu, capacity_key))
+        target = len(indexes)
+        if capacity_targets is not None:
+            target = capacity_targets.get(capacity_key, target)
+            if not isinstance(target, int) or isinstance(target, bool) or target < len(indexes):
+                raise ValueError(f"{capacity_key} capacity target must cover actual demand.")
+        remaining_capacity = max(target - capacity, 0)
         cpu_indexes, remaining_indexes = indexes[:capacity], indexes[capacity:]
         for channel, index in enumerate(cpu_indexes):
             allocated[index] = _allocated(allocated[index], rack, cpu_slot, channel, cpu)
 
         module = _best_module(line_data.io_modules, capacity_key)
-        while remaining_indexes and module is not None:
+        if capacity_targets is not None:
+            module = _planning_module(line_data.io_modules, capacity_key, remaining_capacity)
+        while (remaining_indexes or remaining_capacity) and module is not None:
             slot = str(next_slot)
             next_slot += 1
             modules.append(PLCModuleAllocation(str(rack), slot, module.name, module.part_number, module.source_id))
             module_capacity = int(getattr(module, capacity_key))
+            remaining_capacity = max(remaining_capacity - module_capacity, 0)
             for channel in range(module_capacity):
                 if not remaining_indexes:
                     break
                 index = remaining_indexes.pop(0)
                 allocated[index] = _allocated(allocated[index], rack, slot, channel, module)
+
+        if remaining_capacity and not remaining_indexes:
+            findings.append(IOAllocationFinding("ERROR", "insufficient_spare_capacity", "",
+                f"No compatible module covers the {capacity_key} spare capacity target."))
 
         for index in remaining_indexes:
             signal = allocated[index]
@@ -143,6 +157,10 @@ def allocate_io_signals(
                 )
             )
 
+    if capacity_targets is not None:
+        if cpu.max_signal_modules is None or len(modules) - 1 > cpu.max_signal_modules:
+            findings.append(IOAllocationFinding("ERROR", "module_limit_exceeded", "",
+                "Capacity targets exceed the CPU's documented signal-module limit."))
     findings.extend(validate_io_allocations(allocated))
     return IOAllocationResult(tuple(allocated), tuple(modules), _sorted_findings(findings))
 

@@ -8,6 +8,7 @@ from controls_wb.model.layout import (
     create_starter_layout_objects,
     layout_object_metadata,
     allocation_electrical_graph_findings,
+    cad_asset_status,
     materialize_plc_allocation,
     _prune_unlinked_allocation_occurrences,
     starter_layout_specs_for_project,
@@ -72,6 +73,8 @@ def test_starter_layout_specs_cover_required_placeholder_types():
         "CE_Wire_Duct",
         "CE_Terminal_Strip",
         "CE_PLC_Rack",
+        "CE_Power_Supply",
+        "CE_Wire_Duct_Bottom",
     }.issubset(names)
 
 
@@ -86,6 +89,8 @@ def test_create_starter_layout_objects_adds_editable_properties():
         "CE_Wire_Duct",
         "CE_Terminal_Strip",
         "CE_PLC_Rack",
+        "CE_Power_Supply",
+        "CE_Wire_Duct_Bottom",
     ]
     terminal_strip = objects[3]
     plc_rack = objects[4]
@@ -107,6 +112,9 @@ def test_create_starter_layout_objects_adds_editable_properties():
     assert terminal_strip.PartNumber == "TERMINAL-STRIP-16"
     assert plc_rack.Voltage == "24 VDC"
     assert plc_rack.ChannelCount == 16
+    assert objects[5].CERole == CERoles.POWER_SUPPLY
+    assert objects[6].CERole == CERoles.WIRE_DUCT
+    assert [obj.LayoutZ for obj in objects[1:]] == ["720 mm", "820 mm", "670 mm", "670 mm", "440 mm", "600 mm"]
 
 
 def test_layout_object_metadata_is_pure_python():
@@ -130,7 +138,22 @@ def test_layout_object_metadata_is_pure_python():
         "CadModelPath": "",
         "CadModelFormat": "",
         "CadModelSha256": "",
+        "CadAssetStatus": "not_requested",
+        "LayoutX": "100 mm",
+        "LayoutY": "3 mm",
+        "LayoutZ": "670 mm",
     }
+
+
+def test_cad_asset_status_requires_an_available_checksum_matched_reference(tmp_path):
+    source = tmp_path / "model.step"
+    source.write_bytes(b"STEP reference fixture")
+    expected = __import__("hashlib").sha256(source.read_bytes()).hexdigest()
+
+    assert cad_asset_status(str(source), expected) == "reference_checked"
+    assert cad_asset_status(str(source), "0" * 64) == "checksum_mismatch"
+    assert cad_asset_status(str(tmp_path / "absent.step"), expected) == "unavailable"
+    assert cad_asset_status("", expected) == "not_requested"
 
 
 def test_starter_layout_specs_use_selected_plc_catalog_part():
@@ -242,8 +265,9 @@ def test_starter_plc_and_terminal_strip_register_as_project_devices():
     assert [obj.CERole for obj in project.ElectricalDevices] == [
         CERoles.TERMINAL_STRIP,
         CERoles.PLC_CONTROLLER,
+        CERoles.POWER_SUPPLY,
     ]
-    assert project.ElectricalDevices == [objects[3], objects[4]]
+    assert project.ElectricalDevices == [objects[3], objects[4], objects[5]]
 
 
 def test_materialized_plc_allocation_has_stable_rack_module_channel_links():

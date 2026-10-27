@@ -31,6 +31,9 @@ class FactIds:
     SOURCE_RECORDS = "sourceRecords"
     INTAKE_QUESTIONS = "intake.questions"
     IO_SIGNALS = "signals.io"
+    LOAD_REQUIREMENTS = "resolver.loads"
+    IO_REQUIREMENTS = "resolver.ioRequirements"
+    HARDWARE_REQUIREMENTS = "resolver.hardwareRequirements"
     CONNECTION_RECORDS = "connections.records"
     ELECTRICAL_SIGNALS = "electricalGraph.signals"
     ELECTRICAL_PATHS = "electricalGraph.paths"
@@ -76,6 +79,9 @@ FACT_SPECS: tuple[FactSpec, ...] = (
     FactSpec(FactIds.SOURCE_RECORDS, "Source records", "sourceRecords", "Project manager", "SourceRecords"),
     FactSpec(FactIds.INTAKE_QUESTIONS, "Intake questions", "intake", "Project manager", "IntakeQuestions"),
     FactSpec(FactIds.IO_SIGNALS, "I/O signals", "signals", "Controls lead", "IOSignals"),
+    FactSpec(FactIds.LOAD_REQUIREMENTS, "Typed load requirements", "resolver", "Controls lead", "LoadRequirements"),
+    FactSpec(FactIds.IO_REQUIREMENTS, "Typed I/O requirements", "resolver", "Controls lead", "IORequirements"),
+    FactSpec(FactIds.HARDWARE_REQUIREMENTS, "Hardware requirement proposals", "resolver", "Controls lead", "HardwareRequirements"),
     FactSpec(FactIds.CONNECTION_RECORDS, "Connection records", "connections", "Controls lead", "ConnectionRecords"),
     FactSpec(FactIds.ELECTRICAL_SIGNALS, "Typed electrical signals", "electricalGraph", "Controls lead", "ElectricalSignals"),
     FactSpec(FactIds.ELECTRICAL_PATHS, "Continuous electrical paths", "electricalGraph", "Controls lead", "ElectricalPaths"),
