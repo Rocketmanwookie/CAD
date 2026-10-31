@@ -1,7 +1,10 @@
 # Manual FreeCAD GUI Acceptance Checklist
 
-Use this checklist when a FreeCAD desktop test is convenient. It is an
-acceptance record, not a blocker for dependency-free development work.
+Use this checklist to record the FreeCAD desktop acceptance gate for a
+candidate that claims the allocation-to-path workflow. Pure-Python tests can
+proceed without a desktop run, but that candidate cannot pass the applicable
+release gate until the desktop evidence is recorded. See the
+[release-gate checklist](../../docs/RELEASE_GATE_CHECKLIST.md).
 
 ## Setup
 
@@ -41,10 +44,12 @@ acceptance record, not a blocker for dependency-free development work.
    field device…** selected and enter a new field-device tag. Confirm the
    signal tag and PLC terminal designation are derived from the selected
    channel.
-4. Save, close, reopen, and recompute. Confirm channel identity, typed signal,
+5. Save, close, reopen, and recompute. Confirm channel identity, typed signal,
    path link, first terminal owner, and first terminal designation remain
    unchanged. Edit the path and confirm the PLC terminal cannot be changed away
    from the allocated address.
+6. Run **Validate Controls Project** and **Export Electrical Schedules** after
+   reopening. Record the validation output and the wiring and I/O path CSVs.
 
 ## Route-capture workflow
 

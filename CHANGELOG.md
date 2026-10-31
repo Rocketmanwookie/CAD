@@ -8,6 +8,14 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) co
 
 ### Added
 
+- Added the local job-intake settings surface, workflow command entries, and
+  typed load/I/O requirements with deterministic, review-only hardware
+  proposals and a panel-capacity snapshot. The snapshot exposes unresolved
+  fit, thermal, power, and engineering inputs; no resolver export command or
+  approved equipment selection is implied.
+- Added the 27-role agent roster, linked spreadsheet snapshot, and Controls
+  Engineer load/protection source, playbook, and evaluation documents.
+
 - Add PLC Configurator and Define I/O workflow actions. Project allocation now
   installs expansion capacity for 20% spare and enforces documented CPU module
   limits; unused capacity does not create field-signal records.

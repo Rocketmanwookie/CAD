@@ -71,18 +71,24 @@ Equivalent manual symlink command:
 
 ```bash
 mkdir -p ~/.local/share/FreeCAD/Mod
-ln -s /home/egrantjr/Dev/CAD/ControlForgeCAD ~/.local/share/FreeCAD/Mod/ControlForgeCAD
+ln -s "$(pwd)/ControlForgeCAD" ~/.local/share/FreeCAD/Mod/ControlForgeCAD
 ```
 
 Equivalent copy command:
 
 ```bash
 mkdir -p ~/.local/share/FreeCAD/Mod
-cp -R /home/egrantjr/Dev/CAD/ControlForgeCAD ~/.local/share/FreeCAD/Mod/ControlForgeCAD
+cp -R "$(pwd)/ControlForgeCAD" ~/.local/share/FreeCAD/Mod/ControlForgeCAD
 ```
 
 In FreeCAD, select **Controls / Automation** from the workbench selector. Confirm these commands appear in the toolbar or menu:
 
+- `CE_SendIntakeForm` - Send Job Intake Form (currently opens the local questionnaire; it does not send a form)
+- `CE_OpenIntakeConsole` - Open Job Database Console (currently opens the staged Import and Review flow)
+- `CE_IOCount` - I/O Count
+- `CE_PLCConfigurator` - PLC Configuration
+- `CE_DefineIO` - Define I/O
+- `CE_IntakeSystemSettings` - Job Intake & Database Settings
 - `CE_NewProject` - New Controls Project
 - `CE_AddIOSignal` - Add I/O Signal
 - `CE_AllocatePLCIO` - Allocate PLC I/O

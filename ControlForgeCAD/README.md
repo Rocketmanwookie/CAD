@@ -127,6 +127,14 @@ rejected rather than silently changing it. See
 [`docs/import-and-review.md`](docs/import-and-review.md) for supported inputs,
 provenance, and the current boundary.
 
+The workflow toolbar also offers **Send Job Intake Form** and **Open Job
+Database Console**. The former currently opens the local plant questionnaire;
+it does not transmit a form. The latter opens the same staged **Import and
+Review Project Data** flow described above; it is not a separate database
+browser. **Job Intake & Database Settings** configures local intake settings.
+The typed resolver snapshot is a pure-Python, review-only planning record; no
+FreeCAD command currently generates or exports a resolved package from it.
+
 The first CAD-side layout objects are placeholders, not manufacturer-accurate models. **Create Control Panel** creates a panel/backplate, DIN rail, wire duct, terminal strip, and PLC rack/module with editable metadata such as tag, manufacturer, part number, description, panel name, voltage, current, terminal count, slot number, channel count, and signal type where applicable. Panel placeholder metadata comes from the XML panel hardware catalog. When a selected PLC CPU exists in the XML hardware catalog, the PLC placeholder receives the catalog manufacturer, part number, onboard channel count, and CADbase reference metadata. BOM export includes these objects when they expose controls metadata.
 
 ## Business thesis
