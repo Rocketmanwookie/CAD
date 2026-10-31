@@ -34,6 +34,7 @@ class FactIds:
     LOAD_REQUIREMENTS = "resolver.loads"
     IO_REQUIREMENTS = "resolver.ioRequirements"
     HARDWARE_REQUIREMENTS = "resolver.hardwareRequirements"
+    RESOLVER_SNAPSHOTS = "resolver.snapshots"
     CONNECTION_RECORDS = "connections.records"
     ELECTRICAL_SIGNALS = "electricalGraph.signals"
     ELECTRICAL_PATHS = "electricalGraph.paths"
@@ -82,6 +83,7 @@ FACT_SPECS: tuple[FactSpec, ...] = (
     FactSpec(FactIds.LOAD_REQUIREMENTS, "Typed load requirements", "resolver", "Controls lead", "LoadRequirements"),
     FactSpec(FactIds.IO_REQUIREMENTS, "Typed I/O requirements", "resolver", "Controls lead", "IORequirements"),
     FactSpec(FactIds.HARDWARE_REQUIREMENTS, "Hardware requirement proposals", "resolver", "Controls lead", "HardwareRequirements"),
+    FactSpec(FactIds.RESOLVER_SNAPSHOTS, "Immutable resolver snapshots", "resolver", "Controls lead", "ResolverSnapshots"),
     FactSpec(FactIds.CONNECTION_RECORDS, "Connection records", "connections", "Controls lead", "ConnectionRecords"),
     FactSpec(FactIds.ELECTRICAL_SIGNALS, "Typed electrical signals", "electricalGraph", "Controls lead", "ElectricalSignals"),
     FactSpec(FactIds.ELECTRICAL_PATHS, "Continuous electrical paths", "electricalGraph", "Controls lead", "ElectricalPaths"),

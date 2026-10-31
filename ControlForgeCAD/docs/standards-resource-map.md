@@ -59,6 +59,8 @@ This file lists standards, formats, and resource families that IntegraCAB Open s
 
 ## Electrical, panel, and machine references
 
+- IEC 61082-1 for the preparation and presentation of electrotechnical
+  documents; use the current purchased standard for project compliance review.
 - NEC / NFPA 70.
 - NFPA 79.
 - UL 508A.

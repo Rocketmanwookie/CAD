@@ -43,6 +43,12 @@ Both circuits must be defined before constructing their shared cabinet. The
 combined assembly then supplies BOM/drawings and wire schedules. See the
 governing workflow for its ownership boundary.
 
+The staged delivery and verification approach for PLC drawings and the
+associated controlled documents is maintained in the
+[PLC control drawing and documentation rollout plan](../../docs/PLC_DOCUMENTATION_ROLLOUT_PLAN.md).
+It separates structured intake, typed signal paths, resolver-backed review
+artifacts, drawing coordination, and final CAD/as-built realization.
+
 ### Working MVP fast lane
 
 The existing allocation-to-path slice is a foundation milestone within the

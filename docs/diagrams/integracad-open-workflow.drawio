@@ -1,0 +1,343 @@
+<mxfile host="app.diagrams.net" pages="2">
+  <diagram id="agreed-workflow" name="1 - Agreed workflow and roadmap">
+    <mxGraphModel dx="3478" dy="612" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="2200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=0;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=22;fontStyle=1;" value="IntegraCAD Open — Agreed Workflow" vertex="1">
+          <mxGeometry height="50" width="800" x="200" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" parent="1" style="shape=note;whiteSpace=wrap;html=0;fillColor=#f5f5f5;strokeColor=#999999;fontSize=13;" value="Status at 2026-10-06 Green: implemented step Yellow: partial / existing foundation Blue: planned integration Desktop acceptance remains pending." vertex="1">
+          <mxGeometry height="145" width="220" x="20" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="plant" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;" value="1 · PROJECT &amp; PLANT Plant Questionnaire Project, supply, loads, enclosure requirements, networks Richer environment and requirements capture pending" vertex="1">
+          <mxGeometry height="110" width="420" x="390" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="count" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" value="2 · CONTROLS CIRCUIT I/O Count: DI / DO / AI / AO Capacity target per type = ceil(actual demand × 1.20)" vertex="1">
+          <mxGeometry height="90" width="420" x="390" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="import" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="Import I/O — planned Derive counts from imported points; review before applying" vertex="1">
+          <mxGeometry height="95" width="230" x="30" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="cpu" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" value="PLC Configurator Select feasible CPU and compatible modules Reserve spare capacity; allocate actual points only" vertex="1">
+          <mxGeometry height="100" width="420" x="390" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="define" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;" value="Define I/O Label allocated points Broader tag/type/device table editing pending" vertex="1">
+          <mxGeometry height="90" width="420" x="390" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="changed" parent="1" style="rhombus;whiteSpace=wrap;html=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;" value="Demand / signal requirements still fit hardware?" vertex="1">
+          <mxGeometry height="100" width="230" x="485" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="ctrl" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;" value="Complete controls circuit Devices, terminals and logical connections Existing typed-path foundation; integrated flow pending" vertex="1">
+          <mxGeometry height="100" width="420" x="390" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="safety" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="3 · SAFETY CIRCUIT — planned Supplied requirements → point/channel counts → select relay/controller/modules → define points → complete logical connections" vertex="1">
+          <mxGeometry height="135" width="420" x="390" y="920" as="geometry" />
+        </mxCell>
+        <mxCell id="shared" parent="1" style="shape=note;whiteSpace=wrap;html=0;fillColor=#f5f5f5;strokeColor=#999999;fontSize=13;" value="Both circuits share one cabinet. Define both before final cabinet sizing. Safety spare/channel requirements are explicit inputs." vertex="1">
+          <mxGeometry height="130" width="260" x="875" y="930" as="geometry" />
+        </mxCell>
+        <mxCell id="cad" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="4 · PARTS &amp; CAD — planned Combine both equipment lists Resolve CADbase / personal-library parts Gather dimensions, CAD and terminal/port data" vertex="1">
+          <mxGeometry height="125" width="420" x="390" y="1100" as="geometry" />
+        </mxCell>
+        <mxCell id="ready" parent="1" style="rhombus;whiteSpace=wrap;html=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;" value="Both circuits defined and CAD/endpoints ready?" vertex="1">
+          <mxGeometry height="100" width="230" x="485" y="1270" as="geometry" />
+        </mxCell>
+        <mxCell id="cabinet" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="5 · CABINET &amp; ROUTING — planned integration Select/size final enclosure; place both circuits Components/assembly + Fasteners Terminals and physical routes through Cables" vertex="1">
+          <mxGeometry height="130" width="420" x="390" y="1410" as="geometry" />
+        </mxCell>
+        <mxCell id="preview" parent="1" style="shape=note;whiteSpace=wrap;html=0;fillColor=#f5f5f5;strokeColor=#999999;fontSize=13;" value="Working BOM/drawing previews available during construction Change shared project records once; flag affected downstream outputs" vertex="1">
+          <mxGeometry height="125" width="260" x="875" y="1415" as="geometry" />
+        </mxCell>
+        <mxCell id="package" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="6 · GENERATE PACKAGE — planned integration Generate coordinated outputs from one project revision" vertex="1">
+          <mxGeometry height="80" width="420" x="390" y="1590" as="geometry" />
+        </mxCell>
+        <mxCell id="bom" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="Combined BOM BOM workbench adapter" vertex="1">
+          <mxGeometry height="80" width="260" x="130" y="1730" as="geometry" />
+        </mxCell>
+        <mxCell id="drawing" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="Controls + safety circuit drawings / 2D–3D views" vertex="1">
+          <mxGeometry height="80" width="280" x="450" y="1730" as="geometry" />
+        </mxCell>
+        <mxCell id="sheets" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="Cabinet drawing sheets Drawing tools / TechDraw" vertex="1">
+          <mxGeometry height="80" width="280" x="790" y="1730" as="geometry" />
+        </mxCell>
+        <mxCell id="wires" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="Final combined wire schedule Both circuits; terminals, conductor data, routes and lengths from shared records" vertex="1">
+          <mxGeometry height="100" width="420" x="390" y="1880" as="geometry" />
+        </mxCell>
+        <mxCell id="end" parent="1" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" value="Coordinated project package BOM + drawings + wire schedule" vertex="1">
+          <mxGeometry height="80" width="420" x="390" y="2040" as="geometry" />
+        </mxCell>
+        <mxCell id="data" parent="1" style="shape=note;whiteSpace=wrap;html=0;fillColor=#f5f5f5;strokeColor=#999999;fontSize=13;" value="Shared CE_Project and stable identities Every stage reads/writes the same project. Existing CSV/XML exports and typed-path schedules are foundations for final package generation." vertex="1">
+          <mxGeometry height="145" width="270" x="30" y="1110" as="geometry" />
+        </mxCell>
+        <mxCell id="edge0" edge="1" parent="1" source="plant" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="count" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge1" edge="1" parent="1" source="import" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;dashed=1;strokeColor=#999999;" target="count" value="Counts from import">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge2" edge="1" parent="1" source="count" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="cpu" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge3" edge="1" parent="1" source="cpu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="define" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge4" edge="1" parent="1" source="define" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="changed" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge5" edge="1" parent="1" source="changed" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="cpu" value="No — revise configuration">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge6" edge="1" parent="1" source="changed" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="ctrl" value="Yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge7" edge="1" parent="1" source="ctrl" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="safety" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge8" edge="1" parent="1" source="safety" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="cad" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge9" edge="1" parent="1" source="cad" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="ready" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge10" edge="1" parent="1" source="ready" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="cad" value="No — resolve missing inputs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge11" edge="1" parent="1" source="ready" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="cabinet" value="Yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge12" edge="1" parent="1" source="cabinet" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="package" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge13" edge="1" parent="1" source="package" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="bom" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge14" edge="1" parent="1" source="package" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="drawing" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge15" edge="1" parent="1" source="package" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="sheets" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge16" edge="1" parent="1" source="bom" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="wires" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge17" edge="1" parent="1" source="drawing" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="wires" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge18" edge="1" parent="1" source="sheets" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="wires" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge19" edge="1" parent="1" source="wires" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" target="end" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge20" edge="1" parent="1" source="safety" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;dashed=1;strokeColor=#999999;" target="shared" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge21" edge="1" parent="1" source="cabinet" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;dashed=1;strokeColor=#999999;" target="preview" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-5" parent="1" style="shape=table;tableRender=collapsed;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=0;strokeColor=default;fontSize=16;" value="PROJECT &amp; PLANT Questionaire" vertex="1">
+          <mxGeometry height="539" width="260" x="812" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-6" parent="B5k30OtzkgzHzy2JWguy-5" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeColor=inherit;fontSize=16;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-7" parent="B5k30OtzkgzHzy2JWguy-6" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;overflow=hidden;pointerEvents=1;strokeColor=inherit;fontSize=16;" value="1" vertex="1">
+          <mxGeometry height="30" width="58" as="geometry">
+            <mxRectangle height="30" width="58" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-8" parent="B5k30OtzkgzHzy2JWguy-6" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;align=left;spacingLeft=6;overflow=hidden;strokeColor=inherit;fontSize=16;" value="Project Name&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;" vertex="1">
+          <mxGeometry height="30" width="202" x="58" as="geometry">
+            <mxRectangle height="30" width="202" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-9" parent="B5k30OtzkgzHzy2JWguy-5" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeColor=inherit;fontSize=16;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-10" parent="B5k30OtzkgzHzy2JWguy-9" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;overflow=hidden;strokeColor=inherit;fontSize=16;" value="2" vertex="1">
+          <mxGeometry height="30" width="58" as="geometry">
+            <mxRectangle height="30" width="58" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-11" parent="B5k30OtzkgzHzy2JWguy-9" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;align=left;spacingLeft=6;overflow=hidden;strokeColor=inherit;fontSize=16;" value="Customer Name" vertex="1">
+          <mxGeometry height="30" width="202" x="58" as="geometry">
+            <mxRectangle height="30" width="202" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-21" parent="B5k30OtzkgzHzy2JWguy-5" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeColor=inherit;fontSize=16;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-22" parent="B5k30OtzkgzHzy2JWguy-21" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;overflow=hidden;pointerEvents=1;strokeColor=inherit;fontSize=16;" value="3" vertex="1">
+          <mxGeometry height="30" width="58" as="geometry">
+            <mxRectangle height="30" width="58" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-23" parent="B5k30OtzkgzHzy2JWguy-21" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;align=left;spacingLeft=6;overflow=hidden;strokeColor=inherit;fontSize=16;" value="Site/location" vertex="1">
+          <mxGeometry height="30" width="202" x="58" as="geometry">
+            <mxRectangle height="30" width="202" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-18" parent="B5k30OtzkgzHzy2JWguy-5" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeColor=inherit;fontSize=16;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-19" parent="B5k30OtzkgzHzy2JWguy-18" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;overflow=hidden;strokeColor=inherit;fontSize=16;" value="4" vertex="1">
+          <mxGeometry height="30" width="58" as="geometry">
+            <mxRectangle height="30" width="58" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-20" parent="B5k30OtzkgzHzy2JWguy-18" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;align=left;spacingLeft=6;overflow=hidden;strokeColor=inherit;fontSize=16;" value="Plant Power: PH Volt" vertex="1">
+          <mxGeometry height="30" width="202" x="58" as="geometry">
+            <mxRectangle height="30" width="202" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-15" parent="B5k30OtzkgzHzy2JWguy-5" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeColor=inherit;fontSize=16;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-16" parent="B5k30OtzkgzHzy2JWguy-15" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;overflow=hidden;strokeColor=inherit;fontSize=16;" value="5a" vertex="1">
+          <mxGeometry height="30" width="58" as="geometry">
+            <mxRectangle height="30" width="58" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-17" parent="B5k30OtzkgzHzy2JWguy-15" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;align=left;spacingLeft=6;overflow=hidden;strokeColor=inherit;fontSize=16;" value="Controlled Loads" vertex="1">
+          <mxGeometry height="30" width="202" x="58" as="geometry">
+            <mxRectangle height="30" width="202" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-25" parent="B5k30OtzkgzHzy2JWguy-5" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeColor=inherit;fontSize=16;" vertex="1">
+          <mxGeometry height="30" width="260" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-26" parent="B5k30OtzkgzHzy2JWguy-25" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;overflow=hidden;strokeColor=inherit;fontSize=16;" value="5b" vertex="1">
+          <mxGeometry height="30" width="58" as="geometry">
+            <mxRectangle height="30" width="58" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-27" parent="B5k30OtzkgzHzy2JWguy-25" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;align=left;spacingLeft=6;overflow=hidden;strokeColor=inherit;fontSize=16;" value="Power Consumption" vertex="1">
+          <mxGeometry height="30" width="202" x="58" as="geometry">
+            <mxRectangle height="30" width="202" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-12" parent="B5k30OtzkgzHzy2JWguy-5" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeColor=inherit;fontSize=16;" value="" vertex="1">
+          <mxGeometry height="30" width="260" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-13" parent="B5k30OtzkgzHzy2JWguy-12" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;overflow=hidden;strokeColor=inherit;fontSize=16;" value="5c" vertex="1">
+          <mxGeometry height="30" width="58" as="geometry">
+            <mxRectangle height="30" width="58" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-14" parent="B5k30OtzkgzHzy2JWguy-12" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;align=left;spacingLeft=6;overflow=hidden;strokeColor=inherit;fontSize=16;" value="Protection" vertex="1">
+          <mxGeometry height="30" width="202" x="58" as="geometry">
+            <mxRectangle height="30" width="202" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-34" parent="B5k30OtzkgzHzy2JWguy-5" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeColor=inherit;fontSize=16;" vertex="1">
+          <mxGeometry height="30" width="260" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-35" parent="B5k30OtzkgzHzy2JWguy-34" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;overflow=hidden;strokeColor=inherit;fontSize=16;" value="5d" vertex="1">
+          <mxGeometry height="30" width="58" as="geometry">
+            <mxRectangle height="30" width="58" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-36" parent="B5k30OtzkgzHzy2JWguy-34" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;align=left;spacingLeft=6;overflow=hidden;strokeColor=inherit;fontSize=16;" vertex="1">
+          <mxGeometry height="30" width="202" x="58" as="geometry">
+            <mxRectangle height="30" width="202" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-31" parent="B5k30OtzkgzHzy2JWguy-5" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeColor=inherit;fontSize=16;" vertex="1">
+          <mxGeometry height="30" width="260" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-32" parent="B5k30OtzkgzHzy2JWguy-31" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;overflow=hidden;strokeColor=inherit;fontSize=16;" vertex="1">
+          <mxGeometry height="30" width="58" as="geometry">
+            <mxRectangle height="30" width="58" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-33" parent="B5k30OtzkgzHzy2JWguy-31" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;align=left;spacingLeft=6;overflow=hidden;strokeColor=inherit;fontSize=16;" vertex="1">
+          <mxGeometry height="30" width="202" x="58" as="geometry">
+            <mxRectangle height="30" width="202" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-28" parent="B5k30OtzkgzHzy2JWguy-5" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeColor=inherit;fontSize=16;" vertex="1">
+          <mxGeometry height="30" width="260" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-29" parent="B5k30OtzkgzHzy2JWguy-28" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;overflow=hidden;strokeColor=inherit;fontSize=16;" vertex="1">
+          <mxGeometry height="30" width="58" as="geometry">
+            <mxRectangle height="30" width="58" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B5k30OtzkgzHzy2JWguy-30" parent="B5k30OtzkgzHzy2JWguy-28" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;fillColor=none;align=left;spacingLeft=6;overflow=hidden;strokeColor=inherit;fontSize=16;" vertex="1">
+          <mxGeometry height="30" width="202" x="58" as="geometry">
+            <mxRectangle height="30" width="202" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="implemented-workflow" name="2 - Current implemented flow">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1350" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="IntegraCAD Open — Current Implemented Flow" style="text;html=0;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=22;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="20" width="880" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="info" value="Current checkout after 86eed6f 257 automated tests passed. FreeCAD desktop acceptance pending. This page shows available actions; page 1 shows the agreed target workflow." style="shape=note;whiteSpace=wrap;html=0;fillColor=#f5f5f5;strokeColor=#999999;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="30" y="95" width="270" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="plant" value="Plant Questionnaire Create/update CE_Project plant facts" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="410" y="100" width="430" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="count" value="I/O Count Store actual demand; display 20% capacity targets" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="410" y="225" width="430" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="cpu" value="PLC Configurator Preview CPU/modules; save configuration Materialize rack/module/channel/signal records Include spare-only modules without extra signals" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="410" y="350" width="430" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="define" value="Define I/O Edit engineering labels in allocated-channel table Canonical tags and coordinates remain controlled" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="410" y="515" width="430" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="limitations" value="Open work Broader I/O editing and CSV import Safety-circuit workflow Combined CAD acquisition Shared cabinet construction Coordinated package generation" style="shape=note;whiteSpace=wrap;html=0;fillColor=#f5f5f5;strokeColor=#999999;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="30" y="430" width="280" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="tools" value="Supporting Tools (existing foundation) Create Control Panel — placeholder geometry Add Electrical Path — allocated channel → strip → device" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="410" y="670" width="430" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="edit" value="Supporting Tools Edit path / capture route / optional Cables routing Validate Controls Project" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="410" y="825" width="430" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="persist" value="Desktop verification Save → close → reopen → recompute Check identities, links, labels and spare module" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="410" y="980" width="430" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="export" value="Exports submenu I/O, wiring/path schedules, terminal plan, connection schedule, starter BOM and CEProject XML" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="410" y="1140" width="430" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary" value="These exports are available individually. Final combined BOM/drawings/wire-package integration is planned." style="shape=note;whiteSpace=wrap;html=0;fillColor=#f5f5f5;strokeColor=#999999;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="30" y="1150" width="280" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="edge0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" edge="1" parent="1" source="plant" target="count">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" edge="1" parent="1" source="count" target="cpu">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" edge="1" parent="1" source="cpu" target="define">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" edge="1" parent="1" source="define" target="tools">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" edge="1" parent="1" source="tools" target="edit">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" edge="1" parent="1" source="edit" target="persist">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;" edge="1" parent="1" source="persist" target="export">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;endFill=1;fontSize=12;dashed=1;strokeColor=#999999;" edge="1" parent="1" source="export" target="boundary">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

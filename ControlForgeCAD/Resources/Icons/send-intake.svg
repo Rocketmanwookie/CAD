@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" stroke="#273444" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-label="Send intake form">
+  <path fill="#f6bf00" d="M11 7h27l11 11v31a7 7 0 0 1-7 7H18a7 7 0 0 1-7-7V14a7 7 0 0 1 7-7Z"/>
+  <path fill="#fff9df" d="M38 7v11h11Z"/>
+  <path fill="none" d="M20 25h18M20 33h13"/>
+  <path fill="#22b7ad" d="M27 41h22l-6-6 11 9-11 9 6-6H27Z"/>
+</svg>

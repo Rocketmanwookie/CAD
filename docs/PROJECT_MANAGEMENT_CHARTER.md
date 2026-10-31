@@ -70,6 +70,9 @@ strategy:
 management:
   primary_agent: tony_cad
   source_of_truth: docs/PROJECT_MANAGEMENT_CHARTER.md
+  agent_roster: docs/agents/README.md
+  agent_spreadsheet: https://docs.google.com/spreadsheets/d/14pXsO1jcoW6wBlAahzmO6WW5qeN9k0NPBekH4SmMfEs/edit
+  agent_materials_layout: docs/agents/layer_<n>/<agent_id>/
   release_gate: qa_guy, controls_engineer_guy
 
 agents:
@@ -207,6 +210,12 @@ agents:
     responsibility:
       - Review PLC/panel/I/O semantics, electrical-graph continuity, catalog and export
         truthfulness, and engineering boundaries.
+      - Apply the load and protection playbook in docs/agents/layer_4/controls_engineer_guy/CONTROLS_ENGINEER_LOAD_PROTECTION_PLAYBOOK.md;
+        use its source library and evaluated cases to check load arithmetic,
+        one-line traceability, protection evidence, and decision states.
+      - Keep code-dependent ratings, settings, conductor choices, and SCCR
+        conclusions open until the applicable source, SME consultation, and
+        qualified project review are recorded.
       - Keep milestones aligned with a usable controls-design flow without implying
         safety or code compliance.
 

@@ -12,6 +12,7 @@ from controls_wb.commands.metadata import (
     LAYOUT_COMMANDS,
     PROJECT_COMMANDS,
     VALIDATION_COMMANDS,
+    WORKFLOW_COMMANDS,
     all_command_ids,
     command_menu_text,
 )
@@ -20,10 +21,13 @@ from controls_wb.freecad_paths import workbench_root_from_module_globals
 
 def test_command_metadata_matches_expected_workbench_commands():
     assert all_command_ids() == (
-        "CE_PlantQuestionnaire",
-        "CE_IOCount",
+        "CE_SendIntakeForm",
+        "CE_OpenIntakeConsole",
         "CE_PLCConfigurator",
         "CE_DefineIO",
+        "CE_IntakeSystemSettings",
+        "CE_PlantQuestionnaire",
+        "CE_IOCount",
         "CE_NewProject",
         "CE_ImportAndReview",
         "CE_AddIOSignal",
@@ -44,6 +48,14 @@ def test_command_metadata_matches_expected_workbench_commands():
         "CE_ExportElectricalSchedules",
         "CE_ExportTerminalPlan",
     )
+    assert WORKFLOW_COMMANDS == (
+        "CE_SendIntakeForm",
+        "CE_OpenIntakeConsole",
+        "CE_IOCount",
+        "CE_PLCConfigurator",
+        "CE_DefineIO",
+        "CE_IntakeSystemSettings",
+    )
     assert PROJECT_COMMANDS == (
         "CE_ImportAndReview", "CE_AddIOSignal", "CE_AllocatePLCIO", "CE_AddConnection",
         "CE_AddElectricalPath", "CE_EditElectricalPath", "CE_CaptureWireRoute", "CE_RouteWireWithCables",
@@ -62,6 +74,10 @@ def test_command_metadata_matches_expected_workbench_commands():
 
 
 def test_command_metadata_exposes_menu_text_for_manual_validation_docs():
+    assert command_menu_text("CE_SendIntakeForm") == "Send Job Intake Form"
+    assert command_menu_text("CE_OpenIntakeConsole") == "Open Job Database Console"
+    assert command_menu_text("CE_PLCConfigurator") == "PLC Configuration"
+    assert command_menu_text("CE_IntakeSystemSettings") == "Job Intake & Database Settings"
     assert command_menu_text("CE_NewProject") == "New Controls Project"
     assert command_menu_text("CE_ImportAndReview") == "Import and Review Project Data"
     assert command_menu_text("CE_AddIOSignal") == "Add I/O Signal"
@@ -84,6 +100,17 @@ def test_command_modules_are_import_safe_without_freecad():
     for spec in COMMAND_SPECS:
         module = importlib.import_module(f"controls_wb.commands.{spec.module_name}")
         assert module.Gui is None
+
+
+def test_intake_system_settings_command_opens_persisted_settings_panel(monkeypatch):
+    workflow = importlib.import_module("controls_wb.commands.workflow")
+    settings = importlib.import_module("controls_wb.intake_settings")
+    parents = []
+    monkeypatch.setattr(settings, "show_intake_system_settings", lambda parent=None: parents.append(parent))
+
+    workflow.IntakeSystemSettingsCommand().Activated()
+
+    assert parents == [None]
 
 
 def test_freecad_init_files_import_without_freecad():
@@ -153,6 +180,8 @@ def test_init_gui_icon_ignores_synthetic_loader_file(monkeypatch):
 def test_init_gui_initialize_without_file_uses_safe_workbench_root(monkeypatch):
     icon_paths = []
     workbenches = []
+    toolbars = []
+    menus = []
     fake_gui = types.SimpleNamespace(
         addIconPath=icon_paths.append,
         addWorkbench=workbenches.append,
@@ -166,10 +195,10 @@ def test_init_gui_initialize_without_file_uses_safe_workbench_root(monkeypatch):
 
     class FakeWorkbench:
         def appendToolbar(self, name, commands):
-            pass
+            toolbars.append((name, commands))
 
         def appendMenu(self, path, commands):
-            pass
+            menus.append((path, commands))
 
         def appendContextMenu(self, name, commands):
             pass
@@ -187,3 +216,7 @@ def test_init_gui_initialize_without_file_uses_safe_workbench_root(monkeypatch):
     workbenches[0].Initialize()
 
     assert icon_paths == [str(init_gui_path.parent / "Resources" / "Icons")]
+    expected_workflow = list(WORKFLOW_COMMANDS)
+    assert ("Controls Workflow", expected_workflow) in toolbars
+    assert (["Controls / Automation", "Workflow"], expected_workflow) in menus
+    assert expected_workflow.index("CE_IOCount") < expected_workflow.index("CE_PLCConfigurator")

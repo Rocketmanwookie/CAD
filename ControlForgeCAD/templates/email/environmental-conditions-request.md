@@ -39,6 +39,19 @@ We are preparing the controls package and need site/environmental information fo
 5. Cleaning/sanitation requirements:
 6. Contact for clarification:
 
+## Equipment-selection evidence
+
+Provide altitude, actual enclosure internal/ambient design conditions, pollution/
+corrosion exposure, installation orientation, ventilation constraints, and any
+specified service life or duty assumptions. Reference the manufacturer derating
+data used for candidate PLC modules, power supplies, drives, and switching
+devices; identify unknown conditions before a candidate is accepted.
+
+For each condition, record units, location/scope, source/revision, measurement
+or declaration date, verifier, evidence, disposition, and follow-up owner.
+Changed conditions require review of dependent power budgets, parts, enclosure
+planning, and drawings.
+
 Thank you,
 
 {{requester_name}}

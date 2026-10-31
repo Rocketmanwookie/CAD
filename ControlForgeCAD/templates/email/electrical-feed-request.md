@@ -44,6 +44,32 @@ We are preparing the controls package for {{project_name}} and need the electric
 4. Shutdown or installation window constraints:
 5. Contact for clarification:
 
+## Verification and feeder-circuit handoff
+
+For each supplied value, attach the source document/measurement reference,
+revision/date, units, responsible person, and disposition (received, assumed,
+verified, approved, rejected, or superseded). Record who verified it, when,
+and the method/evidence; receiving a reply does not verify its contents.
+
+1. Infeed occurrence identity, owning panel/system identity, and source endpoint:
+2. Voltage basis (line-to-line and line-to-neutral where applicable), conductor
+   arrangement, neutral availability, PE/bonding reference, and phase sequence:
+3. Upstream protective-device manufacturer/model, poles, rating/settings,
+   characteristic/curve reference, and existing coordination study reference:
+4. Fault-current value location, calculation/study date, revision, and validity
+   conditions; applicable reviewer disposition:
+5. Multiple feeds, backfeeds, external control supplies, stored-energy sources,
+   and isolation boundaries:
+6. Connected load/branch list and operating/diversity assumptions, including
+   the authority accepting those assumptions:
+7. Single-line overview, phase-resolved three-line detail, or both requested;
+   phase/neutral/PE representation and drawing-sheet references:
+8. Unresolved facts, conflicts, and responsible follow-up owner:
+
+Verified source topology can support a draft feeder instance and drawing.
+Record separate approval for ratings, settings, conductor sizing, and protection
+decisions before describing the circuit as released for construction.
+
 Thank you,
 
 {{requester_name}}

@@ -53,6 +53,23 @@ We are preparing the IntegraCAB project intake for {{project_name}}. Please prov
 6. Customer standards:
 7. Known open items:
 
+## Engineering data and deliverable ownership
+
+1. Responsible owners for infeed, load list, I/O list, PLC configuration,
+   control power, protection decisions, control narrative, and safety inputs:
+2. Who may verify each input, who may approve each decision, and evidence format:
+3. Project/system/machine/panel/circuit parent structure and stable identifiers
+   to reuse from the existing project:
+4. Required single-line overview and/or three-line phase detail, low-voltage
+   electrical ladder schematics, PLC logic representations, and sheet families:
+5. Drawing/rung functional references and required review state at issue:
+6. Approved source revision/snapshot used for each generated document:
+7. Change notification and re-verification owners when upstream inputs change:
+
+Distinguish a low-voltage electrical ladder schematic from an executable PLC
+program. Record the required deliverable explicitly. Neither a sheet request
+nor an I/O count supplies the operating sequence or safety design.
+
 Thank you,
 
 {{requester_name}}

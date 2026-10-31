@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" stroke="#273444" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-label="PLC configuration">
+  <rect x="8" y="16" width="40" height="29" rx="4" fill="#f6bf00"/>
+  <path fill="none" d="M14 16V9M21 16V9M28 16V9M35 16V9M42 16V9M14 45v7M21 45v7M28 45v7M35 45v7M42 45v7"/>
+  <path fill="#3b78b4" d="M15 24h12v10H15zM33 24h9v10h-9z"/><path fill="#e5483e" d="M15 36h27v5H15z"/>
+  <circle cx="48" cy="46" r="7" fill="#22b7ad"/>
+  <path fill="none" d="M48 35v3M48 54v3M37 46h3M56 46h3M40.2 38.2l2.1 2.1M53.7 51.7l2.1 2.1M55.8 38.2l-2.1 2.1M42.3 51.7l-2.1 2.1"/><circle cx="48" cy="46" r="2.5" fill="#f9fbfc"/>
+</svg>

@@ -15,7 +15,11 @@ from controls_wb.gui.workflow import show_io_count_dialog, show_plant_questionna
 
 class PlantQuestionnaireCommand:
     def GetResources(self):
-        return {"MenuText": "Plant Questionnaire", "ToolTip": "Define plant and project facts before I/O sizing."}
+        return {
+            "MenuText": "Send Job Intake Form",
+            "ToolTip": "Prepare the job intake form for a client or project contact.",
+            "Pixmap": "send-intake.svg",
+        }
 
     def IsActive(self):
         return App is not None
@@ -23,7 +27,7 @@ class PlantQuestionnaireCommand:
     def Activated(self):
         if App.ActiveDocument is None:
             App.newDocument("ControlsProject")
-        _run_step(show_plant_questionnaire, "Plant Questionnaire")
+        _run_step(show_plant_questionnaire, "Job Intake Form")
 
 
 class IOCountCommand:
@@ -39,18 +43,67 @@ class IOCountCommand:
 
 class PLCConfiguratorCommand(IOCountCommand):
     def GetResources(self):
-        return {"MenuText": "PLC Configurator", "ToolTip": "Review CPU and modules with 20% spare capacity, then configure and allocate."}
+        return {
+            "MenuText": "PLC Configuration",
+            "ToolTip": "Review the PLC CPU, I/O modules, and communications modules before allocation.",
+            "Pixmap": "plc-configuration.svg",
+        }
 
     def Activated(self):
-        _run_step(show_plc_configurator, "PLC Configurator")
+        _run_step(show_plc_configurator, "PLC Configuration")
 
 
 class DefineIOCommand(IOCountCommand):
     def GetResources(self):
-        return {"MenuText": "Define I/O", "ToolTip": "Label configured I/O points while retaining catalog channel assignments."}
+        return {
+            "MenuText": "Define I/O",
+            "ToolTip": "Label configured I/O points while retaining catalog channel assignments.",
+            "Pixmap": "define-io.svg",
+        }
 
     def Activated(self):
         _run_step(show_define_io, "Define I/O")
+
+
+class IntakeConsoleCommand:
+    """Open the existing review-gated project import flow as the database console."""
+
+    def GetResources(self):
+        return {
+            "MenuText": "Open Job Database Console",
+            "ToolTip": "Review incoming project data and apply only the fields you approve.",
+            "Pixmap": "database-console.svg",
+        }
+
+    def IsActive(self):
+        return App is not None
+
+    def Activated(self):
+        # Keep the command boundary centralized: the import/review command
+        # already stages incoming data and requires explicit field approval.
+        from controls_wb.commands.import_and_review import ImportAndReviewCommand
+
+        ImportAndReviewCommand().Activated()
+
+
+class IntakeSystemSettingsCommand:
+    """Provide an icon-first entry point for intake/database setup."""
+
+    def GetResources(self):
+        return {
+            "MenuText": "Job Intake & Database Settings",
+            "ToolTip": "Configure the local job-intake database and form-delivery integration.",
+            "Pixmap": "settings.svg",
+        }
+
+    def IsActive(self):
+        return App is not None
+
+    def Activated(self):
+        from controls_wb.intake_settings import show_intake_system_settings
+
+        parent = Gui.getMainWindow() if Gui is not None and hasattr(Gui, "getMainWindow") else None
+        show_intake_system_settings(parent)
 
 
 def _run_step(show_dialog, title):
@@ -70,3 +123,6 @@ if Gui is not None:
     Gui.addCommand("CE_IOCount", IOCountCommand())
     Gui.addCommand("CE_PLCConfigurator", PLCConfiguratorCommand())
     Gui.addCommand("CE_DefineIO", DefineIOCommand())
+    Gui.addCommand("CE_SendIntakeForm", PlantQuestionnaireCommand())
+    Gui.addCommand("CE_OpenIntakeConsole", IntakeConsoleCommand())
+    Gui.addCommand("CE_IntakeSystemSettings", IntakeSystemSettingsCommand())

@@ -15,7 +15,16 @@ PROJECT_COMMANDS = (
     "CE_ImportAndReview", "CE_AddIOSignal", "CE_AllocatePLCIO", "CE_AddConnection",
     "CE_AddElectricalPath", "CE_EditElectricalPath", "CE_CaptureWireRoute", "CE_RouteWireWithCables",
 )
-WORKFLOW_COMMANDS = ("CE_PlantQuestionnaire", "CE_IOCount", "CE_PLCConfigurator", "CE_DefineIO")
+# Enter typed I/O demand before configuring PLC hardware. The former
+# questionnaire remains registered as a compatibility command.
+WORKFLOW_COMMANDS = (
+    "CE_SendIntakeForm",
+    "CE_OpenIntakeConsole",
+    "CE_IOCount",
+    "CE_PLCConfigurator",
+    "CE_DefineIO",
+    "CE_IntakeSystemSettings",
+)
 LAYOUT_COMMANDS = ("CE_CreatePanel",)
 VALIDATION_COMMANDS = ("CE_ValidateProject", "CE_PreviewMissingData")
 EXPORT_COMMANDS = (
@@ -29,10 +38,13 @@ EXPORT_COMMANDS = (
 )
 
 COMMAND_SPECS = (
-    CommandSpec("CE_PlantQuestionnaire", "Plant Questionnaire", "workflow"),
-    CommandSpec("CE_IOCount", "I/O Count", "workflow"),
-    CommandSpec("CE_PLCConfigurator", "PLC Configurator", "workflow"),
+    CommandSpec("CE_SendIntakeForm", "Send Job Intake Form", "workflow"),
+    CommandSpec("CE_OpenIntakeConsole", "Open Job Database Console", "workflow"),
+    CommandSpec("CE_PLCConfigurator", "PLC Configuration", "workflow"),
     CommandSpec("CE_DefineIO", "Define I/O", "workflow"),
+    CommandSpec("CE_IntakeSystemSettings", "Job Intake & Database Settings", "workflow"),
+    CommandSpec("CE_PlantQuestionnaire", "Plant Questionnaire (Legacy)", "workflow"),
+    CommandSpec("CE_IOCount", "I/O Count", "workflow"),
     CommandSpec("CE_NewProject", "New Controls Project", "new_project"),
     CommandSpec("CE_ImportAndReview", "Import and Review Project Data", "import_and_review"),
     CommandSpec("CE_AddIOSignal", "Add I/O Signal", "add_io_signal"),

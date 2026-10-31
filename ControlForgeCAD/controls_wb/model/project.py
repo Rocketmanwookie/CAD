@@ -37,6 +37,7 @@ PROJECT_PROPERTY_SPECS = (
     ProjectPropertySpec("App::PropertyStringList", "LoadRequirements", "Resolver", "Typed described load records as JSON lines"),
     ProjectPropertySpec("App::PropertyStringList", "IORequirements", "Resolver", "Typed I/O requirement records as JSON lines"),
     ProjectPropertySpec("App::PropertyStringList", "HardwareRequirements", "Resolver", "Review-required hardware proposals as JSON lines"),
+    ProjectPropertySpec("App::PropertyStringList", "ResolverSnapshots", "Resolver", "Immutable resolver snapshots as JSON lines"),
     ProjectPropertySpec("App::PropertyStringList", "ConnectionRecords", "Wiring", "Signal-to-terminal-to-wire connection records as JSON lines"),
     ProjectPropertySpec("App::PropertyLinkList", "ElectricalSignals", "Electrical Graph", "Typed signal objects owned by this project"),
     ProjectPropertySpec("App::PropertyLinkList", "ElectricalPaths", "Electrical Graph", "Typed continuous connection paths owned by this project"),
@@ -134,6 +135,7 @@ def intake_to_project_properties(intake: ProjectIntake) -> dict[str, object]:
         "LoadRequirements": [],
         "IORequirements": [],
         "HardwareRequirements": [],
+        "ResolverSnapshots": [],
         "ConnectionRecords": [],
         "NominalVoltage": intake.fields.get(FactIds.POWER_NOMINAL_VOLTAGE, "").value
         if FactIds.POWER_NOMINAL_VOLTAGE in intake.fields

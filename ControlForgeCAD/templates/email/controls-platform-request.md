@@ -27,6 +27,28 @@ We are preparing the controls package for {{project_name}} and need the controls
 
 Please identify which values are standards, preferences, assumptions, or open decisions.
 
+## PLC and control-power proposal prerequisites
+
+Provide the CPU/module/firmware compatibility references; backplane and field
+power demands and limits; per-channel and grouped-output ratings; required
+special/high-speed functions; network topology; and local/remote rack ownership.
+Keep actual demand, required spare capacity, and installed capacity separate.
+Unused physical channels are spare channels, not invented field devices.
+
+For every control-power domain, list the PLC, modules, HMI, network equipment,
+sensors, relays/contactors, valves, and other consumers with source revisions,
+voltage/tolerance, continuous and startup/pickup demand, simultaneity assumptions,
+and domain/source/return assignments. Identify external supplies and prevent
+double-counting field loads already included in an equipment specification.
+Request ambient/altitude derating references, reserve policy, redundancy/hold-up
+requirements, distribution protection, and the reviewer's recorded decision.
+
+Record stable controller/rack/module/channel occurrence identities and their
+parent links. Module replacement or changed I/O electrical requirements must
+trigger review of channel mappings, power budget, interfaces, and drawings.
+Catalog feasibility and a calculated power budget are proposals until their
+required engineering decisions have an explicit disposition.
+
 Thank you,
 
 {{requester_name}}

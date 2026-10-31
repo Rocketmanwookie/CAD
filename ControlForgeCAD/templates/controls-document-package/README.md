@@ -16,6 +16,8 @@ The governing product design basis is
 | FDS — Functional Design Specification | `FDS.md` |
 | CN — Control Narrative | `Control-Narrative.md` |
 | I/O list | `IO-List.csv`, `IO-List-README.md` |
+| Addressing and signal traceability | `IEC-61082-1-Addressing-and-Traceability.md` |
+| Original draft input verification and instance prerequisites | `Engineering-Readiness.md` |
 | BOM | `BOM.csv` |
 | Cable schedule | `Cable-Schedule.csv` |
 | Cause and effect | `Cause-and-Effect.csv`, `Cause-and-Effect-Notes.md` |
@@ -24,17 +26,22 @@ The governing product design basis is
 | SDS — Software Design Specification | `Software-Design-Specification.md`, `IntegraCAD-Open-SDS.pdf` |
 | ALM — Alarm list and rationalisation | `Alarm-List.csv`, `Alarm-Rationalisation.md` |
 | FAT — Factory Acceptance Test Protocol | `FAT-Protocol.md` |
+| SAT — original draft Site Acceptance Test Protocol | `SAT-Protocol.md` |
 | COMM — Commissioning Checklist | `Commissioning-Checklist.md` |
 | HO — Handover and as-built pack | `Handover-Pack.md` |
 | O&M — Operation and Maintenance Manual | `OM-Manual.md` |
 | MOC — Change Control Record | `Change-Control-Record.md` |
 | Drawing package | `000-*`, `003-*`, `010-*`, `030-*`, `050-*`, `055-*`, `060-*`, `070-*`, and `300-*` PDF/DXF assets |
 
-## Known omission
+## SAT review status
 
-The scope requires an SAT — Site Acceptance Test Protocol. The supplied
-package does not contain one. It must be added from a reviewed source before
-it can be offered as a workbench template or release deliverable.
+The supplied package contained no SAT — Site Acceptance Test Protocol.
+`SAT-Protocol.md` now provides an original draft with explicit site baselines,
+authorized procedure references, installed and functional test distinctions,
+evidence, deviations, restoration, and sign-off fields. Project-specific
+procedures, criteria, rights/provenance disposition, and applicable engineering
+review remain pending before it can be offered as an approved workbench template
+or released project deliverable.
 
 ## Usage boundary
 
@@ -44,7 +51,22 @@ current workbench. Preserve source provenance and obtain the appropriate
 engineering review before using a generated or edited document for a live
 project.
 
+The IEC 61082-1 addressing and signal-traceability document is a project
+design/verification aid. It does not certify a delivery as compliant; the
+responsible engineer must assess the applicable standard edition and project
+requirements for the issued package.
+
 The present package is intentionally blocked from approved use because its
 source, rights, and reviewer disposition have not been recorded. See the
 [asset provenance register](ASSET_PROVENANCE.md) for the exact snapshot and
 required evidence.
+
+## Controls Engineer template review supplement
+
+[Engineering readiness and instance handoff](Engineering-Readiness.md) adds
+original draft requirements for verified infeed, I/O and loads; PLC/control-power
+and switching/protection proposals; parent ownership and stable identities;
+single-line/three-line and ladder prerequisites; and dependency invalidation.
+It also records the new SAT draft's pending review and project-specific FAT review.
+It is requirements guidance for future implementation. Neither this review nor
+the new text changes the supplied assets' blocked provenance/approval state.

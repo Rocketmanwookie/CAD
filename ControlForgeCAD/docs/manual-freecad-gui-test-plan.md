@@ -5,20 +5,20 @@ acceptance record, not a blocker for dependency-free development work.
 
 ## Setup
 
-1. Close FreeCAD and link the committed checkout into the Flatpak user Mod
-   directory:
+1. Close FreeCAD and link the committed checkout into the native FreeCAD user
+   `Mod` directory:
 
    ```bash
    python3 scripts/link_freecad_workbench.py \
-     --source /home/egrantjr/Documents/Repositories/controlforgecad/ControlForgeCAD \
-     --mod-dir ~/.var/app/org.freecad.FreeCAD/data/FreeCAD/v1-1/Mod
+     --source /home/egrantjr/Documents/Repositories/controlforgecad/ControlForgeCAD
    ```
 
    Expected: the command reports a `ControlForgeCAD` symlink. Rerunning it is
    safe. If a target points elsewhere, stop and record the setup failure rather
-   than replacing it.
+   than replacing it. Flatpak users must instead pass their sandboxed `Mod`
+   directory with `--mod-dir`.
 
-2. Start Flatpak FreeCAD, select **Controls / Automation**, and confirm the
+2. Start FreeCAD, select **Controls / Automation**, and confirm the
    Controls Project, Layout, Validation, and Exports groups load without a
    traceback. Confirm **Capture Wire Route from Geometry** is present.
 
@@ -79,7 +79,7 @@ Expected results:
   not four.
 - Undo after capture restores the prior route and length; redo restores them.
 
-Record the exact FreeCAD/Flatpak version, the Git commit, screenshots of the
+Record the exact FreeCAD version and installation method, the Git commit, screenshots of the
 command and resulting polyline, Report View output, exported CSVs, and any
 traceback.
 

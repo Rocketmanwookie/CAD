@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" stroke="#273444" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-label="Open database console">
+  <path fill="#22b7ad" d="M10 13v23c0 4 7.6 7 17 7 1.7 0 3.3-.1 4.8-.3V13Z"/>
+  <ellipse cx="27" cy="13" rx="17" ry="7" fill="#52d1c5"/>
+  <path fill="none" d="M10 24c0 4 7.6 7 17 7s17-3 17-7M44 13v16"/>
+  <rect x="30" y="34" width="25" height="19" rx="3" fill="#3b78b4"/>
+  <path fill="none" stroke="#d9f4f1" d="M35 40h15M35 46h8"/><circle cx="49" cy="46" r="1.5" fill="#f6bf00" stroke="none"/>
+</svg>

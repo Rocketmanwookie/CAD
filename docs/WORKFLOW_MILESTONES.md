@@ -48,9 +48,25 @@ Record FreeCAD version, tested checkout/revision, Report View findings and
 saved FCStd evidence. Passing this check covers the starter dialogs, not the
 remaining configuration/table/import and richer questionnaire work.
 
+## Intake toolbar settings checkpoint
+
+The compact intake toolbar keeps the legacy command registrations and adds
+`CE_SendIntakeForm`, `CE_OpenIntakeConsole`, and
+`CE_IntakeSystemSettings`. The settings command now opens a persisted,
+per-user FreeCAD preferences panel for a local intake-database location, form
+delivery method, optional delivery target, and optional local form template.
+The current Send Intake Form command still opens the local questionnaire and
+the Database Console still opens staged import/review; the saved delivery
+preferences do **not** create a database, send mail, open a URL, or transfer
+project data. Automated persistence coverage is recorded with the candidate;
+manual desktop evidence remains required for the panel and toolbar.
+
 ## M2 configurator checkpoint
 
-The Controls Workflow toolbar continues with PLC Configurator and Define I/O.
+The Controls Workflow toolbar exposes I/O Count before PLC Configurator and
+Define I/O, so typed demand can be entered without importing a project or
+catalog file. The bundled catalog continues to load automatically. This
+restores a missing visible step; JSON data-contract migration remains pending.
 The configurator shows feasible CPUs and the installed module/slot list for
 20% capacity targets; saving also materializes the allocation. Define I/O
 opens the existing channel review table to edit engineering labels while
