@@ -389,6 +389,30 @@ def _object_for_identity(document, identity: str):
     return None
 
 
+def resolve_allocated_channel(document, signal):
+    """Resolve a signal's allocated PLC channel from its stable identity."""
+
+    identity = str(getattr(signal, "AllocatedChannelIdentity", "") or "")
+    if not identity:
+        return None
+    channel = _object_for_identity(document, identity)
+    if channel is None or getattr(channel, "CERole", "") != CERoles.PLC_CHANNEL:
+        return None
+    return channel
+
+
+def _resolve_allocated_channel_from_objects(objects, signal):
+    """Resolve the reverse allocation relation for validation without a document."""
+
+    identity = str(getattr(signal, "AllocatedChannelIdentity", "") or "")
+    matches = [
+        obj for obj in objects
+        if getattr(obj, "CERole", "") == CERoles.PLC_CHANNEL
+        and getattr(obj, "CEIdentity", "") == identity
+    ]
+    return matches[0] if len(matches) == 1 else None
+
+
 def _allocation_identity(project, kind: str, key: str) -> str:
     """Derive a repeatable occurrence identity from project and PLC coordinates."""
     project_key = str(getattr(project, "CEIdentity", "") or getattr(project, "ProjectId", "")).strip()
@@ -553,8 +577,8 @@ def materialize_plc_allocation(document, project: object | None = None) -> dict[
             channel_obj.AllocatedSignalTag = signal.tag
             channel_obj.SignalAddress = signal.address
             typed_signal = _materialize_allocation_signal(document, project, signal.tag)
-            _add_property(typed_signal, "App::PropertyLink", "AllocatedChannelObject", "Electrical Signal", "Allocated PLC channel carrying this signal")
-            previous_channel = getattr(typed_signal, "AllocatedChannelObject", None)
+            _add_property(typed_signal, "App::PropertyString", "AllocatedChannelIdentity", "Electrical Signal", "CE identity of the PLC channel carrying this signal")
+            previous_channel = resolve_allocated_channel(document, typed_signal)
             if previous_channel is not None and previous_channel is not channel_obj:
                 if getattr(previous_channel, "SignalType", "") != signal.signal_type:
                     raise ValueError(f"Typed signal {signal.tag} cannot migrate across PLC signal types.")
@@ -572,7 +596,7 @@ def materialize_plc_allocation(document, project: object | None = None) -> dict[
                     first_terminal.OwnerIdentity = channel_obj.CEIdentity
                     first_terminal.Designation = signal.address
                 previous_channel.ElectricalPaths = []
-            typed_signal.AllocatedChannelObject = channel_obj
+            typed_signal.AllocatedChannelIdentity = channel_obj.CEIdentity
             _, paths = _signal_and_paths_for_allocation(project, signal.tag)
             channel_obj.AllocatedSignalObject = typed_signal
             channel_obj.ElectricalPaths = paths
@@ -605,8 +629,8 @@ def _prune_unlinked_allocation_occurrences(document, project, desired_identities
         if getattr(obj, "CERole", "") != CERoles.PLC_CHANNEL:
             continue
         signal = getattr(obj, "AllocatedSignalObject", None)
-        if signal is not None and getattr(signal, "AllocatedChannelObject", None) is obj:
-            signal.AllocatedChannelObject = None
+        if signal is not None and resolve_allocated_channel(document, signal) is obj:
+            signal.AllocatedChannelIdentity = ""
             if not getattr(signal, "ConnectionPaths", []) and signal not in retired_signals:
                 retired_signals.append(signal)
     stale_set.update(retired_signals)
@@ -648,7 +672,7 @@ def allocation_electrical_graph_findings(project, objects) -> tuple[tuple[str, s
             continue
         if str(getattr(signal, "SignalTag", "") or "") != tag:
             findings.append(("ERROR", "allocated_channel_signal_tag_mismatch", f"PLC channel {channel_id} signal link does not match allocated tag {tag}."))
-        if getattr(signal, "AllocatedChannelObject", None) is not channel:
+        if _resolve_allocated_channel_from_objects(objects, signal) is not channel:
             findings.append(("ERROR", "allocated_channel_reverse_link_missing", f"PLC channel {channel_id} is not the signal's reciprocal allocated channel."))
         linked_paths = list(getattr(channel, "ElectricalPaths", []) or [])
         for path in (getattr(project, "ElectricalPaths", []) or []):

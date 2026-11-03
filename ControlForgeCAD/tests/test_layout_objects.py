@@ -11,6 +11,7 @@ from controls_wb.model.layout import (
     cad_asset_status,
     materialize_plc_allocation,
     _prune_unlinked_allocation_occurrences,
+    resolve_allocated_channel,
     starter_layout_specs_for_project,
 )
 from controls_wb.model.project import create_or_update_project
@@ -327,7 +328,9 @@ def test_materialized_plc_channels_link_to_deterministic_typed_signals():
     assert signal is second["channels"][0].AllocatedSignalObject
     assert signal.CERole == CERoles.SIGNAL
     assert signal.SignalTag == "DI-0001"
-    assert signal.AllocatedChannelObject is channel
+    assert signal.AllocatedChannelIdentity == channel.CEIdentity
+    assert "AllocatedChannelObject" not in signal.PropertiesList
+    assert resolve_allocated_channel(document, signal) is channel
     assert signal in project.ElectricalSignals
     assert channel in project.ElectricalDevices
 
@@ -344,7 +347,7 @@ def test_allocation_graph_validation_reports_missing_reciprocal_and_unregistered
     signal = channel.AllocatedSignalObject
 
     project.ElectricalSignals = []
-    signal.AllocatedChannelObject = None
+    signal.AllocatedChannelIdentity = ""
     findings = allocation_electrical_graph_findings(project, document.Objects)
 
     codes = {code for _, code, _ in findings}
@@ -367,4 +370,4 @@ def test_pruning_unlinked_stale_channel_clears_and_retires_its_signal():
 
     assert channel not in document.Objects
     assert signal not in project.ElectricalSignals
-    assert signal.AllocatedChannelObject is None
+    assert signal.AllocatedChannelIdentity == ""

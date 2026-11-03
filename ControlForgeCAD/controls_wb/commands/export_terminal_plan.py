@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: MIT
 """Export a validated terminal plan from typed electrical paths."""
 
-from pathlib import Path
-
 try:
     import FreeCAD as App
     import FreeCADGui as Gui
@@ -13,6 +11,7 @@ except Exception:  # pragma: no cover
 from controls_wb.electrical_validation import validate_connection_graph
 from controls_wb.model.electrical import electrical_paths_from_project
 from controls_wb.terminal_plan import terminal_plan_csv
+from controls_wb.project_workspace import ProjectWorkspaceError, export_destination_for_objects
 
 
 def terminal_plan_text_for_objects(objects) -> str:
@@ -44,7 +43,11 @@ class ExportTerminalPlanCommand:
         except ValueError as exc:
             App.Console.PrintError(f"Terminal plan was not exported: {exc}\n")
             return
-        target = Path.home() / "integracad_terminal_plan.csv"
+        try:
+            target = export_destination_for_objects(App.ActiveDocument.Objects, "schedules", "integracad_terminal_plan.csv")
+        except ProjectWorkspaceError as exc:
+            App.Console.PrintError(f"Terminal plan was not exported: {exc}\n")
+            return
         target.write_text(text, encoding="utf-8")
         App.Console.PrintMessage(f"Terminal plan exported to {target}\n")
 

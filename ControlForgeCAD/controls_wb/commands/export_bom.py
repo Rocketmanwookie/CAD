@@ -2,7 +2,6 @@
 """Export a simple controls BOM CSV from FreeCAD document objects."""
 
 import csv
-from pathlib import Path
 
 try:
     import FreeCAD as App
@@ -10,6 +9,8 @@ try:
 except Exception:  # pragma: no cover
     App = None
     Gui = None
+
+from controls_wb.project_workspace import ProjectWorkspaceError, export_destination_for_objects
 
 
 def collect_bom_rows(objects):
@@ -36,7 +37,11 @@ class ExportBOMCommand:
             App.Console.PrintWarning("No active document.\n")
             return
         rows = collect_bom_rows(App.ActiveDocument.Objects)
-        output_path = Path.home() / "controlforgecad_bom.csv"
+        try:
+            output_path = export_destination_for_objects(App.ActiveDocument.Objects, "bom", "controlforgecad_bom.csv")
+        except ProjectWorkspaceError as exc:
+            App.Console.PrintWarning(f"BOM was not exported: {exc}\n")
+            return
         with output_path.open("w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=["Tag", "Description", "Manufacturer", "PartNumber", "Quantity"])
             writer.writeheader()

@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: MIT
 """Export CEProject XML from a controls project intake object."""
 
-from pathlib import Path
-
 try:
     import FreeCAD as App
     import FreeCADGui as Gui
@@ -12,6 +10,7 @@ except Exception:  # pragma: no cover
 
 from controls_wb.ceproject_xml import ceproject_to_xml
 from controls_wb.commands.missing_data import project_objects
+from controls_wb.project_workspace import ProjectWorkspaceError, export_destination_for_objects
 
 
 def ceproject_xml_for_objects(objects) -> str:
@@ -37,7 +36,11 @@ class ExportCEProjectXmlCommand:
         except ValueError as exc:
             App.Console.PrintWarning(f"{exc}\n")
             return
-        output_path = Path.home() / "integracab_ceproject.xml"
+        try:
+            output_path = export_destination_for_objects(App.ActiveDocument.Objects, "package", "integracab_ceproject.xml")
+        except ProjectWorkspaceError as exc:
+            App.Console.PrintWarning(f"CEProject XML was not exported: {exc}\n")
+            return
         output_path.write_text(xml_text, encoding="utf-8")
         App.Console.PrintMessage(f"CEProject XML exported to {output_path}\n")
 

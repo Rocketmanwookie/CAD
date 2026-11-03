@@ -22,6 +22,8 @@ class FactIds:
 
     PROJECT_ID = "project.id"
     PROJECT_NAME = "project.name"
+    WORKSPACE_PARENT = "project.workspaceParent"
+    PROJECT_ROOT = "project.root"
     PROJECT_CUSTOMER = "project.customer"
     PROJECT_SITE_LOCATION = "project.siteLocation"
     SCHEMA_VERSION = "project.schemaVersion"
@@ -71,6 +73,8 @@ class FactIds:
 FACT_SPECS: tuple[FactSpec, ...] = (
     FactSpec(FactIds.PROJECT_ID, "Project ID", "project", "Project manager", "ProjectId"),
     FactSpec(FactIds.PROJECT_NAME, "Project name", "project", "Project manager", "ProjectName"),
+    FactSpec(FactIds.WORKSPACE_PARENT, "Workspace parent", "project", "Project manager", "WorkspaceParent"),
+    FactSpec(FactIds.PROJECT_ROOT, "Project root", "project", "Project manager", "ProjectRoot"),
     FactSpec(FactIds.PROJECT_CUSTOMER, "Customer", "project", "Project manager", "Customer"),
     FactSpec(FactIds.PROJECT_SITE_LOCATION, "Site/location", "project", "Project manager", "SiteLocation"),
     FactSpec(FactIds.SCHEMA_VERSION, "Schema version", "project", "Project manager", "SchemaVersion"),

@@ -54,6 +54,8 @@ def test_project_property_specs_expose_editable_intake_fields():
     specs = {spec.name: spec for spec in PROJECT_PROPERTY_SPECS}
 
     assert specs["ProjectName"].property_type == "App::PropertyString"
+    assert specs["WorkspaceParent"].group == "CEProject"
+    assert specs["ProjectRoot"].group == "CEProject"
     assert specs["Customer"].group == "CEProject"
     assert specs["SiteLocation"].description == "Site or installation location"
     assert specs["CEProjectImports"].property_type == "App::PropertyStringList"
@@ -114,6 +116,8 @@ def test_initialize_project_object_adds_properties_and_proxy():
     assert obj.CEIdentity == imported_ce_identity("ceproject", "CE-PROJECT-001")
     assert obj.CERole == CERoles.PROJECT
     assert obj.ProjectName == "Controls Project"
+    assert obj.WorkspaceParent == ""
+    assert obj.ProjectRoot == ""
     assert obj.Deliverables == ["ioList", "panelLayout"]
     assert "ProjectName" in obj.PropertiesList
     assert "CEIdentity" in obj.PropertiesList

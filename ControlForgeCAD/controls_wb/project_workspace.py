@@ -8,6 +8,8 @@ from pathlib import Path
 
 
 DEFAULT_WORKSPACE_PARENT_NAME = "ControlForgeCAD Projects"
+_PREFERENCE_PATH = "User parameter:BaseApp/Preferences/ControlForgeCAD"
+_PREFERENCE_KEY = "WorkspaceParent"
 
 _DIRECTORY_LAYOUT = (
     "imports/cad/vendor",
@@ -64,6 +66,20 @@ def default_workspace_parent(documents_directory: Path) -> Path:
     return Path(documents_directory) / DEFAULT_WORKSPACE_PARENT_NAME
 
 
+def load_workspace_parent(app, documents_directory: Path) -> Path:
+    """Load the one user-selected workspace parent, or return the safe default."""
+
+    parameters = app.ParamGet(_PREFERENCE_PATH)
+    stored = str(parameters.GetString(_PREFERENCE_KEY, "") or "").strip()
+    return Path(stored).expanduser() if stored else default_workspace_parent(documents_directory)
+
+
+def save_workspace_parent(app, parent: Path) -> None:
+    """Persist a user-approved workspace parent for future new projects."""
+
+    app.ParamGet(_PREFERENCE_PATH).SetString(_PREFERENCE_KEY, str(Path(parent).expanduser()))
+
+
 def _validated_project_name(project_name: str) -> str:
     normalized = str(project_name or "").strip()
     if not normalized or normalized in {".", ".."} or "/" in normalized or "\\" in normalized:
@@ -81,6 +97,37 @@ def create_project_workspace(parent: Path, project_name: str) -> ProjectWorkspac
     for directory in workspace.directories:
         directory.mkdir(parents=True, exist_ok=True)
     return workspace
+
+
+def bind_project_workspace(project: object, parent: Path) -> ProjectWorkspace:
+    """Create and persist the workspace selected for one editable CE project."""
+
+    workspace = create_project_workspace(parent, getattr(project, "ProjectName", ""))
+    project.WorkspaceParent = str(Path(parent).expanduser())
+    project.ProjectRoot = str(workspace.root)
+    return workspace
+
+
+def project_workspace_for_objects(objects) -> ProjectWorkspace:
+    """Return the configured workspace for the one CE project in document objects."""
+
+    projects = [obj for obj in objects if hasattr(obj, "ProjectId") and hasattr(obj, "ProjectName")]
+    if len(projects) != 1:
+        raise ProjectWorkspaceError("A document must contain exactly one controls project workspace.")
+    project = projects[0]
+    root = str(getattr(project, "ProjectRoot", "") or "").strip()
+    if not root:
+        raise ProjectWorkspaceError("The controls project workspace has not been configured.")
+    workspace = ProjectWorkspace(root=Path(root), project_name=_validated_project_name(project.ProjectName))
+    if workspace.root.name != workspace.project_name:
+        raise ProjectWorkspaceError("The configured project workspace does not match the project name.")
+    return workspace
+
+
+def export_destination_for_objects(objects, category: str, filename: str) -> Path:
+    """Resolve one exporter destination from a document's configured project."""
+
+    return export_path(project_workspace_for_objects(objects), category, filename)
 
 
 def export_path(workspace: ProjectWorkspace, category: str, filename: str) -> Path:

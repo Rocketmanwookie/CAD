@@ -238,7 +238,9 @@ def materialize_electrical_path(document, path: ElectricalConnectionPath) -> Mat
         _add_property(project, "App::PropertyStringList", "ConnectionRecords", "Wiring", "Signal-to-terminal-to-wire connection records as JSON lines")
         _append_unique_link(project, "ElectricalSignals", signal_obj)
         _append_unique_link(project, "ElectricalPaths", path_obj)
-        allocated_channel = getattr(signal_obj, "AllocatedChannelObject", None)
+        from controls_wb.model.layout import resolve_allocated_channel
+
+        allocated_channel = resolve_allocated_channel(document, signal_obj)
         if allocated_channel is not None:
             if getattr(allocated_channel, "CERole", "") != CERoles.PLC_CHANNEL:
                 raise ValueError("Allocated signal links to a non-PLC-channel object.")

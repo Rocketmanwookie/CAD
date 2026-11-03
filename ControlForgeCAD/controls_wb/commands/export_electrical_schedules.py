@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: MIT
 """Export canonical typed wiring and I/O path schedules."""
 
-from pathlib import Path
-
 try:
     import FreeCAD as App
     import FreeCADGui as Gui
@@ -16,6 +14,7 @@ from io import StringIO
 from controls_wb.electrical_path import io_schedule_row, wiring_schedule_rows
 from controls_wb.identity import CERoles
 from controls_wb.model.electrical import electrical_paths_from_project
+from controls_wb.project_workspace import ProjectWorkspaceError, export_destination_for_objects
 
 
 def electrical_schedule_texts_for_objects(objects) -> tuple[str, str]:
@@ -74,8 +73,12 @@ class ExportElectricalSchedulesCommand:
         except ValueError as exc:
             App.Console.PrintError(f"Electrical schedules were not exported: {exc}\n")
             return
-        wiring_path = Path.home() / "integracad_wiring_schedule.csv"
-        io_path = Path.home() / "integracad_io_path_schedule.csv"
+        try:
+            wiring_path = export_destination_for_objects(App.ActiveDocument.Objects, "schedules", "integracad_wiring_schedule.csv")
+            io_path = export_destination_for_objects(App.ActiveDocument.Objects, "schedules", "integracad_io_path_schedule.csv")
+        except ProjectWorkspaceError as exc:
+            App.Console.PrintError(f"Electrical schedules were not exported: {exc}\n")
+            return
         wiring_path.write_text(wiring_text, encoding="utf-8")
         io_path.write_text(io_text, encoding="utf-8")
         App.Console.PrintMessage(f"Wiring schedule exported to {wiring_path}\n")

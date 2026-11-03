@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Added a persisted ControlForgeCAD project workspace. New projects choose a
+  parent folder once (remembered for future projects), own a deterministic
+  project tree for FCStd/XML/imports/exports/evidence, and route supported
+  exports below that root instead of the user home directory. Existing projects
+  without a configured root fail export clearly rather than writing elsewhere.
+- Replaced the reciprocal PLC-channel/signal FreeCAD object links with one
+  channel-to-signal link plus a stable reverse channel identity. Python graph
+  regression coverage passes; live FreeCAD recompute verification remains
+  required before the reported DAG/touched-object desktop failure is closed.
+
 - Added a deterministic, read-only technical-document registry review. It
   detects a missing local datasheet, a missing recorded checksum, or checksum
   drift for registry entries marked `linked_local`; it does not mark a part,

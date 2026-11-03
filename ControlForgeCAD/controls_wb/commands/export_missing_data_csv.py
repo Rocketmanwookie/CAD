@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: MIT
 """Export the controls project missing-data matrix CSV."""
 
-from pathlib import Path
-
 try:
     import FreeCAD as App
     import FreeCADGui as Gui
@@ -12,6 +10,7 @@ except Exception:  # pragma: no cover
 
 from controls_wb.commands.missing_data import missing_data_rows_for_objects
 from controls_wb.missing_data import missing_data_csv
+from controls_wb.project_workspace import ProjectWorkspaceError, export_destination_for_objects
 
 
 def missing_data_csv_for_objects(objects) -> str:
@@ -30,7 +29,11 @@ class ExportMissingDataCSVCommand:
             App.Console.PrintWarning("No active document.\n")
             return
         rows = missing_data_rows_for_objects(App.ActiveDocument.Objects)
-        output_path = Path.home() / "integracab_missing_data.csv"
+        try:
+            output_path = export_destination_for_objects(App.ActiveDocument.Objects, "reports", "integracab_missing_data.csv")
+        except ProjectWorkspaceError as exc:
+            App.Console.PrintWarning(f"Missing-data CSV was not exported: {exc}\n")
+            return
         output_path.write_text(missing_data_csv(rows), encoding="utf-8")
         App.Console.PrintMessage(f"Missing-data CSV exported to {output_path}\n")
 

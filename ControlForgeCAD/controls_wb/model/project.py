@@ -25,6 +25,8 @@ class ProjectPropertySpec:
 PROJECT_PROPERTY_SPECS = (
     ProjectPropertySpec("App::PropertyString", "ProjectId", "CEProject", "CEProject identifier"),
     ProjectPropertySpec("App::PropertyString", "ProjectName", "CEProject", "Project name"),
+    ProjectPropertySpec("App::PropertyString", "WorkspaceParent", "CEProject", "Selected parent directory for the project workspace"),
+    ProjectPropertySpec("App::PropertyString", "ProjectRoot", "CEProject", "Working folder that owns project files, imports, exports, and evidence"),
     ProjectPropertySpec("App::PropertyString", "Customer", "CEProject", "Customer name"),
     ProjectPropertySpec("App::PropertyString", "SiteLocation", "CEProject", "Site or installation location"),
     ProjectPropertySpec("App::PropertyString", "SchemaVersion", "CEProject", "CEProject schema version"),
@@ -123,6 +125,8 @@ def intake_to_project_properties(intake: ProjectIntake) -> dict[str, object]:
     return {
         "ProjectId": intake.project_id,
         "ProjectName": intake.name,
+        "WorkspaceParent": "",
+        "ProjectRoot": "",
         "Customer": _intake_field_value(intake, FactIds.PROJECT_CUSTOMER),
         "SiteLocation": _intake_field_value(intake, FactIds.PROJECT_SITE_LOCATION),
         "SchemaVersion": intake.schema_version,

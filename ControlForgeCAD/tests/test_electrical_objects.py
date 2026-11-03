@@ -157,7 +157,7 @@ def test_same_type_allocation_move_preserves_path_and_rewrites_plc_endpoint():
     new_channel = next(channel for channel in second["channels"] if channel.AllocatedSignalTag == "DI-0009")
 
     assert new_channel is not old_channel
-    assert result.signal_object.AllocatedChannelObject is new_channel
+    assert result.signal_object.AllocatedChannelIdentity == new_channel.CEIdentity
     assert result.terminal_objects[0].OwnerIdentity == new_channel.CEIdentity
     assert result.terminal_objects[0].Designation == new_channel.SignalAddress
 
