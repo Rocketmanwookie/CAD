@@ -118,10 +118,8 @@ def project_workspace_for_objects(objects) -> ProjectWorkspace:
     root = str(getattr(project, "ProjectRoot", "") or "").strip()
     if not root:
         raise ProjectWorkspaceError("The controls project workspace has not been configured.")
-    workspace = ProjectWorkspace(root=Path(root), project_name=_validated_project_name(project.ProjectName))
-    if workspace.root.name != workspace.project_name:
-        raise ProjectWorkspaceError("The configured project workspace does not match the project name.")
-    return workspace
+    workspace_root = Path(root)
+    return ProjectWorkspace(root=workspace_root, project_name=_validated_project_name(workspace_root.name))
 
 
 def export_destination_for_objects(objects, category: str, filename: str) -> Path:

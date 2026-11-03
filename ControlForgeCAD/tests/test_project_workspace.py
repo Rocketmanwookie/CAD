@@ -85,6 +85,16 @@ def test_project_workspace_for_objects_uses_the_persisted_project_root(tmp_path)
     assert workspace.root == tmp_path / "Controls Project"
 
 
+def test_project_workspace_for_objects_keeps_the_original_root_after_a_display_name_change(tmp_path):
+    project = type("Project", (), {"ProjectId": "CE-PROJECT-001", "ProjectName": "Controls Project"})()
+    bind_project_workspace(project, tmp_path)
+    project.ProjectName = "Controls Project Revised"
+
+    workspace = project_workspace_for_objects([project])
+
+    assert workspace.root == tmp_path / "Controls Project"
+
+
 def test_project_workspace_for_objects_requires_a_configured_project_root():
     project = type("Project", (), {"ProjectId": "CE-PROJECT-001", "ProjectName": "Controls Project", "ProjectRoot": ""})()
 
