@@ -52,7 +52,8 @@ For a release candidate, complete
 coordinates the decision but cannot substitute for the review evidence required
 by [`docs/MILESTONE_REVIEW_CADENCE.md`](docs/MILESTONE_REVIEW_CADENCE.md): two
 independent agent reports for cycle positions 1–5, or the project-owner review
-at position 6.
+at position 6. Those roles include the independent QA and Controls Engineer
+reviews established by the project charter.
 
 Contributor guidance also includes the [coding style guide](docs/CODING_STYLE_GUIDE.md),
 [schema style guide](docs/SCHEMA_STYLE_GUIDE.md),
