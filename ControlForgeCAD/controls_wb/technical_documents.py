@@ -41,6 +41,20 @@ class AcceptanceTest:
     status: str = "Not started"
 
 
+@dataclass(frozen=True)
+class RegistryReviewFinding:
+    """A reproducible file-integrity finding for a registry document link.
+
+    This review checks only the local file reference recorded in the registry.
+    It does not establish that the selected part is correct, the document is
+    official, or that any engineering acceptance test has passed.
+    """
+
+    request_id: str
+    code: str
+    message: str
+
+
 TEST_DEFINITIONS = {
     "identity": (
         "Part identity",
@@ -266,3 +280,52 @@ def registry_xml(links: tuple[DatasheetLink, ...], tests: tuple[AcceptanceTest, 
             )
     ET.indent(root, space="  ")
     return ET.tostring(root, encoding="unicode", xml_declaration=True) + "\n"
+
+
+def review_registry_xml(xml_text: str) -> tuple[RegistryReviewFinding, ...]:
+    """Return deterministic local-file integrity findings from a registry XML.
+
+    Registry XML is deliberately the input rather than a regenerated manifest:
+    the review must evaluate the exact path and checksum that were recorded for
+    handoff.  Entries in pending states have no local-file claim to inspect.
+    """
+
+    try:
+        root = ET.fromstring(xml_text)
+    except ET.ParseError as exc:
+        raise ValueError("Technical-document registry XML is invalid.") from exc
+
+    findings = []
+    for record in root.findall(f".//{{{REGISTRY_NAMESPACE}}}EquipmentDocumentLink"):
+        request_id = record.get("requestId", "").strip()
+        document = record.find(f"{{{REGISTRY_NAMESPACE}}}Document")
+        if document is None or document.get("status") != "linked_local":
+            continue
+        local_path = document.get("localPath", "").strip()
+        expected_checksum = document.get("sha256", "").strip().lower()
+        if not local_path:
+            findings.append(RegistryReviewFinding(
+                request_id, "datasheet_local_path_missing",
+                f"{request_id} is marked linked_local but has no local path.",
+            ))
+            continue
+        path = Path(local_path)
+        if not path.is_file():
+            findings.append(RegistryReviewFinding(
+                request_id, "datasheet_file_missing",
+                f"{request_id} linked datasheet is missing: {local_path}",
+            ))
+            continue
+        if not expected_checksum:
+            findings.append(RegistryReviewFinding(
+                request_id, "datasheet_checksum_missing",
+                f"{request_id} linked datasheet has no recorded SHA-256 checksum.",
+            ))
+            continue
+        actual_checksum = sha256_file(path)
+        if actual_checksum != expected_checksum:
+            findings.append(RegistryReviewFinding(
+                request_id, "datasheet_checksum_mismatch",
+                f"{request_id} linked datasheet checksum does not match the registry record.",
+            ))
+    return tuple(sorted(findings, key=lambda finding: (finding.request_id, finding.code)))

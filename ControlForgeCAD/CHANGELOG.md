@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Added a deterministic, read-only technical-document registry review. It
+  detects a missing local datasheet, a missing recorded checksum, or checksum
+  drift for registry entries marked `linked_local`; it does not mark a part,
+  document, or engineering decision approved.
+
+- Separated the visible primary **Send Job Intake Form** command from the
+  retained **Plant Questionnaire (Legacy)** command. Both open the same local
+  questionnaire; command IDs and compatibility behavior are unchanged.
+
 - Project Intake can explicitly select a catalog-feasible 120%-spare CPU,
   review deterministic CPU/module/channel rows, and approve readable I/O
   engineering labels. Persisted allocation rows now retain catalog module name

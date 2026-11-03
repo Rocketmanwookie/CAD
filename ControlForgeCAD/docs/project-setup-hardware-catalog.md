@@ -90,6 +90,25 @@ Unknown product lines, CPUs, modules, and missing part numbers now raise explici
 
 The workbench can build an approval-gated request manifest for selected seeded Siemens parts. It records the official source, requested formats, and part number, but it does not scrape, log into, or bulk-download from Siemens portals. Obtain CAD and documentation assets through the permitted Siemens CAx/SiePortal workflow, then record the approved local path, checksum, revision, and source before using the asset in a cabinet model.
 
+### Reviewing recorded local datasheets
+
+The checked-in technical-document registry records requested datasheets and,
+when a local file has been recorded, its path and SHA-256 checksum. The
+dependency-free `review_registry_xml()` helper rechecks only that stored local
+file claim. It reports a missing file, a missing checksum, or changed file
+contents deterministically; it does not establish manufacturer authority,
+exact-part applicability, ratings, CAD fit, or engineering approval.
+
+Run a local integrity review from the repository root:
+
+```bash
+PYTHONPATH=ControlForgeCAD python3 -c "from pathlib import Path; from controls_wb.technical_documents import review_registry_xml; registry = Path('ControlForgeCAD/controls_wb/resources/hardware/technical_document_registry.xml'); print(*review_registry_xml(registry.read_text(encoding='utf-8')), sep='\n')"
+```
+
+No output means the recorded `linked_local` paths and checksums agree at the
+time of review. Pending-download and pending-part-selection records remain
+open acquisition/selection work, not passing evidence.
+
 The same selected-part requests can be reduced to a deterministic CSV with `Manufacturer`, `PartNumber`, and `Quantity`. This is the minimal handoff list for a CAx selection workflow. Confirm any portal-specific column names or upload format before treating it as a direct import file.
 
 ## Panel hardware starter seed

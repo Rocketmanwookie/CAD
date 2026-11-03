@@ -13,6 +13,7 @@ from controls_wb.technical_documents import (
     datasheet_links,
     load_cad_manifest,
     registry_xml,
+    review_registry_xml,
 )
 
 
@@ -71,3 +72,26 @@ def test_registry_xml_is_schema_valid_and_csv_exports_are_deterministic(tmp_path
     assert registry_xml(links, tests) == xml_text
     assert len(list(csv.DictReader(StringIO(datasheet_csv(links))))) == 2
     assert len(list(csv.DictReader(StringIO(acceptance_test_csv(tests))))) == len(tests)
+
+
+def test_registry_review_reports_missing_or_changed_linked_datasheets(tmp_path: Path):
+    rows = load_cad_manifest(_manifest(tmp_path))
+    datasheet = tmp_path / "cpu.pdf"
+    datasheet.write_bytes(b"original datasheet")
+    xml_text = registry_xml(datasheet_links(rows, {"6ES7": datasheet}), acceptance_tests(rows))
+
+    assert review_registry_xml(xml_text) == ()
+
+    datasheet.write_bytes(b"changed datasheet")
+    findings = review_registry_xml(xml_text)
+
+    assert [(finding.request_id, finding.code) for finding in findings] == [
+        ("CAD-0001", "datasheet_checksum_mismatch"),
+    ]
+
+    datasheet.unlink()
+    findings = review_registry_xml(xml_text)
+
+    assert [(finding.request_id, finding.code) for finding in findings] == [
+        ("CAD-0001", "datasheet_file_missing"),
+    ]

@@ -3,6 +3,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from controls_wb.commands.workflow import PlantQuestionnaireCommand, SendIntakeFormCommand
 from controls_wb.gui.workflow import save_io_counts, save_plant_questionnaire, sizing_targets, configuration_preview, save_plc_configuration
 from controls_wb.io_list import deserialize_io_signal
 
@@ -11,6 +12,11 @@ def test_sizing_rounds_each_type_up_without_turning_spares_into_points():
     assert sizing_targets(dict(DICount="1", DOCount="5", AICount="6", AOCount="0")) == {
         "DICount": (1, 2), "DOCount": (5, 6), "AICount": (6, 8), "AOCount": (0, 0),
     }
+
+
+def test_primary_and_legacy_intake_commands_have_unambiguous_labels():
+    assert SendIntakeFormCommand().GetResources()["MenuText"] == "Send Job Intake Form"
+    assert PlantQuestionnaireCommand().GetResources()["MenuText"] == "Plant Questionnaire (Legacy)"
 
 
 @pytest.mark.parametrize("count", ["-1", "1.5", "ten", "inf"])

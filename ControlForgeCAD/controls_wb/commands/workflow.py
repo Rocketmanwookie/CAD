@@ -16,8 +16,8 @@ from controls_wb.gui.workflow import show_io_count_dialog, show_plant_questionna
 class PlantQuestionnaireCommand:
     def GetResources(self):
         return {
-            "MenuText": "Send Job Intake Form",
-            "ToolTip": "Prepare the job intake form for a client or project contact.",
+            "MenuText": "Plant Questionnaire (Legacy)",
+            "ToolTip": "Open the legacy Plant Questionnaire command.",
             "Pixmap": "send-intake.svg",
         }
 
@@ -28,6 +28,17 @@ class PlantQuestionnaireCommand:
         if App.ActiveDocument is None:
             App.newDocument("ControlsProject")
         _run_step(show_plant_questionnaire, "Job Intake Form")
+
+
+class SendIntakeFormCommand(PlantQuestionnaireCommand):
+    """Primary intake entry point retained separately from the legacy ID."""
+
+    def GetResources(self):
+        return {
+            "MenuText": "Send Job Intake Form",
+            "ToolTip": "Prepare the job intake form for a client or project contact.",
+            "Pixmap": "send-intake.svg",
+        }
 
 
 class IOCountCommand:
@@ -123,6 +134,6 @@ if Gui is not None:
     Gui.addCommand("CE_IOCount", IOCountCommand())
     Gui.addCommand("CE_PLCConfigurator", PLCConfiguratorCommand())
     Gui.addCommand("CE_DefineIO", DefineIOCommand())
-    Gui.addCommand("CE_SendIntakeForm", PlantQuestionnaireCommand())
+    Gui.addCommand("CE_SendIntakeForm", SendIntakeFormCommand())
     Gui.addCommand("CE_OpenIntakeConsole", IntakeConsoleCommand())
     Gui.addCommand("CE_IntakeSystemSettings", IntakeSystemSettingsCommand())
