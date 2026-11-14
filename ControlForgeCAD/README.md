@@ -62,15 +62,15 @@ coordinates; when present, their polyline length is authoritative in the wiring
 and I/O schedules, while a separate specified length remains preserved for
 traceability. Select a typed path and run **Edit Electrical Path** to revise
 those engineering fields without changing topology or identities. Graphical
-route selection directly from 3D geometry remains a future increment.
+route selection is available through **Capture Wire Route from Geometry**.
 
 `CE_Project` now owns typed `ElectricalSignals`, `ElectricalPaths`, and
 `ElectricalDevices` link collections with canonical fact IDs. Materializing a
 path creates or safely reuses its signal object, registers the signal and path on
 the project, and permits reconstruction of the validated domain path from direct
 FreeCAD links. **Validate Controls Project** reports broken typed links and
-whole-project electrical graph findings. Selecting routes directly from 3D
-geometry remains the next user-facing increment.
+whole-project electrical graph findings. Rack/module/channel allocation is the
+next controls-model milestone.
 
 **Capture Wire Route from Geometry** closes that first interactive route-capture
 gap. Select exactly one typed `CE_Wire`, then select visible geometry with two

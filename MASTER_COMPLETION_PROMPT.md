@@ -56,12 +56,12 @@ following existing tested patterns.
 - `controlforgecad` is synchronized with `origin/controlforgecad` after the
   newer upstream electrical-path series and compatible local Siemens catalog
   changes were merged and published.
-- The validated baseline is 193 passing tests using `/usr/bin/python3 -m pytest`.
+- The recorded baseline is 196 passing tests using `/usr/bin/python3 -m pytest`;
+  this is prior verification evidence, not a result for the in-progress allocation
+  implementation.
 - Typed electrical paths, FreeCAD device/signal/terminal/wire objects, route
   capture and editing, Cables workbench routing, terminal-plan export, and
   electrical schedule export already exist. Do not reimplement them.
-- The roadmap sentence saying graphical route capture is next is stale; the
-  TODO correctly marks graphical route capture complete.
 - Connection-record identity linkage is the current completed increment. The
   next active milestone is rack/module/channel allocation.
 
@@ -95,6 +95,13 @@ allocation; collision and capacity validation; persistence through thin FreeCAD
 adapters; and coordinated I/O export. Preserve the distinction between catalog
 part definitions and placed occurrences. Scope the exact public contract from
 the existing catalog, project, I/O, and layout modules before implementation.
+
+Current implementation status: **IN PROGRESS - domain foundation only**.
+The programmer owns `ControlForgeCAD/controls_wb/plc_allocation.py` and
+`ControlForgeCAD/tests/test_plc_allocation.py`; the architect reviews the contract
+and implementation. GUI integration, FreeCAD persistence, XML integration,
+signal migration, and coordinated export integration remain open. Completion of
+the pure-Python foundation does not complete the allocation milestone.
 
 ## Mission
 

@@ -1,12 +1,31 @@
 # integraCAD / IntegraCAB Open Current TODO ExecPlan
 
-This ExecPlan is a living implementation plan for continuing the existing `Whrsdaparty/CAD` repository on branch `controlforgecad`. It follows the repository's current files and TODO backlog, not a replacement scaffold.
+This ExecPlan is a living implementation plan for continuing the existing `Rocketmanwookie/CAD` repository on branch `controlforgecad`. It follows the repository's current files and TODO backlog, not a replacement scaffold.
 
-Active local work path: `/home/egrantjr/Dev/CAD`. The similarly named
+Canonical local work path: `/home/egrantjr/Documents/Repositories/Dev/CAD`;
+compatibility path: `/home/egrantjr/Dev/CAD`. The similarly named
 `/home/egrantjr/integraCAD_OPEN` path is not the active repository for this
 work unless the user explicitly redirects there.
 
 ## Current State
+
+- Active milestone: rack/module/channel allocation, backed by Phase 6 of
+  `ControlForgeCAD/TODO.md`.
+- Current implementation: **IN PROGRESS - domain foundation only**. The programmer
+  owns `ControlForgeCAD/controls_wb/plc_allocation.py` and
+  `ControlForgeCAD/tests/test_plc_allocation.py`; the architect reviews.
+- Recorded pre-implementation baseline: 196 passing tests. Connection-record
+  identity linkage, typed electrical paths, route capture/editing, Cables routing,
+  and terminal/electrical schedule exports already exist.
+- GUI, FreeCAD persistence, XML integration, signal migration, and coordinated
+  export integration remain open; the foundation alone does not close allocation.
+- The Agent Coordination and Change Log below records current ownership and
+  decisions. Earlier snapshots and dated continuations are historical evidence,
+  not current instructions or claims about the working tree.
+
+## Historical Initial State
+
+The following snapshot records the original intake work, not today's baseline.
 
 - Active branch: `controlforgecad`.
 - Initial working tree status: clean.
@@ -75,11 +94,18 @@ work unless the user explicitly redirects there.
 
 ## Goal
 
-Continue the existing FreeCAD controls-engineering workbench toward the next working MVP milestone without replacing the project scaffold. The immediate milestone is the intake and validation prototype: add an initial project/intake command and pure-Python intake validation that can run under tests without FreeCAD.
+Continue the existing workbench toward rack/module/channel allocation without
+replacing completed intake, catalog, I/O, or electrical-path work. The authorized
+increment is the pure-Python domain foundation: catalog-backed occurrences,
+stable identities, deterministic channel assignment, explicit address ranges,
+capacity/collision validation, and focused tests, subject to architect review.
 
-Current milestone: make every currently supported project fact addressable through a stable pure-Python CEProject fact ID registry, then wire existing intake, source-record, question, property, and missing-data paths to that registry without changing exported XML behavior.
+Status: **IN PROGRESS**. Broader GUI, persistence, XML, signal migration, and
+coordinated export work remain open. Do not claim the full allocation milestone
+complete. The user authorized commit, push, and continuation to this milestone;
+the coordinator owns publication after review and verification.
 
-## Milestones
+## Historical Intake Milestones
 
 1. Document current state and naming decisions in this ExecPlan.
 2. Add a minimal CEProject/intake data model in importable pure-Python modules.
@@ -90,7 +116,7 @@ Current milestone: make every currently supported project fact addressable throu
 7. Run validation commands and record results.
 8. Add starter stakeholder contact, source-record, and question/response models.
 
-## Progress
+## Historical Progress
 
 - [x] Inspected repository branch and confirmed `controlforgecad`.
 - [x] Confirmed initial working tree was clean.
@@ -819,3 +845,24 @@ bounded increment of the larger allocation milestone; GUI, XML integration,
 signal migration, and real FreeCAD persistence remain open until implemented
 and verified. Do not mark the entire allocation milestone complete for the
 domain foundation alone.
+
+### Implementation Assignment - 2026-09-22
+
+The user authorized implementation after the read-only preparation. The agent
+register and decisions committed in `fb9a046` remain preserved above; the earlier
+read-only dispatch describes preparation, not the current assignments.
+
+| Owner | Assigned files or responsibility | Status |
+|---|---|---|
+| Herschel / programmer | `ControlForgeCAD/controls_wb/plc_allocation.py`, `ControlForgeCAD/tests/test_plc_allocation.py` | IN PROGRESS - domain foundation only |
+| Schrodinger / architect | Review allocation contract and implementation | Review assigned; no completion claimed |
+| Peirce / documentation historian | `MASTER_COMPLETION_PROMPT.md`, this existing ExecPlan | Current-state corrections and implementation scope recorded |
+| Coordinator | Integration, review coordination, final verification and publication | User authorized commit, push, and next milestone |
+
+Change-log continuation (preserves the original register and preparation record):
+
+| ID | Priority | Status | Owner | Evidence, affected contract, and rationale | Validation |
+|---|---|---|---|---|---|---|
+| AG-004 follow-up | P2 | Completed documentation correction | Historian | Latest connection-linkage entry records 196 tests and completed route capture. Corrected the master baseline and active ExecPlan goal; labeled the initial snapshot and intake milestones historical to prevent duplicate work. | Documentation only; no new test result claimed. |
+| AG-005 | P1 | IN PROGRESS | Programmer; architect reviews | Phase 6 TODO and the accepted allocation decisions require a pure-Python foundation in the two assigned allocation files. This bounded increment does not deliver the full allocation workflow. | Implementation, focused tests, and review evidence pending. |
+| AG-006 | P1 | Deferred from this increment; open | Coordinator | GUI, FreeCAD persistence, XML integration, signal migration, and coordinated export integration require separate implementation and verification; preserve existing contracts until then. | Not implemented or verified by this foundation assignment. |
