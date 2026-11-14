@@ -1,0 +1,12 @@
+'use strict';
+const assert=require('node:assert/strict'),M=require('../web/maintenance-model.js');
+assert.equal(M.addMonths('2024-02-29',12),'2025-02-28');assert.equal(M.addMonths('2025-01-31',1),'2025-02-28');assert.throws(()=>M.date('2025-02-30'),/Invalid/);
+const oil=M.tasks.find(x=>x.id==='oil1'),cal=M.tasks.find(x=>x.id==='battery'),once=M.tasks.find(x=>x.id==='seals');
+assert.equal(M.due(oil,{lastHours:null},'2026-11-03',18000,8).status,'Unknown — DTC history missing');
+let d=M.due(oil,{lastHours:0},'2026-11-03',18000,8);assert.equal(d.remaining,2000);assert.equal(d.forecast,'2027-07-11');
+assert.equal(M.due(oil,{lastHours:0},'2026-11-03',21000,8).status,'Overdue');assert.equal(M.due(cal,{lastDate:'2023-11-03'},'2026-11-03',null,null).status,'Due today');
+assert.equal(M.due(once,{completed:null},'2026-11-03',500,null).status,'Unknown — completion history missing');assert.equal(M.due(once,{completed:true},'2026-11-03',500,null).status,'Recorded complete');
+assert.throws(()=>M.due(oil,{lastHours:22000},'2026-11-03',21000,8),/Last-service/);
+assert.equal(M.gate('AND',[1,-1]),-1);assert.equal(M.gate('AND',[0,-1]),0);assert.equal(M.gate('OR',[1,-1]),1);assert.equal(M.gate('OR',[0,-1]),-1);
+let tree=M.tree(oil);assert.equal(M.evaluate(tree,{missed:1}),-1,'missed maintenance alone does not establish a failure pathway');assert.equal(M.evaluate(tree,{missed:1,lubricant:1,load:1,wear:1}),1);assert.equal(M.evaluate(tree,{missed:0,lubricant:1,load:1,wear:1}),0);
+console.log('PASS: month/leap boundaries, missing history, calendar/DTC deadlines, conditional forecasts, one-time completion, invalid history, AND/OR unknown logic');

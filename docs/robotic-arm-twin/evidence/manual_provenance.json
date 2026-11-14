@@ -1,0 +1,30 @@
+{
+  "title": "Product specification - IRB 6720",
+  "document_id": "3HAC085704-001",
+  "revision": "M",
+  "pdf_pages": 210,
+  "path": "/home/egrantjr/Downloads/3HAC085704 PS IRB 6720-en.pdf",
+  "sha256": "2878d465eecf73ffac07b70b57041198ad0e0dfdb6bcbd538c79c9a997ad0245",
+  "scope": "Product specification; OmniCore context; not full service/controller API manual",
+  "verified_pages": [
+    10,
+    21,
+    27,
+    38,
+    39,
+    41,
+    75,
+    76,
+    91,
+    92,
+    94,
+    95,
+    96,
+    97,
+    98,
+    103
+  ],
+  "official_source_url": "https://search.abb.com/library/Download.aspx?DocumentID=3HAC085704-001&LanguageCode=en&DocumentPartId=&Action=Launch",
+  "source_url_provided_by": "user",
+  "online_verification_note": "ABB link redirects to a PDF; automated retrieval of redirected PDF unavailable. Revision M and page citations refer to the inspected local supplied PDF."
+}

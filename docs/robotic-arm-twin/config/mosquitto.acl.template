@@ -1,0 +1,6 @@
+user irb6720_adapter
+topic write factory/cell01/irb6720/observed/#
+user twin_historian
+topic read factory/cell01/irb6720/observed/#
+user twin_viewer
+topic read factory/cell01/irb6720/observed/#

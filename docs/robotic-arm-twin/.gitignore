@@ -1,0 +1,6 @@
+__pycache__/
+*.sqlite*
+web/cad_mesh.json
+# Generated manufacturer geometry stays local; rights must be checked before sharing.
+web/cad-standalone.html
+web/assets/

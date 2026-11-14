@@ -1,0 +1,16 @@
+id,requirement,implementation,acceptance,current_status
+FRS-01,Static geometry,FreeCAD and CAD viewer,Workspace excluded; scale and local-frame checks; repair invalid LINK03,preview delivered; repair and frames pending
+FRS-02,Assembly hierarchy,CAD inventory and URDF,"Six identified axes, rigid link groups, tool and passive balance mapping",inventory delivered; joint identification pending
+FRS-03,Materials and physical parameters,Measured model registry,"Mass, CoM, inertia and relevant elasticity/thermal properties have evidence",worksheet and equations delivered; parameters pending
+FRS-04,Operational telemetry and modes,Adapter contract and ROS bridge,Correct source/units/order; physical active-idle-fault state displayed,synthetic lab tested; physical adapter pending
+FRS-05,Context and history,PostgreSQL schema,Maintenance/fault/job/environment joins and replay pass,schema delivered; deployment pending
+FRS-06,Unified timing and granularity,chrony/PTP and schema,Match source bandwidth; measure age and clock uncertainty,procedure and lab gates delivered; site measurement pending
+FRS-07,Rendering and compute,FreeCAD/RViz/Gazebo/browser,Benchmark actual scene and simulation factor before sizing hardware,actual mesh rendered; ROS/Gazebo benchmark pending
+FRS-08,Storage capacity,SQLite/PostgreSQL/MCAP,"Measured byte rate, retention capacity and restore evidence",sizing derivation delivered; production restore pending
+FRS-09,Latency,Network and age watchdog,"Proposed p95 age <=100ms, stale <=250ms, clock uncertainty <=5ms",local stale checks tested; network test pending
+FRS-10,Reliable secure standardized network,MQTT/TLS/ACL and edge spool,Duplicate/reorder/outage/restart and unauthorized access tests,lab dedup tested; TLS templates delivered; spool pending
+FRS-11,Interoperability,Stable IDs and normalized JSON/SQL,Versioned source/model mapping and SCADA/ERP/PLM integration test,contract delivered; site integration pending
+FRS-12,Physics and what-if analysis,Gazebo and validated dynamics,Measured mass/inertia/balance model; independent prediction check,equations/workflow delivered; physics commissioning pending
+FRS-13,Analytics,Thermal/vibration/residual models,"Matched baseline, independent evaluation and no-data handling",derivations delivered; data and tuning pending
+FRS-14,Requirements management,This FRS and gates,"Each requirement has test evidence, owner and disposition",traceability delivered; commissioning owner to assign
+FRS-15,Open-source twin software,License/version manifest,All twin-side binaries and dependencies open licensed,architecture documented; deployed SBOM pending

@@ -1,0 +1,149 @@
+{
+  "status": "unmeasured",
+  "model_revision": null,
+  "source_cad_sha256": null,
+  "joints": [
+    {
+      "name": "joint_1",
+      "parent": null,
+      "child": null,
+      "xyz_m": null,
+      "rpy_rad": null,
+      "axis": null,
+      "limits": null,
+      "encoder_zero_count": null,
+      "counts_per_motor_rev": null,
+      "gear_ratio": null,
+      "sign": null,
+      "evidence": null
+    },
+    {
+      "name": "joint_2",
+      "parent": null,
+      "child": null,
+      "xyz_m": null,
+      "rpy_rad": null,
+      "axis": null,
+      "limits": null,
+      "encoder_zero_count": null,
+      "counts_per_motor_rev": null,
+      "gear_ratio": null,
+      "sign": null,
+      "evidence": null
+    },
+    {
+      "name": "joint_3",
+      "parent": null,
+      "child": null,
+      "xyz_m": null,
+      "rpy_rad": null,
+      "axis": null,
+      "limits": null,
+      "encoder_zero_count": null,
+      "counts_per_motor_rev": null,
+      "gear_ratio": null,
+      "sign": null,
+      "evidence": null
+    },
+    {
+      "name": "joint_4",
+      "parent": null,
+      "child": null,
+      "xyz_m": null,
+      "rpy_rad": null,
+      "axis": null,
+      "limits": null,
+      "encoder_zero_count": null,
+      "counts_per_motor_rev": null,
+      "gear_ratio": null,
+      "sign": null,
+      "evidence": null
+    },
+    {
+      "name": "joint_5",
+      "parent": null,
+      "child": null,
+      "xyz_m": null,
+      "rpy_rad": null,
+      "axis": null,
+      "limits": null,
+      "encoder_zero_count": null,
+      "counts_per_motor_rev": null,
+      "gear_ratio": null,
+      "sign": null,
+      "evidence": null
+    },
+    {
+      "name": "joint_6",
+      "parent": null,
+      "child": null,
+      "xyz_m": null,
+      "rpy_rad": null,
+      "axis": null,
+      "limits": null,
+      "encoder_zero_count": null,
+      "counts_per_motor_rev": null,
+      "gear_ratio": null,
+      "sign": null,
+      "evidence": null
+    }
+  ],
+  "links": [
+    {
+      "name": "base_link",
+      "mass_kg": null,
+      "com_m": null,
+      "inertia_kg_m2": null,
+      "material": null,
+      "mesh": null
+    },
+    {
+      "name": "link_1",
+      "mass_kg": null,
+      "com_m": null,
+      "inertia_kg_m2": null,
+      "material": null,
+      "mesh": null
+    },
+    {
+      "name": "link_2",
+      "mass_kg": null,
+      "com_m": null,
+      "inertia_kg_m2": null,
+      "material": null,
+      "mesh": null
+    },
+    {
+      "name": "link_3",
+      "mass_kg": null,
+      "com_m": null,
+      "inertia_kg_m2": null,
+      "material": null,
+      "mesh": null
+    },
+    {
+      "name": "link_4",
+      "mass_kg": null,
+      "com_m": null,
+      "inertia_kg_m2": null,
+      "material": null,
+      "mesh": null
+    },
+    {
+      "name": "link_5",
+      "mass_kg": null,
+      "com_m": null,
+      "inertia_kg_m2": null,
+      "material": null,
+      "mesh": null
+    },
+    {
+      "name": "link_6",
+      "mass_kg": null,
+      "com_m": null,
+      "inertia_kg_m2": null,
+      "material": null,
+      "mesh": null
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "source": "/home/egrantjr/Documents/CADBaseFiles/IRB6720LPS_240kg-265_OC_00_STEP_J/IRB6720LPS_240kg-265_OC_00_LINK03_CAD.step",
+  "sha256": "9a9f4f4a1bf77edd5c49e2bfb647a58031c6f8bdea265350ffbec03d06fa571f",
+  "source_untouched": true,
+  "purpose": "Read-only diagnosis and repair on a transient copy; no production replacement",
+  "standalone_valid_before": false,
+  "volume_before_mm3": 60553080.0911812,
+  "solids_before": 1,
+  "check_before": "Invalid imbrication of wires\nNo error\nNo error\n",
+  "fix_return": false,
+  "valid_after_fix": false,
+  "volume_after_mm3": 60553080.0911812,
+  "solids_after": 1,
+  "disposition": "Repair still invalid"
+}

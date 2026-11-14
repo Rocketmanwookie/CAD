@@ -1,0 +1,83 @@
+{
+  "status": "manual-specification-only-not-calibrated",
+  "variant": "IRB 6720-240/2.65",
+  "manual_revision": "3HAC085704-001 M",
+  "payload_nominal_kg": 240,
+  "reach_nominal_m": 2.65,
+  "robot_nominal_mass_kg": 1160,
+  "joint_limits_degrees": [
+    [
+      -170,
+      170
+    ],
+    [
+      -65,
+      85
+    ],
+    [
+      -180,
+      70
+    ],
+    [
+      -300,
+      300
+    ],
+    [
+      -130,
+      130
+    ],
+    [
+      -360,
+      360
+    ]
+  ],
+  "joint_max_velocity_deg_s": [
+    110,
+    90,
+    90,
+    170,
+    120,
+    190
+  ],
+  "qualifications": [
+    "Verify installed nameplate and configuration",
+    "A1 extended range optional",
+    "A3 lower bound -160 with lower-arm DressPack",
+    "Not LID variant limits",
+    "No joint torque limits or per-link inertias inferred"
+  ],
+  "joint_limits_rad": [
+    [
+      -2.9670597283903604,
+      2.9670597283903604
+    ],
+    [
+      -1.1344640137963142,
+      1.4835298641951802
+    ],
+    [
+      -3.141592653589793,
+      1.2217304763960306
+    ],
+    [
+      -5.235987755982989,
+      5.235987755982989
+    ],
+    [
+      -2.2689280275926285,
+      2.2689280275926285
+    ],
+    [
+      -6.283185307179586,
+      6.283185307179586
+    ]
+  ],
+  "joint_max_velocity_rad_s": [
+    1.9198621771937625,
+    1.5707963267948966,
+    1.5707963267948966,
+    2.9670597283903604,
+    2.0943951023931953,
+    3.3161255787892263
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "title": "Product manual - IRB 6720",
+  "document_id": "3HAC085697-001",
+  "revision": "N",
+  "download_date": "2026-11-03",
+  "official_source_url": "https://search.abb.com/library/Download.aspx?DocumentID=3HAC085697-001&LanguageCode=en&DocumentPartId=&Action=Launch",
+  "downloaded_path": "/tmp/abb-irb6720-product-manual.pdf",
+  "sha256": "31f60ed27852f7bd22731e0998a4028034990fce8e2fafd287e83164da0cf3aa",
+  "maintenance_pages_reviewed": [
+    120,
+    121,
+    122
+  ],
+  "verification": "Maintenance tables on pp.121-122 rendered and visually inspected; footnotes reviewed. Download is Revision N, despite older web-search excerpts naming J, L or M.",
+  "applicability": "Confirm installed robot/options, service history, event-based requirements and current applicable manual before operational use.",
+  "interval_interpretation": "Operating-hour entries use Duty Time Counter, calendar entries remain independent of operation. Inspection interval is not lifetime."
+}

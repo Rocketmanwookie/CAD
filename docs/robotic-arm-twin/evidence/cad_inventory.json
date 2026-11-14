@@ -1,0 +1,563 @@
+{
+  "source": "/home/egrantjr/Documents/CADBaseFiles/IRB6720LPS_240kg-265_OC_00_STEP_J",
+  "source_rights": "User-supplied; redistribution unverified",
+  "freecad_version": [
+    "1",
+    "1",
+    "4",
+    "20260928 (Git shallow)",
+    "Unknown",
+    "2026/09/28 13:46:34",
+    "(HEAD detached at 4fd3bf320)",
+    "4fd3bf320d9566a27e60069fc8387448aaa3a094"
+  ],
+  "files": [
+    {
+      "name": "IRB6720LPS_240kg-265_OC_00_ASM_CAD.step",
+      "bytes": 39328831,
+      "sha256": "d0d7ab5b561de06b35ee198b65126a777810508faf9aace427e53a401de244a1"
+    },
+    {
+      "name": "IRB6720LPS_240kg-265_OC_00_BASE_CAD.step",
+      "bytes": 4116538,
+      "sha256": "ff351aad6212e974be735ed51780aa38de4c9b69a18a895c53ad4d05d1b56111"
+    },
+    {
+      "name": "IRB6720LPS_240kg-265_OC_00_CYL_CAD.step",
+      "bytes": 440208,
+      "sha256": "4b2912feff8a751cd62bd2da019baf05124d096f502e2734b712db31449ab44f"
+    },
+    {
+      "name": "IRB6720LPS_240kg-265_OC_00_LINK01_CAD.step",
+      "bytes": 8661802,
+      "sha256": "623db22358402f219d24ca011817475867147de13c083d5c750cb15b1295f3c8"
+    },
+    {
+      "name": "IRB6720LPS_240kg-265_OC_00_LINK01m_CABLE.step",
+      "bytes": 1877615,
+      "sha256": "9c37f545e8d4d1d2b5902eb9e4df0ef9c52e75f493c02c2376e273bb3af81296"
+    },
+    {
+      "name": "IRB6720LPS_240kg-265_OC_00_LINK02_CAD.step",
+      "bytes": 5555616,
+      "sha256": "be9079d59f34566b7441ccd65599b82877c06111ccc29c0d89543f655dc85929"
+    },
+    {
+      "name": "IRB6720LPS_240kg-265_OC_00_LINK02_CAD00.step",
+      "bytes": 5555542,
+      "sha256": "666034d1defeed835812afa0834aa2775a157a830045c1247038e8274843067f"
+    },
+    {
+      "name": "IRB6720LPS_240kg-265_OC_00_LINK02m_CABLE.step",
+      "bytes": 263032,
+      "sha256": "2911e172e00ecafb21c9f43a044055ca92309ff68bf066158b187dbc3eb353b4"
+    },
+    {
+      "name": "IRB6720LPS_240kg-265_OC_00_LINK03_CAD.step",
+      "bytes": 5070560,
+      "sha256": "9a9f4f4a1bf77edd5c49e2bfb647a58031c6f8bdea265350ffbec03d06fa571f"
+    },
+    {
+      "name": "IRB6720LPS_240kg-265_OC_00_LINK03m_CABLE.step",
+      "bytes": 1149501,
+      "sha256": "a4ac18567f330768afed4b21faca832f948ba99a3b510ddb4c8cde65c4cf1854"
+    },
+    {
+      "name": "IRB6720LPS_240kg-265_OC_00_LINK04_CAD.step",
+      "bytes": 4078143,
+      "sha256": "5bdab80f08e77dc26a91d293efb86bea2d7a0e7a5aa5ed6119c8459e4b3b3843"
+    },
+    {
+      "name": "IRB6720LPS_240kg-265_OC_00_LINK04_CAD00.step",
+      "bytes": 4078215,
+      "sha256": "27ebd6fc445d7ae5b4d3af5c30f39bd9552690d19677a9cf25a6819a094a999f"
+    },
+    {
+      "name": "IRB6720LPS_240kg-265_OC_00_LINK05_CAD.step",
+      "bytes": 6599786,
+      "sha256": "4d6accae48f1cc5a0cbbc06f4c72e23d631ac00cdb87b47337d0d35948c0dec3"
+    },
+    {
+      "name": "IRB6720LPS_240kg-265_OC_00_LINK06_CAD.step",
+      "bytes": 525009,
+      "sha256": "b1d4752aba9a643f81b2e82b5c3c7bec0f0f0734e6bb5299cea86ab4e2a0ad1c"
+    },
+    {
+      "name": "IRB6720LPS_240kg-265_OC_00_ROD_CAD.step",
+      "bytes": 130080,
+      "sha256": "a1ad7f720194e3d7647a2c4ac1d577f2ccf5f6535ebcb06528574e99d3c6b0d3"
+    },
+    {
+      "name": "IRB6720LPS_240kg-265_OC_00_Working-space.step",
+      "bytes": 38757,
+      "sha256": "cd3637f0d03e3d08a6ef8a975091826cf39a9c626c002edb4f6ed37d62d93797"
+    },
+    {
+      "name": "RobotArm.20260905-125624.FCBak",
+      "bytes": 28831454,
+      "sha256": "eda68cf9666f957598922ea2115be761298368d6532dafa642854889d9043a8e"
+    },
+    {
+      "name": "RobotArm.FCStd",
+      "bytes": 28827639,
+      "sha256": "4063e626a0bbf8f9928fafb406397580a4e241a70c94e6f8134101059e96cb5b"
+    },
+    {
+      "name": "RobotArm_Exploded.20260912-030857.FCBak",
+      "bytes": 26981930,
+      "sha256": "0812dcfc22573499304102824f0a1ef613c33811e6d4c35c0de7e1a38b6a1195"
+    },
+    {
+      "name": "RobotArm_Exploded.FCStd",
+      "bytes": 26981930,
+      "sha256": "9141434338e0be028549e41f379f8f640f133e30d2c56426ce418b929a590b62"
+    },
+    {
+      "name": "RobotAssemb.20260822-160029.FCBak",
+      "bytes": 31043385,
+      "sha256": "b2a2cf0d1ae35ca3c1db387b2bf8cc3e6dab67f9e62ce4057c9f543119bc83ac"
+    },
+    {
+      "name": "RobotAssemb.FCStd",
+      "bytes": 31043630,
+      "sha256": "580cb8b69226b00ec54da28d39b4d63b62f17dd063aca5cc4ef6fff424b50a6d"
+    },
+    {
+      "name": "Unnamed.20260912-035051.FCBak",
+      "bytes": 4616,
+      "sha256": "a0ae80dd961688e8dda271cd9a4024a778bf4b0818bd4f5332e34cbf8b550e0f"
+    },
+    {
+      "name": "Unnamed.FCStd",
+      "bytes": 1720,
+      "sha256": "b43ff0e483d7d84d14e0d7442dc00a31f79d3b303c931c558963793ba0f72d8d"
+    },
+    {
+      "name": "Unnamed1.20260912-035139.FCBak",
+      "bytes": 1719,
+      "sha256": "d7e1283d26980515ff11c580b488aa4f1c0d793181b21f0f7de22f9c3af36017"
+    },
+    {
+      "name": "Unnamed1.FCStd",
+      "bytes": 667701,
+      "sha256": "a32c58183fce9fbab65b2f364728dd27ac85fb53eaeb98b3e75c96c6c67831a2"
+    },
+    {
+      "name": "Unnamed2.FCStd",
+      "bytes": 1721,
+      "sha256": "c6cbd111e3706e322746ba6cb47281393295ed02c27a58df5a5c16d45818471e"
+    }
+  ],
+  "step_header": "ISO-10303-21;\nHEADER;\nFILE_DESCRIPTION (( 'STEP AP214' ),\n    '1' );\nFILE_NAME ('IRB6720LPS_240kg-265_OC_00_ASM_CAD.step',\n    '2026-06-11T07:04:15',\n    ( '' ),\n    ( '' ),\n    'SwSTEP 2.0',\n    'SolidWorks 2024',\n    '' );\nFILE_SCHEMA (( 'AUTOMOTIVE_DESIGN' ));\n",
+  "step_products": [
+    "IRB6720LPS_240kg-265_OC_00_LINK02_CAD",
+    "IRB6720LPS_240kg-265_OC_00_CYL_CAD",
+    "IRB6720LPS_240kg-265_OC_00_LINK02m_CABLE",
+    "IRB6720LPS_240kg-265_OC_00_LINK03m_CABLE",
+    "IRB6720LPS_240kg-265_OC_00_LINK05_CAD",
+    "IRB6720LPS_240kg-265_OC_00_LINK01_CAD",
+    "IRB6720LPS_240kg-265_OC_00_BASE_CAD",
+    "IRB6720LPS_240kg-265_OC_00_LINK06_CAD",
+    "IRB6720LPS_240kg-265_OC_00_ASM_CAD",
+    "IRB6720LPS_240kg-265_OC_00_LINK04_CAD",
+    "IRB6720LPS_240kg-265_OC_00_LINK03_CAD",
+    "IRB6720LPS_240kg-265_OC_00_ROD_CAD",
+    "IRB6720LPS_240kg-265_OC_00_LINK01m_CABLE",
+    "IRB6720LPS_240kg-265_OC_00_Working-space"
+  ],
+  "declared_mm": true,
+  "objects": [
+    {
+      "name": "Part__Feature",
+      "label": "IRB6720LPS_240kg-265_OC_00_LINK03m_CABLE",
+      "type": "Part::Feature",
+      "solids": 1,
+      "valid": true,
+      "volume_mm3": 1482916.0950169945,
+      "area_mm2": 204123.2551672689,
+      "center_of_volume_mm": [
+        440.8942752352976,
+        -160.57057512451078,
+        2063.669867791117
+      ],
+      "bbox_mm": [
+        -33.88921479506362,
+        -473.9955628506165,
+        1898.3705745848406,
+        603.7201339321111,
+        260.4822926520645,
+        2188.957031269201
+      ],
+      "placement": "Placement [Pos=(0,0,0), Yaw-Pitch-Roll=(0,0,0)]",
+      "parents": [
+        "IRB6720LPS_240kg_265_OC_00_ASM_CAD"
+      ],
+      "children": []
+    },
+    {
+      "name": "Part__Feature001",
+      "label": "IRB6720LPS_240kg-265_OC_00_LINK01m_CABLE",
+      "type": "Part::Feature",
+      "solids": 1,
+      "valid": true,
+      "volume_mm3": 1998901.445396592,
+      "area_mm2": 267591.85313354555,
+      "center_of_volume_mm": [
+        135.00340896715048,
+        -104.12291869191507,
+        550.326965574909
+      ],
+      "bbox_mm": [
+        -42.69763509110446,
+        -364.7943396012466,
+        348.2440099077454,
+        397.19688813719375,
+        259.6699672829488,
+        813.72275098819
+      ],
+      "placement": "Placement [Pos=(0,0,0), Yaw-Pitch-Roll=(0,0,0)]",
+      "parents": [
+        "IRB6720LPS_240kg_265_OC_00_ASM_CAD"
+      ],
+      "children": []
+    },
+    {
+      "name": "Part__Feature002",
+      "label": "IRB6720LPS_240kg-265_OC_00_LINK02m_CABLE",
+      "type": "Part::Feature",
+      "solids": 2,
+      "valid": true,
+      "volume_mm3": 636847.483994615,
+      "area_mm2": 63236.278996934576,
+      "center_of_volume_mm": [
+        384.0678794632235,
+        -299.1122848938783,
+        1344.5393626881173
+      ],
+      "bbox_mm": [
+        290.3358894319591,
+        -429.9177011235515,
+        700.7474948800178,
+        452.0337372348942,
+        -198.49489703764988,
+        1984.7231571384536
+      ],
+      "placement": "Placement [Pos=(-0,-0,-0), Yaw-Pitch-Roll=(0,0,0)]",
+      "parents": [
+        "IRB6720LPS_240kg_265_OC_00_ASM_CAD"
+      ],
+      "children": []
+    },
+    {
+      "name": "Part__Feature003",
+      "label": "IRB6720LPS_240kg-265_OC_00_LINK05_CAD",
+      "type": "Part::Feature",
+      "solids": 1,
+      "valid": true,
+      "volume_mm3": 6157096.748669735,
+      "area_mm2": 368030.4952636813,
+      "center_of_volume_mm": [
+        1480.7837680331866,
+        6.810044576195344,
+        2162.8185823492176
+      ],
+      "bbox_mm": [
+        1289.0254761101908,
+        -103.6293529751597,
+        2050.9741188304424,
+        1617.4936217095822,
+        119.49999999999866,
+        2265.0
+      ],
+      "placement": "Placement [Pos=(0,0,0), Yaw-Pitch-Roll=(0,0,0)]",
+      "parents": [
+        "IRB6720LPS_240kg_265_OC_00_ASM_CAD"
+      ],
+      "children": []
+    },
+    {
+      "name": "Part__Feature004",
+      "label": "IRB6720LPS_240kg-265_OC_00_LINK03_CAD",
+      "type": "Part::Feature",
+      "solids": 1,
+      "valid": false,
+      "volume_mm3": 60553080.0911812,
+      "area_mm2": 1512474.7069023482,
+      "center_of_volume_mm": [
+        260.9461321976806,
+        9.790797694724365,
+        2104.542473422268
+      ],
+      "bbox_mm": [
+        17.00000000001416,
+        -364.64029933098476,
+        1784.3715145132996,
+        582.0000000000143,
+        345.1093962193403,
+        2471.328322271901
+      ],
+      "placement": "Placement [Pos=(0,0,0), Yaw-Pitch-Roll=(0,0,0)]",
+      "parents": [
+        "IRB6720LPS_240kg_265_OC_00_ASM_CAD"
+      ],
+      "children": []
+    },
+    {
+      "name": "Part__Feature005",
+      "label": "IRB6720LPS_240kg-265_OC_00_LINK04_CAD",
+      "type": "Part::Feature",
+      "solids": 1,
+      "valid": true,
+      "volume_mm3": 47429659.15197643,
+      "area_mm2": 1141422.9170575019,
+      "center_of_volume_mm": [
+        1099.6345534330126,
+        -14.919502705406092,
+        2164.957717666916
+      ],
+      "bbox_mm": [
+        534.5000000000142,
+        -217.22718895105032,
+        1877.6177949190428,
+        1612.9804280072153,
+        205.4654393390627,
+        2452.3822050809467
+      ],
+      "placement": "Placement [Pos=(0,0,0), Yaw-Pitch-Roll=(0,0,0)]",
+      "parents": [
+        "IRB6720LPS_240kg_265_OC_00_ASM_CAD"
+      ],
+      "children": []
+    },
+    {
+      "name": "Part__Feature006",
+      "label": "IRB6720LPS_240kg-265_OC_00_LINK06_CAD",
+      "type": "Part::Feature",
+      "solids": 1,
+      "valid": true,
+      "volume_mm3": 820304.9074014577,
+      "area_mm2": 111623.64131730897,
+      "center_of_volume_mm": [
+        1633.3931699965497,
+        -0.0735409209227541,
+        2165.073044636808
+      ],
+      "bbox_mm": [
+        1611.9936217095797,
+        -108.23922002924104,
+        2056.7607799707607,
+        1652.4936217095803,
+        108.23922002923777,
+        2273.2392200292393
+      ],
+      "placement": "Placement [Pos=(0,0,0), Yaw-Pitch-Roll=(0,0,0)]",
+      "parents": [
+        "IRB6720LPS_240kg_265_OC_00_ASM_CAD"
+      ],
+      "children": []
+    },
+    {
+      "name": "Part__Feature007",
+      "label": "IRB6720LPS_240kg-265_OC_00_LINK01_CAD",
+      "type": "Part::Feature",
+      "solids": 1,
+      "valid": true,
+      "volume_mm3": 79271454.243321,
+      "area_mm2": 2845523.5341440313,
+      "center_of_volume_mm": [
+        137.26296695600738,
+        9.176775017411714,
+        570.504241622561
+      ],
+      "bbox_mm": [
+        -427.8760338758035,
+        -460.35978248584297,
+        212.70124953582248,
+        529.04342690413,
+        295.0000000000001,
+        1036.5
+      ],
+      "placement": "Placement [Pos=(0,0,0), Yaw-Pitch-Roll=(0,0,0)]",
+      "parents": [
+        "IRB6720LPS_240kg_265_OC_00_ASM_CAD"
+      ],
+      "children": []
+    },
+    {
+      "name": "Part__Feature008",
+      "label": "IRB6720LPS_240kg-265_OC_00_BASE_CAD",
+      "type": "Part::Feature",
+      "solids": 1,
+      "valid": true,
+      "volume_mm3": 112590848.81670247,
+      "area_mm2": 2245359.103830369,
+      "center_of_volume_mm": [
+        -118.86691985638087,
+        -0.6151663480067816,
+        122.4856182218343
+      ],
+      "bbox_mm": [
+        -747.5,
+        -414.48276228735904,
+        -6.15642519602444e-14,
+        405.2739804996347,
+        414.48276228735904,
+        295.0
+      ],
+      "placement": "Placement [Pos=(0,0,0), Yaw-Pitch-Roll=(0,0,0)]",
+      "parents": [
+        "IRB6720LPS_240kg_265_OC_00_ASM_CAD"
+      ],
+      "children": []
+    },
+    {
+      "name": "Part__Feature009",
+      "label": "IRB6720LPS_240kg-265_OC_00_ROD_CAD",
+      "type": "Part::Feature",
+      "solids": 1,
+      "valid": true,
+      "volume_mm3": 1648568.275620651,
+      "area_mm2": 128666.05937673681,
+      "center_of_volume_mm": [
+        -108.35286151147112,
+        -193.71792217162854,
+        688.9477939345509
+      ],
+      "bbox_mm": [
+        -496.9612042426855,
+        -256.23755151670383,
+        582.9930097361106,
+        170.2633020034094,
+        -131.76244848307854,
+        794.6316451795191
+      ],
+      "placement": "Placement [Pos=(0,0,0), Yaw-Pitch-Roll=(0,0,0)]",
+      "parents": [
+        "IRB6720LPS_240kg_265_OC_00_ASM_CAD"
+      ],
+      "children": []
+    },
+    {
+      "name": "Part__Feature010",
+      "label": "IRB6720LPS_240kg-265_OC_00_CYL_CAD",
+      "type": "Part::Feature",
+      "solids": 1,
+      "valid": true,
+      "volume_mm3": 49626623.858927615,
+      "area_mm2": 916768.7689594986,
+      "center_of_volume_mm": [
+        -251.80780446562696,
+        -194.00922088950313,
+        658.5268080233669
+      ],
+      "bbox_mm": [
+        -558.0227746845487,
+        -395.49999999989205,
+        418.36598110817715,
+        63.816509811964146,
+        7.500000000108145,
+        888.8678664188101
+      ],
+      "placement": "Placement [Pos=(0,0,0), Yaw-Pitch-Roll=(0,0,0)]",
+      "parents": [
+        "IRB6720LPS_240kg_265_OC_00_ASM_CAD"
+      ],
+      "children": []
+    },
+    {
+      "name": "Part__Feature011",
+      "label": "IRB6720LPS_240kg-265_OC_00_LINK02_CAD",
+      "type": "Part::Feature",
+      "solids": 1,
+      "valid": true,
+      "volume_mm3": 71229683.61945651,
+      "area_mm2": 1898905.7819915651,
+      "center_of_volume_mm": [
+        364.13109742498744,
+        -266.05876966883693,
+        1323.4198742314811
+      ],
+      "bbox_mm": [
+        60.023743572219516,
+        -462.7061291224765,
+        594.442890071248,
+        562.6090461840046,
+        335.0104009750785,
+        2122.7771493430714
+      ],
+      "placement": "Placement [Pos=(0,0,0), Yaw-Pitch-Roll=(0,0,0)]",
+      "parents": [
+        "IRB6720LPS_240kg_265_OC_00_ASM_CAD"
+      ],
+      "children": []
+    },
+    {
+      "name": "Part__Feature012",
+      "label": "IRB6720LPS_240kg-265_OC_00_Working-space",
+      "type": "Part::Feature",
+      "solids": 1,
+      "valid": true,
+      "volume_mm3": 49109969924.95225,
+      "area_mm2": 86759128.38936383,
+      "center_of_volume_mm": [
+        72.4845771944453,
+        -2.3170075718951384e-13,
+        1271.828887055804
+      ],
+      "bbox_mm": [
+        -2825.3119594981686,
+        -2868.896950553497,
+        -266.7449011057179,
+        2868.896950553497,
+        2868.896950553497,
+        3115.0244562616804
+      ],
+      "placement": "Placement [Pos=(0,0,0), Yaw-Pitch-Roll=(0,0,0)]",
+      "parents": [
+        "IRB6720LPS_240kg_265_OC_00_ASM_CAD"
+      ],
+      "children": []
+    },
+    {
+      "name": "IRB6720LPS_240kg_265_OC_00_ASM_CAD",
+      "label": "IRB6720LPS_240kg-265_OC_00_ASM_CAD",
+      "type": "App::Part",
+      "solids": 14,
+      "valid": false,
+      "volume_mm3": 49543470750.06131,
+      "area_mm2": 98462854.78550461,
+      "center_of_volume_mm": [
+        73.6739076726017,
+        -0.5843405534414977,
+        1269.5290535498668
+      ],
+      "bbox_mm": [
+        -2825.3119594981686,
+        -2868.896950553497,
+        -266.7449011057179,
+        2868.896950553497,
+        2868.896950553497,
+        3115.0244562616804
+      ],
+      "placement": "Placement [Pos=(0,0,0), Yaw-Pitch-Roll=(0,0,0)]",
+      "parents": [],
+      "children": [
+        "Origin",
+        "Part__Feature",
+        "Part__Feature001",
+        "Part__Feature002",
+        "Part__Feature003",
+        "Part__Feature004",
+        "Part__Feature005",
+        "Part__Feature006",
+        "Part__Feature007",
+        "Part__Feature008",
+        "Part__Feature009",
+        "Part__Feature010",
+        "Part__Feature011",
+        "Part__Feature012"
+      ]
+    }
+  ],
+  "note": "Geometry only. Object counts may include assembly containers. Center of volume assumes uniform density; no materials, joint axes, motor constants, or physical masses are inferred."
+}
